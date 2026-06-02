@@ -95,6 +95,7 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.matcher import Matcher
 from typing import Dict, Any, Tuple, List, Optional, Set
 from taiko_bot.settings import get_settings
+from taiko_bot.public_data import ensure_asset_resource_available
 from taiko_bot.userdata_provider import (
     UserdataProviderError,
     ensure_multiple_userdatas_available,
@@ -760,6 +761,18 @@ async def _finish_image_reply(
         markdown_image_name=markdown_image_name,
     )
     raise FinishedException
+
+
+async def _ensure_asset_resources_ready(
+    matcher: Matcher,
+    event: MessageEvent,
+    *resource_names: str,
+) -> bool:
+    ok, message = ensure_asset_resource_available(resource_names, _SETTINGS)
+    if ok:
+        return True
+    await _finish_text_reply(matcher, event, message)
+    return False
 
 
 def _to_jpeg_bytes(img_buf: bytes | BytesIO, quality: int = 85) -> bytes:
@@ -3047,6 +3060,8 @@ async def _finish_fuzzy_query_with_fumen(
 ) -> None:
     hint = _build_fuzzy_query_hint(results)
     song_id = str(results[0][0]).strip()
+    if not await _ensure_asset_resources_ready(matcher, event, "fumens-assets"):
+        await _finish_text_reply(matcher, event, hint)
     path = _get_fumen_path(difficulty, song_id)
     if path.exists():
         bio = file_to_bytesio(path)
@@ -4440,6 +4455,8 @@ async def trend_handle(event: MessageEvent):
         await _finish_text_reply(trend, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(trend, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(trend, event, "core-assets"):
+        return
     user_id = str(bind_target["user_id"])
     img_buf = generate_rating_trend_image(user_id, **trend_args)
     if not img_buf:
@@ -4480,6 +4497,8 @@ async def playtrend_handle(event: MessageEvent):
         await _finish_text_reply(playtrend, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(playtrend, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(playtrend, event, "core-assets"):
+        return
     user_id = str(bind_target["user_id"])
     img_buf = generate_rating_playcount_image(user_id, **playtrend_args)
     if not img_buf:
@@ -4566,6 +4585,8 @@ async def song_rank_handle(event: MessageEvent):
     if ranking_error and all(rankings is None for _label, rankings in sections):
         await _finish_text_reply(song_rank, event, ranking_error)
 
+    if not await _ensure_asset_resources_ready(song_rank, event, "core-assets", "cover-assets"):
+        return
     img_buf = render_ranking_image(song_title, sections, province_name=province_name)
     img_jpg = _to_jpeg_bytes(img_buf, quality=85)
     if fuzzy_hint:
@@ -4596,6 +4617,15 @@ async def summary_handle(event: MessageEvent):
         await summary.finish("请更新数据后使用~", reply_message=True)
     elif int(t[1]) == 1 and int(t[2][:2]) < 3:
         await summary.finish("请更新数据后使用~", reply_message=True)
+    if not await _ensure_asset_resources_ready(
+        summary,
+        event,
+        "core-assets",
+        "cover-assets",
+        "dress-assets",
+        "nameplate-assets",
+    ):
+        return
     try:
         result = render_taiko_2025_summary(taiko_id)
     except Exception as e:
@@ -4615,6 +4645,14 @@ async def my_don_handle(event: MessageEvent):
         await _finish_text_reply(my_don, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(my_don, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(
+        my_don,
+        event,
+        "core-assets",
+        "dress-assets",
+        "nameplate-assets",
+    ):
+        return
     taiko_id = str(bind_target["user_id"])
     try:
         img_buf = render_my_don_image(taiko_id)
@@ -4643,6 +4681,14 @@ async def song_metric_query_handle(event: MessageEvent):
         await _finish_text_reply(song_metric_query, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(song_metric_query, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(
+        song_metric_query,
+        event,
+        "core-assets",
+        "dress-assets",
+        "nameplate-assets",
+    ):
+        return
     taiko_id = str(bind_target["user_id"])
 
     plain_text = extract_plain_text(event)
@@ -4721,6 +4767,14 @@ async def tcloud_handle(event: MessageEvent):
         await tcloud.finish("查不到呢，可能不给看哦~", reply_message=True)
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await tcloud.finish(str(bind_target["error"]), reply_message=True)
+    if not await _ensure_asset_resources_ready(
+        tcloud,
+        event,
+        "core-assets",
+        "dress-assets",
+        "nameplate-assets",
+    ):
+        return
     user_id = str(bind_target["user_id"])
 
     try:
@@ -4780,6 +4834,15 @@ async def taikob_handle(event: MessageEvent):
         await _finish_text_reply(taikob, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(taikob, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(
+        taikob,
+        event,
+        "core-assets",
+        "cover-assets",
+        "dress-assets",
+        "nameplate-assets",
+    ):
+        return
     taiko_id = str(bind_target["user_id"])
 
     try:
@@ -4832,6 +4895,13 @@ async def music_info_handle(event: MessageEvent):
         await music_info.finish("查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(music_info, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(
+        music_info,
+        event,
+        "core-assets",
+        "cover-assets",
+    ):
+        return
     user_id = str(bind_target["user_id"])
     # 获取去除 at 的纯文本
     plain_text = extract_plain_text(event)
@@ -5217,6 +5287,8 @@ const_query = on_regex(
 
 @const_query.handle()
 async def const_query_handle(event: MessageEvent, match=RegexMatched()):
+    if not await _ensure_asset_resources_ready(const_query, event, "core-assets"):
+        return
     const_text = match.group(1)
     extra_text = (match.group(2) or "").strip()
     try:
@@ -5313,6 +5385,8 @@ async def _(event: MessageEvent):
         await _finish_text_reply(matcher, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(matcher, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(matcher, event, "core-assets"):
+        return
     taiko_id = str(bind_target["user_id"])
 
     dani_request = parse_dani_progress_request(text)
@@ -5644,6 +5718,8 @@ async def taikorec_handle(event: MessageEvent):
         await _finish_text_reply(taikorec, event, "查不到呢，可能不给看哦~")
     if isinstance(bind_target, dict) and bind_target.get("error"):
         await _finish_text_reply(taikorec, event, str(bind_target["error"]))
+    if not await _ensure_asset_resources_ready(taikorec, event, "core-assets"):
+        return
     taiko_id = str(bind_target["user_id"])
 
     # 2) 解析参数（兼容无空格：taikorec体力30 / 推荐歌曲体力30）
@@ -5758,6 +5834,8 @@ async def _finish_with_image_fallback(
 async def _send_fumen_or_hint(
     matcher: Matcher, event: MessageEvent, difficulty: str, song_id: str
 ) -> None:
+    if not await _ensure_asset_resources_ready(matcher, event, "fumens-assets"):
+        return
     path = _get_fumen_path(difficulty, song_id)
     if not path.exists():
         await matcher.finish(
@@ -5860,6 +5938,8 @@ async def _(matcher: Matcher, event: MessageEvent):
         seen.add(a)
         cleaned.append(a)
 
+    if not await _ensure_asset_resources_ready(matcher, event, "core-assets"):
+        return
     img_buf = render_alias_image(show_title, song_id, cleaned)
     if fuzzy_hint:
         await _finish_image_reply(matcher, event, img_buf, prefix_text=fuzzy_hint)

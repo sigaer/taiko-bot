@@ -11,7 +11,6 @@ from nonebot.log import logger
 from onebot_runtime.adapter import Adapter as ONEBOT_V11Adapter
 from taiko_bot.public_data import (
     PublicDataSyncError,
-    sync_asset_bundle_once,
     sync_public_datasets_once,
 )
 from taiko_bot.settings import ensure_runtime_dirs, get_settings
@@ -28,11 +27,6 @@ try:
     sync_public_datasets_once(_SETTINGS)
 except PublicDataSyncError as exc:
     logger.warning(f"initial taiko public data sync degraded: {exc}")
-try:
-    sync_asset_bundle_once(_SETTINGS)
-except PublicDataSyncError as exc:
-    logger.error(f"initial taiko asset bundle sync failed: {exc}")
-    raise
 
 nonebot.init()
 app = nonebot.get_asgi()

@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
 from plugins.utils.arcade_map import query_taiko_shops_by_city, sync_taiko_arcade_snapshot
-from .public_data import sync_public_datasets
+from .public_data import get_asset_sync_summary, sync_public_datasets
 from .settings import get_settings
 from .sqlite_db import ensure_schema
 from .storage import (
@@ -42,9 +42,14 @@ def create_app() -> FastAPI:
     async def health(request: Request) -> Dict[str, Any]:
         base_url = str(request.base_url).rstrip("/")
         root_path = str(request.scope.get("root_path") or "").rstrip("/")
+        asset_summary = get_asset_sync_summary(settings)
         return {
             "ok": True,
             "baseUrl": f"{base_url}{root_path}" if root_path else base_url,
+            "coreReady": bool(asset_summary.get("coreReady")),
+            "installedResources": asset_summary.get("installedResources") or [],
+            "syncingResources": asset_summary.get("syncingResources") or [],
+            "failedResources": asset_summary.get("failedResources") or [],
         }
 
     @app.post("/v1/public/sync")

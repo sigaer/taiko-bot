@@ -5,7 +5,7 @@ from nonebot.plugin import PluginMetadata
 
 from taiko_bot.public_data import (
     PublicDataSyncError,
-    sync_asset_bundle_once,
+    start_background_asset_sync,
     sync_public_datasets_once,
 )
 from taiko_bot.settings import ensure_runtime_dirs, get_settings
@@ -39,15 +39,8 @@ async def _prepare_runtime() -> None:
             logger.info(f"taiko public data sync completed: downloaded={downloaded}")
     except PublicDataSyncError as exc:
         logger.warning(f"taiko public data sync degraded: {exc}")
-    try:
-        asset_result = sync_asset_bundle_once(settings)
-        logger.info(
-            f"taiko asset bundle sync completed: updated={asset_result.get('updated')} "
-            f"degraded={asset_result.get('degraded')}"
-        )
-    except PublicDataSyncError as exc:
-        logger.error(f"taiko asset bundle sync failed: {exc}")
-        raise
+    start_background_asset_sync(settings)
+    logger.info("taiko asset sync manager started in background")
     start_cleanup_task()
 
 
