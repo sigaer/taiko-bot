@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 太鼓年终总结 2025 - 坐标版模板填充器（不使用图像检测）
-入口函数：render_taiko_2025_summary(user_id: int) -> Path
+入口函数：render_taiko_2025_summary(user_id: int) -> bytes
 
 依赖：
   pip install pillow matplotlib pandas numpy
@@ -29,7 +29,7 @@ from PIL import Image, ImageDraw, ImageFont
 import matplotlib
 
 matplotlib.use("Agg")
-import importlib.util
+from taiko_bot.settings import get_settings
 from .draw_dress import draw_achievement_overview, draw_player_info
 
 
@@ -427,7 +427,7 @@ def paste_contain(
 
 
 def load_userdata(user_id: int) -> Dict[str, Any]:
-    p = Path(f"./userdata/{user_id}data.json")
+    p = get_settings().userdata_dir / f"{user_id}data.json"
     if p.exists():
         return load_json(p)
     # 兼容：有些人直接放在当前目录
@@ -585,14 +585,8 @@ def choose_template(has_twso: bool, has_random_or_speed: bool) -> Path:
 
 
 def import_score_calculator():
-    if not SCORE_CALC_PATH.exists():
-        raise FileNotFoundError(f"score_calculator.py 不存在：{SCORE_CALC_PATH}")
-    spec = importlib.util.spec_from_file_location(
-        "score_calculator", str(SCORE_CALC_PATH)
-    )
-    module = importlib.util.module_from_spec(spec)  # type: ignore
-    assert spec and spec.loader
-    spec.loader.exec_module(module)  # type: ignore
+    from . import score_calculator as module
+
     return module
 
 
@@ -698,7 +692,7 @@ def render_player_and_achievement(user_id: int) -> bytes:
     return bio.getvalue()
 
 
-def render_taiko_2025_summary(user_id: int) -> Path:
+def render_taiko_2025_summary(user_id: int) -> bytes:
     out_path = OUTPUT_DIR / f"{user_id}_taiko_2025_summary.png"
     if os.path.exists(out_path):
         img = Image.open(out_path)

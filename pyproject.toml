@@ -21,6 +21,7 @@ dependencies = [
     "numpy>=1.26.0",
     "pandas>=2.2.0",
     "Pillow>=10.4.0",
+    "python-dotenv>=1.0.0",
     "requests>=2.32.0",
     "ujson>=5.10.0",
     "uvicorn>=0.30.0",

@@ -97,7 +97,7 @@ POUND_COL_X_CENTER = 955
 STAT_Y_OFFSET = -35
 STAT_LINE_H = 40
 # 资源路径
-USERDATA_DIR = str(_SETTINGS.root_dir / "userdata")
+USERDATA_DIR = str(_SETTINGS.userdata_dir)
 RATING_DB_PATH = str(_SETTINGS.root_dir / "songs" / "rating_structured_with_ids.json")
 FONT_FILE_NAME = "DDFont.ttf"
 RAW_DIM_KEYS = ["复合处理", "平均密度", "瞬间密度", "节奏处理", "BPM变化", "HS变化"]

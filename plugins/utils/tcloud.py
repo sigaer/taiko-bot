@@ -8,11 +8,12 @@ from typing import Dict
 
 from PIL import Image
 from wordcloud import WordCloud
+from taiko_bot.settings import get_settings
 
 from .draw_dress import render_my_don_image
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-USERDATA_DIR = ROOT_DIR / "userdata"
+USERDATA_DIR = get_settings().userdata_dir
 SONG_DATA_PATH = ROOT_DIR / "songs" / "song_data.json"
 
 _FONT_CANDIDATES = [

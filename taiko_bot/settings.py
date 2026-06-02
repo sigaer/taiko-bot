@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 
 PUBLIC_DATA_FILES = {
     "song_data": "song_data.json",
@@ -31,7 +33,6 @@ class Settings:
     storage_dir: Path
     songs_dir: Path
     assets_dir: Path
-    config_path: Path
     userdata_dir: Path
     runtime_data_dir: Path
     logs_dir: Path
@@ -45,7 +46,9 @@ class Settings:
     hiroba_token_dir: Path
     hiroba_cooldown_path: Path
     qq_markdown_cache_dir: Path
+    viewer_base_url: str
     public_data_base_url: str
+    viewer_developer_token: str
     local_data_api_host: str
     local_data_api_port: int
     local_data_api_base_url: str
@@ -57,11 +60,16 @@ def get_settings() -> Settings:
     root_dir = Path(
         os.getenv("TAIKO_BOT_ROOT", Path(__file__).resolve().parents[1])
     ).resolve()
+    # README uses a project-local .env file as the primary setup path.
+    load_dotenv(root_dir / ".env", override=False)
     storage_dir = Path(
         os.getenv("TAIKO_STORAGE_DIR", root_dir / "storage")
     ).resolve()
     songs_dir = Path(os.getenv("TAIKO_SONGS_DIR", root_dir / "songs")).resolve()
     assets_dir = Path(os.getenv("TAIKO_ASSETS_DIR", root_dir / "assets")).resolve()
+    viewer_base_url = os.getenv(
+        "TAIKO_VIEWER_BASE_URL", "https://viewer.sakura-bot.cn"
+    ).rstrip("/")
     runtime_data_dir = storage_dir / "data"
     logs_dir = Path(os.getenv("TAIKO_LOGS_DIR", storage_dir / "logs")).resolve()
     output_dir = Path(
@@ -87,11 +95,8 @@ def get_settings() -> Settings:
         storage_dir=storage_dir,
         songs_dir=songs_dir,
         assets_dir=assets_dir,
-        config_path=Path(
-            os.getenv("TAIKO_CONFIG_PATH", storage_dir / "config" / "config.json")
-        ).resolve(),
         userdata_dir=Path(
-            os.getenv("TAIKO_USERDATA_DIR", storage_dir / "userdata")
+            os.getenv("TAIKO_USERDATA_DIR", storage_dir / "cache" / "userdata")
         ).resolve(),
         runtime_data_dir=runtime_data_dir.resolve(),
         logs_dir=logs_dir,
@@ -125,15 +130,19 @@ def get_settings() -> Settings:
             )
         ).resolve(),
         qq_markdown_cache_dir=qq_markdown_cache_dir,
+        viewer_base_url=viewer_base_url,
         public_data_base_url=os.getenv(
-            "TAIKO_PUBLIC_DATA_BASE_URL", "https://viewer.sakura-bot.cn/api/taiko"
+            "TAIKO_PUBLIC_DATA_BASE_URL", f"{viewer_base_url}/api/taiko"
         ).rstrip("/"),
+        viewer_developer_token=os.getenv(
+            "TAIKO_VIEWER_DEVELOPER_TOKEN", ""
+        ).strip(),
         local_data_api_host=local_data_api_host,
         local_data_api_port=local_data_api_port,
         local_data_api_base_url=local_data_api_base_url,
         qq_markdown_image_base_url=os.getenv(
             "QQ_MARKDOWN_IMAGE_BASE_URL",
-            "https://viewer.sakura-bot.cn/qqbot-cache/taiko",
+            f"{viewer_base_url}/qqbot-cache/taiko",
         ).rstrip("/"),
     )
 
@@ -144,7 +153,6 @@ def ensure_runtime_dirs(settings: Settings | None = None) -> None:
         cfg.storage_dir,
         cfg.songs_dir,
         cfg.assets_dir,
-        cfg.config_path.parent,
         cfg.userdata_dir,
         cfg.runtime_data_dir,
         cfg.logs_dir,

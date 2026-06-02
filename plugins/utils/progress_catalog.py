@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Set
 from taiko_bot.settings import get_settings
 
+from .song_visibility import is_song_publicly_visible
+
 BASE = get_settings().root_dir
 SONG_DATA_PATH = BASE / "songs" / "song_data.json"
 RATING_PATH = BASE / "songs" / "rating_structured_with_ids.json"
@@ -55,16 +57,16 @@ def load_song_index() -> Dict[int, Dict[str, Any]]:
     return {int(song["id"]): song for song in songs if song.get("id") is not None}
 
 
-def is_song_on_shelf(status: Any) -> bool:
-    """与 score_calculator / 曲库其它模块保持一致的在架判定。"""
-    return status not in (1, "1", "已下架")
+def is_song_on_shelf(song: Dict[str, Any]) -> bool:
+    """与 score_calculator / 曲库其它模块保持一致的对外可见判定。"""
+    return is_song_publicly_visible(song)
 
 
 @lru_cache(maxsize=1)
 def load_active_song_ids() -> Set[int]:
     active: Set[int] = set()
     for song_id, song in load_song_index().items():
-        if not is_song_on_shelf(song.get("shelf_status")):
+        if not is_song_on_shelf(song):
             continue
         active.add(song_id)
     return active

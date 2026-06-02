@@ -5,18 +5,13 @@ import json
 import secrets
 from dataclasses import dataclass
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import ensure_userdata_available
 from taiko_runtime.platform_adapter import ONEBOT_V11_PLATFORM, format_identity_for_display
 
-from .hiroba.client import HirobaError
-from .hiroba.cooldown import peek_hiroba_sync_cooldown
-from .hiroba.credentials import load_hiroba_credentials
-from .hiroba.sync import sync_hiroba_userdata
 from .taiko_db import ensure_schema, get_taiko_db_connection
-from .update_user import getUserData
 
 USERDATA_DIR = get_settings().userdata_dir
 TOKEN_BYTES = 24
@@ -176,73 +171,6 @@ def _load_local_userdata(taiko_id: str) -> Dict[str, Any]:
         raise PublicScoreTokenError(500, "userdata_invalid", f"本地成绩文件损坏：{error}") from error
 
 
-def _resolve_local_userdata_source(payload: Dict[str, Any]) -> str:
-    meta = payload.get("_meta") if isinstance(payload, dict) else None
-    if not isinstance(meta, dict):
-        return ""
-    source = str(meta.get("source") or "").strip().lower()
-    return source if source in {"hiroba", "wahlap"} else ""
-
-
-def _infer_public_token_source(
-    taiko_id: str, local_payload: Optional[Dict[str, Any]]
-) -> Tuple[str, Optional[Tuple[str, str]]]:
-    if local_payload is not None:
-        local_source = _resolve_local_userdata_source(local_payload)
-        if local_source == "wahlap":
-            return "wahlap", None
-
-    creds = load_hiroba_credentials(taiko_id)
-    if creds is not None:
-        return "hiroba", creds
-
-    if local_payload is not None:
-        local_source = _resolve_local_userdata_source(local_payload)
-        if local_source == "hiroba":
-            return "hiroba", None
-
-    return "wahlap", None
-
-
-def _refresh_public_token_userdata(
-    taiko_id: str,
-    source: str,
-    hiroba_creds: Optional[Tuple[str, str]],
-    *,
-    has_local_payload: bool,
-) -> None:
-    if source == "hiroba":
-        cooldown_msg = peek_hiroba_sync_cooldown(taiko_id)
-        if cooldown_msg:
-            return
-        if hiroba_creds is None:
-            return
-        email, password = hiroba_creds
-        try:
-            sync_hiroba_userdata(email, password, taiko_no=taiko_id)
-        except HirobaError as error:
-            if has_local_payload:
-                return
-            raise PublicScoreTokenError(
-                502, "update_failed", f"拉取 Hiroba 成绩失败：{error}"
-            ) from error
-        except Exception as error:
-            if has_local_payload:
-                return
-            raise PublicScoreTokenError(
-                502, "update_failed", f"拉取 Hiroba 成绩失败：{error}"
-            ) from error
-        return
-
-    result = getUserData(taiko_id)
-    if result == 404:
-        raise PublicScoreTokenError(
-            404, "user_not_found", "鼓众广场未找到该绑定 ID 的玩家成绩。"
-        )
-    if result != 0:
-        raise PublicScoreTokenError(502, "update_failed", "拉取鼓众成绩失败，请稍后重试。")
-
-
 def fetch_latest_userdata_by_token(token: str) -> Dict[str, Any]:
     resolved = _resolve_token_binding(token)
     taiko_id = resolved["taiko_id"]
@@ -252,13 +180,13 @@ def fetch_latest_userdata_by_token(token: str) -> Dict[str, Any]:
     except PublicScoreTokenError:
         local_payload = None
 
-    source, hiroba_creds = _infer_public_token_source(taiko_id, local_payload)
-    _refresh_public_token_userdata(
-        taiko_id,
-        source,
-        hiroba_creds,
-        has_local_payload=local_payload is not None,
-    )
+    try:
+        ensure_userdata_available(taiko_id, force_refresh=True)
+    except Exception as error:
+        if local_payload is None:
+            raise PublicScoreTokenError(
+                502, "update_failed", f"拉取中心成绩失败：{error}"
+            ) from error
 
     return {
         "ok": True,

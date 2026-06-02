@@ -12,14 +12,6 @@ def _default_draw_guess_db() -> Dict[str, Any]:
     return {"next_id": 1, "records": [], "user_guess_stats": {}}
 
 
-def _default_config() -> Dict[str, Any]:
-    return {
-        "cookie": "",
-        "bemanicn": {"email": "", "password": ""},
-        "meta": {"created_at": datetime.now().isoformat(timespec="seconds")},
-    }
-
-
 def load_json(path: Path, default: Any) -> Any:
     if not path.exists():
         return default
@@ -43,42 +35,36 @@ def ensure_storage_layout(settings: Settings | None = None) -> None:
     cfg = settings or get_settings()
     ensure_runtime_dirs(cfg)
     compatibility_links = {
-        cfg.root_dir / "userdata": cfg.userdata_dir,
         cfg.root_dir / "data": cfg.runtime_data_dir,
         cfg.root_dir / "logs": cfg.logs_dir,
         cfg.root_dir / "output": cfg.output_dir,
         cfg.root_dir / "secrets": cfg.secrets_dir,
-        cfg.root_dir / "config.json": cfg.config_path,
+        cfg.root_dir / "userdata": cfg.userdata_dir,
     }
     for link_path, target_path in compatibility_links.items():
-        if link_path.exists() or link_path.is_symlink():
+        if link_path.is_symlink():
+            try:
+                if link_path.resolve() == target_path.resolve():
+                    continue
+            except OSError:
+                pass
+            try:
+                link_path.unlink()
+            except OSError:
+                continue
+        elif link_path.exists():
             continue
         try:
             link_path.symlink_to(target_path)
         except OSError:
             # Filesystems without symlink support fall back to the storage path directly.
             pass
-    if not cfg.config_path.exists():
-        write_json_atomic(cfg.config_path, _default_config())
     if not cfg.multi_bind_path.exists():
         write_json_atomic(cfg.multi_bind_path, {})
     if not cfg.draw_guess_db_path.exists():
         write_json_atomic(cfg.draw_guess_db_path, _default_draw_guess_db())
     if not cfg.hiroba_cooldown_path.exists():
         write_json_atomic(cfg.hiroba_cooldown_path, {})
-
-
-def read_config(settings: Settings | None = None) -> Dict[str, Any]:
-    cfg = settings or get_settings()
-    ensure_storage_layout(cfg)
-    payload = load_json(cfg.config_path, _default_config())
-    return payload if isinstance(payload, dict) else _default_config()
-
-
-def write_config(payload: Dict[str, Any], settings: Settings | None = None) -> None:
-    cfg = settings or get_settings()
-    ensure_storage_layout(cfg)
-    write_json_atomic(cfg.config_path, payload)
 
 
 def userdata_path(user_id: str, settings: Settings | None = None) -> Path:

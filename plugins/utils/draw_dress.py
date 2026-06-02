@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
+from taiko_bot.settings import get_settings
 
 from .dojo_score import (
     build_dojo_score_map,
@@ -14,9 +15,10 @@ from .dojo_score import (
     normalize_dojo_scores,
 )
 from .snapshot_history import list_snapshot_files
+from .song_visibility import is_song_id_publicly_visible, is_song_publicly_visible
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-USERDATA_DIR = ROOT_DIR / "userdata"
+USERDATA_DIR = get_settings().userdata_dir
 ASSETS_DIR = ROOT_DIR / "assets" / "dress"
 OUTPUT_DIR = ROOT_DIR / "output"
 TEMPLATES_DIR = ROOT_DIR / "assets" / "templates"
@@ -310,6 +312,8 @@ def _load_song_display_map() -> Dict[int, Dict[str, Any]]:
             song_id = int(row.get("id"))
         except Exception:
             continue
+        if not is_song_publicly_visible(row):
+            continue
         title = row.get("song_name") or row.get("song_name_jp") or f"ID{song_id}"
         levels: Dict[int, float] = {}
         for level in (1, 2, 3, 4, 5):
@@ -350,10 +354,7 @@ def _build_song_map(
 
 
 def _is_current_playable_song(song_no: int) -> bool:
-    song_meta = _load_song_display_map().get(song_no) or {}
-    if not song_meta:
-        return False
-    return _safe_int(song_meta.get("shelf_status", 0), 0) == 0
+    return is_song_id_publicly_visible(song_no)
 
 
 def _build_my_don_song_map(
@@ -1645,6 +1646,35 @@ def _collect_my_don_song_stats(
     return stats
 
 
+def _resolve_my_don_title_levels(panel_level: int) -> Tuple[int, ...]:
+    if panel_level == 5:
+        return (4, 5)
+    return (panel_level,)
+
+
+def _paste_my_don_title_icons(
+    panel: Image.Image,
+    panel_level: int,
+    title_icon_box: Tuple[int, int, int, int],
+) -> int:
+    title_levels = _resolve_my_don_title_levels(panel_level)
+    x1, y1, x2, y2 = title_icon_box
+    icon_w = x2 - x1
+    step = max(1, icon_w - 8)
+    right_edge = x2
+
+    for index, level in enumerate(title_levels):
+        diff_icon = _load_image(ICONS_DIR / "diff" / f"{level}.png")
+        if diff_icon is None:
+            continue
+        icon_x = x1 + index * step
+        icon_box = (icon_x, y1, icon_x + icon_w, y2)
+        _paste_contain(panel, diff_icon, icon_box, pad=2)
+        right_edge = max(right_edge, icon_box[2])
+
+    return right_edge
+
+
 def _sum_my_don_total_stage_count(songs: Iterable[Dict[str, Any]]) -> int:
     return sum(
         _to_int(song.get("stage_cnt", 0))
@@ -1812,13 +1842,11 @@ def _render_my_don_rank_summary_panel(
     value_font = _get_font_by_path(font_path or FONT_PATH, 22)
     song_font = _get_font_by_path(font_path or FONT_PATH, 16)
 
-    diff_icon = _load_image(ICONS_DIR / "diff" / f"{panel_level}.png")
     title_icon_box = (pad, pad - 1, pad + 42, pad + title_h + 4)
-    if diff_icon is not None:
-        _paste_contain(panel, diff_icon, title_icon_box, pad=2)
+    title_text_x = _paste_my_don_title_icons(panel, panel_level, title_icon_box)
     _draw_text(
         draw,
-        (pad + 46, pad - 1),
+        (title_text_x + 4, pad - 1),
         "当前面板难度评价",
         title_font,
         MY_DON_CARD_TITLE,

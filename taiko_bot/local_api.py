@@ -1,21 +1,21 @@
 from __future__ import annotations
 
+from dataclasses import asdict
 from typing import Any, Dict
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
+from plugins.utils.arcade_map import query_taiko_shops_by_city, sync_taiko_arcade_snapshot
 from .public_data import sync_public_datasets
 from .settings import get_settings
 from .sqlite_db import ensure_schema
 from .storage import (
     ensure_storage_layout,
     list_userdata_history,
-    read_config,
     read_draw_guess_db,
     read_multi_bind_store,
     read_userdata,
-    write_config,
     write_draw_guess_db,
     write_multi_bind_store,
     write_userdata_with_history,
@@ -45,15 +45,6 @@ def create_app() -> FastAPI:
     @app.post("/v1/public/sync")
     async def sync_public() -> Dict[str, Any]:
         return sync_public_datasets(settings)
-
-    @app.get("/v1/config")
-    async def get_config() -> Dict[str, Any]:
-        return read_config(settings)
-
-    @app.put("/v1/config")
-    async def put_config(payload: JsonPayload) -> Dict[str, Any]:
-        write_config(payload.payload, settings)
-        return {"ok": True}
 
     @app.get("/v1/runtime/multi-bind")
     async def get_multi_bind() -> Dict[str, Any]:
@@ -96,6 +87,23 @@ def create_app() -> FastAPI:
             "userId": user_id,
             "files": [path.name for path in list_userdata_history(user_id, settings=settings)],
         }
+
+    @app.post("/v1/arcades/sync")
+    async def sync_arcades() -> Dict[str, Any]:
+        try:
+            return sync_taiko_arcade_snapshot(force=True)
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    @app.get("/v1/arcades/query")
+    async def query_arcades(city: str) -> Dict[str, Any]:
+        try:
+            result = await query_taiko_shops_by_city(city)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+        return asdict(result)
 
     return app
 

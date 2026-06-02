@@ -1,14 +1,27 @@
 # taiko-bot
 
-`taiko-bot` 是从原私有 `taiko` 运行栈中抽离出的独立 NoneBot 项目，只保留 bot 运行逻辑，不包含歌曲库、资源图包、用户成绩、cookie 等私有数据。
+`taiko-bot` 是从原私有运行栈中抽离出的独立 NoneBot 项目。这个仓库只包含 bot 执行逻辑，不包含私有 cookie、BEMANICN 账号、权威成绩文件或手工维护的资源包。
 
 ## 1. 环境要求
 
 - Python `3.11` 推荐
-- Linux/macOS 推荐；Windows 也可运行，但脚本示例按 `bash`
+- Linux/macOS 推荐，Windows 也可运行
 - 一个可直连的 OneBot V11 客户端
+- 可访问 `https://viewer.sakura-bot.cn`
 
-## 2. 安装
+## 2. 安装 Python
+
+如果本机没有 Python 3.11，请先安装：
+
+- Windows：从 `https://www.python.org/downloads/` 安装 Python 3.11，并勾选 `Add python.exe to PATH`
+- Ubuntu/Debian：
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip
+```
+
+## 3. 安装项目
 
 ```bash
 cd /path/to/taiko-bot
@@ -19,138 +32,125 @@ pip install -e .
 cp .env.example .env
 ```
 
-## 3. 下载资源包
+## 4. 配置 `.env`
 
-先访问：
+必须至少配置这些项目：
 
-- `https://viewer.sakura-bot.cn/api/taiko/manifest`
-
-把 manifest 中的资源包下载并解压到项目根目录的 `assets/`：
-
-- `core-assets`
-- `dress-assets`
-- `nameplate-assets`
-- `cover-assets`
-- `fumens-renamed`
-
-解压完成后，项目根目录应至少存在：
-
-- `assets/fonts`
-- `assets/templates`
-- `assets/icons`
-- `assets/dress`
-- `assets/name_plate`
-- `assets/name_plate_dani`
-- `assets/cover`
-- `assets/fumens_renamed`
-
-## 4. 本地配置
-
-运行态私有数据统一落在 `storage/`，首次启动会自动创建。
-
-常用配置文件：
-
-- `storage/config/config.json`
-
-最少需要填：
-
-```json
-{
-  "cookie": "你的鼓众 cookie",
-  "bemanicn": {
-    "email": "",
-    "password": ""
-  }
-}
+```env
+HOST=0.0.0.0
+PORT=37564
+TAIKO_LOCAL_DATA_API_PORT=37565
+TAIKO_VIEWER_BASE_URL=https://viewer.sakura-bot.cn
+TAIKO_VIEWER_DEVELOPER_TOKEN=你的开发者token
 ```
 
-`cookie` 用于 CN 成绩更新；`bemanicn` 仅在你要使用地图查询时需要。
+说明：
 
-## 5. 端口
+- `TAIKO_VIEWER_DEVELOPER_TOKEN` 是开源 bot 访问中心受限接口的唯一默认凭据
+- 不再需要根目录 `config.json`
+- 不再需要 `storage/config/config.json`
+- 不再需要本地鼓众 cookie
+- 不再需要本地 `bemanicn` 账号
 
-默认端口：
+可选端口：
 
-- 本地数据 API：`127.0.0.1:37565`
-- Core WS：`127.0.0.1:37563`
-- Gateway WS：`0.0.0.0:37564`
-- `nb run` 单进程：`0.0.0.0:37564`
+- `HOST` / `PORT`：`nb run` 对外监听地址
+- `TAIKO_CORE_PORT`：Core 模式端口
+- `TAIKO_GATEWAY_PORT`：Gateway 模式端口
+- `TAIKO_LOCAL_DATA_API_PORT`：本地 FastAPI 数据服务端口
+- `HIROBA_PROXY`：仅当你的 Hiroba 登录必须经过指定代理时再填写；`绑定hiroba` 不会继承宿主机通用 `HTTP(S)_PROXY`
 
-可以在 `.env` 中改：
+## 5. 首次启动会自动完成什么
 
-- `HOST`
-- `PORT`
-- `TAIKO_CORE_PORT`
-- `TAIKO_GATEWAY_PORT`
-- `TAIKO_LOCAL_DATA_API_PORT`
+启动 `nb run` 前后，bot 会自动执行：
 
-## 6. 启动方式
+1. 拉取公共 JSON 数据到 `songs/`
+2. 检查 `assets/.bundle.sha256`
+3. 如本地资源缺失或版本变化，自动从 `viewer` 下载单一总资源包并解压到 `assets/`
+4. 成绩相关读取按需从中心拉取并缓存到 `storage/cache/userdata/`
+5. 地图查询按需从 `viewer` 同步本机缓存快照到 `storage/data/arcade_map_cache/`
 
-先启动本地数据 API：
+注意：
+
+- 用户不需要手动下载资源包
+- 如果本地完全没有资源，且资源包下载失败，启动会直接失败
+- 如果本地已有资源，但资源更新失败，bot 会告警后继续使用旧资源
+
+## 6. 启动本地数据 API
 
 ```bash
 source .venv/bin/activate
 ./scripts/start_local_data_api.sh
 ```
 
-### 方式 A：直接运行 NoneBot
+默认地址：
+
+- `http://127.0.0.1:37565`
+
+主要接口：
+
+- `GET /health`
+- `POST /v1/public/sync`
+- `POST /v1/arcades/sync`
+- `GET /v1/arcades/query?city=鞍山`
+- `GET/PUT /v1/runtime/multi-bind`
+- `GET/PUT /v1/runtime/draw-guess`
+- `GET/PUT /v1/userdata/{user_id}`
+- `GET /v1/userdata/{user_id}/history`
+
+其中 `userdata` 仅是本地读取缓存，不是权威成绩落点。
+
+## 7. 启动 NoneBot
+
+### 方式 A：单进程
 
 ```bash
 source .venv/bin/activate
 nb run
 ```
 
-### 方式 B：Core/Gateway 双进程
+### 方式 B：Core / Gateway 双进程
 
 ```bash
 source .venv/bin/activate
 ./scripts/start_taiko_gateway_core.sh
 ```
 
-## 7. 连接 OneBot 客户端
+## 8. 连接客户端
 
-如果你使用网关模式，让 OneBot 客户端连：
-
-- `ws://127.0.0.1:37564/onebot/v11/ws`
-
-如果你直接 `nb run`，让客户端连：
+如果使用默认 `nb run`：
 
 - `ws://127.0.0.1:37564/onebot/v11/ws`
 
-## 8. 首次启动行为
+如果使用网关模式：
 
-bot 在启动前会主动请求：
+- `ws://127.0.0.1:37564/onebot/v11/ws`
 
-- `https://viewer.sakura-bot.cn/api/taiko/manifest`
-- manifest 中声明的公共 JSON 数据
+## 9. 成绩更新与读取规则
 
-这些数据会缓存到项目根目录的 `songs/`。如果远端暂时不可用，但本地已有缓存，bot 会降级启动。
+- `taikoupdate` / `更新广场`：请求中心服务更新，权威写入只发生在当前中心设备
+- `更新hiroba`：请求中心服务执行 Hiroba 同步，结果也只写入中心设备
+- 自部署 bot 本地只保留读取缓存，不作为权威成绩存储
+- `b30`、进度图、查分、总结等读取都会优先刷新中心缓存后再渲染
 
-## 9. 本地数据 API
+## 10. 地图查询规则
 
-默认基址：
+- `xx哪有鼓` 不再登录 BEMANICN
+- 本地只查询从 `viewer` 同步下来的地图快照缓存
+- 首次无缓存时会自动尝试同步
 
-- `http://127.0.0.1:37565`
+## 11. 维护资源包
 
-可用接口包括：
-
-- `GET /health`
-- `GET/PUT /v1/config`
-- `GET/PUT /v1/userdata/{user_id}`
-- `GET /v1/userdata/{user_id}/history`
-- `GET/PUT /v1/runtime/multi-bind`
-- `GET/PUT /v1/runtime/draw-guess`
-- `POST /v1/public/sync`
-
-## 10. 维护资源包
-
-维护者更新资源包时可执行：
+维护者更新中心资源包时：
 
 ```bash
 TAIKO_SOURCE_ROOT=/home/sigaer/taiko ./scripts/build_open_resource_archives.sh
 ```
 
-默认输出目录：
+默认输出：
 
-- `/home/sigaer/taiko-open-resources`
+- `/home/sigaer/taiko-open-resources/taiko-bot-assets.zip`
 
-viewer 侧 `api/taiko/resources/*` 会从该目录读取。
+viewer 对外下载入口：
+
+- `https://viewer.sakura-bot.cn/api/taiko/assets/latest`

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
+from taiko_bot.settings import get_settings
 
 from .b30_single import (
     _compute_rating_for_entry,
@@ -38,9 +39,11 @@ from .score_calculator import (
     build_daily_rating_points,
     compute_all_from_userdata,
     compute_dim_topN_means,
+    get_song_chart_identity_key,
     load_rating_config,
     getUtime,
 )
+from .song_visibility import is_song_id_publicly_visible
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 ASSETS_DIR = ROOT_DIR / "assets"
@@ -356,15 +359,17 @@ def _render_trend_image(
     return img
 
 
-def _topn_entry_keys(
+def _topn_entry_identity_keys(
     top_entries: List[Tuple[float, Dict[str, Any]]],
-) -> Set[Tuple[int, int]]:
-    keys: Set[Tuple[int, int]] = set()
+) -> Set[Tuple[str, int, int]]:
+    keys: Set[Tuple[str, int, int]] = set()
     for _, entry in top_entries:
         try:
-            keys.add((int(entry.get("song_no", 0)), int(entry.get("level", 0))))
+            song_no = int(entry.get("song_no", 0))
+            level = int(entry.get("level", 0))
         except (TypeError, ValueError):
             continue
+        keys.add(get_song_chart_identity_key(song_no, level))
     return keys
 
 
@@ -376,7 +381,7 @@ def compute_b30_update_diff(
     rating_index: Dict[Tuple[int, int], dict],
     const_table: List[tuple],
     current_top_entries: List[Tuple[float, Dict[str, Any]]],
-) -> Tuple[Set[Tuple[int, int]], Dict[str, float]]:
+) -> Tuple[Set[Tuple[str, int, int]], Dict[str, float]]:
     prev_map = _load_previous_song_map(user_id)
     if not prev_map:
         return set(), {}
@@ -384,8 +389,8 @@ def compute_b30_update_diff(
     prev_top_entries = _pick_top_entries(
         list(prev_map.values()), rating_index, const_table, N
     )
-    prev_keys = _topn_entry_keys(prev_top_entries)
-    curr_keys = _topn_entry_keys(current_top_entries)
+    prev_keys = _topn_entry_identity_keys(prev_top_entries)
+    curr_keys = _topn_entry_identity_keys(current_top_entries)
     new_keys = curr_keys - prev_keys
 
     cfg = load_rating_config(RATING_JSON_DEFAULT)
@@ -516,18 +521,31 @@ def _format_update_date(user_id: int) -> str:
 
 def _build_best_entry_map(
     entries: List[Dict[str, Any]],
-) -> Dict[Tuple[int, int], Dict[str, Any]]:
-    best: Dict[Tuple[int, int], Dict[str, Any]] = {}
+    rating_index: Dict[Tuple[int, int], dict],
+    const_table: List[tuple],
+) -> Dict[Tuple[str, int, int], Tuple[float, Dict[str, Any]]]:
+    best: Dict[Tuple[str, int, int], Tuple[float, Dict[str, Any]]] = {}
     for entry in entries:
         try:
             song_no = int(entry.get("song_no", 0))
             level = int(entry.get("level", 0))
-            score = int(entry.get("high_score", 0) or 0)
         except Exception:
             continue
-        key = (song_no, level)
-        if key not in best or score > int(best[key].get("high_score", 0) or 0):
-            best[key] = entry
+        if level < 4 or not is_song_id_publicly_visible(song_no):
+            continue
+        rating = _compute_rating_for_entry(entry, rating_index, const_table)
+        if rating is None or rating <= 0:
+            continue
+        key = get_song_chart_identity_key(song_no, level)
+        previous = best.get(key)
+        score = int(entry.get("high_score", 0) or 0)
+        previous_score = (
+            int(previous[1].get("high_score", 0) or 0) if previous is not None else -1
+        )
+        if previous is None or rating > previous[0] or (
+            abs(rating - previous[0]) <= 1e-9 and score > previous_score
+        ):
+            best[key] = (float(rating), entry)
     return best
 
 
@@ -537,19 +555,8 @@ def _pick_top_entries(
     const_table: List[tuple],
     N: int,
 ) -> List[Tuple[float, Dict[str, Any]]]:
-    best_map = _build_best_entry_map(entries)
-    rated: List[Tuple[float, Dict[str, Any]]] = []
-    for entry in best_map.values():
-        try:
-            level = int(entry.get("level", 0))
-        except Exception:
-            level = 0
-        if level < 4:
-            continue
-        rating = _compute_rating_for_entry(entry, rating_index, const_table)
-        if rating is None or rating <= 0:
-            continue
-        rated.append((float(rating), entry))
+    best_map = _build_best_entry_map(entries, rating_index, const_table)
+    rated = list(best_map.values())
     rated.sort(key=lambda x: x[0], reverse=True)
     return rated[:N]
 
@@ -711,7 +718,7 @@ def render_b30_image(
     template_path = Path(template_path)
     template = Image.open(template_path).convert("RGBA")
 
-    userdata_path = ROOT_DIR / "userdata" / f"{user_id}data.json"
+    userdata_path = get_settings().userdata_dir / f"{user_id}data.json"
     if not userdata_path.exists():
         raise FileNotFoundError(f"userdata not found: {userdata_path}")
     userdata = _load_json(userdata_path)
@@ -888,7 +895,7 @@ def render_b30_image(
             song_info,
             assets_base=assets_base,
             as_png_bytes=True,
-            show_new=(song_no, level) in new_keys,
+            show_new=get_song_chart_identity_key(song_no, level) in new_keys,
         )
         card_img = Image.open(BytesIO(card_bytes)).convert("RGBA")
         card_img = card_img.resize((card_w, card_h), Image.LANCZOS)

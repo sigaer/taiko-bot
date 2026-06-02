@@ -27,6 +27,7 @@ from .score_calculator import (
     load_rating_config,
     lookup_const_score,
 )
+from .song_visibility import is_song_id_publicly_visible
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 ASSETS_DIR = ROOT_DIR / "assets"
@@ -421,6 +422,8 @@ def _compute_rating_for_entry(
         level = int(entry.get("level", 0))
     except Exception:
         return None
+    if not is_song_id_publicly_visible(song_no):
+        return None
     song_info = rating_index.get((song_no, level))
     if not song_info:
         pair_id = PAIR_ID_MAP.get(song_no)
@@ -703,6 +706,8 @@ def render_b30_single_cards_from_user_data(
     output: List[bytes] = []
     for entry in songs:
         song_no = int(entry.get("song_no", 0) or 0)
+        if not is_song_id_publicly_visible(song_no):
+            continue
         song_info = song_index.get(song_no)
         if not song_info:
             continue

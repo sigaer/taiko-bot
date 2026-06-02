@@ -1,5 +1,4 @@
 from .drawinfo import *
-from .update_user import *
 import json
 import os
 from pathlib import Path
@@ -42,17 +41,18 @@ JSON_PATH = BASE / "songs" / "taiko_goku_onis.json"
 PATH_RATING_STRUCT = BASE / "songs" / "rating_structured_with_ids.json"
 PROGRESS_BG_PATH = BASE / "assets" / "templates" / "progress_bg.png"
 DEFAULT_PROGRESS_FONT_PATH = str(BASE / "assets" / "fonts" / "DDFont.ttf")
-# ======= 预加载歌曲数据与定数表 =======
-with open(PATH_SONG_DATA, "r", encoding="utf-8") as f:
-    _song_data = json.load(f)
 
-# id -> 标题
-_id_to_title: Dict[int, str] = {}
-for s in _song_data:
-    _id_to_title[s["id"]] = (
-        s.get("song_name") or s.get("song_name_jp") or f"ID{s['id']}"
-    )
-_active_song_ids = load_active_song_ids()
+
+@lru_cache(maxsize=1)
+def _load_song_data() -> List[Dict[str, Any]]:
+    if not PATH_SONG_DATA.exists():
+        return []
+    try:
+        with open(PATH_SONG_DATA, "r", encoding="utf-8") as f:
+            payload = json.load(f)
+    except Exception:
+        return []
+    return payload if isinstance(payload, list) else []
 
 
 # ======= 图标路径规则 =======
@@ -174,7 +174,7 @@ def _load_note_count_map() -> Dict[Tuple[int, int], int]:
         key = (song_id, level)
         if combo > mapping.get(key, 0):
             mapping[key] = combo
-    for song in _song_data:
+    for song in _load_song_data():
         try:
             song_id = int(song.get("id"))
         except Exception:
@@ -311,6 +311,56 @@ def _render_progress_profile_panel(
     return panel.resize((target_width, target_h), Image.LANCZOS)
 
 
+def _crop_transparent_panel(image: Image.Image, pad: int = 0) -> Image.Image:
+    bbox = image.getbbox()
+    if bbox is None:
+        return image
+    return _crop_box_with_pad(image, bbox, pad=pad)
+
+
+def _render_star_progress_profile_panel(
+    user_id: int,
+    userdata: Dict[str, Any],
+    target_width: int,
+    target_height: int,
+    font_path: str | None,
+) -> Image.Image:
+    profile_panel = _render_progress_profile_panel(
+        userdata=userdata,
+        target_width=target_width,
+        font_path=font_path,
+    )
+    panel_h = max(profile_panel.height, target_height)
+    panel = Image.new("RGBA", (target_width, panel_h), (0, 0, 0, 0))
+    if profile_panel.width > 0 and profile_panel.height > 0:
+        panel.alpha_composite(profile_panel, (0, 0))
+
+    available_top = profile_panel.height + 10
+    available_bottom = panel_h - 12
+    available_h = available_bottom - available_top
+    if available_h <= 0:
+        return panel
+
+    try:
+        dress_img = _crop_transparent_panel(build_dress_image(user_id), pad=4)
+    except Exception:
+        return panel
+    if dress_img.width <= 0 or dress_img.height <= 0:
+        return panel
+
+    max_w = min(target_width - 36, int(target_width * 0.72))
+    scale = min(max_w / dress_img.width, available_h / dress_img.height, 1.25)
+    if scale <= 0:
+        return panel
+    dress_w = max(1, int(round(dress_img.width * scale)))
+    dress_h = max(1, int(round(dress_img.height * scale)))
+    dress_img = dress_img.resize((dress_w, dress_h), Image.LANCZOS)
+    dress_x = (target_width - dress_w) // 2
+    dress_y = available_top + max(0, (available_h - dress_h) // 2)
+    panel.alpha_composite(dress_img, (dress_x, dress_y))
+    return panel
+
+
 def _draw_vertical_gradient(
     img: Image.Image,
     top: Tuple[int, int, int],
@@ -436,9 +486,10 @@ def _build_progress_rows(
     assets_base: Path,
 ) -> List[Dict[str, Any]]:
     note_map = _load_note_count_map()
+    active_song_ids = load_active_song_ids()
     rows: List[Dict[str, Any]] = []
     for song_id, level, title in items:
-        if song_id not in _active_song_ids:
+        if song_id not in active_song_ids:
             continue
         entry = best_map.get((song_id, level))
         score = int(entry.get("high_score", 0) or 0) if entry else None
@@ -704,6 +755,7 @@ def _render_progress_table_image(
     total_count: int | None = None,
     page_hint_base: str | None = None,
     top_summary_panel: Optional[Image.Image] = None,
+    profile_panel_override: Optional[Image.Image] = None,
 ) -> bytes:
     table_w = 1580
     pad = 24
@@ -714,11 +766,13 @@ def _render_progress_table_image(
     bottom_pad = 24
     footer_h = 44 if total_pages > 1 else 0
 
-    profile_panel = _render_progress_profile_panel(
-        userdata=userdata,
-        target_width=640,
-        font_path=font_path,
-    )
+    profile_panel = profile_panel_override
+    if profile_panel is None:
+        profile_panel = _render_progress_profile_panel(
+            userdata=userdata,
+            target_width=640,
+            font_path=font_path,
+        )
     top_content_h = profile_panel.height
     if top_summary_panel is not None:
         top_content_h = max(top_content_h, top_summary_panel.height)
@@ -1270,6 +1324,13 @@ def render_star_progress_image_bytes(
         assets_base=assets_base_path,
         font_path=font_path,
     )
+    top_profile_panel = _render_star_progress_profile_panel(
+        user_id=user_id,
+        userdata=userdata,
+        target_width=640,
+        target_height=top_summary_panel.height,
+        font_path=font_path,
+    )
     total_count = len(rows)
     page_rows, page, total_pages = _paginate_progress_rows(rows, page, page_size)
     return _render_progress_table_image(
@@ -1284,6 +1345,7 @@ def render_star_progress_image_bytes(
         total_count=total_count,
         page_hint_base=f"{star_value}星进度",
         top_summary_panel=top_summary_panel,
+        profile_panel_override=top_profile_panel,
     )
 
 

@@ -352,6 +352,10 @@ class HirobaClient:
     def __init__(self, token: Optional[str] = None, *, timeout: int = 30):
         self.timeout = timeout
         self.session = requests.Session()
+        # Only honor the explicit HIROBA_PROXY knob. Inherited shell proxies on
+        # self-hosted machines are often unrelated and can break the BN/Hiroba
+        # login flow.
+        self.session.trust_env = False
         self.session.headers.update(
             {
                 "User-Agent": DEFAULT_UA,

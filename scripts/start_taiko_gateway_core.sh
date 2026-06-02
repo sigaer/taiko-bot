@@ -8,7 +8,19 @@ source "${SCRIPT_DIR}/clear_nb_inherited_proxy_env.sh"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
-PYTHON_BIN="${PYTHON_BIN:-${ROOT_DIR}/.venv/bin/python}"
+DEFAULT_VENV_PYTHON="${ROOT_DIR}/.venv/bin/python"
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  :
+elif [[ -x "$DEFAULT_VENV_PYTHON" ]]; then
+  PYTHON_BIN="$DEFAULT_VENV_PYTHON"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON_BIN="$(command -v python3)"
+elif command -v python >/dev/null 2>&1; then
+  PYTHON_BIN="$(command -v python)"
+else
+  echo "missing command: python3/python" >&2
+  exit 1
+fi
 CORE_HOST="${TAIKO_CORE_HOST:-127.0.0.1}"
 CORE_PORT="${TAIKO_CORE_PORT:-37563}"
 CORE_WORKERS="${TAIKO_CORE_WORKERS:-1}"
@@ -27,8 +39,10 @@ GATEWAY_LOG_FILE="${LOG_DIR}/gateway.log"
 CORE_PID=""
 GATEWAY_PID=""
 
-export VIRTUAL_ENV="${ROOT_DIR}/.venv"
-export PATH="${VIRTUAL_ENV}/bin:${PATH}"
+if [[ -d "${ROOT_DIR}/.venv" ]]; then
+  export VIRTUAL_ENV="${ROOT_DIR}/.venv"
+  export PATH="${VIRTUAL_ENV}/bin:${PATH}"
+fi
 
 require_cmd() {
   command -v "$1" >/dev/null 2>&1 || {

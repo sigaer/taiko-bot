@@ -1,7 +1,4 @@
-from .utils.update_user import getUserData
-from .utils.hiroba.sync import sync_hiroba_userdata
-from .utils.hiroba.sync import sync_multiple_hiroba_userdatas
-from .utils.hiroba.cooldown import peek_hiroba_sync_cooldown
+from .utils.hiroba.sync import discover_hiroba_playable_cards
 from .utils.hiroba.credentials import (
     delete_hiroba_credentials,
     ensure_hiroba_credentials_table,
@@ -31,7 +28,6 @@ from .utils import (
     generate_recommend_image,
     generate_dim_top_image,
     render_my_don_image,
-    render_update_changes_image,
     render_b30_image,
     render_tcloud_image,
 )
@@ -54,6 +50,10 @@ from .utils.score_line import (
 )
 from .utils.twso import find_player
 from .utils.song_position import format_position_reply, get_song_position_by_id
+from .utils.song_visibility import (
+    is_song_id_publicly_visible,
+    is_song_publicly_visible,
+)
 from .utils.arcade_map import (
     CityShopQueryResult,
     build_tencent_map_location_json,
@@ -94,7 +94,7 @@ import json
 from fuzzywuzzy import fuzz
 from nonebot import logger
 from nonebot.adapters import Bot, Event
-from nonebot.exception import MatcherException
+from nonebot.exception import FinishedException, MatcherException
 from nonebot.plugin import on_regex, on_fullmatch, on_command, on_message
 from nonebot.params import RegexMatched, RegexGroup, CommandArg
 from nonebot.permission import SUPERUSER
@@ -103,39 +103,25 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.matcher import Matcher
 from typing import Dict, Any, Tuple, List, Optional, Set
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import (
+    UserdataProviderError,
+    ensure_multiple_userdatas_available,
+    ensure_userdata_available,
+    update_userdata_cache_from_payload,
+)
+from taiko_bot.viewer_client import (
+    ViewerClientError,
+    decode_image_bytes,
+    fetch_wahlap_player_profile,
+    fetch_wahlap_ranking,
+    proxy_center_hiroba_sync,
+    proxy_center_userdata_update,
+)
 
 _SETTINGS = get_settings()
 ROOT_DIR = _SETTINGS.root_dir
 ASSETS_DIR = ROOT_DIR / "assets"
 SONGS_DIR = ROOT_DIR / "songs"
-_AGENT_DEBUG_LOG_PATH = str(ROOT_DIR / ".cursor" / "debug-open-source.log")
-_AGENT_DEBUG_SESSION_ID = "6cd261"
-
-
-def _agent_debug_log(
-    location: str,
-    message: str,
-    data: Optional[Dict[str, Any]] = None,
-    *,
-    hypothesis_id: str = "",
-    run_id: str = "pre-fix",
-) -> None:
-    # region agent log
-    payload = {
-        "sessionId": _AGENT_DEBUG_SESSION_ID,
-        "runId": run_id,
-        "hypothesisId": hypothesis_id,
-        "location": location,
-        "message": message,
-        "data": data or {},
-        "timestamp": int(time.time() * 1000),
-    }
-    try:
-        with open(_AGENT_DEBUG_LOG_PATH, "a", encoding="utf-8") as f:
-            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
-    except Exception:
-        pass
-    # endregion
 
 
 from nonebot.adapters.onebot.v11 import (
@@ -177,8 +163,7 @@ TAIKOB_FONT_PATH = FONT_PATH
 FUMENS_DIR = Path("assets") / "fumens_renamed"
 ALIAS_LOG_PATH = ROOT_DIR / "logs" / "alias_action_log.json"
 REGION_MAP_PATH = SONGS_DIR / "region_map.json"
-CONFIG_PATH = ROOT_DIR / "config.json"
-TAIKO_FORUM_BASE_URL = os.getenv("TAIKO_VIEWER_BASE_URL", "https://viewer.sakura-bot.cn").rstrip("/")
+TAIKO_FORUM_BASE_URL = _SETTINGS.viewer_base_url
 DEVELOPER_QQ_EXPORT_DIR = ROOT_DIR / "output" / "developer_userdata_exports"
 BIND_VERIFY_TIMEOUT_SECONDS = 600
 BIND_VERIFY_BYPASS_IDS = {"2258735"}
@@ -282,6 +267,22 @@ DIFF_BY_ID_REGEX = re.compile(
 )
 CITY_ARCADE_QUERY_REGEX = re.compile(r"^(?P<city>.+?)(?:哪有鼓|哪里有鼓)\s*[？?]?$")
 PROGRESS_WITH_PAGE_REGEX = re.compile(r"^(?P<body>.+进度)(?:\s+(?P<page>\d+))?$")
+STAR_PROGRESS_VALUE_MAP = {
+    "一": 1,
+    "二": 2,
+    "两": 2,
+    "三": 3,
+    "四": 4,
+    "五": 5,
+    "六": 6,
+    "七": 7,
+    "八": 8,
+    "九": 9,
+    "十": 10,
+}
+STAR_PROGRESS_REGEX = re.compile(
+    r"^(?P<star>10|[1-9]|一|二|两|三|四|五|六|七|八|九|十)(?:星|★|☆)进度$"
+)
 UPDATE_COMMAND_PATTERN = re.compile(
     r"^(?:taikoupdate|更新广场)(?:(?:\s+|)(?P<show_all>all|全部|全量|-a|--all))?\s*$",
     flags=re.IGNORECASE,
@@ -324,6 +325,16 @@ def _normalize_update_command_text(text: str) -> str:
 def _normalize_slash_command_text(text: str) -> str:
     normalized = str(text or "").strip()
     return normalized[1:].lstrip() if normalized.startswith("/") else normalized
+
+
+def _parse_star_progress_value(raw: str) -> Optional[int]:
+    token = str(raw or "").strip()
+    if token.isdigit():
+        try:
+            return int(token)
+        except ValueError:
+            return None
+    return STAR_PROGRESS_VALUE_MAP.get(token)
 
 
 def _should_trigger_tcloud_command(text: str) -> bool:
@@ -537,7 +548,7 @@ DRAW_GUESS_REPORT_DELETE_THRESHOLD = 5
 DRAW_GUESS_DB_LOCK = asyncio.Lock()
 DRAW_GUESS_MAKE_SESSIONS: Dict[str, Dict[str, Any]] = {}
 DRAW_GUESS_GROUP_SESSIONS: Dict[str, Dict[str, Any]] = {}
-USERDATA_DIR = ROOT_DIR / "userdata"
+USERDATA_DIR = _SETTINGS.userdata_dir
 SONG_METRIC_MAX_SHOW = 30
 SONG_METRIC_DIFF_PRIORITY = {
     5: 0,
@@ -678,6 +689,7 @@ async def _finish_text_reply(
         text,
         quick_actions=attach_quick_actions,
     )
+    raise FinishedException
 
 
 def _resolve_onebot_forward_sender_id(bot: Bot, event: MessageEvent) -> int:
@@ -751,6 +763,7 @@ async def _finish_image_reply(
         prefer_markdown_image=prefer_markdown_image,
         markdown_image_name=markdown_image_name,
     )
+    raise FinishedException
 
 
 def _to_jpeg_bytes(img_buf: bytes | BytesIO, quality: int = 85) -> bytes:
@@ -770,10 +783,17 @@ def _to_jpeg_bytes(img_buf: bytes | BytesIO, quality: int = 85) -> bytes:
     return out.getvalue()
 
 
-def load_song_data():
+def load_song_data(*, include_hidden: bool = False):
     """读取 song_data.json（dict 列表）"""
     with SONG_DATA_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
+        payload = json.load(f)
+    if include_hidden or not isinstance(payload, list):
+        return payload
+    return [
+        item
+        for item in payload
+        if isinstance(item, dict) and is_song_publicly_visible(item)
+    ]
 
 
 @lru_cache(maxsize=1)
@@ -829,8 +849,7 @@ def _build_song_title_map() -> Dict[int, Dict[str, Any]]:
             item.get("song_name_jp") or item.get("song_name") or f"ID{song_id}"
         )
         title_cn = str(item.get("song_name") or "").strip()
-        # 获取上架状态：0=在架，1=下架
-        shelf_status = item.get("shelf_status", 0)
+        shelf_status = 0 if is_song_publicly_visible(item) else 1
         stars: Dict[int, str] = {}
         for lv in (1, 2, 3, 4, 5):
             star_raw = item.get(f"level_{lv}")
@@ -913,6 +932,17 @@ async def _fetch_developer_userdata_via_forum(
     return payload
 
 
+def _apply_center_sync_result(payload: Dict[str, Any], *, fallback_source: str) -> bytes | None:
+    userdata = payload.get("userdata")
+    if isinstance(userdata, dict):
+        update_userdata_cache_from_payload(
+            str(payload.get("taikoId") or "").strip(),
+            userdata,
+            source=str(payload.get("source") or fallback_source),
+        )
+    return decode_image_bytes(payload)
+
+
 def _collect_song_metric_matches(
     user_id: int,
     mode: str,
@@ -926,6 +956,8 @@ def _collect_song_metric_matches(
         song_no = _to_int(record.get("song_no"), -1)
         level = _to_int(record.get("level"), -1)
         if song_no < 0 or level not in (1, 2, 3, 4, 5):
+            continue
+        if not is_song_id_publicly_visible(song_no):
             continue
 
         ok_cnt = _to_int(record.get("ok_cnt"), 0)
@@ -961,9 +993,6 @@ def _collect_song_metric_matches(
             continue
 
         song_meta = title_map.get(song_no, {})
-        # 过滤已下架歌曲（shelf_status=1 表示已下架）
-        if isinstance(song_meta, dict) and song_meta.get("shelf_status") == 1:
-            continue
         stars = song_meta.get("stars") if isinstance(song_meta, dict) else {}
         star = "-"
         if isinstance(stars, dict):
@@ -1716,16 +1745,6 @@ def render_ranking_image(
     img.convert("RGB").save(buf, format="PNG", optimize=True)
     return buf.getvalue()
 
-
-def _build_taiko_headers(authorization: str) -> Dict[str, str]:
-    return {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x63090a13) UnifiedPCWindowsWechat(0xf2541020) XWEB/16459",
-        "Content-Type": "application/json",
-        "Referer": "https://servicewechat.com/wxeafab0667490cd23/21/page-frame.html",
-        "Authorization": authorization,
-    }
-
-
 def _extract_rankings(
     payload: Dict[str, Any], diff_id: int
 ) -> Optional[List[Tuple[int, str, Optional[int]]]]:
@@ -1776,6 +1795,8 @@ def song_id_exists(target_id: str) -> bool:
 
 
 def find_aliases_by_song_id(song_id: str) -> Tuple[str, List[str]]:
+    if not is_song_id_publicly_visible(song_id):
+        return "", []
     data = load_alias_data()
     for entry in data:
         if str(entry.get("id")) == str(song_id):
@@ -1881,70 +1902,26 @@ def _execute_taiko_update(
     show_all_changes: bool = False,
     include_changes_image: bool = True,
 ) -> Dict[str, Any]:
-    # region agent log
-    _agent_debug_log(
-        "taiko.py:_execute_taiko_update:enter",
-        "execute taiko update",
-        {
-            "taiko_id": str(taiko_id),
-            "show_all_changes": show_all_changes,
-            "include_changes_image": include_changes_image,
-        },
-        hypothesis_id="A",
-    )
-    # endregion
-    fetch_started = time.perf_counter()
-    result = getUserData(taiko_id)
-    fetch_ms = int((time.perf_counter() - fetch_started) * 1000)
-    # region agent log
-    _agent_debug_log(
-        "taiko.py:_execute_taiko_update:after_getUserData",
-        "getUserData finished",
-        {"taiko_id": str(taiko_id), "result": result, "elapsed_ms": fetch_ms},
-        hypothesis_id="A",
-    )
-    # endregion
-    if result == -1:
-        return {"ok": False, "message": "更新失败，怎么回事呢？", "image": None}
-    if result == 404:
-        return {"ok": False, "message": "请确认绑定鼓众ID是否正确？", "image": None}
-
-    img_buf = None
-    if include_changes_image:
-        render_started = time.perf_counter()
-        try:
-            img_buf = render_update_changes_image(
-                int(taiko_id), show_all=show_all_changes
-            )
-            render_ms = int((time.perf_counter() - render_started) * 1000)
-            # region agent log
-            _agent_debug_log(
-                "taiko.py:_execute_taiko_update:after_render",
-                "render_update_changes_image finished",
-                {
-                    "taiko_id": str(taiko_id),
-                    "show_all_changes": show_all_changes,
-                    "image_bytes": len(img_buf) if img_buf else 0,
-                    "elapsed_ms": render_ms,
-                },
-                hypothesis_id="B",
-            )
-            # endregion
-        except Exception as exc:
-            # region agent log
-            _agent_debug_log(
-                "taiko.py:_execute_taiko_update:render_error",
-                "render_update_changes_image failed",
-                {
-                    "taiko_id": str(taiko_id),
-                    "show_all_changes": show_all_changes,
-                    "error": type(exc).__name__,
-                },
-                hypothesis_id="B",
-            )
-            # endregion
-            img_buf = None
-    return {"ok": True, "message": "更新成功！", "image": img_buf}
+    try:
+        payload = proxy_center_userdata_update(
+            taiko_id,
+            show_all=show_all_changes,
+            include_image=include_changes_image,
+        )
+    except ViewerClientError as exc:
+        if exc.status_code == 404:
+            return {
+                "ok": False,
+                "message": "请确认绑定鼓众ID是否正确？",
+                "image": None,
+            }
+        return {"ok": False, "message": str(exc), "image": None}
+    img_buf = _apply_center_sync_result(payload, fallback_source="viewer-cache")
+    return {
+        "ok": True,
+        "message": str(payload.get("message") or "更新成功！"),
+        "image": img_buf,
+    }
 
 
 def _get_current_bind_entry(identity_key: str) -> Optional[Dict[str, Any]]:
@@ -2053,6 +2030,7 @@ def _resolve_read_bind_target(event: MessageEvent):
 
     entry = _get_current_bind_entry(identity_key)
     if entry is None:
+        ensure_userdata_available(str(info["id"] or "").strip())
         return {
             "identity_key": identity_key,
             "entry": None,
@@ -2061,6 +2039,7 @@ def _resolve_read_bind_target(event: MessageEvent):
         }
 
     if _get_selected_bind_slot_number(entry) == 0:
+        ensure_multiple_userdatas_available(_get_bind_ids(entry))
         materialized = materialize_merged_bind_userdata(identity_key, entry)
         return {
             "identity_key": identity_key,
@@ -2071,6 +2050,7 @@ def _resolve_read_bind_target(event: MessageEvent):
         }
 
     selected_id = _get_current_bind_taiko_id(entry) or str(info["id"] or "").strip()
+    ensure_userdata_available(selected_id)
     return {
         "identity_key": identity_key,
         "entry": entry,
@@ -2082,7 +2062,7 @@ def _resolve_read_bind_target(event: MessageEvent):
 def _resolve_read_bind_target_safe(event: MessageEvent):
     try:
         return _resolve_read_bind_target(event)
-    except (MergedBindMissingUserdataError, MergedBindError) as error:
+    except (MergedBindMissingUserdataError, MergedBindError, UserdataProviderError) as error:
         return {"error": str(error)}
 
 
@@ -2121,10 +2101,6 @@ def _execute_hiroba_update(
     include_changes_image: bool = True,
     progress=None,
 ) -> Dict[str, Any]:
-    cooldown_msg = peek_hiroba_sync_cooldown(taiko_id)
-    if cooldown_msg:
-        return {"ok": False, "message": cooldown_msg, "image": None}
-
     creds = load_hiroba_credentials(taiko_id)
     if creds is None:
         return {
@@ -2134,20 +2110,21 @@ def _execute_hiroba_update(
         }
     email, password = creds
     try:
-        sync_hiroba_userdata(email, password, taiko_no=taiko_id, progress=progress)
-    except Exception as exc:
-        logger.exception("hiroba sync failed for taiko_id=%s", taiko_id)
+        payload = proxy_center_hiroba_sync(
+            taiko_id,
+            email=email,
+            password=password,
+            show_all=show_all_changes,
+            include_image=include_changes_image,
+        )
+    except ViewerClientError as exc:
         return {"ok": False, "message": f"Hiroba 更新失败：{exc}", "image": None}
-
-    img_buf = None
-    if include_changes_image:
-        try:
-            img_buf = render_update_changes_image(
-                int(taiko_id), show_all=show_all_changes
-            )
-        except Exception:
-            img_buf = None
-    return {"ok": True, "message": "Hiroba 更新成功！", "image": img_buf}
+    img_buf = _apply_center_sync_result(payload, fallback_source="viewer-cache")
+    return {
+        "ok": True,
+        "message": str(payload.get("message") or "Hiroba 更新成功！"),
+        "image": img_buf,
+    }
 
 
 def _create_hiroba_progress_reporter(
@@ -2180,65 +2157,14 @@ def _create_hiroba_progress_reporter(
     return report
 
 
-def _load_wahlap_cookie() -> str:
-    try:
-        with CONFIG_PATH.open("r", encoding="utf-8") as f:
-            config = json.load(f)
-    except Exception:
-        return ""
-    return str(config.get("cookie") or "").strip()
-
-
 async def _fetch_bind_player_profile(
     user_id: str,
 ) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
-    auth = _load_wahlap_cookie()
-    if not auth:
-        return None, "未配置鼓众 cookie，暂时无法验证绑定。"
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
-        "Content-Type": "application/json",
-        "Referer": "https://servicewechat.com/wxeafab0667490cd23/21/page-frame.html",
-        "Authorization": auth,
-    }
-    payload = {"keyword": str(user_id).strip(), "page": 1, "pageSize": 10}
-    url = "https://wl-taiko.wahlap.net/api/user/search/player"
-
     try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.post(url, json=payload, headers=headers)
-    except Exception as e:
-        return None, f"读取鼓众资料失败：{e}"
-
-    if resp.status_code not in (200, 201):
-        return None, f"读取鼓众资料失败，HTTP {resp.status_code}"
-
-    try:
-        data = resp.json()
-    except Exception:
-        return None, "读取鼓众资料失败：返回内容无法解析。"
-
-    players = (
-        ((data.get("data") or {}).get("players") or [])
-        if isinstance(data, dict)
-        else []
-    )
-    if not isinstance(players, list) or not players:
-        return None, "未找到该鼓众ID，请确认输入是否正确。"
-
-    user_id_text = str(user_id).strip()
-    for player in players:
-        if (
-            isinstance(player, dict)
-            and str(player.get("userid") or "").strip() == user_id_text
-        ):
-            return player, None
-
-    if len(players) == 1 and isinstance(players[0], dict):
-        return players[0], None
-    return None, "未找到该鼓众ID，请确认输入是否正确。"
+        profile = fetch_wahlap_player_profile(str(user_id).strip())
+    except ViewerClientError as exc:
+        return None, str(exc)
+    return profile if isinstance(profile, dict) else None, None
 
 
 def _extract_bind_title_info(profile: Dict[str, Any]) -> Tuple[str, int]:
@@ -2304,22 +2230,39 @@ def _should_skip_bind_verification(taiko_id: str) -> bool:
 
 
 def _build_bind_auto_update_tip(
-    identity_key: str, taiko_id: str, is_first_binding: bool
+    identity_key: str,
+    taiko_id: str,
+    is_first_binding: bool,
+    *,
+    source: Optional[str] = None,
 ) -> str:
     if not is_first_binding:
         return ""
-    update_result = _execute_taiko_update(taiko_id, include_changes_image=False)
+    inferred_source = str(source or "").strip().lower() or _infer_bind_source(taiko_id)
+    if inferred_source == "hiroba":
+        if not has_hiroba_credentials(taiko_id):
+            return "\n首次绑定识别为 Hiroba 账号，已跳过自动更新；请后续使用“更新hiroba”。"
+        update_result = _execute_hiroba_update(taiko_id, include_changes_image=False)
+        success_text = "\n首次绑定已自动执行一次 更新hiroba。"
+        failure_text = (
+            "\n首次绑定后已自动尝试执行一次 更新hiroba，但本次更新未完成，可稍后手动执行。"
+        )
+    else:
+        update_result = _execute_taiko_update(taiko_id, include_changes_image=False)
+        success_text = "\n首次绑定已自动执行一次 taikoupdate。"
+        failure_text = (
+            "\n首次绑定后已自动尝试执行一次 taikoupdate，但本次更新未完成，可稍后手动执行。"
+        )
     if update_result.get("ok"):
-        return "\n首次绑定已自动执行一次 taikoupdate。"
+        return success_text
     logger.warning(
-        "首次绑定自动 taikoupdate 失败，qq=%s taiko_id=%s msg=%s",
+        "首次绑定自动更新失败，qq=%s taiko_id=%s source=%s msg=%s",
         identity_key,
         taiko_id,
+        inferred_source,
         update_result.get("message"),
     )
-    return (
-        "\n首次绑定后已自动尝试执行一次 taikoupdate，但本次更新未完成，可稍后手动执行。"
-    )
+    return failure_text
 
 
 def _finalize_bind_verification(
@@ -2330,7 +2273,7 @@ def _finalize_bind_verification(
     )
     BIND_VERIFY_SESSIONS.pop(identity_key, None)
     auto_update_tip = _build_bind_auto_update_tip(
-        identity_key, taiko_id, is_first_binding
+        identity_key, taiko_id, is_first_binding, source="wahlap"
     )
     return (
         f"{reply_msg}\n已通过称号变更验证。\n当前称号：{current_title or '空称号'}"
@@ -2346,7 +2289,7 @@ def _finalize_bind_without_verification(
     )
     BIND_VERIFY_SESSIONS.pop(identity_key, None)
     auto_update_tip = _build_bind_auto_update_tip(
-        identity_key, taiko_id, is_first_binding
+        identity_key, taiko_id, is_first_binding, source="wahlap"
     )
     return (
         f"{reply_msg}\n已按临时白名单跳过绑定验证。\n当前称号：{current_title or '空称号'}"
@@ -2435,6 +2378,23 @@ def _migrate_bind_from_legacy_qq(
 
         merged_ids = _merge_bind_id_lists(source_ids, target_ids)
         merged_current_index = merged_ids.index(source_current_id)
+        source_sources = (
+            dict((source_entry or {}).get("sources") or {})
+            if isinstance(source_entry, dict)
+            else {}
+        )
+        target_sources = (
+            dict((target_entry or {}).get("sources") or {})
+            if isinstance(target_entry, dict)
+            else {}
+        )
+        merged_sources: Dict[str, str] = {}
+        for taiko_id in merged_ids:
+            explicit_source = str(
+                source_sources.get(taiko_id) or target_sources.get(taiko_id) or ""
+            ).strip()
+            if explicit_source:
+                merged_sources[taiko_id] = explicit_source
 
         if target_row is None:
             cursor.execute(
@@ -2453,6 +2413,7 @@ def _migrate_bind_from_legacy_qq(
             "ids": merged_ids,
             "current_index": merged_current_index,
             "current_slot": merged_current_index + 1,
+            "sources": merged_sources,
         }
         _save_multi_bind_store(store)
         db.commit()
@@ -2471,11 +2432,19 @@ def _migrate_bind_from_legacy_qq(
 
     BIND_VERIFY_SESSIONS.pop(target_identity_key, None)
     action_text = "完成迁移" if is_first_binding else "完成合并"
-    summary = _format_multi_bind_summary(
-        {"ids": merged_ids, "current_index": merged_current_index}
-    )
+    migrated_entry = {
+        "ids": merged_ids,
+        "current_index": merged_current_index,
+        "current_slot": merged_current_index + 1,
+        "sources": merged_sources,
+    }
+    summary = _format_multi_bind_summary(migrated_entry)
+    current_source = _infer_bind_source(source_current_id, merged_sources)
     auto_update_tip = _build_bind_auto_update_tip(
-        target_identity_key, source_current_id, is_first_binding
+        target_identity_key,
+        source_current_id,
+        is_first_binding,
+        source=current_source,
     )
     return (
         True,
@@ -2897,7 +2866,7 @@ def _query_music_with_mode(
     name: str, *, allow_partial: bool = True, allow_fuzzy: bool = True
 ) -> Tuple[List[List[Any]], Optional[str]]:
     alias_data = json.load(open("songs/song_alias.json", "r", encoding="utf-8"))
-    song_data = json.load(open("songs/song_data.json", "r", encoding="utf-8"))
+    song_data = load_song_data()
     query = (name or "").strip()
     if not query:
         return [], None
@@ -2957,6 +2926,8 @@ def _query_music_with_mode(
             sid_int = int(sid)
         except Exception:
             sid_int = sid
+        if not is_song_id_publicly_visible(sid_int):
+            continue
         for alias in aliases:
             if isinstance(alias, str) and query_lower == alias.lower():
                 title = (
@@ -3986,7 +3957,6 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
         )
         return
 
-    progress = _create_hiroba_progress_reporter(bind_hiroba, event)
     try:
         ensure_hiroba_credentials_table()
         await _send_text_reply_without_finish(
@@ -3994,14 +3964,19 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
             event,
             "开始绑定 Hiroba 账号",
         )
-        synced_ids = await asyncio.to_thread(
-            sync_multiple_hiroba_userdatas,
+        playable_cards = await asyncio.to_thread(
+            discover_hiroba_playable_cards,
             email,
             password,
-            target_taiko_no=target_taiko_no or None,
-            progress=progress,
-            max_workers=4,
         )
+        synced_ids = []
+        for card in playable_cards:
+            taiko_no = str(card.taiko_no or "").strip()
+            if not taiko_no:
+                continue
+            if target_taiko_no and taiko_no != target_taiko_no:
+                continue
+            synced_ids.append(taiko_no)
         if not synced_ids:
             raise RuntimeError("未找到可绑定的 Hiroba 太鼓番。")
 
@@ -4044,7 +4019,7 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
     await _finish_text_reply(
         bind_hiroba,
         event,
-        f"{bind_mode_text}\n{reply_msg}\n已完成 Hiroba 同步（默认仅鬼/里）。",
+        f"{bind_mode_text}\n{reply_msg}\n已保存 Hiroba 凭据，请后续使用“更新hiroba”同步中心成绩。",
         quick_actions=True,
     )
 
@@ -4089,11 +4064,6 @@ async def hiroba_update_handle(event: MessageEvent):
             event,
             _build_update_command_hint(identity_key, expected_source="hiroba"),
         )
-        return
-
-    cooldown_msg = peek_hiroba_sync_cooldown(taiko_id)
-    if cooldown_msg:
-        await _finish_text_reply(hiroba_update, event, cooldown_msg)
         return
 
     progress = _create_hiroba_progress_reporter(hiroba_update, event)
@@ -4270,19 +4240,6 @@ async def update_handle(event: MessageEvent):
         return
     show_all_changes = bool(parsed_command.get("show_all"))
     identity_key, _ = _resolve_requested_identity_key(event)
-    # region agent log
-    _agent_debug_log(
-        "taiko.py:update_handle:enter",
-        "taikoupdate command received",
-        {
-            "qq": identity_key,
-            "user_id": str(event.get_user_id()),
-            "show_all_changes": show_all_changes,
-            "plain_text": plain_text.strip(),
-        },
-        hypothesis_id="D",
-    )
-    # endregion
 
     taiko_id = _resolve_bound_taiko_id(event)
     if taiko_id == 404:
@@ -4306,65 +4263,19 @@ async def update_handle(event: MessageEvent):
         else "wahlap"
     )
     if source != "wahlap":
-        # region agent log
-        _agent_debug_log(
-            "taiko.py:update_handle:reject_non_wahlap",
-            "taikoupdate rejected for non-wahlap bind",
-            {"qq": identity_key, "taiko_id": str(taiko_id), "source": source},
-            hypothesis_id="D",
-        )
-        # endregion
         await _finish_text_reply(
             update,
             event,
             _build_update_command_hint(identity_key, expected_source="wahlap"),
         )
         return
-    # region agent log
-    _agent_debug_log(
-        "taiko.py:update_handle:before_execute",
-        "starting sync taiko update on event loop",
-        {
-            "qq": identity_key,
-            "taiko_id": str(taiko_id),
-            "show_all_changes": show_all_changes,
-            "source": source,
-        },
-        hypothesis_id="A",
-    )
-    # endregion
-    execute_started = time.perf_counter()
-    update_result = _execute_taiko_update(
+    update_result = await asyncio.to_thread(
+        _execute_taiko_update,
         taiko_id,
         show_all_changes=show_all_changes,
         include_changes_image=True,
     )
-    # region agent log
-    _agent_debug_log(
-        "taiko.py:update_handle:after_execute",
-        "sync taiko update finished",
-        {
-            "qq": identity_key,
-            "taiko_id": str(taiko_id),
-            "ok": bool(update_result.get("ok")),
-            "has_image": update_result.get("image") is not None,
-            "elapsed_ms": int((time.perf_counter() - execute_started) * 1000),
-        },
-        hypothesis_id="A",
-    )
-    # endregion
     if not update_result.get("ok"):
-        # region agent log
-        _agent_debug_log(
-            "taiko.py:update_handle:finish_failure",
-            "finishing with failure text",
-            {
-                "qq": identity_key,
-                "message": str(update_result.get("message") or ""),
-            },
-            hypothesis_id="C",
-        )
-        # endregion
         await _finish_text_reply(
             update,
             event,
@@ -4381,18 +4292,6 @@ async def update_handle(event: MessageEvent):
             "\n默认每项最多展示5个；查看全部请使用“taikoupdate all”或“更新广场 全部”。"
         )
     if img_buf is not None:
-        # region agent log
-        _agent_debug_log(
-            "taiko.py:update_handle:finish_image",
-            "finishing with image reply",
-            {
-                "qq": identity_key,
-                "image_bytes": len(img_buf),
-                "show_all_changes": show_all_changes,
-            },
-            hypothesis_id="C",
-        )
-        # endregion
         await _finish_image_reply(
             update,
             event,
@@ -4402,14 +4301,6 @@ async def update_handle(event: MessageEvent):
             prefer_markdown_image=True,
             markdown_image_name="taikoupdate",
         )
-    # region agent log
-    _agent_debug_log(
-        "taiko.py:update_handle:finish_text",
-        "finishing with text reply after image branch",
-        {"qq": identity_key, "had_image": img_buf is not None},
-        hypothesis_id="C",
-    )
-    # endregion
     await _finish_text_reply(update, event, success_message, quick_actions=True)
 
 
@@ -4678,40 +4569,19 @@ async def song_rank_handle(event: MessageEvent):
     if not diff_ids:
         await _finish_text_reply(song_rank, event, "该歌曲没有可用难度。")
 
-    try:
-        with CONFIG_PATH.open("r", encoding="utf-8") as f:
-            config = json.load(f)
-        authorization = config.get("cookie")
-    except Exception:
-        authorization = None
-
-    if not authorization:
-        await _finish_text_reply(
-            song_rank, event, "缺少登录cookie，请检查 config.json。"
-        )
-
-    headers = _build_taiko_headers(authorization)
     sections: List[Tuple[str, Optional[List[Tuple[int, str, Optional[int]]]]]] = []
-
-    async with httpx.AsyncClient(timeout=20) as client:
-
-        async def fetch_rankings(
-            diff: int,
-        ) -> Optional[List[Tuple[int, str, Optional[int]]]]:
-            url = f"https://wl-taiko.wahlap.net/api/ranking/{song_id}/{diff}"
-            if province_id is not None:
-                url += f"/{province_id}"
-            try:
-                resp = await client.get(url, headers=headers)
-                resp.raise_for_status()
-                payload = resp.json()
-                return _extract_rankings(payload, diff)
-            except Exception:
-                return None
-
-        results = await asyncio.gather(*(fetch_rankings(d) for d in diff_ids))
-        for d, rankings in zip(diff_ids, results):
-            sections.append((RANK_DIFF_LABEL_MAP.get(d, f"难度{d}"), rankings))
+    ranking_error: Optional[str] = None
+    for d in diff_ids:
+        try:
+            payload = fetch_wahlap_ranking(song_id, d, province_id=province_id)
+            rankings = _extract_rankings(payload, d)
+        except ViewerClientError as exc:
+            if ranking_error is None:
+                ranking_error = str(exc)
+            rankings = None
+        sections.append((RANK_DIFF_LABEL_MAP.get(d, f"难度{d}"), rankings))
+    if ranking_error and all(rankings is None for _label, rankings in sections):
+        await _finish_text_reply(song_rank, event, ranking_error)
 
     img_buf = render_ranking_image(song_title, sections, province_name=province_name)
     img_jpg = _to_jpeg_bytes(img_buf, quality=85)
@@ -5524,9 +5394,11 @@ async def _(event: MessageEvent):
         await _finish_image_reply(matcher, event, png)
         return
 
-    m = re.fullmatch(r"^(?P<star>10|[1-9])(?:星|★|☆)进度$", text)
+    m = STAR_PROGRESS_REGEX.fullmatch(text)
     if m:
-        star_value = int(m.group("star"))
+        star_value = _parse_star_progress_value(m.group("star"))
+        if star_value is None:
+            return
         if star_value not in _load_star_progress_set():
             return
         png = render_star_progress_image_bytes(

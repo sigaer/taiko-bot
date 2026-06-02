@@ -14,6 +14,8 @@ from typing import Any, Dict, List, Optional, Tuple
 from PIL import Image, ImageDraw, ImageFont
 from taiko_bot.settings import get_settings
 
+from .song_visibility import is_song_publicly_visible
+
 BASE = get_settings().root_dir
 RATING_PATH = BASE / "songs" / "rating_structured_with_ids.json"
 SONG_DATA_PATH = BASE / "songs" / "song_data.json"
@@ -124,6 +126,8 @@ def query_charts_by_const(const_value: float) -> List[ConstChartRow]:
         except (TypeError, ValueError):
             continue
         song = song_index.get(song_id)
+        if not is_song_publicly_visible(song, song_id=song_id):
+            continue
         title_cn, title_jp = _pick_title(song, chart)
         star_field = LEVEL_STAR_FIELD.get(level, "level_4")
         star_raw = (song or {}).get(star_field, "-")

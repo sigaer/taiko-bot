@@ -2,12 +2,20 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
+import tempfile
+import zipfile
 from pathlib import Path
 from typing import Any, Dict
 
 import httpx
 
 from .settings import PUBLIC_DATA_FILES, Settings, ensure_runtime_dirs, get_settings
+from .viewer_client import (
+    ViewerClientError,
+    download_asset_bundle,
+    fetch_asset_bundle_metadata,
+)
 
 
 class PublicDataSyncError(RuntimeError):
@@ -15,6 +23,7 @@ class PublicDataSyncError(RuntimeError):
 
 
 _SUCCESSFUL_SYNC_ROOTS: set[str] = set()
+_SUCCESSFUL_ASSET_SYNC_ROOTS: set[str] = set()
 
 
 def _manifest_cache_path(settings: Settings) -> Path:
@@ -27,6 +36,10 @@ def _dataset_path(settings: Settings, filename: str) -> Path:
     return settings.songs_dir / filename
 
 
+def _asset_bundle_hash_path(settings: Settings) -> Path:
+    return settings.assets_dir / ".bundle.sha256"
+
+
 def _sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
@@ -36,6 +49,15 @@ def _write_bytes(path: Path, payload: bytes) -> None:
     temp_path = path.with_suffix(f"{path.suffix}.tmp")
     temp_path.write_bytes(payload)
     temp_path.replace(path)
+
+
+def _has_local_asset_bundle(settings: Settings) -> bool:
+    required_paths = (
+        settings.assets_dir / "fonts",
+        settings.assets_dir / "templates",
+        settings.assets_dir / "icons",
+    )
+    return all(path.exists() for path in required_paths)
 
 
 def load_manifest(settings: Settings | None = None) -> Dict[str, Any]:
@@ -129,4 +151,89 @@ def sync_public_datasets_once(settings: Settings | None = None) -> Dict[str, Any
         }
     result = sync_public_datasets(cfg)
     _SUCCESSFUL_SYNC_ROOTS.add(cache_key)
+    return result
+
+
+def sync_asset_bundle(settings: Settings | None = None) -> Dict[str, Any]:
+    cfg = settings or get_settings()
+    ensure_runtime_dirs(cfg)
+    has_local_assets = _has_local_asset_bundle(cfg)
+    current_sha = ""
+    marker_path = _asset_bundle_hash_path(cfg)
+    if marker_path.exists():
+        current_sha = marker_path.read_text(encoding="utf-8").strip().lower()
+
+    try:
+        metadata = fetch_asset_bundle_metadata(cfg)
+    except ViewerClientError as exc:
+        if not has_local_assets:
+            raise PublicDataSyncError(f"首次启动拉取资源包失败：{exc}") from exc
+        return {
+            "updated": False,
+            "degraded": True,
+            "message": str(exc),
+            "sha256": current_sha,
+        }
+
+    remote_sha = str(metadata.get("sha256") or "").strip().lower()
+    if has_local_assets and current_sha and remote_sha and current_sha == remote_sha:
+        return {
+            "updated": False,
+            "sha256": current_sha,
+            "skipped": True,
+        }
+
+    temp_root = Path(tempfile.mkdtemp(prefix="taiko-assets-", dir=str(cfg.storage_dir)))
+    archive_path = temp_root / "bundle.zip"
+    extracted_path = temp_root / "assets"
+    backup_path = cfg.assets_dir.with_name(f"{cfg.assets_dir.name}.bak")
+
+    try:
+        download_result = download_asset_bundle(archive_path, cfg)
+        archive_sha = _sha256_bytes(archive_path.read_bytes())
+        expected_sha = str(download_result.get("sha256") or remote_sha).strip().lower()
+        if expected_sha and archive_sha != expected_sha:
+            raise PublicDataSyncError("资源包校验失败。")
+
+        extracted_path.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(archive_path) as archive:
+            archive.extractall(extracted_path)
+        _write_bytes(
+            extracted_path / ".bundle.sha256",
+            (expected_sha or archive_sha).encode("utf-8"),
+        )
+
+        if backup_path.exists():
+            shutil.rmtree(backup_path, ignore_errors=True)
+        if cfg.assets_dir.exists():
+            cfg.assets_dir.replace(backup_path)
+        extracted_path.replace(cfg.assets_dir)
+        shutil.rmtree(backup_path, ignore_errors=True)
+        return {
+            "updated": True,
+            "sha256": expected_sha or archive_sha,
+            "updated_at": download_result.get("updatedAt") or metadata.get("updatedAt") or "",
+        }
+    except Exception as exc:
+        if backup_path.exists() and not cfg.assets_dir.exists():
+            backup_path.replace(cfg.assets_dir)
+        if not has_local_assets:
+            raise PublicDataSyncError(f"首次启动拉取资源包失败：{exc}") from exc
+        return {
+            "updated": False,
+            "degraded": True,
+            "message": str(exc),
+            "sha256": current_sha,
+        }
+    finally:
+        shutil.rmtree(temp_root, ignore_errors=True)
+
+
+def sync_asset_bundle_once(settings: Settings | None = None) -> Dict[str, Any]:
+    cfg = settings or get_settings()
+    cache_key = str(cfg.root_dir)
+    if cache_key in _SUCCESSFUL_ASSET_SYNC_ROOTS:
+        return {"updated": False, "skipped": True}
+    result = sync_asset_bundle(cfg)
+    _SUCCESSFUL_ASSET_SYNC_ROOTS.add(cache_key)
     return result

@@ -15,6 +15,12 @@ from matplotlib.transforms import offset_copy
 from taiko_bot.settings import get_settings
 
 from .snapshot_history import list_snapshot_files, parse_snapshot_time
+from .song_visibility import (
+    is_song_id_publicly_visible,
+    is_song_publicly_visible,
+)
+
+USERDATA_DIR = get_settings().userdata_dir
 
 # ---------- 数据结构 ----------
 UNPLAYED_BG = "#E8F3FF"  # 非常浅的蓝色，不影响可读性
@@ -64,6 +70,8 @@ def build_duplicate_song_groups(
         duplicate_ids_by_signature: Dict[Tuple[str, Tuple[str, ...]], Set[int]] = {}
         for item in song_data:
             if not isinstance(item, dict):
+                continue
+            if not is_song_publicly_visible(item):
                 continue
             title = str(item.get("song_name") or "").strip()
             if not title:
@@ -324,10 +332,7 @@ def load_on_shelf_song_ids(
             song_id = int(item.get("id"))
         except Exception:
             continue
-        # 历史 song_data 中大量曲目没有写入 shelf_status；
-        # 这些记录在仓库其他位置都按“默认在架”处理，避免推荐候选池被误清空。
-        status = item.get("shelf_status")
-        if status in (1, "1", "已下架"):
+        if not is_song_publicly_visible(item):
             continue
         on_shelf_ids.add(song_id)
     return on_shelf_ids
@@ -647,7 +652,7 @@ def compute_all_from_userdata(
     user_id: int,
     json_path: str | Path = "./songs/rating_structured_with_ids.json",
     *,
-    collapse_duplicate_versions: bool = False,
+    collapse_duplicate_versions: bool = True,
 ) -> List[RatingResult]:
     """
     给定用户 ID，读取用户数据文件并计算所有曲目的综合 AI 和六维属性。
@@ -657,7 +662,7 @@ def compute_all_from_userdata(
     3. 根据 good_cnt / combo 计算良率，进而计算 AI 和六维。
     """
     # 用户数据文件路径
-    userdata_path = Path(f"./userdata/{user_id}data.json")
+    userdata_path = USERDATA_DIR / f"{user_id}data.json"
     userdata_blob = load_json(userdata_path)  # 读取用户数据
     userdata = (
         userdata_blob.get("songs", [])
@@ -680,7 +685,7 @@ def compute_all_from_userdata_records(
     userdata_records: List[Dict[str, Any]],
     json_path: str | Path = "./songs/rating_structured_with_ids.json",
     *,
-    collapse_duplicate_versions: bool = False,
+    collapse_duplicate_versions: bool = True,
 ) -> List[RatingResult]:
     """
     给定用户数据记录（songs 列表），计算所有曲目的综合 AI 和六维属性。
@@ -701,7 +706,7 @@ def _compute_results_from_userdata_records(
     cfg: Dict[str, Any],
     const_table: List[tuple],
     *,
-    collapse_duplicate_versions: bool = False,
+    collapse_duplicate_versions: bool = True,
 ) -> List[RatingResult]:
     songs = cfg["songs"]
     idx = _build_song_index_by_id_level(songs)
@@ -714,6 +719,8 @@ def _compute_results_from_userdata_records(
                 song_no = int(rec.get("song_no"))
                 level = int(rec.get("level"))
             except Exception:
+                continue
+            if not is_song_id_publicly_visible(song_no):
                 continue
             pair_id = PAIR_ID_MAP.get(song_no)
             if pair_id is None:
@@ -743,6 +750,8 @@ def _compute_results_from_userdata_records(
         song_no = user_record["song_no"]
         level = user_record["level"]
         if level < 4:
+            continue
+        if not is_song_id_publicly_visible(song_no):
             continue
         if collapse_duplicate_versions:
             pair_id = PAIR_ID_MAP.get(song_no)
@@ -1185,7 +1194,7 @@ def get_topN_by_rating(results: List[RatingResult], N: int = 20) -> pd.DataFrame
 
 # ---------- 主程序 ----------
 def getUtime(user_id):
-    path = str(get_settings().root_dir / "userdata" / f"{user_id}data.json")
+    path = str(USERDATA_DIR / f"{user_id}data.json")
     if os.path.exists(path):
         ts = round(os.path.getctime(path))
         return str(datetime.datetime.fromtimestamp(ts))
@@ -1198,7 +1207,7 @@ def _song_key(song: Dict[str, Any]) -> tuple:
 
 
 def load_user_snapshots(user_id: int) -> List[Tuple[datetime.datetime, Dict[str, Any]]]:
-    history_dir = get_settings().root_dir / "userdata" / str(user_id)
+    history_dir = USERDATA_DIR / str(user_id)
     if not history_dir.exists():
         return []
     snapshot_files = list_snapshot_files(history_dir)
@@ -2028,7 +2037,7 @@ def _build_song_index_by_id_level(songs: dict) -> Dict[tuple, tuple]:
     return idx
 
 
-def _get_recommend_identity_key(song_id: int, level: int) -> Tuple[str, int, int]:
+def get_song_chart_identity_key(song_id: int, level: int) -> Tuple[str, int, int]:
     """
     推荐流程的歌曲身份键：
     - 已知双版本共谱歌曲：按 pair_id + level 视为同一项
@@ -2038,6 +2047,10 @@ def _get_recommend_identity_key(song_id: int, level: int) -> Tuple[str, int, int
     if pair_id is not None:
         return ("pair", pair_id, level)
     return ("song", song_id, level)
+
+
+def _get_recommend_identity_key(song_id: int, level: int) -> Tuple[str, int, int]:
+    return get_song_chart_identity_key(song_id, level)
 
 
 def _build_song_index_by_identity(songs: dict) -> Dict[tuple, tuple]:
@@ -2052,6 +2065,8 @@ def _build_song_index_by_identity(songs: dict) -> Dict[tuple, tuple]:
             sid = int(info.get("id"))
             lvl = int(info.get("level"))
         except Exception:
+            continue
+        if not is_song_id_publicly_visible(sid):
             continue
         idx.setdefault(_get_recommend_identity_key(sid, lvl), (k, info))
     return idx
@@ -2126,7 +2141,7 @@ def build_all_stats_for_user(
     - 不丢弃 accuracy<0.5：这类歌的 rating/六维记为0，但仍保留判定数，便于推荐做精度因子/已游玩判断
     返回：(all_stats, songs_cfg, const_table)
     """
-    userdata_path = Path(f"./userdata/{user_id}data.json")
+    userdata_path = USERDATA_DIR / f"{user_id}data.json"
     userdata = load_json(userdata_path)["songs"]
 
     cfg = load_rating_config(json_path)
@@ -2143,6 +2158,8 @@ def build_all_stats_for_user(
             song_no = int(rec.get("song_no"))
             level = int(rec.get("level"))
         except Exception:
+            continue
+        if not is_song_id_publicly_visible(song_no):
             continue
         identity_key = _get_recommend_identity_key(song_no, level)
         found = _find_song_info_for_recommend_record(
@@ -2173,6 +2190,8 @@ def build_all_stats_for_user(
             song_no = int(rec.get("song_no"))
             level = int(rec.get("level"))
         except Exception:
+            continue
+        if not is_song_id_publicly_visible(song_no):
             continue
         identity_key = _get_recommend_identity_key(song_no, level)
         if best_identity_keys.get(identity_key) != (song_no, level):

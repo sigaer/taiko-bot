@@ -22,7 +22,7 @@ from .dojo_score import (
 BASE = get_settings().root_dir
 CURRENT_CONFIG_PATH = BASE / "songs" / "grade_dojo_nijiiro_2025_simple.json"
 HISTORY_CONFIG_PATH = BASE / "songs" / "grade_dojo_nijiiro_history_simple.json"
-USERDATA_DIR = BASE / "userdata"
+USERDATA_DIR = get_settings().userdata_dir
 UP_TEMPLATE_PATH = BASE / "assets" / "templates" / "dani_up.png"
 DOWN_TEMPLATE_PATH = BASE / "assets" / "templates" / "dani_down.png"
 DIFF_DIR = BASE / "assets" / "icons" / "diff"

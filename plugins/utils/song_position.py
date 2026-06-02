@@ -6,6 +6,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
+from .song_visibility import is_song_publicly_visible
+
 ROOT_DIR = Path(__file__).resolve().parents[2]
 SONG_DATA_PATH = ROOT_DIR / "songs" / "song_data.json"
 
@@ -31,13 +33,7 @@ def _to_int(value: Any, default: int = 0) -> int:
 
 
 def _is_on_shelf(item: Dict[str, Any]) -> bool:
-    status = item.get("shelf_status", 0)
-    if status is None or status == "":
-        return True
-    try:
-        return int(status) == 0
-    except (TypeError, ValueError):
-        return str(status).strip() in {"0", "未下架"}
+    return is_song_publicly_visible(item)
 
 
 def _song_title(item: Dict[str, Any]) -> str:
@@ -98,11 +94,11 @@ def _get_catalog() -> Tuple[
 def get_song_position_by_id(song_id: int) -> Optional[PositionResult]:
     id_index, type_lists, type_totals = _get_catalog()
     item = id_index.get(int(song_id))
-    if not item:
+    if not item or not _is_on_shelf(item):
         return None
 
     song_type = str(item.get("type") or "-").strip() or "-"
-    on_shelf = _is_on_shelf(item)
+    on_shelf = True
     total_on_shelf = type_totals.get(song_type, 0)
     rank: Optional[int] = None
 
