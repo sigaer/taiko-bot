@@ -155,6 +155,30 @@ def proxy_center_hiroba_sync(
     )
 
 
+def fetch_hiroba_playable_cards(
+    *,
+    email: str,
+    password: str,
+    settings: Settings | None = None,
+) -> list[Dict[str, Any]]:
+    cfg = _get_settings(settings)
+    payload = _request_json(
+        "POST",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/cards",
+        settings=cfg,
+        require_developer_token=True,
+        json_payload={
+            "email": str(email or "").strip(),
+            "password": str(password or "").strip(),
+        },
+        timeout=180.0,
+    )
+    cards = payload.get("cards")
+    if not isinstance(cards, list):
+        raise ViewerClientError("中心返回的 Hiroba 账号列表格式无效。")
+    return [item for item in cards if isinstance(item, dict)]
+
+
 def fetch_wahlap_player_profile(
     user_id: str, settings: Settings | None = None
 ) -> Dict[str, Any]:

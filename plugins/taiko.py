@@ -1,4 +1,3 @@
-from .utils.hiroba.sync import discover_hiroba_playable_cards
 from .utils.hiroba.credentials import (
     delete_hiroba_credentials,
     ensure_hiroba_credentials_table,
@@ -112,6 +111,7 @@ from taiko_bot.userdata_provider import (
 from taiko_bot.viewer_client import (
     ViewerClientError,
     decode_image_bytes,
+    fetch_hiroba_playable_cards,
     fetch_wahlap_player_profile,
     fetch_wahlap_ranking,
     proxy_center_hiroba_sync,
@@ -3965,19 +3965,23 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
             "开始绑定 Hiroba 账号",
         )
         playable_cards = await asyncio.to_thread(
-            discover_hiroba_playable_cards,
-            email,
-            password,
+            fetch_hiroba_playable_cards,
+            email=email,
+            password=password,
         )
         synced_ids = []
         for card in playable_cards:
-            taiko_no = str(card.taiko_no or "").strip()
+            taiko_no = str(card.get("taikoNo") or "").strip()
             if not taiko_no:
                 continue
             if target_taiko_no and taiko_no != target_taiko_no:
                 continue
             synced_ids.append(taiko_no)
         if not synced_ids:
+            if target_taiko_no:
+                raise RuntimeError(
+                    f"该 Bandai Namco ID 下未找到太鼓番 {target_taiko_no}。"
+                )
             raise RuntimeError("未找到可绑定的 Hiroba 太鼓番。")
 
         for taiko_no in synced_ids:

@@ -57,7 +57,6 @@ TAIKO_VIEWER_DEVELOPER_TOKEN=你的开发者token
 - `TAIKO_PUBLIC_DATA_BASE_URL`：公共 JSON 数据接口基址
 - `TAIKO_VIEWER_BASE_URL`：viewer 服务基址
 - `TAIKO_VIEWER_DEVELOPER_TOKEN`：访问中心受限接口所需的开发者 token
-- `HIROBA_PROXY`：仅当 Hiroba 登录必须走指定代理时再填写
 - `QQ_MARKDOWN_IMAGE_BASE_URL`：QQ Markdown 图片缓存基址
 
 ## 4. 首次启动行为
