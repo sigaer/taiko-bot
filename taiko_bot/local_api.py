@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import Any, Dict
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
 from plugins.utils.arcade_map import query_taiko_shops_by_city, sync_taiko_arcade_snapshot
@@ -39,8 +39,13 @@ def create_app() -> FastAPI:
     app = FastAPI(title="taiko-bot local data api")
 
     @app.get("/health")
-    async def health() -> Dict[str, Any]:
-        return {"ok": True, "baseUrl": settings.local_data_api_base_url}
+    async def health(request: Request) -> Dict[str, Any]:
+        base_url = str(request.base_url).rstrip("/")
+        root_path = str(request.scope.get("root_path") or "").rstrip("/")
+        return {
+            "ok": True,
+            "baseUrl": f"{base_url}{root_path}" if root_path else base_url,
+        }
 
     @app.post("/v1/public/sync")
     async def sync_public() -> Dict[str, Any]:

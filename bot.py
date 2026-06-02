@@ -43,9 +43,11 @@ driver.register_adapter(QQAdapter)
 
 nonebot.load_from_toml("pyproject.toml")
 
+from taiko_bot.local_api import app as taiko_local_api_app
+
+app.mount("/local-api", taiko_local_api_app)
+
 
 if __name__ == "__main__":
-    nonebot.logger.warning(
-        "Always use `nb run` or the project start script instead of manually running!"
-    )
+    nonebot.logger.info("starting taiko-bot with embedded local api at /local-api")
     nonebot.run(app="__mp_main__:app")
