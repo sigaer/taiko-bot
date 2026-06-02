@@ -108,7 +108,6 @@ def fetch_remote_userdata(
         "GET",
         f"{cfg.viewer_base_url}/api/developer/userdata/{str(user_id).strip()}",
         settings=cfg,
-        require_developer_token=True,
     )
 
 
@@ -124,7 +123,6 @@ def proxy_center_userdata_update(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/userdata/{str(user_id).strip()}/update",
         settings=cfg,
-        require_developer_token=True,
         json_payload={"showAll": show_all, "includeImage": include_image},
         timeout=300.0,
     )
@@ -144,7 +142,6 @@ def proxy_center_hiroba_sync(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/userdata/{str(user_id).strip()}/sync-hiroba",
         settings=cfg,
-        require_developer_token=True,
         json_payload={
             "email": email,
             "password": password,
@@ -168,7 +165,6 @@ def bind_hiroba_credentials(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/bind",
         settings=cfg,
-        require_developer_token=True,
         json_payload={
             "email": str(email or "").strip(),
             "password": str(password or "").strip(),
@@ -196,7 +192,6 @@ def fetch_center_bind_info(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/bind",
         settings=cfg,
-        require_developer_token=True,
         params={"identityKey": str(identity_key or "").strip()},
         timeout=60.0,
     )
@@ -219,7 +214,6 @@ def has_center_hiroba_credentials(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/credentials/{str(taiko_id).strip()}",
         settings=cfg,
-        require_developer_token=True,
         timeout=60.0,
     )
     return bool(payload.get("hasCredentials"))
@@ -233,7 +227,6 @@ def fetch_wahlap_player_profile(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/wahlap/player/{str(user_id).strip()}",
         settings=cfg,
-        require_developer_token=True,
     )
 
 
@@ -252,7 +245,6 @@ def fetch_wahlap_ranking(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/wahlap/ranking/{int(song_id)}/{int(diff)}",
         settings=cfg,
-        require_developer_token=True,
         params=params,
     )
 

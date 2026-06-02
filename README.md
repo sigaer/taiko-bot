@@ -57,10 +57,10 @@ TAIKO_VIEWER_DEVELOPER_TOKEN=
   - viewer 服务地址。
   - 默认是 `https://viewer.sakura-bot.cn`。
 - `TAIKO_VIEWER_DEVELOPER_TOKEN`
-  - 用于访问 viewer 的受限代理接口。
-  - 这些能力依赖它：`taikoupdate`、`更新hiroba`、中心成绩读取、鼓众玩家资料/排行榜等。
-  - 如果留空，bot 仍可拉取公开曲库和资源包，但账号成绩相关功能会不可用或退化。
-  - 第一次只想验证 bot 是否能启动，可以先留空；后续需要成绩相关功能时再填写。
+  - 用于把 viewer 中心接口的每日额度从 `100` 次提升到 `2500` 次。
+  - 留空时，查询、更新、Hiroba、Wahlap 等中心代理接口仍可用，但按匿名额度计数。
+  - 填写后，请求会带上 `Authorization: Bearer <token>`，按开发者额度计数。
+  - 如果你只是先验证 bot 能否启动，可以先留空；后续需要更高调用额度时再填写。
 
 ### QQ 官方机器人相关
 

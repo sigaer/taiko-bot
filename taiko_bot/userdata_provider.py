@@ -21,7 +21,7 @@ def _get_settings(settings: Settings | None = None) -> Settings:
 
 
 def uses_center_userdata(settings: Settings | None = None) -> bool:
-    return bool(_get_settings(settings).viewer_developer_token.strip())
+    return bool(_get_settings(settings).viewer_base_url.strip())
 
 
 def _normalize_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -62,8 +62,6 @@ def ensure_userdata_available(
 ) -> Dict[str, Any]:
     cfg = _get_settings(settings)
     cached = read_userdata(user_id, settings=cfg)
-    if cached is not None and not force_refresh and not uses_center_userdata(cfg):
-        return cached
     if cached is not None and not force_refresh and uses_center_userdata(cfg):
         refreshed_at = _REMOTE_REFRESH_TS.get(str(user_id).strip(), 0.0)
         if time.monotonic() - refreshed_at < REMOTE_USERDATA_CACHE_TTL_SECONDS:
@@ -71,9 +69,7 @@ def ensure_userdata_available(
     if not uses_center_userdata(cfg):
         if cached is not None:
             return cached
-        raise UserdataProviderError(
-            "未配置 TAIKO_VIEWER_DEVELOPER_TOKEN，且本地没有可用的成绩缓存。"
-        )
+        raise UserdataProviderError("未配置可用的 viewer 地址，且本地没有可用的成绩缓存。")
     try:
         remote_payload = fetch_remote_userdata(user_id, settings=cfg)
     except ViewerClientError as exc:
