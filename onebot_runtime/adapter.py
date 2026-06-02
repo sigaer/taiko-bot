@@ -5,13 +5,27 @@ import contextlib
 import json
 from typing import Dict
 
-from nonebot.adapters.onebot.reverse_ws_stats import reverse_ws_stats
 from nonebot.adapters.onebot.v11.adapter import Adapter as BaseAdapter
 from nonebot.adapters.onebot.v11.bot import Bot
 from nonebot.adapters.onebot.v11.utils import log
 from nonebot.drivers import WebSocket
 from nonebot.exception import WebSocketClosed
 from nonebot.utils import escape_tag
+
+try:
+    from nonebot.adapters.onebot.reverse_ws_stats import reverse_ws_stats
+except ImportError:
+    class _ReverseWSStatsCompat:
+        def init_source(self, source: str) -> None:
+            return None
+
+        def add_bot(self, source: str, bot_id: str) -> None:
+            return None
+
+        def remove_bot(self, source: str, bot_id: str) -> None:
+            return None
+
+    reverse_ws_stats = _ReverseWSStatsCompat()
 
 try:
     from nonebot.adapters.onebot.v11.adapter import REVERSE_WS_STATS_SOURCE
