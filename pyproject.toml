@@ -27,6 +27,7 @@ dependencies = [
     "requests>=2.32.0",
     "ujson>=5.10.0",
     "uvicorn>=0.30.0",
+    "websockets>=12.0",
     "wordcloud>=1.9.0",
 ]
 
