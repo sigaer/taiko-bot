@@ -1830,7 +1830,7 @@ def _resolve_requested_identity_key(event: MessageEvent) -> Tuple[str, bool]:
 
 def _resolve_bound_taiko_id(event: MessageEvent):
     identity_key, is_self_query = _resolve_requested_identity_key(event)
-    info = _get_taiko_bind_info(identity_key)
+    info = _get_taiko_bind_info_from_center(identity_key)
     if info is None:
         return 404
     taiko_id = info["id"]
@@ -1840,7 +1840,7 @@ def _resolve_bound_taiko_id(event: MessageEvent):
     return taiko_id
 
 
-def _get_taiko_bind_info(identity_key: str) -> Optional[Dict[str, Any]]:
+def _get_local_taiko_bind_info(identity_key: str) -> Optional[Dict[str, Any]]:
     db = _get_taiko_db_connection()
     cursor = db.cursor()
     try:
@@ -1951,7 +1951,7 @@ def _execute_taiko_update(
 
 def _get_current_bind_entry(identity_key: str) -> Optional[Dict[str, Any]]:
     identity_key = _normalize_identity_key(identity_key)
-    bind_info = _get_taiko_bind_info(identity_key)
+    bind_info = _get_local_taiko_bind_info(identity_key)
     if bind_info is None:
         return None
     store = _load_multi_bind_store()
@@ -2046,44 +2046,17 @@ def _build_u0_readonly_message(
 
 def _resolve_read_bind_target(event: MessageEvent):
     identity_key, is_self_query = _resolve_requested_identity_key(event)
-    info = _get_taiko_bind_info(identity_key)
-    center_fallback = False
-    if info is None:
-        info = _get_taiko_bind_info_from_center(identity_key)
-        center_fallback = info is not None
+    info = _get_taiko_bind_info_from_center(identity_key)
     if info is None:
         return 404
     visible = info["visible"]
     if visible == 0 and not is_self_query:
         return 403
-
-    entry = None if center_fallback else _get_current_bind_entry(identity_key)
-    if entry is None:
-        ensure_userdata_available(str(info["id"] or "").strip())
-        return {
-            "identity_key": identity_key,
-            "entry": None,
-            "is_virtual": False,
-            "user_id": str(info["id"] or "").strip(),
-            "from_center_bind": center_fallback,
-        }
-
-    if _get_selected_bind_slot_number(entry) == 0:
-        ensure_multiple_userdatas_available(_get_bind_ids(entry))
-        materialized = materialize_merged_bind_userdata(identity_key, entry)
-        return {
-            "identity_key": identity_key,
-            "entry": entry,
-            "is_virtual": True,
-            "user_id": materialized.virtual_user_id,
-            "materialized": materialized,
-        }
-
-    selected_id = _get_current_bind_taiko_id(entry) or str(info["id"] or "").strip()
+    selected_id = str(info["id"] or "").strip()
     ensure_userdata_available(selected_id)
     return {
         "identity_key": identity_key,
-        "entry": entry,
+        "entry": None,
         "is_virtual": False,
         "user_id": selected_id,
     }
@@ -4052,7 +4025,6 @@ hiroba_update = on_regex(
 
 @hiroba_update.handle()
 async def hiroba_update_handle(event: MessageEvent):
-    identity_key = _normalize_identity_key(get_identity_key(event=event))
     plain_text = extract_plain_text(event)
     show_all_match = re.fullmatch(
         r"^(?:hirobaupdate|更新hiroba|更新ひろば)(?:(?:\s+|)(all|全部|全量|-a|--all))?\s*$",
@@ -4061,28 +4033,12 @@ async def hiroba_update_handle(event: MessageEvent):
     )
     show_all_changes = bool(show_all_match and show_all_match.group(1))
 
-    entry = _get_current_bind_entry(identity_key)
-    if entry is None:
+    taiko_id = _resolve_bound_taiko_id(event)
+    if taiko_id == 404:
         await _finish_text_reply(hiroba_update, event, _taiko_bind_usage_message(event))
         return
-    if _get_selected_bind_slot_number(entry) == 0:
-        await _finish_text_reply(
-            hiroba_update,
-            event,
-            _build_u0_readonly_message(entry, action_text="更新hiroba"),
-        )
-        return
-    taiko_id = _get_current_bind_taiko_id(entry)
-    if not taiko_id:
-        await _finish_text_reply(hiroba_update, event, _taiko_bind_usage_message(event))
-        return
-    source = _infer_bind_source(taiko_id, entry.get("sources") or {})
-    if source != "hiroba":
-        await _finish_text_reply(
-            hiroba_update,
-            event,
-            _build_update_command_hint(identity_key, expected_source="hiroba"),
-        )
+    if taiko_id == 403:
+        await _finish_text_reply(hiroba_update, event, "查不到呢，可能不给看哦~")
         return
 
     progress = _create_hiroba_progress_reporter(hiroba_update, event)
@@ -4267,27 +4223,6 @@ async def update_handle(event: MessageEvent):
     if taiko_id == 403:
         await _finish_text_reply(update, event, "查不到呢，可能不给看哦~")
         return
-    identity_key, _ = _resolve_requested_identity_key(event)
-    entry = _get_current_bind_entry(identity_key)
-    if _get_selected_bind_slot_number(entry) == 0:
-        await _finish_text_reply(
-            update,
-            event,
-            _build_u0_readonly_message(entry, action_text="taikoupdate"),
-        )
-        return
-    source = (
-        _infer_bind_source(str(taiko_id), entry.get("sources") or {})
-        if entry
-        else "wahlap"
-    )
-    if source != "wahlap":
-        await _finish_text_reply(
-            update,
-            event,
-            _build_update_command_hint(identity_key, expected_source="wahlap"),
-        )
-        return
     update_result = await asyncio.to_thread(
         _execute_taiko_update,
         taiko_id,
@@ -4420,13 +4355,6 @@ async def public_score_token_handle(event: MessageEvent):
     if taiko_id == 403:
         await public_score_token.finish(
             "当前绑定不可见，无法生成网页成绩 token。", reply_message=True
-        )
-    identity_key, _ = _resolve_requested_identity_key(event)
-    entry = _get_current_bind_entry(identity_key)
-    if _get_selected_bind_slot_number(entry) == 0:
-        await public_score_token.finish(
-            _build_u0_readonly_message(entry, action_text="网页成绩 token"),
-            reply_message=True,
         )
 
     try:
