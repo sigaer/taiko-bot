@@ -133,8 +133,8 @@ def proxy_center_userdata_update(
 def proxy_center_hiroba_sync(
     user_id: str,
     *,
-    email: str,
-    password: str,
+    email: str = "",
+    password: str = "",
     show_all: bool = False,
     include_image: bool = True,
     settings: Settings | None = None,
@@ -155,28 +155,50 @@ def proxy_center_hiroba_sync(
     )
 
 
-def fetch_hiroba_playable_cards(
+def bind_hiroba_credentials(
     *,
     email: str,
     password: str,
+    target_taiko_no: str = "",
+    configured_by_qq: str = "",
     settings: Settings | None = None,
-) -> list[Dict[str, Any]]:
+) -> list[str]:
     cfg = _get_settings(settings)
     payload = _request_json(
         "POST",
-        f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/cards",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/bind",
         settings=cfg,
         require_developer_token=True,
         json_payload={
             "email": str(email or "").strip(),
             "password": str(password or "").strip(),
+            "targetTaikoNo": str(target_taiko_no or "").strip(),
+            "configuredByQq": str(configured_by_qq or "").strip(),
         },
         timeout=180.0,
     )
-    cards = payload.get("cards")
-    if not isinstance(cards, list):
-        raise ViewerClientError("中心返回的 Hiroba 账号列表格式无效。")
-    return [item for item in cards if isinstance(item, dict)]
+    taiko_ids = payload.get("taikoIds")
+    if not isinstance(taiko_ids, list):
+        raise ViewerClientError("中心返回的 Hiroba 绑定结果格式无效。")
+    return [
+        str(item or "").strip()
+        for item in taiko_ids
+        if str(item or "").strip()
+    ]
+
+
+def has_center_hiroba_credentials(
+    taiko_id: str, settings: Settings | None = None
+) -> bool:
+    cfg = _get_settings(settings)
+    payload = _request_json(
+        "GET",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/credentials/{str(taiko_id).strip()}",
+        settings=cfg,
+        require_developer_token=True,
+        timeout=60.0,
+    )
+    return bool(payload.get("hasCredentials"))
 
 
 def fetch_wahlap_player_profile(

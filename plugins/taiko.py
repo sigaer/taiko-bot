@@ -1,10 +1,3 @@
-from .utils.hiroba.credentials import (
-    delete_hiroba_credentials,
-    ensure_hiroba_credentials_table,
-    has_hiroba_credentials,
-    load_hiroba_credentials,
-    save_hiroba_credentials,
-)
 from .utils.public_score_token import (
     PublicScoreTokenError,
     get_taiko_db_connection,
@@ -109,9 +102,10 @@ from taiko_bot.userdata_provider import (
     update_userdata_cache_from_payload,
 )
 from taiko_bot.viewer_client import (
+    bind_hiroba_credentials,
     ViewerClientError,
+    has_center_hiroba_credentials,
     decode_image_bytes,
-    fetch_hiroba_playable_cards,
     fetch_wahlap_player_profile,
     fetch_wahlap_ranking,
     proxy_center_hiroba_sync,
@@ -170,6 +164,8 @@ BIND_VERIFY_BYPASS_IDS = {"2258735"}
 BIND_VERIFY_SESSIONS: Dict[str, Dict[str, Any]] = {}
 BIND_DELETE_CONFIRM_TIMEOUT_SECONDS = 300
 BIND_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
+HIROBA_CREDENTIAL_STATUS_CACHE_TTL_SECONDS = 60.0
+HIROBA_CREDENTIAL_STATUS_CACHE: Dict[str, Tuple[float, bool]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
 DIM_MAP = {
     "rating": "rating",
@@ -2101,19 +2097,9 @@ def _execute_hiroba_update(
     include_changes_image: bool = True,
     progress=None,
 ) -> Dict[str, Any]:
-    creds = load_hiroba_credentials(taiko_id)
-    if creds is None:
-        return {
-            "ok": False,
-            "message": f"当前账号 {taiko_id} 未配置 Hiroba 凭据，请发送“绑定hiroba 邮箱 密码”。",
-            "image": None,
-        }
-    email, password = creds
     try:
         payload = proxy_center_hiroba_sync(
             taiko_id,
-            email=email,
-            password=password,
             show_all=show_all_changes,
             include_image=include_changes_image,
         )
@@ -2240,8 +2226,6 @@ def _build_bind_auto_update_tip(
         return ""
     inferred_source = str(source or "").strip().lower() or _infer_bind_source(taiko_id)
     if inferred_source == "hiroba":
-        if not has_hiroba_credentials(taiko_id):
-            return "\n首次绑定识别为 Hiroba 账号，已跳过自动更新；请后续使用“更新hiroba”。"
         update_result = _execute_hiroba_update(taiko_id, include_changes_image=False)
         success_text = "\n首次绑定已自动执行一次 更新hiroba。"
         failure_text = (
@@ -2577,9 +2561,25 @@ def _infer_bind_source(taiko_id: str, sources: Optional[Dict[str, str]] = None) 
     explicit = str(sources.get(taiko_id) or "").strip().lower()
     if explicit in {"hiroba", "wahlap"}:
         return explicit
-    if has_hiroba_credentials(taiko_id):
+    if _has_center_hiroba_credentials_cached(taiko_id):
         return "hiroba"
     return "wahlap"
+
+
+def _has_center_hiroba_credentials_cached(taiko_id: str) -> bool:
+    normalized = str(taiko_id or "").strip()
+    if not normalized:
+        return False
+    cached = HIROBA_CREDENTIAL_STATUS_CACHE.get(normalized)
+    now = time.monotonic()
+    if cached and now - cached[0] < HIROBA_CREDENTIAL_STATUS_CACHE_TTL_SECONDS:
+        return cached[1]
+    try:
+        result = bool(has_center_hiroba_credentials(normalized))
+    except Exception:
+        result = False
+    HIROBA_CREDENTIAL_STATUS_CACHE[normalized] = (now, result)
+    return result
 
 
 def _bind_source_label(source: str) -> str:
@@ -2807,14 +2807,8 @@ def _remove_bind_record(
 
         ids.pop(remove_index)
         removed_sources = dict(entry.get("sources") or {})
-        removed_source = _infer_bind_source(remove_id, removed_sources)
         if remove_id in removed_sources:
             removed_sources.pop(remove_id, None)
-        if removed_source == "hiroba":
-            try:
-                delete_hiroba_credentials(remove_id)
-            except Exception:
-                pass
         if ids:
             if remove_index < current_index:
                 current_index -= 1
@@ -3958,39 +3952,24 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
         return
 
     try:
-        ensure_hiroba_credentials_table()
         await _send_text_reply_without_finish(
             bind_hiroba,
             event,
             "开始绑定 Hiroba 账号",
         )
-        playable_cards = await asyncio.to_thread(
-            fetch_hiroba_playable_cards,
+        synced_ids = await asyncio.to_thread(
+            bind_hiroba_credentials,
             email=email,
             password=password,
+            target_taiko_no=target_taiko_no,
+            configured_by_qq=identity_key,
         )
-        synced_ids = []
-        for card in playable_cards:
-            taiko_no = str(card.get("taikoNo") or "").strip()
-            if not taiko_no:
-                continue
-            if target_taiko_no and taiko_no != target_taiko_no:
-                continue
-            synced_ids.append(taiko_no)
         if not synced_ids:
             if target_taiko_no:
                 raise RuntimeError(
                     f"该 Bandai Namco ID 下未找到太鼓番 {target_taiko_no}。"
                 )
             raise RuntimeError("未找到可绑定的 Hiroba 太鼓番。")
-
-        for taiko_no in synced_ids:
-            save_hiroba_credentials(
-                taiko_no,
-                email,
-                password,
-                configured_by_qq=identity_key,
-            )
 
         reply_msg = ""
         for taiko_no in synced_ids:
@@ -4023,7 +4002,7 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
     await _finish_text_reply(
         bind_hiroba,
         event,
-        f"{bind_mode_text}\n{reply_msg}\n已保存 Hiroba 凭据，请后续使用“更新hiroba”同步中心成绩。",
+        f"{bind_mode_text}\n{reply_msg}\n已在中心保存 Hiroba 凭据，请后续使用“更新hiroba”同步中心成绩。",
         quick_actions=True,
     )
 
