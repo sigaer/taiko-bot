@@ -187,6 +187,30 @@ def bind_hiroba_credentials(
     ]
 
 
+def fetch_center_bind_info(
+    identity_key: str,
+    settings: Settings | None = None,
+) -> Optional[Dict[str, Any]]:
+    cfg = _get_settings(settings)
+    payload = _request_json(
+        "GET",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/bind",
+        settings=cfg,
+        require_developer_token=True,
+        params={"identityKey": str(identity_key or "").strip()},
+        timeout=60.0,
+    )
+    if not payload.get("found"):
+        return None
+    taiko_id = str(payload.get("taikoId") or "").strip()
+    if not taiko_id:
+        return None
+    return {
+        "id": taiko_id,
+        "visible": int(payload.get("visible") or 0),
+    }
+
+
 def has_center_hiroba_credentials(
     taiko_id: str, settings: Settings | None = None
 ) -> bool:

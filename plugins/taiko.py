@@ -105,6 +105,7 @@ from taiko_bot.userdata_provider import (
 from taiko_bot.viewer_client import (
     bind_hiroba_credentials,
     ViewerClientError,
+    fetch_center_bind_info,
     has_center_hiroba_credentials,
     decode_image_bytes,
     fetch_wahlap_player_profile,
@@ -1861,6 +1862,21 @@ def _get_taiko_bind_info(identity_key: str) -> Optional[Dict[str, Any]]:
         db.close()
 
 
+def _get_taiko_bind_info_from_center(identity_key: str) -> Optional[Dict[str, Any]]:
+    try:
+        return fetch_center_bind_info(identity_key, _SETTINGS)
+    except ViewerClientError as error:
+        logger.warning(
+            f"center bind lookup failed: identity_key={identity_key} error={error}"
+        )
+        return None
+    except Exception as error:
+        logger.warning(
+            f"unexpected center bind lookup failure: identity_key={identity_key} error={error}"
+        )
+        return None
+
+
 def _set_taiko_bind_visibility(identity_key: str, visible: int) -> int:
     db = _get_taiko_db_connection()
     cursor = db.cursor()
@@ -2031,13 +2047,17 @@ def _build_u0_readonly_message(
 def _resolve_read_bind_target(event: MessageEvent):
     identity_key, is_self_query = _resolve_requested_identity_key(event)
     info = _get_taiko_bind_info(identity_key)
+    center_fallback = False
+    if info is None:
+        info = _get_taiko_bind_info_from_center(identity_key)
+        center_fallback = info is not None
     if info is None:
         return 404
     visible = info["visible"]
     if visible == 0 and not is_self_query:
         return 403
 
-    entry = _get_current_bind_entry(identity_key)
+    entry = None if center_fallback else _get_current_bind_entry(identity_key)
     if entry is None:
         ensure_userdata_available(str(info["id"] or "").strip())
         return {
@@ -2045,6 +2065,7 @@ def _resolve_read_bind_target(event: MessageEvent):
             "entry": None,
             "is_virtual": False,
             "user_id": str(info["id"] or "").strip(),
+            "from_center_bind": center_fallback,
         }
 
     if _get_selected_bind_slot_number(entry) == 0:
