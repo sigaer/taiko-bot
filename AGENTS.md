@@ -24,3 +24,7 @@
 
 - 资源包更新后，先重新生成总压缩包，再验证 viewer 的 `api/taiko/manifest`、`api/taiko/assets/latest` 与相关代理接口。
 - viewer 侧 API/资源协议变更后，再更新 README 和 `.env.example`。
+
+## Git Workflow
+
+- 每次完成一轮更新后，除了本地提交，还必须立即 `git push` 到远端，不能只停留在本地 `ahead` 状态。
