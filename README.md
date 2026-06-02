@@ -1,82 +1,87 @@
 # taiko-bot
 
-`taiko-bot` 是从原私有运行栈中抽离出的独立 NoneBot 项目。这个仓库只包含 bot 执行逻辑，不包含私有 cookie、BEMANICN 账号、权威成绩文件或手工维护的资源包。
+`taiko-bot` 是一个面向《太鼓达人》查询与同步场景的 NoneBot 项目，支持 OneBot V11，并依赖 `viewer.sakura-bot.cn` 提供的公共数据、资源包和中心接口。
 
 ## 1. 环境要求
 
 - Python `3.11` 推荐
-- Linux/macOS 推荐，Windows 也可运行
+- Windows、Linux、macOS 均可运行
 - 一个可直连的 OneBot V11 客户端
 - 可访问 `https://viewer.sakura-bot.cn`
 
-## 2. 安装 Python
+## 2. 安装项目
 
-如果本机没有 Python 3.11，请先安装：
+### Windows PowerShell
 
-- Windows：从 `https://www.python.org/downloads/` 安装 Python 3.11，并勾选 `Add python.exe to PATH`
-- Ubuntu/Debian：
-
-```bash
-sudo apt update
-sudo apt install -y python3 python3-venv python3-pip
+```powershell
+cd C:\path\to\taiko-bot
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip
+python -m pip install -e .
+Copy-Item .env.example .env
 ```
 
-## 3. 安装项目
+### Linux / macOS
 
 ```bash
 cd /path/to/taiko-bot
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -U pip
-pip install -e .
+python -m pip install -U pip
+python -m pip install -e .
 cp .env.example .env
 ```
 
-## 4. 配置 `.env`
+如果本机还没有 Python 3.11，可先从 `https://www.python.org/downloads/` 安装，或使用系统包管理器安装。
 
-必须至少配置这些项目：
+## 3. 配置 `.env`
+
+至少需要确认以下配置：
 
 ```env
 HOST=0.0.0.0
 PORT=37564
+TAIKO_LOCAL_DATA_API_HOST=127.0.0.1
 TAIKO_LOCAL_DATA_API_PORT=37565
 TAIKO_VIEWER_BASE_URL=https://viewer.sakura-bot.cn
 TAIKO_VIEWER_DEVELOPER_TOKEN=你的开发者token
 ```
 
-说明：
+常用配置项说明：
 
-- `TAIKO_VIEWER_DEVELOPER_TOKEN` 是开源 bot 访问中心受限接口的唯一默认凭据
-- 不再需要根目录 `config.json`
-- 不再需要 `storage/config/config.json`
-- 不再需要本地鼓众 cookie
-- 不再需要本地 `bemanicn` 账号
+- `HOST` / `PORT`：单进程 `nb run` 的监听地址
+- `TAIKO_CORE_HOST` / `TAIKO_CORE_PORT`：Core 模式监听地址
+- `TAIKO_GATEWAY_HOST` / `TAIKO_GATEWAY_PORT`：Gateway 模式监听地址
+- `TAIKO_LOCAL_DATA_API_HOST` / `TAIKO_LOCAL_DATA_API_PORT`：本地数据 API 监听地址
+- `TAIKO_PUBLIC_DATA_BASE_URL`：公共 JSON 数据接口基址
+- `TAIKO_VIEWER_BASE_URL`：viewer 服务基址
+- `TAIKO_VIEWER_DEVELOPER_TOKEN`：访问中心受限接口所需的开发者 token
+- `HIROBA_PROXY`：仅当 Hiroba 登录必须走指定代理时再填写
+- `QQ_MARKDOWN_IMAGE_BASE_URL`：QQ Markdown 图片缓存基址
 
-可选端口：
+## 4. 首次启动行为
 
-- `HOST` / `PORT`：`nb run` 对外监听地址
-- `TAIKO_CORE_PORT`：Core 模式端口
-- `TAIKO_GATEWAY_PORT`：Gateway 模式端口
-- `TAIKO_LOCAL_DATA_API_PORT`：本地 FastAPI 数据服务端口
-- `HIROBA_PROXY`：仅当你的 Hiroba 登录必须经过指定代理时再填写；`绑定hiroba` 不会继承宿主机通用 `HTTP(S)_PROXY`
-
-## 5. 首次启动会自动完成什么
-
-启动 `nb run` 前后，bot 会自动执行：
+bot 首次启动时会自动：
 
 1. 拉取公共 JSON 数据到 `songs/`
 2. 检查 `assets/.bundle.sha256`
-3. 如本地资源缺失或版本变化，自动从 `viewer` 下载单一总资源包并解压到 `assets/`
-4. 成绩相关读取按需从中心拉取并缓存到 `storage/cache/userdata/`
-5. 地图查询按需从 `viewer` 同步本机缓存快照到 `storage/data/arcade_map_cache/`
+3. 在资源缺失或版本变化时自动下载并解压最新资源包到 `assets/`
+4. 按需缓存用户成绩到 `storage/cache/userdata/`
+5. 按需缓存地图快照到 `storage/data/arcade_map_cache/`
 
-注意：
+如果本地没有可用资源且资源包下载失败，启动会失败；如果本地已有资源，则会继续使用现有资源。
 
-- 用户不需要手动下载资源包
-- 如果本地完全没有资源，且资源包下载失败，启动会直接失败
-- 如果本地已有资源，但资源更新失败，bot 会告警后继续使用旧资源
+## 5. 启动本地数据 API
 
-## 6. 启动本地数据 API
+### Windows PowerShell
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m uvicorn taiko_data_api:app --host 127.0.0.1 --port 37565
+```
+
+### Linux / macOS
 
 ```bash
 source .venv/bin/activate
@@ -98,11 +103,18 @@ source .venv/bin/activate
 - `GET/PUT /v1/userdata/{user_id}`
 - `GET /v1/userdata/{user_id}/history`
 
-其中 `userdata` 仅是本地读取缓存，不是权威成绩落点。
-
-## 7. 启动 NoneBot
+## 6. 启动 Bot
 
 ### 方式 A：单进程
+
+Windows PowerShell：
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+nb run
+```
+
+Linux / macOS：
 
 ```bash
 source .venv/bin/activate
@@ -111,46 +123,47 @@ nb run
 
 ### 方式 B：Core / Gateway 双进程
 
+Windows PowerShell：
+
+终端 1：
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+$env:BOT_POOL_METRICS_SERVICE_NAME="taiko"
+python -m uvicorn bot_core:app --host 127.0.0.1 --port 37563
+```
+
+终端 2：
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+$env:ONEBOT_GATEWAY_SERVICE_NAME="taiko"
+$env:ONEBOT_GATEWAY_CORE_WS_URL="ws://127.0.0.1:37563/onebot/v11/ws"
+$env:ONEBOT_GATEWAY_CORE_HTTP_URL="http://127.0.0.1:37563"
+$env:ONEBOT_GATEWAY_ALLOW_CROSS_HOST_TAKEOVER="1"
+$env:ONEBOT_GATEWAY_DUPLICATE_TAKEOVER_IDLE="0"
+python -m uvicorn bot_gateway:app --host 0.0.0.0 --port 37564
+```
+
+Linux / macOS：
+
 ```bash
 source .venv/bin/activate
 ./scripts/start_taiko_gateway_core.sh
 ```
 
-## 8. 连接客户端
+## 7. 连接 OneBot 客户端
 
-如果使用默认 `nb run`：
-
-- `ws://127.0.0.1:37564/onebot/v11/ws`
-
-如果使用网关模式：
+无论使用单进程还是 Gateway 模式，OneBot V11 客户端都连接到：
 
 - `ws://127.0.0.1:37564/onebot/v11/ws`
 
-## 9. 成绩更新与读取规则
+如果你修改了 `.env` 中的端口，请同步替换这里的地址。
 
-- `taikoupdate` / `更新广场`：请求中心服务更新，权威写入只发生在当前中心设备
-- `更新hiroba`：请求中心服务执行 Hiroba 同步，结果也只写入中心设备
-- 自部署 bot 本地只保留读取缓存，不作为权威成绩存储
-- `b30`、进度图、查分、总结等读取都会优先刷新中心缓存后再渲染
+## 8. 主要功能
 
-## 10. 地图查询规则
-
-- `xx哪有鼓` 不再登录 BEMANICN
-- 本地只查询从 `viewer` 同步下来的地图快照缓存
-- 首次无缓存时会自动尝试同步
-
-## 11. 维护资源包
-
-维护者更新中心资源包时：
-
-```bash
-TAIKO_SOURCE_ROOT=/home/sigaer/taiko ./scripts/build_open_resource_archives.sh
-```
-
-默认输出：
-
-- `/home/sigaer/taiko-open-resources/taiko-bot-assets.zip`
-
-viewer 对外下载入口：
-
-- `https://viewer.sakura-bot.cn/api/taiko/assets/latest`
+- 成绩更新：`taikoupdate`、`更新广场`、`更新hiroba`
+- 成绩查询：`b30`、进度图、查分、总结图、词云
+- 地图查询：`xx哪有鼓`
+- 绑定与多账号：绑定、切换账号、多号合并读取
+- 本地运行接口：公共数据同步、地图同步、运行态存储、用户缓存历史
