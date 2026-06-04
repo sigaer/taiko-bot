@@ -9,6 +9,7 @@ from typing import Dict
 from PIL import Image
 from wordcloud import WordCloud
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import get_cached_userdata
 
 from .draw_dress import render_my_don_image
 
@@ -51,11 +52,13 @@ def _load_song_name_map() -> Dict[int, str]:
 
 
 def _load_user_play_counts(user_id: int) -> Dict[int, int]:
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-    with userdata_path.open("r", encoding="utf-8") as f:
-        userdata = json.load(f)
+    userdata = get_cached_userdata(str(user_id))
+    if userdata is None:
+        userdata_path = USERDATA_DIR / f"{user_id}data.json"
+        if not userdata_path.exists():
+            raise FileNotFoundError(f"userdata not found: {userdata_path}")
+        with userdata_path.open("r", encoding="utf-8") as f:
+            userdata = json.load(f)
     songs = userdata.get("songs", [])
     if not isinstance(songs, list):
         return {}

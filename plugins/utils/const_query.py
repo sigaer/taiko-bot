@@ -113,7 +113,11 @@ def _pick_title(song: Optional[Dict[str, Any]], chart: Dict[str, Any]) -> Tuple[
     return str(cn), str(jp)
 
 
-def query_charts_by_const(const_value: float) -> List[ConstChartRow]:
+def query_charts_by_const(
+    const_value: float,
+    *,
+    include_shelf_status: bool = False,
+) -> List[ConstChartRow]:
     song_index = _load_song_index()
     rows: List[ConstChartRow] = []
     for chart in _load_rating_entries():
@@ -126,7 +130,7 @@ def query_charts_by_const(const_value: float) -> List[ConstChartRow]:
         except (TypeError, ValueError):
             continue
         song = song_index.get(song_id)
-        if not is_song_publicly_visible(song, song_id=song_id):
+        if not include_shelf_status and not is_song_publicly_visible(song, song_id=song_id):
             continue
         title_cn, title_jp = _pick_title(song, chart)
         star_field = LEVEL_STAR_FIELD.get(level, "level_4")

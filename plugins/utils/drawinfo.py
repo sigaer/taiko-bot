@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Optional
 from PIL import Image, ImageDraw, ImageFont
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import get_cached_userdata
 from .score_calculator import (
     build_const_table,
     calc_accuracy,
@@ -752,9 +753,13 @@ def _compose_with_side_radar(
 
 
 def get_score_by_id_and_level(song_no, user_id, level):
-    user_json_path = os.path.join(USERDATA_DIR, f"{user_id}data.json")
-    with open(user_json_path, "r", encoding="utf-8") as f:
-        user_data = json.load(f)["songs"]
+    cached = get_cached_userdata(str(user_id))
+    if isinstance(cached, dict):
+        user_data = cached.get("songs", [])
+    else:
+        user_json_path = os.path.join(USERDATA_DIR, f"{user_id}data.json")
+        with open(user_json_path, "r", encoding="utf-8") as f:
+            user_data = json.load(f)["songs"]
 
     # 聚合该曲成绩
     entries = _collect_entries_for_song(user_data, song_no)
@@ -803,9 +808,13 @@ def generate_score_image(
     template_path = str(template_path_obj)
 
     # --- 载入用户成绩 JSON ---
-    user_json_path = os.path.join(USERDATA_DIR, f"{user_id}data.json")
-    with open(user_json_path, "r", encoding="utf-8") as f:
-        user_data = json.load(f)["songs"]
+    cached = get_cached_userdata(str(user_id))
+    if isinstance(cached, dict):
+        user_data = cached.get("songs", [])
+    else:
+        user_json_path = os.path.join(USERDATA_DIR, f"{user_id}data.json")
+        with open(user_json_path, "r", encoding="utf-8") as f:
+            user_data = json.load(f)["songs"]
 
     # --- 载入歌曲数据库（曲名/定数/BPM等）---
     with open(db_path_obj, "r", encoding="utf-8") as f:

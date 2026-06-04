@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import get_cached_userdata
 
 from .b30_single import (
     _compute_rating_for_entry,
@@ -713,15 +714,18 @@ def render_b30_image(
     song_db_path: str | Path = SONG_DB_DEFAULT,
     assets_base: str | Path = ASSETS_DIR,
     rating_json_path: str | Path = RATING_JSON_DEFAULT,
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     assets_base = Path(assets_base)
     template_path = Path(template_path)
     template = Image.open(template_path).convert("RGBA")
 
-    userdata_path = get_settings().userdata_dir / f"{user_id}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-    userdata = _load_json(userdata_path)
+    userdata = userdata if isinstance(userdata, dict) else get_cached_userdata(str(user_id))
+    if userdata is None:
+        userdata_path = get_settings().userdata_dir / f"{user_id}data.json"
+        if not userdata_path.exists():
+            raise FileNotFoundError(f"userdata not found: {userdata_path}")
+        userdata = _load_json(userdata_path)
     entries = userdata.get("songs", []) if isinstance(userdata, dict) else []
 
     song_db = _load_json(Path(song_db_path))

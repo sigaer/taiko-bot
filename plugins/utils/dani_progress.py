@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import get_cached_userdata
 
 from .dojo_score import (
     build_dojo_score_map,
@@ -2028,6 +2029,7 @@ def render_dani_progress_image_bytes(
     *,
     version: str = CURRENT_DANI_VERSION,
     explicit_version: bool = False,
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     version = str(version or CURRENT_DANI_VERSION)
     try:
@@ -2038,11 +2040,9 @@ def render_dani_progress_image_bytes(
         return _render_notice("未找到对应段位。")
 
     canonical = str(grade["grade"])
-    user_path = USERDATA_DIR / f"{user_id}data.json"
-    if not user_path.exists():
-        return _render_notice(f"未找到用户 {user_id} 的成绩文件。")
-
-    userdata = json.loads(user_path.read_text(encoding="utf-8"))
+    userdata = userdata if isinstance(userdata, dict) else get_cached_userdata(str(user_id))
+    if userdata is None:
+        return _render_notice(f"未找到用户 {user_id} 的成绩数据。")
     best_map = _build_best_entry_map(userdata.get("songs", []))
     songs_runtime, totals = _build_song_runtime(grade, best_map)
     if not songs_runtime:

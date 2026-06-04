@@ -12,23 +12,18 @@ from .settings import get_settings
 from .sqlite_db import ensure_schema
 from .storage import (
     ensure_storage_layout,
-    list_userdata_history,
     read_draw_guess_db,
-    read_multi_bind_store,
-    read_userdata,
     write_draw_guess_db,
-    write_multi_bind_store,
-    write_userdata_with_history,
+)
+from .userdata_provider import (
+    UserdataProviderError,
+    ensure_userdata_available,
+    ensure_userdata_history_available,
 )
 
 
 class JsonPayload(BaseModel):
     payload: Dict[str, Any]
-
-
-class UserdataPayload(BaseModel):
-    payload: Dict[str, Any]
-    source: str = "manual"
 
 
 def create_app() -> FastAPI:
@@ -58,12 +53,16 @@ def create_app() -> FastAPI:
 
     @app.get("/v1/runtime/multi-bind")
     async def get_multi_bind() -> Dict[str, Any]:
-        return read_multi_bind_store(settings)
+        raise HTTPException(
+            status_code=410, detail="当前槽位已由 viewer 中心管理，本地 multi-bind 接口已停用。"
+        )
 
     @app.put("/v1/runtime/multi-bind")
     async def put_multi_bind(payload: JsonPayload) -> Dict[str, Any]:
-        write_multi_bind_store(payload.payload, settings)
-        return {"ok": True}
+        _ = payload
+        raise HTTPException(
+            status_code=410, detail="当前槽位已由 viewer 中心管理，本地 multi-bind 接口已停用。"
+        )
 
     @app.get("/v1/runtime/draw-guess")
     async def get_draw_guess() -> Dict[str, Any]:
@@ -76,27 +75,25 @@ def create_app() -> FastAPI:
 
     @app.get("/v1/userdata/{user_id}")
     async def get_userdata(user_id: str) -> Dict[str, Any]:
-        payload = read_userdata(user_id, settings)
-        if payload is None:
-            raise HTTPException(status_code=404, detail="userdata not found")
-        return payload
+        try:
+            return ensure_userdata_available(user_id, settings=settings)
+        except UserdataProviderError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     @app.put("/v1/userdata/{user_id}")
-    async def put_userdata(user_id: str, payload: UserdataPayload) -> Dict[str, Any]:
-        write_userdata_with_history(
-            user_id,
-            payload.payload,
-            source=payload.source,
-            settings=settings,
+    async def put_userdata(user_id: str, payload: JsonPayload) -> Dict[str, Any]:
+        _ = (user_id, payload)
+        raise HTTPException(
+            status_code=410, detail="本地 userdata 写入已移除，请使用 viewer 中心作为权威数据源。"
         )
-        return {"ok": True}
 
     @app.get("/v1/userdata/{user_id}/history")
     async def get_userdata_history(user_id: str) -> Dict[str, Any]:
-        return {
-            "userId": user_id,
-            "files": [path.name for path in list_userdata_history(user_id, settings=settings)],
-        }
+        try:
+            snapshots = ensure_userdata_history_available(user_id, settings=settings)
+        except UserdataProviderError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        return {"userId": user_id, "snapshots": snapshots}
 
     @app.post("/v1/arcades/sync")
     async def sync_arcades() -> Dict[str, Any]:

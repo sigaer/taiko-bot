@@ -61,9 +61,82 @@ def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
     def fake_request_json(method, url, **kwargs):
         calls.append((method, url, kwargs))
         if url.endswith("/api/taiko/proxy/hiroba/bind"):
-            return {"taikoIds": ["1001", "1002"]}
+            return {
+                "taikoIds": ["1001", "1002"],
+                "bind": {
+                    "found": True,
+                    "taikoId": "1001",
+                    "visible": 1,
+                    "currentTaikoId": "1001",
+                    "currentSlot": 1,
+                    "currentSource": "hiroba",
+                    "bindings": [
+                        {
+                            "slot": 1,
+                            "taikoId": "1001",
+                            "visible": 1,
+                            "isCurrent": True,
+                            "source": "hiroba",
+                        },
+                        {
+                            "slot": 2,
+                            "taikoId": "1002",
+                            "visible": 1,
+                            "isCurrent": False,
+                            "source": "hiroba",
+                        },
+                    ],
+                },
+            }
         if url.endswith("/api/taiko/proxy/bind"):
-            return {"found": True, "taikoId": "1001", "visible": 1}
+            return {
+                "found": True,
+                "taikoId": "1001",
+                "visible": 1,
+                "currentTaikoId": "1001",
+                "currentSlot": 1,
+                "currentSource": "wahlap",
+                "bindings": [
+                    {
+                        "slot": 1,
+                        "taikoId": "1001",
+                        "visible": 1,
+                        "isCurrent": True,
+                        "source": "wahlap",
+                    }
+                ],
+            }
+        if url.endswith("/api/taiko/proxy/bind/current"):
+            return {
+                "found": True,
+                "taikoId": "1002",
+                "visible": 1,
+                "currentTaikoId": "1002",
+                "currentSlot": 2,
+                "currentSource": "hiroba",
+                "bindings": [
+                    {
+                        "slot": 1,
+                        "taikoId": "1001",
+                        "visible": 1,
+                        "isCurrent": False,
+                        "source": "wahlap",
+                    },
+                    {
+                        "slot": 2,
+                        "taikoId": "1002",
+                        "visible": 1,
+                        "isCurrent": True,
+                        "source": "hiroba",
+                    },
+                ],
+            }
+        if url.endswith("/api/taiko/proxy/userdata/1001/history"):
+            return {
+                "snapshots": [
+                    {"capturedAt": "2026-06-04T12:00:00", "payload": {"songs": []}}
+                ]
+            }
         if "/api/taiko/proxy/hiroba/credentials/" in url:
             return {"hasCredentials": True}
         return {"songs": [], "ok": True}
@@ -82,11 +155,28 @@ def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
         email="demo@example.com",
         password="secret",
         settings=settings,
-    ) == ["1001", "1002"]
+    )["taikoIds"] == ["1001", "1002"]
     assert viewer_client.fetch_center_bind_info("qq:123", settings=settings) == {
         "id": "1001",
         "visible": 1,
+        "currentSlot": 1,
+        "currentSource": "wahlap",
+        "bindings": [
+            viewer_client.CenterBindSlot(
+                slot=1,
+                taiko_id="1001",
+                visible=1,
+                is_current=True,
+                source="wahlap",
+            )
+        ],
     }
+    assert viewer_client.proxy_center_bind_switch_current("qq:123", 2, settings=settings)[
+        "currentSource"
+    ] == "hiroba"
+    assert viewer_client.fetch_remote_userdata_history("1001", settings=settings) == [
+        {"capturedAt": "2026-06-04T12:00:00", "payload": {"songs": []}}
+    ]
     assert (
         viewer_client.has_center_hiroba_credentials("1001", settings=settings) is True
     )
@@ -98,7 +188,7 @@ def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
         viewer_client.fetch_wahlap_ranking(1, 4, settings=settings)["ok"] is True
     )
 
-    assert len(calls) == 8
+    assert len(calls) == 10
     for _method, _url, kwargs in calls:
         assert kwargs["settings"] is settings
         assert kwargs.get("require_developer_token", False) is False
@@ -122,3 +212,4 @@ def test_ensure_userdata_available_fetches_remote_without_token(tmp_path, monkey
     assert result == payload
     assert fetch_calls == [("1001", settings)]
     assert userdata_provider.uses_center_userdata(settings) is True
+    assert userdata_provider.get_cached_userdata("1001", settings=settings) == payload

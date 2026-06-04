@@ -13,6 +13,7 @@ import os
 import datetime
 from matplotlib.transforms import offset_copy
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import get_cached_userdata
 
 from .snapshot_history import list_snapshot_files, parse_snapshot_time
 from .song_visibility import (
@@ -662,8 +663,10 @@ def compute_all_from_userdata(
     3. 根据 good_cnt / combo 计算良率，进而计算 AI 和六维。
     """
     # 用户数据文件路径
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    userdata_blob = load_json(userdata_path)  # 读取用户数据
+    userdata_blob = get_cached_userdata(str(user_id))
+    if userdata_blob is None:
+        userdata_path = USERDATA_DIR / f"{user_id}data.json"
+        userdata_blob = load_json(userdata_path)  # 读取用户数据
     userdata = (
         userdata_blob.get("songs", [])
         if isinstance(userdata_blob, dict)
@@ -1194,6 +1197,8 @@ def get_topN_by_rating(results: List[RatingResult], N: int = 20) -> pd.DataFrame
 
 # ---------- 主程序 ----------
 def getUtime(user_id):
+    if get_cached_userdata(str(user_id)) is not None:
+        return str(datetime.datetime.now().replace(microsecond=0))
     path = str(USERDATA_DIR / f"{user_id}data.json")
     if os.path.exists(path):
         ts = round(os.path.getctime(path))
@@ -1206,7 +1211,39 @@ def _song_key(song: Dict[str, Any]) -> tuple:
     return (song.get("song_no"), song.get("level"))
 
 
-def load_user_snapshots(user_id: int) -> List[Tuple[datetime.datetime, Dict[str, Any]]]:
+def _parse_center_snapshot_datetime(raw_value: str) -> datetime.datetime:
+    text = str(raw_value or "").strip()
+    if not text:
+        raise ValueError("empty snapshot timestamp")
+    for candidate in (text, text.replace("_", " "), text.replace("Z", "+00:00")):
+        try:
+            return datetime.datetime.fromisoformat(candidate)
+        except ValueError:
+            continue
+    raise ValueError(f"invalid snapshot timestamp: {text}")
+
+
+def load_user_snapshots(
+    user_id: int,
+    history_snapshots: Optional[List[Dict[str, Any]]] = None,
+) -> List[Tuple[datetime.datetime, Dict[str, Any]]]:
+    if history_snapshots is not None:
+        snapshots: List[Tuple[datetime.datetime, Dict[str, Any]]] = []
+        for item in history_snapshots:
+            if not isinstance(item, dict):
+                continue
+            payload = item.get("payload")
+            if not isinstance(payload, dict):
+                continue
+            captured_at = str(item.get("capturedAt") or "").strip()
+            try:
+                dt = _parse_center_snapshot_datetime(captured_at)
+            except ValueError:
+                continue
+            snapshots.append((dt, payload))
+        snapshots.sort(key=lambda item: item[0])
+        return snapshots
+
     history_dir = USERDATA_DIR / str(user_id)
     if not history_dir.exists():
         return []
@@ -1283,8 +1320,9 @@ def build_daily_rating_points(
     N: int = 20,
     json_path: str | Path = "./songs/rating_structured_with_ids.json",
     max_days: Optional[int] = 30,
+    history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> List[TrendPoint]:
-    snapshots = load_user_snapshots(user_id)
+    snapshots = load_user_snapshots(user_id, history_snapshots=history_snapshots)
     if not snapshots:
         return []
 
@@ -1337,8 +1375,9 @@ def build_playcount_rating_points(
     N: int = 20,
     json_path: str | Path = "./songs/rating_structured_with_ids.json",
     max_points: Optional[int] = 80,
+    history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> List[PlayTrendPoint]:
-    snapshots = load_user_snapshots(user_id)
+    snapshots = load_user_snapshots(user_id, history_snapshots=history_snapshots)
     if not snapshots:
         return []
 
@@ -1386,12 +1425,17 @@ def generate_rating_playcount_image(
     bar_mode: bool = False,
     show_all: bool = False,
     selected_dim: Optional[str] = None,
+    history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> Optional[BytesIO]:
     """
     读取用户历史快照，按累计总曲数聚合后生成六维/综合或单维走势图及上涨速率图。
     """
     play_points = build_playcount_rating_points(
-        user_id, N=N, json_path=json_path, max_points=max_points
+        user_id,
+        N=N,
+        json_path=json_path,
+        max_points=max_points,
+        history_snapshots=history_snapshots,
     )
     if not play_points:
         return None
@@ -1596,12 +1640,17 @@ def generate_rating_trend_image(
     bar_mode: bool = False,
     show_all: bool = False,
     selected_dim: Optional[str] = None,
+    history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> Optional[BytesIO]:
     """
     读取用户历史快照，按天聚合后生成六维/综合或单维走势图。
     """
     daily_points = build_daily_rating_points(
-        user_id, N=N, json_path=json_path, max_days=max_days
+        user_id,
+        N=N,
+        json_path=json_path,
+        max_days=max_days,
+        history_snapshots=history_snapshots,
     )
     if not daily_points:
         return None

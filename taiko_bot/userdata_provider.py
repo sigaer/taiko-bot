@@ -4,8 +4,11 @@ import time
 from typing import Any, Dict, Iterable, Optional
 
 from .settings import Settings, get_settings
-from .storage import read_userdata, write_userdata_with_history
-from .viewer_client import ViewerClientError, fetch_remote_userdata
+from .viewer_client import (
+    ViewerClientError,
+    fetch_remote_userdata,
+    fetch_remote_userdata_history,
+)
 
 
 class UserdataProviderError(RuntimeError):
@@ -14,6 +17,9 @@ class UserdataProviderError(RuntimeError):
 
 REMOTE_USERDATA_CACHE_TTL_SECONDS = 30
 _REMOTE_REFRESH_TS: Dict[str, float] = {}
+_REMOTE_USERDATA_CACHE: Dict[str, Dict[str, Any]] = {}
+_REMOTE_HISTORY_CACHE: Dict[str, list[Dict[str, Any]]] = {}
+_REMOTE_HISTORY_REFRESH_TS: Dict[str, float] = {}
 
 
 def _get_settings(settings: Settings | None = None) -> Settings:
@@ -38,18 +44,9 @@ def update_userdata_cache_from_payload(
     source: str = "viewer-cache",
     settings: Settings | None = None,
 ) -> Dict[str, Any]:
-    cfg = _get_settings(settings)
     normalized = _normalize_payload(payload)
-    current = read_userdata(user_id, settings=cfg)
-    if current == normalized:
-        _REMOTE_REFRESH_TS[str(user_id).strip()] = time.monotonic()
-        return normalized
-    write_userdata_with_history(
-        user_id,
-        normalized,
-        source=source,
-        settings=cfg,
-    )
+    _ = (_get_settings(settings), source)
+    _REMOTE_USERDATA_CACHE[str(user_id).strip()] = normalized
     _REMOTE_REFRESH_TS[str(user_id).strip()] = time.monotonic()
     return normalized
 
@@ -61,15 +58,16 @@ def ensure_userdata_available(
     settings: Settings | None = None,
 ) -> Dict[str, Any]:
     cfg = _get_settings(settings)
-    cached = read_userdata(user_id, settings=cfg)
+    normalized_user_id = str(user_id).strip()
+    cached = _REMOTE_USERDATA_CACHE.get(normalized_user_id)
     if cached is not None and not force_refresh and uses_center_userdata(cfg):
-        refreshed_at = _REMOTE_REFRESH_TS.get(str(user_id).strip(), 0.0)
+        refreshed_at = _REMOTE_REFRESH_TS.get(normalized_user_id, 0.0)
         if time.monotonic() - refreshed_at < REMOTE_USERDATA_CACHE_TTL_SECONDS:
             return cached
     if not uses_center_userdata(cfg):
         if cached is not None:
             return cached
-        raise UserdataProviderError("未配置可用的 viewer 地址，且本地没有可用的成绩缓存。")
+        raise UserdataProviderError("未配置可用的 viewer 地址，且当前没有可用的中心成绩缓存。")
     try:
         remote_payload = fetch_remote_userdata(user_id, settings=cfg)
     except ViewerClientError as exc:
@@ -79,7 +77,7 @@ def ensure_userdata_available(
     normalized = update_userdata_cache_from_payload(
         user_id, remote_payload, source="viewer-cache", settings=cfg
     )
-    _REMOTE_REFRESH_TS[str(user_id).strip()] = time.monotonic()
+    _REMOTE_REFRESH_TS[normalized_user_id] = time.monotonic()
     return normalized
 
 
@@ -105,4 +103,33 @@ def ensure_multiple_userdatas_available(
 def get_cached_userdata(
     user_id: str, settings: Settings | None = None
 ) -> Optional[Dict[str, Any]]:
-    return read_userdata(user_id, settings=_get_settings(settings))
+    _ = _get_settings(settings)
+    return _REMOTE_USERDATA_CACHE.get(str(user_id).strip())
+
+
+def ensure_userdata_history_available(
+    user_id: str,
+    *,
+    force_refresh: bool = False,
+    settings: Settings | None = None,
+) -> list[Dict[str, Any]]:
+    cfg = _get_settings(settings)
+    normalized_user_id = str(user_id).strip()
+    cached = _REMOTE_HISTORY_CACHE.get(normalized_user_id)
+    if cached is not None and not force_refresh and uses_center_userdata(cfg):
+        refreshed_at = _REMOTE_HISTORY_REFRESH_TS.get(normalized_user_id, 0.0)
+        if time.monotonic() - refreshed_at < REMOTE_USERDATA_CACHE_TTL_SECONDS:
+            return cached
+    if not uses_center_userdata(cfg):
+        if cached is not None:
+            return cached
+        raise UserdataProviderError("未配置可用的 viewer 地址，且当前没有可用的中心历史缓存。")
+    try:
+        history = fetch_remote_userdata_history(user_id, settings=cfg)
+    except ViewerClientError as exc:
+        if cached is not None:
+            return cached
+        raise UserdataProviderError(str(exc)) from exc
+    _REMOTE_HISTORY_CACHE[normalized_user_id] = history
+    _REMOTE_HISTORY_REFRESH_TS[normalized_user_id] = time.monotonic()
+    return history

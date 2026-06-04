@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -14,6 +15,15 @@ class ViewerClientError(RuntimeError):
         super().__init__(message)
         self.status_code = int(status_code or 500)
         self.message = str(message)
+
+
+@dataclass(frozen=True)
+class CenterBindSlot:
+    slot: int
+    taiko_id: str
+    visible: int
+    is_current: bool
+    source: str
 
 
 def _get_settings(settings: Settings | None = None) -> Settings:
@@ -159,7 +169,7 @@ def bind_hiroba_credentials(
     target_taiko_no: str = "",
     configured_by_qq: str = "",
     settings: Settings | None = None,
-) -> list[str]:
+) -> Dict[str, Any]:
     cfg = _get_settings(settings)
     payload = _request_json(
         "POST",
@@ -176,11 +186,76 @@ def bind_hiroba_credentials(
     taiko_ids = payload.get("taikoIds")
     if not isinstance(taiko_ids, list):
         raise ViewerClientError("中心返回的 Hiroba 绑定结果格式无效。")
-    return [
-        str(item or "").strip()
-        for item in taiko_ids
-        if str(item or "").strip()
-    ]
+    return {
+        "taikoIds": [
+            str(item or "").strip()
+            for item in taiko_ids
+            if str(item or "").strip()
+        ],
+        "bind": _normalize_center_bind_payload(payload.get("bind"))
+        if isinstance(payload.get("bind"), dict)
+        else None,
+    }
+
+
+def _normalize_center_bind_payload(payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    if not payload.get("found"):
+        return None
+    current_taiko_id = str(
+        payload.get("currentTaikoId") or payload.get("taikoId") or ""
+    ).strip()
+    if not current_taiko_id:
+        return None
+    bindings_payload = payload.get("bindings")
+    bindings: list[CenterBindSlot] = []
+    if isinstance(bindings_payload, list):
+        for item in bindings_payload:
+            if not isinstance(item, dict):
+                continue
+            taiko_id = str(item.get("taikoId") or "").strip()
+            if not taiko_id:
+                continue
+            try:
+                slot = int(item.get("slot") or 0)
+            except Exception:
+                slot = 0
+            bindings.append(
+                CenterBindSlot(
+                    slot=max(1, slot),
+                    taiko_id=taiko_id,
+                    visible=int(item.get("visible") or 0),
+                    is_current=bool(item.get("isCurrent")),
+                    source=str(item.get("source") or "wahlap").strip().lower()
+                    or "wahlap",
+                )
+            )
+    current_source = (
+        str(payload.get("currentSource") or "").strip().lower()
+        or next(
+            (
+                item.source
+                for item in bindings
+                if item.taiko_id == current_taiko_id and item.is_current
+            ),
+            "wahlap",
+        )
+    )
+    try:
+        current_slot = int(payload.get("currentSlot") or 0)
+    except Exception:
+        current_slot = 0
+    if current_slot <= 0:
+        current_slot = next(
+            (item.slot for item in bindings if item.taiko_id == current_taiko_id),
+            1,
+        )
+    return {
+        "id": current_taiko_id,
+        "visible": int(payload.get("visible") or 0),
+        "currentSlot": max(1, current_slot),
+        "currentSource": current_source,
+        "bindings": bindings,
+    }
 
 
 def fetch_center_bind_info(
@@ -195,15 +270,76 @@ def fetch_center_bind_info(
         params={"identityKey": str(identity_key or "").strip()},
         timeout=60.0,
     )
-    if not payload.get("found"):
-        return None
-    taiko_id = str(payload.get("taikoId") or "").strip()
-    if not taiko_id:
-        return None
-    return {
-        "id": taiko_id,
-        "visible": int(payload.get("visible") or 0),
-    }
+    return _normalize_center_bind_payload(payload)
+
+
+def proxy_center_bind_upsert(
+    identity_key: str,
+    taiko_id: str,
+    *,
+    visible: int = 0,
+    source: str = "wahlap",
+    settings: Settings | None = None,
+) -> Optional[Dict[str, Any]]:
+    cfg = _get_settings(settings)
+    payload = _request_json(
+        "POST",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/bind",
+        settings=cfg,
+        json_payload={
+            "identityKey": str(identity_key or "").strip(),
+            "taikoId": str(taiko_id or "").strip(),
+            "visible": int(visible or 0),
+            "source": str(source or "").strip().lower() or "wahlap",
+        },
+        timeout=90.0,
+    )
+    return _normalize_center_bind_payload(payload)
+
+
+def proxy_center_bind_switch_current(
+    identity_key: str,
+    slot: int,
+    settings: Settings | None = None,
+) -> Optional[Dict[str, Any]]:
+    cfg = _get_settings(settings)
+    payload = _request_json(
+        "POST",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/bind/current",
+        settings=cfg,
+        json_payload={
+            "identityKey": str(identity_key or "").strip(),
+            "slot": int(slot),
+        },
+        timeout=90.0,
+    )
+    return _normalize_center_bind_payload(payload)
+
+
+def fetch_remote_userdata_history(
+    user_id: str,
+    settings: Settings | None = None,
+) -> list[Dict[str, Any]]:
+    cfg = _get_settings(settings)
+    payload = _request_json(
+        "GET",
+        f"{cfg.viewer_base_url}/api/taiko/proxy/userdata/{str(user_id).strip()}/history",
+        settings=cfg,
+        timeout=90.0,
+    )
+    snapshots = payload.get("snapshots")
+    if not isinstance(snapshots, list):
+        raise ViewerClientError("中心返回的历史快照格式无效。")
+    normalized: list[Dict[str, Any]] = []
+    for item in snapshots:
+        if not isinstance(item, dict):
+            continue
+        captured_at = str(item.get("capturedAt") or "").strip()
+        snapshot_payload = item.get("payload")
+        if not captured_at or not isinstance(snapshot_payload, dict):
+            continue
+        normalized.append({"capturedAt": captured_at, "payload": snapshot_payload})
+    return normalized
 
 
 def has_center_hiroba_credentials(

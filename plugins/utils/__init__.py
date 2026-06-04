@@ -34,6 +34,7 @@ from .progress_catalog import (
 )
 from .progress_star import StarProgressSummary, build_star_progress_summary
 from taiko_bot.settings import get_settings
+from taiko_bot.userdata_provider import get_cached_userdata
 
 BASE = get_settings().root_dir
 PATH_SONG_DATA = BASE / "songs" / "song_data.json"
@@ -196,6 +197,15 @@ def _load_note_count_map() -> Dict[Tuple[int, int], int]:
                 mapping[key] = combo
     _load_note_count_map._cache = {"mtime_ns": mtime_ns, "mapping": mapping}
     return mapping
+
+
+def _resolve_userdata_payload(
+    user_id: int | str,
+    userdata: Optional[Dict[str, Any]] = None,
+) -> Optional[Dict[str, Any]]:
+    if isinstance(userdata, dict):
+        return userdata
+    return get_cached_userdata(str(user_id))
 
 
 @lru_cache(maxsize=128)
@@ -1029,12 +1039,13 @@ def render_pass_progress_image_bytes(
     width: int = 1060,
     page: int = 1,
     page_size: int = DEFAULT_PROGRESS_PAGE_SIZE,
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     _ = (font_size, line_gap, padding, bg_color, fg_color, width)
-    user_path = BASE / "userdata" / f"{user_id}data.json"
-    if not user_path.exists():
+    userdata = _resolve_userdata_payload(user_id, userdata)
+    if userdata is None:
         return _render_simple_notice(
-            f"未找到用户 {user_id} 的成绩文件。",
+            f"未找到用户 {user_id} 的成绩数据。",
             1060,
             24,
             font_path,
@@ -1042,8 +1053,6 @@ def render_pass_progress_image_bytes(
             (245, 247, 250),
             (28, 32, 36),
         )
-    with open(user_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
     user_scores = userdata.get("songs", [])
     best_map = _build_best_entry_map(user_scores)
     diff_key = f"{decimal}"
@@ -1098,12 +1107,13 @@ def render_progress_image_bytes(
     width: int = 1060,
     page: int = 1,
     page_size: int = DEFAULT_PROGRESS_PAGE_SIZE,
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     _ = (font_size, line_gap, padding, bg_color, fg_color, width)
-    user_path = BASE / "userdata" / f"{user_id}data.json"
-    if not user_path.exists():
+    userdata = _resolve_userdata_payload(user_id, userdata)
+    if userdata is None:
         return _render_simple_notice(
-            f"未找到用户 {user_id} 的成绩文件。",
+            f"未找到用户 {user_id} 的成绩数据。",
             1060,
             24,
             font_path,
@@ -1111,8 +1121,6 @@ def render_progress_image_bytes(
             (245, 247, 250),
             (28, 32, 36),
         )
-    with open(user_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
     user_scores = userdata.get("songs", [])
     best_map = _build_best_entry_map(user_scores)
     diff_key = f"{decimal}"
@@ -1166,6 +1174,7 @@ def render_progress_image_bytes_by_list(
     width: int = 1060,
     page: int = 1,
     page_size: int = DEFAULT_PROGRESS_PAGE_SIZE,
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     _ = (font_size, line_gap, padding, width)
     assets_base_path = Path(assets_base)
@@ -1225,10 +1234,10 @@ def render_progress_image_bytes_by_list(
             (28, 32, 36),
         )
 
-    user_path = BASE / "userdata" / f"{user_id}data.json"
-    if not user_path.exists():
+    userdata = _resolve_userdata_payload(user_id, userdata)
+    if userdata is None:
         return _render_simple_notice(
-            f"未找到用户 {user_id} 的成绩文件。",
+            f"未找到用户 {user_id} 的成绩数据。",
             1060,
             24,
             font_path,
@@ -1236,9 +1245,6 @@ def render_progress_image_bytes_by_list(
             (245, 247, 250),
             (28, 32, 36),
         )
-
-    with open(user_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
     user_scores = userdata.get("songs", [])
     best_map = _build_best_entry_map(user_scores)
     rows = _build_progress_rows(items, best_map, assets_base_path)
@@ -1275,11 +1281,12 @@ def render_star_progress_image_bytes(
     font_path: str | None = DEFAULT_PROGRESS_FONT_PATH,
     page: int = 1,
     page_size: int = DEFAULT_PROGRESS_PAGE_SIZE,
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
-    user_path = BASE / "userdata" / f"{user_id}data.json"
-    if not user_path.exists():
+    userdata = _resolve_userdata_payload(user_id, userdata)
+    if userdata is None:
         return _render_simple_notice(
-            f"未找到用户 {user_id} 的成绩文件。",
+            f"未找到用户 {user_id} 的成绩数据。",
             1060,
             24,
             font_path,
@@ -1300,8 +1307,6 @@ def render_star_progress_image_bytes(
             (28, 32, 36),
         )
 
-    with open(user_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
     user_scores = userdata.get("songs", [])
     best_map = _build_best_entry_map(user_scores)
     assets_base_path = Path(assets_base)
@@ -1577,6 +1582,7 @@ def generate_dim_top_image(
     dim: str,
     user_id=None,
     font_path: str | None = "assets/fonts/DDFont.ttf",
+    userdata: Optional[Dict[str, Any]] = None,
 ) -> bytes:
     dim_label = _DIM_LABEL_MAP.get(dim)
     if not dim_label:
@@ -1590,10 +1596,10 @@ def generate_dim_top_image(
             (28, 32, 36),
         )
 
-    user_path = BASE / "userdata" / f"{user_id}data.json"
-    if not user_path.exists():
+    userdata = _resolve_userdata_payload(user_id, userdata)
+    if userdata is None:
         return _render_simple_notice(
-            f"未找到用户 {user_id} 的成绩文件。",
+            f"未找到用户 {user_id} 的成绩数据。",
             1060,
             24,
             font_path,
@@ -1601,10 +1607,6 @@ def generate_dim_top_image(
             (245, 247, 250),
             (28, 32, 36),
         )
-
-    with open(user_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
-
     normalized_rows: List[Dict[str, Any]] = []
     for item in results:
         row = item if isinstance(item, dict) else item.__dict__

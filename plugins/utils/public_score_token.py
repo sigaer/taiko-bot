@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Any, Dict, Optional
 
 from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import ensure_userdata_available
+from taiko_bot.userdata_provider import ensure_userdata_available, get_cached_userdata
 from taiko_runtime.platform_adapter import ONEBOT_V11_PLATFORM, format_identity_for_display
 
 from .taiko_db import ensure_schema, get_taiko_db_connection
@@ -162,6 +162,9 @@ def _resolve_token_binding(token: str) -> Dict[str, Any]:
 
 
 def _load_local_userdata(taiko_id: str) -> Dict[str, Any]:
+    cached = get_cached_userdata(str(taiko_id))
+    if isinstance(cached, dict):
+        return cached
     path = USERDATA_DIR / f"{taiko_id}data.json"
     if not path.exists():
         raise PublicScoreTokenError(404, "userdata_missing", "本地成绩文件不存在。")

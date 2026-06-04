@@ -99,6 +99,7 @@ from taiko_bot.public_data import ensure_asset_resource_available
 from taiko_bot.userdata_provider import (
     UserdataProviderError,
     ensure_multiple_userdatas_available,
+    ensure_userdata_history_available,
     ensure_userdata_available,
     update_userdata_cache_from_payload,
 )
@@ -109,6 +110,8 @@ from taiko_bot.viewer_client import (
     has_center_hiroba_credentials,
     decode_image_bytes,
     fetch_wahlap_player_profile,
+    proxy_center_bind_switch_current,
+    proxy_center_bind_upsert,
     fetch_wahlap_ranking,
     proxy_center_hiroba_sync,
     proxy_center_userdata_update,
@@ -1877,33 +1880,55 @@ def _get_taiko_bind_info_from_center(identity_key: str) -> Optional[Dict[str, An
         return None
 
 
+def _center_bind_info_to_entry(info: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    if not info:
+        return None
+    bindings = info.get("bindings") or []
+    ids: List[str] = []
+    sources: Dict[str, str] = {}
+    current_slot = int(info.get("currentSlot") or 1)
+    current_index = max(0, current_slot - 1)
+    for item in bindings:
+        taiko_id = str(getattr(item, "taiko_id", "") or "").strip()
+        if not taiko_id:
+            continue
+        ids.append(taiko_id)
+        source = str(getattr(item, "source", "") or "").strip().lower()
+        if source:
+            sources[taiko_id] = source
+    if not ids:
+        taiko_id = str(info.get("id") or "").strip()
+        if not taiko_id:
+            return None
+        ids = [taiko_id]
+        current_slot = 1
+        current_index = 0
+        current_source = str(info.get("currentSource") or "").strip().lower()
+        if current_source:
+            sources[taiko_id] = current_source
+    return {
+        "ids": ids,
+        "current_slot": current_slot,
+        "current_index": max(0, min(current_index, len(ids) - 1)),
+        "sources": sources,
+    }
+
+
 def _set_taiko_bind_visibility(identity_key: str, visible: int) -> int:
-    db = _get_taiko_db_connection()
-    cursor = db.cursor()
     try:
         identity_key = _normalize_identity_key(identity_key)
-        cursor.execute("select count(1) from bind where qq=%s", (identity_key,))
-        row = cursor.fetchone()
-        matched = int(row[0] or 0) if row is not None else 0
-        if matched <= 0:
+        info = _get_taiko_bind_info_from_center(identity_key)
+        if info is None:
             return 0
-        cursor.execute(
-            "update bind set visible=%s where qq=%s", (int(visible), identity_key)
+        proxy_center_bind_upsert(
+            identity_key,
+            str(info["id"]),
+            visible=int(visible),
+            source=str(info.get("currentSource") or "wahlap"),
         )
-        db.commit()
-        return matched
+        return 1
     except Exception:
-        try:
-            db.rollback()
-        except Exception:
-            pass
         return 0
-    finally:
-        try:
-            cursor.close()
-        except Exception:
-            pass
-        db.close()
 
 
 def _taiko_bind_usage_message(event: Optional[MessageEvent] = None) -> str:
@@ -1951,11 +1976,8 @@ def _execute_taiko_update(
 
 def _get_current_bind_entry(identity_key: str) -> Optional[Dict[str, Any]]:
     identity_key = _normalize_identity_key(identity_key)
-    bind_info = _get_local_taiko_bind_info(identity_key)
-    if bind_info is None:
-        return None
-    store = _load_multi_bind_store()
-    return _ensure_multi_bind_entry(store, identity_key, bind_info["id"])
+    bind_info = _get_taiko_bind_info_from_center(identity_key)
+    return _center_bind_info_to_entry(bind_info)
 
 
 def _get_bind_ids(entry: Optional[Dict[str, Any]]) -> List[str]:
@@ -1969,7 +1991,7 @@ def _get_bind_ids(entry: Optional[Dict[str, Any]]) -> List[str]:
 
 
 def _has_virtual_bind_slot(entry: Optional[Dict[str, Any]]) -> bool:
-    return len(_get_bind_ids(entry)) >= 2
+    return False
 
 
 def _get_selected_bind_slot_number(entry: Optional[Dict[str, Any]]) -> int:
@@ -2056,9 +2078,10 @@ def _resolve_read_bind_target(event: MessageEvent):
     ensure_userdata_available(selected_id)
     return {
         "identity_key": identity_key,
-        "entry": None,
+        "entry": _center_bind_info_to_entry(info),
         "is_virtual": False,
         "user_id": selected_id,
+        "source": str(info.get("currentSource") or "wahlap"),
     }
 
 
@@ -2353,22 +2376,12 @@ def _migrate_bind_from_legacy_qq(
         source_current_index = max(0, min(source_current_index, len(source_ids) - 1))
         source_current_id = source_ids[source_current_index]
 
-        cursor.execute(
-            "select id, coalesce(visible, 0) from bind where qq=%s",
-            (target_identity_key,),
-        )
-        target_row = cursor.fetchone()
-        target_db_id = str(target_row[0] or "").strip() if target_row else ""
-        target_visible = int(target_row[1] or 0) if target_row else source_visible
-        target_entry = _ensure_multi_bind_entry(
-            store, target_identity_key, target_db_id
-        )
+        target_info = _get_taiko_bind_info_from_center(target_identity_key)
+        target_entry = _center_bind_info_to_entry(target_info)
         target_ids = list((target_entry or {}).get("ids") or [])
-        if not target_ids and target_db_id:
-            target_ids = [target_db_id]
+        target_visible = int((target_info or {}).get("visible") or source_visible)
 
         merged_ids = _merge_bind_id_lists(source_ids, target_ids)
-        merged_current_index = merged_ids.index(source_current_id)
         source_sources = (
             dict((source_entry or {}).get("sources") or {})
             if isinstance(source_entry, dict)
@@ -2387,32 +2400,23 @@ def _migrate_bind_from_legacy_qq(
             if explicit_source:
                 merged_sources[taiko_id] = explicit_source
 
-        if target_row is None:
-            cursor.execute(
-                "insert into bind values(%s,%s,%s)",
-                (target_identity_key, source_current_id, source_visible),
+        is_first_binding = not bool(target_ids)
+        for taiko_id in merged_ids:
+            proxy_center_bind_upsert(
+                target_identity_key,
+                taiko_id,
+                visible=target_visible,
+                source=str(merged_sources.get(taiko_id) or "wahlap"),
+                settings=_SETTINGS,
             )
-            is_first_binding = True
-        else:
-            cursor.execute(
-                "update bind set id=%s, visible=%s where qq=%s",
-                (source_current_id, target_visible, target_identity_key),
-            )
-            is_first_binding = False
-
-        store[str(target_identity_key)] = {
-            "ids": merged_ids,
-            "current_index": merged_current_index,
-            "current_slot": merged_current_index + 1,
-            "sources": merged_sources,
-        }
-        _save_multi_bind_store(store)
-        db.commit()
+        proxy_center_bind_upsert(
+            target_identity_key,
+            source_current_id,
+            visible=target_visible,
+            source=str(merged_sources.get(source_current_id) or "wahlap"),
+            settings=_SETTINGS,
+        )
     except Exception:
-        try:
-            db.rollback()
-        except Exception:
-            pass
         raise
     finally:
         try:
@@ -2423,14 +2427,9 @@ def _migrate_bind_from_legacy_qq(
 
     BIND_VERIFY_SESSIONS.pop(target_identity_key, None)
     action_text = "完成迁移" if is_first_binding else "完成合并"
-    migrated_entry = {
-        "ids": merged_ids,
-        "current_index": merged_current_index,
-        "current_slot": merged_current_index + 1,
-        "sources": merged_sources,
-    }
+    migrated_entry = _get_current_bind_entry(target_identity_key)
     summary = _format_multi_bind_summary(migrated_entry)
-    current_source = _infer_bind_source(source_current_id, merged_sources)
+    current_source = str(merged_sources.get(source_current_id) or "wahlap")
     auto_update_tip = _build_bind_auto_update_tip(
         target_identity_key,
         source_current_id,
@@ -2661,117 +2660,49 @@ def _resolve_bind_remove_target(entry: Dict[str, Any], target: str) -> Tuple[int
 def _upsert_bind_record(
     qq: str, taiko_id: str, *, source: Optional[str] = None
 ) -> Tuple[str, bool]:
-    db = _get_taiko_db_connection()
-    cursor = db.cursor()
-    try:
-        qq = _normalize_identity_key(qq)
-        taiko_id = str(taiko_id).strip()
-        cursor.execute("select id from bind where qq=%s", (qq,))
-        row = cursor.fetchone()
-        current_db_id = str(row[0] or "").strip() if row else ""
-        store = _load_multi_bind_store()
-        entry = _ensure_multi_bind_entry(store, qq, current_db_id)
-        is_first_binding = row is None
-        if row is None:
-            cursor.execute("insert into bind values(%s,%s,%s)", (qq, taiko_id, 0))
-            entry = {
-                "ids": [taiko_id],
-                "current_index": 0,
-                "current_slot": 1,
-                "sources": {taiko_id: source or "wahlap"},
-            }
-            store[str(qq)] = entry
-            reply_msg = "绑定成功！已设为 u1。"
-        else:
-            if entry is None:
-                entry = {"ids": [], "current_index": 0, "sources": {}}
-            ids = list(entry.get("ids") or [])
-            if taiko_id in ids:
-                current_index = ids.index(taiko_id)
-                entry["current_index"] = current_index
-                entry["current_slot"] = current_index + 1
-                if source:
-                    _set_bind_source(entry, taiko_id, source)
-                if current_db_id != taiko_id:
-                    cursor.execute("update bind set id=%s where qq=%s", (taiko_id, qq))
-                    reply_msg = f"该ID已绑定，已切换到 u{current_index + 1}。"
-                else:
-                    reply_msg = f"该ID已绑定，当前使用 u{current_index + 1}。"
-            else:
-                ids.append(taiko_id)
-                entry["ids"] = ids
-                entry["current_index"] = len(ids) - 1
-                entry["current_slot"] = len(ids)
-                _set_bind_source(entry, taiko_id, source or "wahlap")
-                cursor.execute("update bind set id=%s where qq=%s", (taiko_id, qq))
-                reply_msg = f"新增绑定成功！已设为 u{len(ids)}。"
-            store[str(qq)] = entry
-        if row is None:
-            pass
-        _save_multi_bind_store(store)
-        db.commit()
-        summary = _format_multi_bind_summary(store.get(str(qq)))
-        return f"{reply_msg}\n当前绑定：{summary}", is_first_binding
-    finally:
-        try:
-            cursor.close()
-        except Exception:
-            pass
-        db.close()
+    qq = _normalize_identity_key(qq)
+    taiko_id = str(taiko_id).strip()
+    before_info = _get_taiko_bind_info_from_center(qq)
+    before_entry = _center_bind_info_to_entry(before_info)
+    existing_ids = _get_bind_ids(before_entry)
+    was_existing = taiko_id in existing_ids
+    after_info = proxy_center_bind_upsert(
+        qq,
+        taiko_id,
+        visible=int(before_info.get("visible") or 0) if before_info else 0,
+        source=str(source or "wahlap").strip().lower() or "wahlap",
+        settings=_SETTINGS,
+    )
+    after_entry = _center_bind_info_to_entry(after_info)
+    current_slot = int((after_info or {}).get("currentSlot") or 1)
+    if not existing_ids:
+        reply_msg = "绑定成功！已设为 u1。"
+    elif was_existing:
+        reply_msg = f"该ID已绑定，已切换到 u{current_slot}。"
+    else:
+        reply_msg = f"新增绑定成功！已设为 u{current_slot}。"
+    summary = _format_multi_bind_summary(after_entry)
+    return f"{reply_msg}\n当前绑定：{summary}", not existing_ids
 
 
 def _switch_bind_record(
     qq: str, slot_number: int, event: Optional[MessageEvent] = None
 ) -> Tuple[bool, str]:
-    db = _get_taiko_db_connection()
-    cursor = db.cursor()
-    try:
-        qq = _normalize_identity_key(qq)
-        cursor.execute("select id from bind where qq=%s", (qq,))
-        row = cursor.fetchone()
-        if row is None:
-            return False, _taiko_bind_usage_message(event)
-
-        current_db_id = str(row[0] or "").strip()
-        store = _load_multi_bind_store()
-        entry = _ensure_multi_bind_entry(store, qq, current_db_id)
-        if entry is None:
-            return False, "当前没有可切换的鼓众广场ID。"
-
-        ids = _get_bind_ids(entry)
-        has_virtual_slot = _has_virtual_bind_slot(entry)
-        if slot_number == 0:
-            if not has_virtual_slot:
-                return False, "当前至少需要绑定 2 个鼓众广场ID 后才能切换到 u0。"
-            entry["current_slot"] = 0
-            store[str(qq)] = entry
-            _save_multi_bind_store(store)
-            db.commit()
-            summary = _format_multi_bind_summary(entry)
-            return True, f"已切换到 u0：合并账户（只读）\n当前绑定：{summary}"
-
-        if slot_number < 1 or slot_number > len(ids):
-            if has_virtual_slot:
-                return False, f"当前仅已绑定 u0~u{len(ids)}。"
-            return False, f"当前仅已绑定 u1~u{len(ids)}。"
-
-        target_index = slot_number - 1
-        target_id = ids[target_index]
-        entry["current_index"] = target_index
-        entry["current_slot"] = slot_number
-        store[str(qq)] = entry
-        if current_db_id != target_id:
-            cursor.execute("update bind set id=%s where qq=%s", (target_id, qq))
-        _save_multi_bind_store(store)
-        db.commit()
-        summary = _format_multi_bind_summary(entry)
-        return True, f"已切换到 u{slot_number}：{target_id}\n当前绑定：{summary}"
-    finally:
-        try:
-            cursor.close()
-        except Exception:
-            pass
-        db.close()
+    qq = _normalize_identity_key(qq)
+    info = _get_taiko_bind_info_from_center(qq)
+    entry = _center_bind_info_to_entry(info)
+    if entry is None:
+        return False, _taiko_bind_usage_message(event)
+    ids = _get_bind_ids(entry)
+    if slot_number == 0:
+        return False, "u0 合并账户已停用，请直接使用 u1 / u2 这类真实槽位。"
+    if slot_number < 1 or slot_number > len(ids):
+        return False, f"当前仅已绑定 u1~u{len(ids)}。"
+    switched = proxy_center_bind_switch_current(qq, slot_number, settings=_SETTINGS)
+    switched_entry = _center_bind_info_to_entry(switched)
+    summary = _format_multi_bind_summary(switched_entry)
+    target_id = str((switched or {}).get("id") or ids[slot_number - 1])
+    return True, f"已切换到 u{slot_number}：{target_id}\n当前绑定：{summary}"
 
 
 def _remove_bind_record(
@@ -3966,38 +3897,28 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
             event,
             "开始绑定 Hiroba 账号",
         )
-        synced_ids = await asyncio.to_thread(
+        bind_result = await asyncio.to_thread(
             bind_hiroba_credentials,
             email=email,
             password=password,
             target_taiko_no=target_taiko_no,
             configured_by_qq=identity_key,
         )
+        synced_ids = list(bind_result.get("taikoIds") or [])
         if not synced_ids:
             if target_taiko_no:
                 raise RuntimeError(
                     f"该 Bandai Namco ID 下未找到太鼓番 {target_taiko_no}。"
                 )
             raise RuntimeError("未找到可绑定的 Hiroba 太鼓番。")
-
-        reply_msg = ""
-        for taiko_no in synced_ids:
-            reply_msg, _ = _upsert_bind_record(
-                identity_key, str(taiko_no), source="hiroba"
-            )
-
-        preferred_taiko_no = target_taiko_no or str(synced_ids[0])
-        entry = _get_current_bind_entry(identity_key)
-        preferred_slot_number = 1
-        if entry is not None:
-            ids = list(entry.get("ids") or [])
-            if preferred_taiko_no in ids:
-                preferred_slot_number = ids.index(preferred_taiko_no) + 1
-        ok, switch_msg = _switch_bind_record(
-            identity_key, preferred_slot_number, event=event
+        bind_info = bind_result.get("bind") if isinstance(bind_result.get("bind"), dict) else None
+        entry = _center_bind_info_to_entry(bind_info)
+        reply_msg = (
+            f"已切换到 u{int(bind_info.get('currentSlot') or 1)}：{bind_info.get('currentTaikoId') or bind_info.get('id')}\n"
+            f"当前绑定：{_format_multi_bind_summary(entry)}"
+            if bind_info
+            else f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}"
         )
-        if ok:
-            reply_msg = switch_msg
     except Exception as exc:
         await _finish_text_reply(bind_hiroba, event, f"Hiroba 绑定失败：{exc}")
         return
@@ -4032,6 +3953,8 @@ async def hiroba_update_handle(event: MessageEvent):
         flags=re.IGNORECASE,
     )
     show_all_changes = bool(show_all_match and show_all_match.group(1))
+    identity_key, _ = _resolve_requested_identity_key(event)
+    bind_info = _get_taiko_bind_info_from_center(identity_key)
 
     taiko_id = _resolve_bound_taiko_id(event)
     if taiko_id == 404:
@@ -4040,12 +3963,19 @@ async def hiroba_update_handle(event: MessageEvent):
     if taiko_id == 403:
         await _finish_text_reply(hiroba_update, event, "查不到呢，可能不给看哦~")
         return
+    if bind_info and str(bind_info.get("currentSource") or "wahlap") != "hiroba":
+        await _finish_text_reply(
+            hiroba_update,
+            event,
+            _build_update_command_hint(identity_key, expected_source="hiroba"),
+        )
+        return
 
     progress = _create_hiroba_progress_reporter(hiroba_update, event)
     await _send_text_reply_without_finish(
         hiroba_update,
         event,
-        f"开始更新 Hiroba 账号 {taiko_id}",
+        "开始通过 Hiroba 更新当前绑定账号成绩",
     )
     update_result = await asyncio.to_thread(
         _execute_hiroba_update,
@@ -4215,6 +4145,7 @@ async def update_handle(event: MessageEvent):
         return
     show_all_changes = bool(parsed_command.get("show_all"))
     identity_key, _ = _resolve_requested_identity_key(event)
+    bind_info = _get_taiko_bind_info_from_center(identity_key)
 
     taiko_id = _resolve_bound_taiko_id(event)
     if taiko_id == 404:
@@ -4222,6 +4153,13 @@ async def update_handle(event: MessageEvent):
         return
     if taiko_id == 403:
         await _finish_text_reply(update, event, "查不到呢，可能不给看哦~")
+        return
+    if bind_info and str(bind_info.get("currentSource") or "wahlap") != "wahlap":
+        await _finish_text_reply(
+            update,
+            event,
+            _build_update_command_hint(identity_key, expected_source="wahlap"),
+        )
         return
     update_result = await asyncio.to_thread(
         _execute_taiko_update,
@@ -4407,7 +4345,12 @@ async def trend_handle(event: MessageEvent):
     if not await _ensure_asset_resources_ready(trend, event, "core-assets"):
         return
     user_id = str(bind_target["user_id"])
-    img_buf = generate_rating_trend_image(user_id, **trend_args)
+    history_snapshots = ensure_userdata_history_available(user_id, settings=_SETTINGS)
+    img_buf = generate_rating_trend_image(
+        user_id,
+        history_snapshots=history_snapshots,
+        **trend_args,
+    )
     if not img_buf:
         await _finish_text_reply(
             trend, event, "暂无历史快照，请多次使用“taikoupdate”后再试"
@@ -4449,7 +4392,12 @@ async def playtrend_handle(event: MessageEvent):
     if not await _ensure_asset_resources_ready(playtrend, event, "core-assets"):
         return
     user_id = str(bind_target["user_id"])
-    img_buf = generate_rating_playcount_image(user_id, **playtrend_args)
+    history_snapshots = ensure_userdata_history_available(user_id, settings=_SETTINGS)
+    img_buf = generate_rating_playcount_image(
+        user_id,
+        history_snapshots=history_snapshots,
+        **playtrend_args,
+    )
     if not img_buf:
         await _finish_text_reply(
             playtrend,
@@ -4803,10 +4751,11 @@ async def taikob_handle(event: MessageEvent):
 
     if not result:
         await taikob.finish("请游玩鬼难度歌曲后再来使用哦~")
+    current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
 
     # 无附加参数：使用 b30 模板汇总图
     if not args:
-        img_buf = render_b30_image(taiko_id, N=N)
+        img_buf = render_b30_image(taiko_id, N=N, userdata=current_userdata)
         img_jpg = _to_jpeg_bytes(img_buf, quality=85)
         await _finish_image_reply(taikob, event, img_jpg)
         return
@@ -4814,7 +4763,12 @@ async def taikob_handle(event: MessageEvent):
     # 单维列表模式：只画该维度 TopN
     if dim is not None:
         img_buf = generate_dim_top_image(
-            result, N=N, dim=dim, user_id=taiko_id, font_path=TAIKOB_FONT_PATH
+            result,
+            N=N,
+            dim=dim,
+            user_id=taiko_id,
+            font_path=TAIKOB_FONT_PATH,
+            userdata=current_userdata,
         )
         img_jpg = _to_jpeg_bytes(img_buf, quality=85)
         await _finish_image_reply(taikob, event, img_jpg)
@@ -5267,7 +5221,10 @@ async def const_query_handle(event: MessageEvent, match=RegexMatched()):
             )
             return
 
-    rows = query_charts_by_const(const_value)
+    rows = query_charts_by_const(
+        const_value,
+        include_shelf_status=show_shelf_status,
+    )
     if not rows:
         png = render_const_query_notice(f"未找到定数 {const_value:g} 的曲目。")
         await _finish_image_reply(const_query, event, png)
@@ -5300,7 +5257,7 @@ async def const_query_handle(event: MessageEvent, match=RegexMatched()):
 async def note_count_handle(event: MessageEvent, match=RegexMatched()):
     number = match.group(1)
     print(type(number))
-    nc_data = json.load(open("songs/tja_note_counts.json", "r"))
+    nc_data = json.loads((SONGS_DIR / "tja_note_counts.json").read_text(encoding="utf-8"))
     res = find_by_volume(nc_data, int(number), "total")
     if len(res) != 0:
         msg = f"以下为对应物量的谱面：(共{len(res)}条)\n"
@@ -5337,6 +5294,7 @@ async def _(event: MessageEvent):
     if not await _ensure_asset_resources_ready(matcher, event, "core-assets"):
         return
     taiko_id = str(bind_target["user_id"])
+    current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
 
     dani_request = parse_dani_progress_request(text)
     if dani_request:
@@ -5345,6 +5303,7 @@ async def _(event: MessageEvent):
             grade_name=dani_request["grade"],
             version=dani_request["version"],
             explicit_version=dani_request.get("explicitVersion") == "1",
+            userdata=current_userdata,
         )
         await _finish_image_reply(matcher, event, png)
         return
@@ -5368,6 +5327,7 @@ async def _(event: MessageEvent):
                 user_id=taiko_id,
                 decimal=decimal,
                 page=page,
+                userdata=current_userdata,
             )
         elif mode in {"综合", "定数"}:
             if not dynamic_available:
@@ -5381,6 +5341,7 @@ async def _(event: MessageEvent):
                 user_id=taiko_id,
                 decimal=decimal,
                 page=page,
+                userdata=current_userdata,
             )
         else:
             if pass_available:
@@ -5388,12 +5349,14 @@ async def _(event: MessageEvent):
                     user_id=taiko_id,
                     decimal=decimal,
                     page=page,
+                    userdata=current_userdata,
                 )
             elif dynamic_available:
                 png = render_progress_image_bytes(
                     user_id=taiko_id,
                     decimal=decimal,
                     page=page,
+                    userdata=current_userdata,
                 )
             else:
                 return
@@ -5411,6 +5374,7 @@ async def _(event: MessageEvent):
             user_id=taiko_id,
             star_value=star_value,
             page=page,
+            userdata=current_userdata,
         )
         await _finish_image_reply(matcher, event, png)
         return
@@ -5427,6 +5391,7 @@ async def _(event: MessageEvent):
         progress_name=progress_name,
         assets_base=str(ASSETS_DIR),
         page=page,
+        userdata=current_userdata,
     )
     await _finish_image_reply(matcher, event, png)
 

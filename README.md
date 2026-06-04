@@ -4,7 +4,8 @@
 
 ## 1. 环境要求
 
-- Python `3.11` 推荐
+- Python `3.11` 推荐、也是当前主要测试版本
+- 实际可安装范围以 `pyproject.toml` 为准
 - Windows、Linux、macOS 均可运行
 - 一个可直连的 OneBot V11 客户端
 - 可访问 `https://viewer.sakura-bot.cn`
@@ -104,11 +105,15 @@ TAIKO_VIEWER_DEVELOPER_TOKEN=
 
 1. 拉取公共 JSON 数据到 `songs/`
 2. 检查 `assets/.bundle.sha256`
-3. 在资源缺失或版本变化时自动下载并解压最新资源包到 `assets/`
-4. 按需缓存用户成绩到 `storage/cache/userdata/`
-5. 按需缓存地图快照到 `storage/data/arcade_map_cache/`
+3. 在资源缺失或版本变化时自动后台下载并解压最新资源包到 `assets/`
+4. 按需同步地图快照到 `storage/data/arcade_map_cache/`
 
-如果本地没有可用资源且资源包下载失败，启动会失败；如果本地已有资源，则会继续使用现有资源。
+说明：
+
+- 绑定、当前槽位、成绩、历史都以 viewer 中心为准。
+- bot 本地不再把 `storage/cache/userdata/`、`taiko_multi_bind.json` 这类文件当作权威数据源。
+- 首次完整资源同步在普通网络环境下可能接近 15 分钟。
+- bot 进程会先启动；资源未就绪时，图片类功能会提示稍后再试，不会因为大资源包下载而卡死整个启动流程。
 
 ## 5. 启动 Bot
 
@@ -158,10 +163,14 @@ python bot.py
 - `POST /local-api/v1/public/sync`
 - `POST /local-api/v1/arcades/sync`
 - `GET /local-api/v1/arcades/query?city=鞍山`
-- `GET/PUT /local-api/v1/runtime/multi-bind`
-- `GET/PUT /local-api/v1/runtime/draw-guess`
-- `GET/PUT /local-api/v1/userdata/{user_id}`
+- `GET /local-api/v1/userdata/{user_id}`
 - `GET /local-api/v1/userdata/{user_id}/history`
+- `GET/PUT /local-api/v1/runtime/draw-guess`
+
+以下接口已经停用，会返回 `410 Gone`：
+
+- `GET/PUT /local-api/v1/runtime/multi-bind`
+- `PUT /local-api/v1/userdata/{user_id}`
 
 如果你确实需要把它单独起成第二个进程：
 
@@ -217,5 +226,5 @@ source .venv/bin/activate
 - 成绩更新：`taikoupdate`、`更新广场`、`更新hiroba`
 - 成绩查询：`b30`、进度图、查分、总结图、词云
 - 地图查询：`xx哪有鼓`
-- 绑定与多账号：绑定、切换账号、多号合并读取
-- 本地维护接口：公共数据同步、地图同步、运行态存储、用户缓存历史
+- 绑定与多账号：绑定、切换账号；当前槽位由 viewer 中心统一维护
+- 本地维护接口：公共数据同步、地图同步、运行态存储、中心数据代理查询
