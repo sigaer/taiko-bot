@@ -96,6 +96,33 @@ def load_hiroba_credentials(taiko_no: str) -> Optional[Tuple[str, str]]:
         db.close()
 
 
+def load_hiroba_credential_owner(taiko_no: str) -> Optional[str]:
+    ensure_hiroba_credentials_table()
+    db = get_taiko_db_connection()
+    cursor = db.cursor()
+    try:
+        cursor.execute(
+            """
+            SELECT configured_by_qq
+            FROM web_hiroba_credentials
+            WHERE taiko_no=%s
+            LIMIT 1
+            """,
+            (str(taiko_no),),
+        )
+        row = cursor.fetchone()
+        if not row:
+            return None
+        owner = str(row[0] or "").strip()
+        return owner or None
+    finally:
+        try:
+            cursor.close()
+        except Exception:
+            pass
+        db.close()
+
+
 def delete_hiroba_credentials(taiko_no: str) -> None:
     ensure_hiroba_credentials_table()
     db = get_taiko_db_connection()

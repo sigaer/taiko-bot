@@ -46,6 +46,13 @@ from .utils.song_visibility import (
     is_song_id_publicly_visible,
     is_song_publicly_visible,
 )
+from .utils.hiroba.client import HirobaClient, HirobaError, HirobaProfilePrivateError
+from .utils.hiroba.credentials import (
+    ensure_hiroba_credentials_table,
+    load_hiroba_credential_owner,
+    load_hiroba_credentials,
+)
+from .utils.hiroba.parser import parse_profile
 from .utils.arcade_map import (
     CityShopQueryResult,
     build_tencent_map_location_json,
@@ -93,7 +100,7 @@ from nonebot.permission import SUPERUSER
 from nonebot.rule import Rule
 from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.matcher import Matcher
-from typing import Dict, Any, Tuple, List, Optional, Set
+from typing import Dict, Any, Tuple, List, Optional, Set, Sequence
 from taiko_bot.settings import get_settings
 from taiko_bot.public_data import ensure_asset_resource_available
 from taiko_bot.userdata_provider import (
@@ -164,6 +171,7 @@ ALIAS_LOG_PATH = ROOT_DIR / "logs" / "alias_action_log.json"
 REGION_MAP_PATH = SONGS_DIR / "region_map.json"
 TAIKO_FORUM_BASE_URL = _SETTINGS.viewer_base_url
 DEVELOPER_QQ_EXPORT_DIR = ROOT_DIR / "output" / "developer_userdata_exports"
+HIROBA_SERVICE_TAIKO_NO = "862074224984"
 BIND_VERIFY_TIMEOUT_SECONDS = 600
 BIND_VERIFY_BYPASS_IDS = {"2258735"}
 BIND_VERIFY_SESSIONS: Dict[str, Dict[str, Any]] = {}
@@ -260,6 +268,10 @@ DIFF_MAP = {
 }
 ALIAS_QUERY_REGEX = re.compile(r"^(?P<q>.+?)有什么别名[？?]?$")
 WHAT_SONG_REGEX = re.compile(r"^(?P<q>.+?)是什么歌[？?]?$")
+WHAT_SONG_OFFICIAL_PATTERNS = (
+    re.compile(r"^(?:taiko|太鼓)\s+(?P<q>.+?)是什么歌[？?]?$", re.IGNORECASE),
+    re.compile(r"^(?:taiko|太鼓)\s*(?:什么歌|是啥歌)\s+(?P<q>.+)$", re.IGNORECASE),
+)
 SONG_WHERE_REGEX = re.compile(r"^(?P<q>.+?)歌在哪[？?]?$")
 SONG_POSITION_REGEX = re.compile(r"^(?P<q>.+?)在什么位置[？?]?$")
 SONG_POS_BY_ID_REGEX = re.compile(r"^位置\s*(?:id)?\s*(?P<id>\d+)\s*[？?]?$")
@@ -294,6 +306,7 @@ TCLOUD_COMMAND_PATTERN = re.compile(
 )
 UPDATE_TYPO_TARGET = "taikoupdate"
 UPDATE_TYPO_ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+_TAIKOB_DIM_WRAPPER_CHARS = "[]【】()（）<>《》「」『』"
 
 
 def _build_single_edit_variants(target: str) -> Set[str]:
@@ -321,6 +334,21 @@ UPDATE_TYPO_VARIANTS = _build_single_edit_variants(UPDATE_TYPO_TARGET)
 def _normalize_update_command_text(text: str) -> str:
     normalized = str(text or "").lstrip().lower()
     return normalized[1:] if normalized.startswith("/") else normalized
+
+
+def _is_hiroba_taiko_no(taiko_id: str) -> bool:
+    return bool(re.fullmatch(r"\d{12}", str(taiko_id or "").strip()))
+
+
+def _is_wahlap_taiko_id(taiko_id: str) -> bool:
+    return bool(re.fullmatch(r"\d{5,11}", str(taiko_id or "").strip()))
+
+
+def _normalize_bind_input(raw: str) -> str:
+    text = str(raw or "").strip()
+    if text.startswith("+"):
+        text = text[1:].strip()
+    return text
 
 
 def _normalize_slash_command_text(text: str) -> str:
@@ -494,6 +522,26 @@ def _parse_playtrend_args(arg_text: str) -> Dict[str, Any]:
     }
 
 
+def _resolve_taikob_dim_arg(args: Sequence[str]) -> Optional[str]:
+    pending_dim_flag = False
+    for raw_token in args:
+        token = str(raw_token or "").strip()
+        if not token or token.lower() == "-r":
+            continue
+        if pending_dim_flag:
+            normalized = token.strip(_TAIKOB_DIM_WRAPPER_CHARS).strip()
+            return DIM_ALIASES.get(normalized)
+        if re.fullmatch(r"(?:-d|--dim|维度)", token, flags=re.IGNORECASE):
+            pending_dim_flag = True
+            continue
+        if token.startswith(("--dim=", "-d=", "维度=")):
+            token = token.split("=", 1)[1]
+        normalized = token.strip(_TAIKOB_DIM_WRAPPER_CHARS).strip()
+        if normalized in DIM_ALIASES:
+            return DIM_ALIASES[normalized]
+    return None
+
+
 DIFF_MAP_REVERSE = {
     "InnerOni": "里谱",
     "Oni": "魔王",
@@ -577,7 +625,6 @@ QQ_OFFICIAL_UNSUPPORTED_MESSAGE = (
 )
 QQ_OFFICIAL_UNSUPPORTED_PATTERNS = [
     re.compile(r"^(?:开发者数据|taikodevdata)\b", re.IGNORECASE),
-    re.compile(r"^(?:网页成绩token|成绩token|scoretoken|获取token)\b", re.IGNORECASE),
     re.compile(r"^taiko2025$", re.IGNORECASE),
     re.compile(r"^cover\s*\d+", re.IGNORECASE),
     re.compile(r"^(开启|关闭)(pjsk|taiko|mai)功能$"),
@@ -639,6 +686,24 @@ def _is_qq_official_unsupported_command(event: MessageEvent) -> bool:
 
 def _is_qq_official_event(event: MessageEvent) -> bool:
     return is_qq_official_event(event)
+
+
+def _extract_official_what_song_query(text: str) -> Optional[str]:
+    normalized = str(text or "").strip()
+    for pattern in WHAT_SONG_OFFICIAL_PATTERNS:
+        match = pattern.match(normalized)
+        if not match:
+            continue
+        query = str(match.group("q") or "").strip()
+        if query:
+            return query
+    return None
+
+
+def _should_handle_what_song(event: MessageEvent) -> bool:
+    if not is_qq_official_event(event):
+        return True
+    return _extract_official_what_song_query(extract_plain_text(event)) is not None
 
 
 def _is_private_message_event(event: MessageEvent) -> bool:
@@ -2173,6 +2238,43 @@ def _create_hiroba_progress_reporter(
     return report
 
 
+async def _finish_hiroba_update_success_reply(
+    matcher: Matcher,
+    event: MessageEvent,
+    *,
+    success_message: str,
+    img_buf: bytes | BytesIO | Path | None,
+    show_all_changes: bool = False,
+) -> None:
+    final_message = str(success_message or "Hiroba 更新成功！")
+    if show_all_changes:
+        final_message += "\n已展示全部变更。"
+
+    if img_buf is not None:
+        try:
+            await _finish_image_reply(
+                matcher,
+                event,
+                img_buf,
+                prefix_text=final_message,
+                quick_actions=True,
+                prefer_markdown_image=True,
+                markdown_image_name="hirobaupdate",
+            )
+            return
+        except FinishedException:
+            raise
+        except Exception:
+            logger.exception("hiroba success image reply failed")
+
+    await _finish_text_reply(
+        matcher,
+        event,
+        final_message,
+        quick_actions=True,
+    )
+
+
 async def _fetch_bind_player_profile(
     user_id: str,
 ) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
@@ -2193,6 +2295,32 @@ def _extract_bind_title_info(profile: Dict[str, Any]) -> Tuple[str, int]:
     except Exception:
         titleplate_id = -1
     return title, titleplate_id
+
+
+def _build_bind_profile_from_hiroba_public_profile(profile) -> Dict[str, Any]:
+    return {
+        "userid": str(profile.taiko_no or "").strip(),
+        "mydon_name": str(profile.nickname or profile.taiko_no).strip(),
+        "province": str(getattr(profile, "region", "") or "").strip(),
+        "gameCostume": {
+            "title": str(profile.title or "").strip(),
+            "titleplate_id": 0,
+        },
+    }
+
+
+def _fetch_hiroba_public_profile_via_service_account(taiko_id: str):
+    ensure_hiroba_credentials_table()
+    creds = load_hiroba_credentials(HIROBA_SERVICE_TAIKO_NO)
+    if creds is None:
+        raise RuntimeError(
+            f"未配置 Hiroba 服务账号 {HIROBA_SERVICE_TAIKO_NO} 的登录凭据。"
+        )
+    email, password = creds
+    client = HirobaClient(timeout=30)
+    client.login(email, password, taiko_no=HIROBA_SERVICE_TAIKO_NO)
+    html = client.fetch_public_profile(taiko_id)
+    return parse_profile(html)
 
 
 def _get_bind_verify_session(qq: str) -> Optional[Dict[str, Any]]:
@@ -2243,6 +2371,52 @@ def _build_bind_title_unchanged_message(
 
 def _should_skip_bind_verification(taiko_id: str) -> bool:
     return str(taiko_id).strip() in BIND_VERIFY_BYPASS_IDS
+
+
+def _can_direct_bind_hiroba_id(identity_key: str, taiko_id: str) -> Tuple[bool, str]:
+    normalized_identity_key = _normalize_identity_key(identity_key)
+    normalized_taiko_id = str(taiko_id or "").strip()
+    if not _is_hiroba_taiko_no(normalized_taiko_id):
+        return False, "请输入正确的鼓众广场ID。"
+    owner = load_hiroba_credential_owner(normalized_taiko_id)
+    if owner and owner != normalized_identity_key:
+        return (
+            False,
+            "该 12 位 Hiroba 太鼓番已由其他账号配置过 Hiroba 凭据，"
+            "为防止冒绑，请改用“绑定hiroba 邮箱 密码 太鼓番”完成验证。",
+        )
+    if not _has_center_hiroba_credentials_cached(normalized_taiko_id):
+        return (
+            False,
+            "该日服/Hiroba 太鼓番尚未在中心保存凭据。\n"
+            "请先发送“绑定hiroba 邮箱 密码 太鼓番”完成首次验证与同步。",
+        )
+    bind_info = _get_taiko_bind_info_from_center(normalized_identity_key)
+    if bind_info is None:
+        return True, ""
+    bindings = bind_info.get("bindings") or []
+    if any(
+        str(getattr(item, "taiko_id", "") or "").strip() == normalized_taiko_id
+        for item in bindings
+    ):
+        return True, ""
+    return True, ""
+
+
+def _finalize_hiroba_direct_bind(identity_key: str, taiko_id: str) -> str:
+    reply_msg, is_first_binding = _upsert_bind_record(identity_key, taiko_id, source="hiroba")
+    auto_update_tip = _build_bind_auto_update_tip(
+        identity_key,
+        taiko_id,
+        is_first_binding,
+        source="hiroba",
+    )
+    return (
+        "已按日服/Hiroba 太鼓番绑定。\n"
+        f"{reply_msg}\n"
+        "如需后续同步，请发送“更新hiroba”。"
+        f"{auto_update_tip}"
+    )
 
 
 def _build_bind_auto_update_tip(
@@ -3717,6 +3891,18 @@ async def qq_official_ping_handle(event: MessageEvent):
 
 
 bind_qq = on_regex(r"(?i)^/?绑定\s*qq\s*([1-9]\d{4,11})$", rule=taiko_rule)
+bind_qq_prompt = on_fullmatch("绑定QQ", rule=taiko_rule)
+
+
+@bind_qq_prompt.handle()
+async def bind_qq_prompt_handle(event: MessageEvent):
+    await _finish_text_reply(
+        bind_qq_prompt,
+        event,
+        "快捷绑定需要手动输入 QQ 号。\n"
+        "请发送“绑定QQ 你的QQ号”继续。\n"
+        "注意：官 bot 无法直接获取你的 QQ 号，所以点按钮后不会自动完成绑定。",
+    )
 
 
 @bind_qq.handle()
@@ -3731,14 +3917,75 @@ async def bind_qq_handle(event: MessageEvent, match=RegexMatched()):
     await _finish_text_reply(bind_qq, event, reply_msg, quick_actions=success)
 
 
-bind = on_regex(r"^/?绑定\s?([0-9]{0,12})$", rule=taiko_rule)
+bind = on_regex(r"^/?绑定(?:\s+|\+)?([0-9]{0,12})$", rule=taiko_rule)
 
 
 @bind.handle()
 async def bind_handle(event: MessageEvent, match=RegexMatched()):
     identity_key = _normalize_identity_key(get_identity_key(event=event))
-    taiko_id = str(match.group(1) or "").strip()
-    if len(taiko_id) < 5:
+    taiko_id = _normalize_bind_input(match.group(1) or "")
+    if not taiko_id:
+        await _finish_text_reply(bind, event, "请输入正确的鼓众广场ID。")
+    if _is_hiroba_taiko_no(taiko_id):
+        ok, message = _can_direct_bind_hiroba_id(identity_key, taiko_id)
+        if not ok:
+            await _finish_text_reply(bind, event, message)
+        try:
+            hiroba_profile = await asyncio.to_thread(
+                _fetch_hiroba_public_profile_via_service_account,
+                taiko_id,
+            )
+        except HirobaProfilePrivateError:
+            await _finish_text_reply(
+                bind,
+                event,
+                "该 Hiroba 账号当前为非公开资料，服务账号无法读取称号信息。\n"
+                "请先发送“绑定hiroba 邮箱 密码 太鼓番”完成登录验证。",
+            )
+        except HirobaError as e:
+            await _finish_text_reply(bind, event, f"读取 Hiroba 公开资料失败：{e}")
+        except Exception as e:
+            await _finish_text_reply(bind, event, f"读取 Hiroba 公开资料失败：{e}")
+
+        profile = _build_bind_profile_from_hiroba_public_profile(hiroba_profile)
+        current_title, current_titleplate_id = _extract_bind_title_info(profile)
+        player_name = str(profile.get("mydon_name") or taiko_id).strip() or taiko_id
+        province = str(profile.get("province") or "").strip()
+
+        existing_session = _get_bind_verify_session(identity_key)
+        if (
+            existing_session is not None
+            and str(existing_session.get("taiko_id") or "").strip() == taiko_id
+        ):
+            if _bind_title_changed(existing_session, profile):
+                try:
+                    reply_msg = _finalize_hiroba_direct_bind(identity_key, taiko_id)
+                except Exception as e:
+                    await _finish_text_reply(bind, event, f"写入绑定失败：{e}")
+                BIND_VERIFY_SESSIONS.pop(identity_key, None)
+                await _finish_text_reply(bind, event, reply_msg, quick_actions=True)
+            await _finish_text_reply(
+                bind,
+                event,
+                _build_bind_title_unchanged_message(
+                    existing_session, current_title, taiko_id
+                ),
+            )
+
+        BIND_VERIFY_SESSIONS[identity_key] = {
+            "taiko_id": taiko_id,
+            "title": current_title,
+            "titleplate_id": current_titleplate_id,
+            "player_name": player_name,
+            "province": province,
+            "expires_at": _now_ts() + BIND_VERIFY_TIMEOUT_SECONDS,
+        }
+        await _finish_text_reply(
+            bind,
+            event,
+            _build_bind_verify_prompt(player_name, taiko_id, current_title, province),
+        )
+    if not _is_wahlap_taiko_id(taiko_id):
         await _finish_text_reply(bind, event, "请输入正确的鼓众广场ID。")
 
     profile, err = await _fetch_bind_player_profile(taiko_id)
@@ -3996,17 +4243,13 @@ async def hiroba_update_handle(event: MessageEvent):
     success_message = str(update_result.get("message") or "Hiroba 更新成功！")
     if show_all_changes:
         success_message += "\n已展示全部变更。"
-    if img_buf is not None:
-        await _finish_image_reply(
-            hiroba_update,
-            event,
-            img_buf,
-            prefix_text=success_message,
-            quick_actions=True,
-            prefer_markdown_image=True,
-            markdown_image_name="hirobaupdate",
-        )
-    await _finish_text_reply(hiroba_update, event, success_message, quick_actions=True)
+    await _finish_hiroba_update_success_reply(
+        hiroba_update,
+        event,
+        success_message=success_message,
+        img_buf=img_buf,
+        show_all_changes=show_all_changes,
+    )
 
 
 bind_remove = on_regex(
@@ -4715,14 +4958,7 @@ async def taikob_handle(event: MessageEvent):
     # 解析 -r
     dynamic_origin = any(a.lower() == "-r" for a in args)
 
-    # 解析维度（出现任意一个匹配即进入“单维列表模式”）
-    dim = None
-    for a in args:
-        if a.lower() == "-r":
-            continue
-        if a in DIM_ALIASES:
-            dim = DIM_ALIASES[a]
-            break
+    dim = _resolve_taikob_dim_arg(args)
 
     bind_target = _resolve_read_bind_target_safe(event)
     if bind_target == 404:
@@ -6134,7 +6370,10 @@ async def city_arcade_query_handle(bot: Bot, event: MessageEvent):
 # 例：千本桜是什么歌
 # 这里用正则捕获 xx
 what_song = on_regex(
-    WHAT_SONG_REGEX.pattern, priority=10, rule=taiko_rule & tsearch_rule, block=True
+    WHAT_SONG_REGEX.pattern,
+    priority=10,
+    rule=taiko_rule & tsearch_rule & Rule(_should_handle_what_song),
+    block=True,
 )
 
 
@@ -6152,11 +6391,15 @@ async def _(matcher: Matcher, event: MessageEvent):
         # await matcher.finish("您似乎复制粘贴了'@菌菌'3个字符，这是个无法复制的指令哦~")
         await matcher.finish()
 
+    raw_q = ""
     m = WHAT_SONG_REGEX.match(msg_text)
-    if not m:
+    if m:
+        raw_q = m.group("q").strip()
+    elif is_qq_official_event(event):
+        raw_q = _extract_official_what_song_query(msg_text) or ""
+    if not raw_q:
         await matcher.finish("格式不正确，应为：xx是什么歌")
 
-    raw_q = m.group("q").strip()
     if not raw_q:
         await matcher.finish("请提供要查询的关键词，例如：千本桜是什么歌")
 

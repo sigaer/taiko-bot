@@ -27,6 +27,10 @@ class HirobaError(Exception):
     pass
 
 
+class HirobaProfilePrivateError(HirobaError):
+    pass
+
+
 class HirobaSessionExpiredError(HirobaError):
     pass
 
@@ -559,5 +563,22 @@ class HirobaClient:
         if _is_login_page_response(resp):
             raise HirobaSessionExpiredError(
                 "Donder Hiroba session expired before reading score_detail.php"
+            )
+        return resp.text
+
+    def fetch_public_profile(self, taiko_no: str) -> str:
+        resp = self.session.get(
+            f"{HIROBA_ORIGIN}/user_profile.php",
+            params={"taiko_no": str(taiko_no).strip()},
+            timeout=self.timeout,
+        )
+        resp.raise_for_status()
+        if _is_login_page_response(resp):
+            raise HirobaSessionExpiredError(
+                "Donder Hiroba session expired before reading user_profile.php"
+            )
+        if "プロフィール非公開のため閲覧できません" in resp.text:
+            raise HirobaProfilePrivateError(
+                f"Hiroba profile {taiko_no} is private"
             )
         return resp.text
