@@ -7,7 +7,10 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
 from taiko_bot.settings import get_settings
+
+from .evaluation_roll import compute_rating_roll_breakdown
 
 BASE = get_settings().root_dir
 SCORE_PATH = BASE / "songs" / "song_score.json"
@@ -317,13 +320,9 @@ def compute_scoreline_result(
     ok_points = _safe_int(entry.get("ok_points"), 0)
     delta = good_points - ok_points
     target_score = _safe_int((entry.get("rating_scores") or {}).get(rating_key), 0)
-    roll_times = entry.get("roll_times") or []
-    balloon_hits = _safe_int(entry.get("balloon_hits"), 0)
-    roll_hits = compute_roll_hits(
-        roll_times if isinstance(roll_times, list) else [],
-        speed_ips,
-        balloon_hits,
-    )
+    roll_breakdown = compute_rating_roll_breakdown(entry, speed_ips)
+    roll_hits = roll_breakdown.effective_roll_hits
+    balloon_hits = roll_breakdown.raw_balloon_hits
     roll_score = roll_hits * 100
     max_score = note_count * good_points + roll_score
     min_score = note_count * ok_points + roll_score
@@ -337,6 +336,10 @@ def compute_scoreline_result(
             "target_score": target_score,
             "roll_hits": roll_hits,
             "balloon_hits": balloon_hits,
+            "roll_adjusted": roll_breakdown.adjusted,
+            "preserved_balloon_hits": roll_breakdown.preserved_balloon_hits,
+            "replaced_balloon_hits": roll_breakdown.replaced_balloon_hits,
+            "special_balloon_seconds": roll_breakdown.special_balloon_seconds,
             "roll_score": roll_score,
             "max_ok": -1,
             "good_points": good_points,
@@ -355,6 +358,10 @@ def compute_scoreline_result(
         "target_score": target_score,
         "roll_hits": roll_hits,
         "balloon_hits": balloon_hits,
+        "roll_adjusted": roll_breakdown.adjusted,
+        "preserved_balloon_hits": roll_breakdown.preserved_balloon_hits,
+        "replaced_balloon_hits": roll_breakdown.replaced_balloon_hits,
+        "special_balloon_seconds": roll_breakdown.special_balloon_seconds,
         "roll_score": roll_score,
         "max_ok": int(max_ok),
         "good_points": good_points,
@@ -426,8 +433,23 @@ def format_scoreline_message(
     roll_score = int(result["roll_score"])
     speed_text = str(int(request.speed_ips))
     roll_times = entry.get("roll_times") or []
+    roll_adjusted = bool(result.get("roll_adjusted"))
+    preserved_balloon_hits = int(result.get("preserved_balloon_hits", balloon_hits))
+    replaced_balloon_hits = int(result.get("replaced_balloon_hits", 0))
+    special_balloon_seconds = float(result.get("special_balloon_seconds", 0.0))
     if not roll_times and balloon_hits <= 0:
         roll_note = "无连打，秒速不影响结果"
+    elif roll_adjusted:
+        preserved_note = (
+            f"，另保留常规气球 {preserved_balloon_hits} 打"
+            if preserved_balloon_hits > 0
+            else ""
+        )
+        roll_note = (
+            f"预计连打得分：{roll_score}（{roll_hits} 打，"
+            f"特殊气球按 {special_balloon_seconds:.1f} 秒连打处理，"
+            f"替代原 {replaced_balloon_hits} 打{preserved_note}）"
+        )
     elif balloon_hits > 0:
         roll_note = f"预计连打得分：{roll_score}（{roll_hits} 打，含气球 {balloon_hits} 打）"
     else:

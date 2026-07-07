@@ -40,6 +40,17 @@ from .utils.score_line import (
     get_scoreline_entry,
     parse_scoreline_request,
 )
+from .utils.target_recommend import (
+    compute_target_recommendations_for_user,
+    parse_target_recommendation_request,
+    target_recommendation_displays,
+)
+from .utils.target_recommend_render import render_target_recommendation_image_bytes
+from .utils.taikob_v2 import (
+    V2_TAIKOB_DIM_ALIASES,
+    render_b20_v2_dim_image,
+    render_b20_v2_image,
+)
 from .utils.twso import find_player
 from .utils.song_position import format_position_reply, get_song_position_by_id
 from .utils.song_visibility import (
@@ -217,6 +228,7 @@ DIM_ALIASES = {
     "高速": "speed",
     "高速处理": "speed",
 }
+TAIKOB_V2_DIM_USAGE = "体力、手速、爆发、精度、节奏、复合"
 TREND_DIM_ALIASES = {
     "rating": "综合Rating",
     "综合": "综合Rating",
@@ -523,23 +535,41 @@ def _parse_playtrend_args(arg_text: str) -> Dict[str, Any]:
 
 
 def _resolve_taikob_dim_arg(args: Sequence[str]) -> Optional[str]:
+    selected_dim, _ = _parse_taikob_dim_arg(args, DIM_ALIASES)
+    return selected_dim
+
+
+def _parse_taikob_dim_arg(
+    args: Sequence[str], alias_map: Dict[str, str]
+) -> Tuple[Optional[str], List[str]]:
     pending_dim_flag = False
+    selected_dim: Optional[str] = None
+    unknown_tokens: List[str] = []
     for raw_token in args:
         token = str(raw_token or "").strip()
         if not token or token.lower() == "-r":
             continue
         if pending_dim_flag:
             normalized = token.strip(_TAIKOB_DIM_WRAPPER_CHARS).strip()
-            return DIM_ALIASES.get(normalized)
+            resolved = alias_map.get(normalized)
+            if resolved is None:
+                unknown_tokens.append(token)
+            elif selected_dim is None:
+                selected_dim = resolved
+            pending_dim_flag = False
+            continue
         if re.fullmatch(r"(?:-d|--dim|维度)", token, flags=re.IGNORECASE):
             pending_dim_flag = True
             continue
         if token.startswith(("--dim=", "-d=", "维度=")):
             token = token.split("=", 1)[1]
         normalized = token.strip(_TAIKOB_DIM_WRAPPER_CHARS).strip()
-        if normalized in DIM_ALIASES:
-            return DIM_ALIASES[normalized]
-    return None
+        if normalized in alias_map:
+            if selected_dim is None:
+                selected_dim = alias_map[normalized]
+        else:
+            unknown_tokens.append(token)
+    return selected_dim, unknown_tokens
 
 
 DIFF_MAP_REVERSE = {
@@ -4954,6 +4984,7 @@ async def taikob_handle(event: MessageEvent):
     N = int(m.group(1))
     arg_str = (m.group(2) or "").strip()
     args = arg_str.split() if arg_str else []
+    use_v2 = any(str(arg).lower() == "v2" for arg in args)
 
     # 解析 -r
     dynamic_origin = any(a.lower() == "-r" for a in args)
@@ -4977,6 +5008,34 @@ async def taikob_handle(event: MessageEvent):
     ):
         return
     taiko_id = str(bind_target["user_id"])
+    current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
+
+    if use_v2:
+        extra_args = [arg for arg in args if str(arg).lower() != "v2"]
+        v2_dim, v2_unknown_tokens = _parse_taikob_dim_arg(
+            extra_args, V2_TAIKOB_DIM_ALIASES
+        )
+        if N != 20:
+            await taikob.finish("v2 目前仅支持 taikob20 v2")
+        if dynamic_origin:
+            await taikob.finish("taikob20 v2 暂不支持 -r 参数")
+        if v2_unknown_tokens:
+            await taikob.finish(f"taikob20 v2 仅支持单维度参数：{TAIKOB_V2_DIM_USAGE}")
+        try:
+            if v2_dim is not None and v2_dim != "综合Rating":
+                img_buf = render_b20_v2_dim_image(
+                    taiko_id,
+                    dim=v2_dim,
+                    N=N,
+                    font_path=TAIKOB_FONT_PATH,
+                )
+            else:
+                img_buf = render_b20_v2_image(taiko_id)
+        except FileNotFoundError:
+            await taikob.finish("缺少 taikob20 v2 数据文件，请先同步公共曲库后再试")
+        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
+        await _finish_image_reply(taikob, event, img_jpg)
+        return
 
     try:
         result = compute_all_from_userdata(taiko_id)
@@ -4987,7 +5046,6 @@ async def taikob_handle(event: MessageEvent):
 
     if not result:
         await taikob.finish("请游玩鬼难度歌曲后再来使用哦~")
-    current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
 
     # 无附加参数：使用 b30 模板汇总图
     if not args:
@@ -5877,6 +5935,56 @@ async def taikorec_handle(event: MessageEvent):
     m = re.match(r"^(?:taikorec|推荐歌曲)\s*(.*)$", msg_text, flags=re.IGNORECASE)
     tail = (m.group(1) if m else "") or ""
     tail = tail.strip()
+    if tail:
+        target_key, target_star_filter, target_error = parse_target_recommendation_request(
+            tail
+        )
+        if target_key:
+            if target_error == "too_many_args":
+                await _finish_text_reply(
+                    taikorec,
+                    event,
+                    "目标推荐固定返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星",
+                )
+            if target_error == "invalid_star":
+                await _finish_text_reply(
+                    taikorec,
+                    event,
+                    "难度筛选仅支持 1-10、1星-10星 或 一星-十星。示例：推荐歌曲 紫雅 9星",
+                )
+            try:
+                current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
+                result = compute_target_recommendations_for_user(
+                    taiko_id,
+                    target_key,
+                    star_filter=target_star_filter,
+                )
+            except FileNotFoundError:
+                await _finish_text_reply(
+                    taikorec,
+                    event,
+                    "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+                )
+            except Exception:
+                logger.exception("target recommendation failed: user_id=%s", taiko_id)
+                await _finish_text_reply(
+                    taikorec, event, "目标推荐计算失败，请检查曲库/数据匹配是否正常"
+                )
+
+            if not result.is_enough:
+                await _finish_text_reply(taikorec, event, result.message)
+
+            img_buf = render_target_recommendation_image_bytes(
+                taiko_id,
+                current_userdata,
+                result.target_display,
+                result.rows,
+                assets_base=ASSETS_DIR,
+                font_path=FONT_PATH,
+            )
+            await _finish_image_reply(taikorec, event, img_buf)
+            return
+
     dim_in = "rating"
     n_in = "20"
     if tail:
@@ -5901,7 +6009,8 @@ async def taikorec_handle(event: MessageEvent):
         await _finish_text_reply(
             taikorec,
             event,
-            "维度不支持。可用：rating/综合、大歌力、体力、高速处理、精度力、节奏处理、复合处理",
+            "维度不支持。可用：rating/综合、大歌力、体力、高速处理、精度力、节奏处理、复合处理；目标推荐可用："
+            + target_recommendation_displays(),
         )
 
     try:

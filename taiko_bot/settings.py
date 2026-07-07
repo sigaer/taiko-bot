@@ -18,6 +18,7 @@ PUBLIC_DATA_FILES = {
     "song_score": "song_score.json",
     "song_data_with_roll": "song_data_with_roll.json",
     "taiko_goku_onis": "taiko_goku_onis.json",
+    "constants_id_v2": "constants_id_v2.csv",
     "grade_dojo_nijiiro_2025_simple": "grade_dojo_nijiiro_2025_simple.json",
     "grade_dojo_nijiiro_history_simple": "grade_dojo_nijiiro_history_simple.json",
     "analyze_result_filtered": "analyze_result_filtered.json",

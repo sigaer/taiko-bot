@@ -4,7 +4,7 @@ from pathlib import Path
 from zipfile import ZipFile
 
 from taiko_bot import public_data
-from taiko_bot.settings import Settings
+from taiko_bot.settings import PUBLIC_DATA_FILES, Settings
 
 
 def _make_settings(tmp_path: Path) -> Settings:
@@ -179,3 +179,7 @@ def test_sync_asset_resource_falls_back_to_legacy_bundle(tmp_path, monkeypatch):
     summary = public_data.get_asset_sync_summary(settings)
     assert "fumens-assets" in summary["installedResources"]
     assert summary["resources"]["fumens-assets"]["state"] == "installed"
+
+
+def test_public_data_files_include_v2_constants_csv():
+    assert PUBLIC_DATA_FILES["constants_id_v2"] == "constants_id_v2.csv"
