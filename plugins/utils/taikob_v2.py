@@ -18,6 +18,7 @@ ROOT_DIR = get_settings().root_dir
 V2_CONSTANTS_CSV = ROOT_DIR / "songs" / "constants_id_v2.csv"
 
 DIFFICULTY_MAP = {
+    "hard": 3,
     "oni": 4,
     "edit": 5,
 }
@@ -302,7 +303,7 @@ def compute_all_v2_from_userdata_records(
     deduped: Dict[Tuple[str, int, int], V2RatingResult] = {}
     for entry in userdata_records:
         result = _build_result_from_entry(entry)
-        if result is None or result.level < 4 or result.AI_rating <= 0:
+        if result is None or result.level < 3 or result.AI_rating <= 0:
             continue
         identity = duplicate_identity_key(int(result.song_id), int(result.level))
         current = deduped.get(identity)
