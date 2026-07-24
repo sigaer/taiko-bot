@@ -71,6 +71,25 @@ def test_compute_all_v2_includes_hard_charts(tmp_path, monkeypatch):
     assert results[0].song_name == "Hard Song"
 
 
+def test_v2_constants_loader_filters_independent_double_play_song_ids(
+    tmp_path, monkeypatch
+):
+    csv_path = tmp_path / "constants_id_v2.csv"
+    csv_path.write_text(
+        "id,title,difficulty,totalNotes,sub_constant_1,main_constant,sub_constant_2,stamina,handspeed,burst,complex,rhythm\n"
+        "900,【双打】 双龙之乱,oni,448,6.3,8.1,8.7,2.4,10.2,7.9,3.2,9.4\n"
+        "393,双龙之乱,oni,970,13.9,13.8,13.6,14.8,15.5,15.0,11.2,9.0\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(taikob_v2, "V2_CONSTANTS_CSV", csv_path)
+    taikob_v2._load_v2_song_map.cache_clear()
+
+    song_map = taikob_v2._load_v2_song_map()
+
+    assert (900, 4) not in song_map
+    assert (393, 4) in song_map
+
+
 @pytest.mark.parametrize(
     ("accuracy", "constant_attr"),
     [

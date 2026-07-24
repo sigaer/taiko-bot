@@ -16,6 +16,7 @@ from .score_calculator import calc_y
 
 ROOT_DIR = get_settings().root_dir
 V2_CONSTANTS_CSV = ROOT_DIR / "songs" / "constants_id_v2.csv"
+DOUBLE_PLAY_TITLE_PREFIX = "【双打】"
 
 DIFFICULTY_MAP = {
     "hard": 3,
@@ -135,6 +136,8 @@ def _load_v2_song_map() -> Dict[Tuple[int, int], V2SongData]:
                 rhythm=_safe_float(row.get("rhythm")),
             )
             if song.song_id <= 0 or song.total_notes <= 0:
+                continue
+            if song.title.startswith(DOUBLE_PLAY_TITLE_PREFIX):
                 continue
             song_map[(song.song_id, song.level)] = song
     return song_map
