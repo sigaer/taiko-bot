@@ -155,6 +155,17 @@ def test_unknown_manual_song_requires_title_only_when_writing(monkeypatch):
     ) == (999999, "")
 
 
+def test_manual_action_summary_failure_does_not_mask_success(monkeypatch):
+    taiko = _load_taiko_module()
+
+    def fail_lookup(_identity_key):
+        raise RuntimeError("collation mismatch")
+
+    monkeypatch.setattr(taiko, "_get_current_bind_entry", fail_lookup)
+    summary = taiko._format_current_bind_summary_safe("qq_official:test")
+    assert "绑定摘要暂时不可用" in summary
+
+
 def test_bind_qq_prompt_handle_returns_instruction(monkeypatch):
     taiko = _load_taiko_module()
     replies: list[str] = []

@@ -2885,6 +2885,17 @@ def _format_multi_bind_summary(entry: Optional[Dict[str, Any]]) -> str:
     return " / ".join(parts)
 
 
+def _format_current_bind_summary_safe(identity_key: str) -> str:
+    try:
+        return _format_multi_bind_summary(_get_current_bind_entry(identity_key))
+    except Exception as exc:
+        logger.warning(
+            "manual account action succeeded but bind summary lookup failed: "
+            f"identity_key={identity_key} error={exc}"
+        )
+        return "绑定摘要暂时不可用，请稍后发送“u1”或账号查询命令确认。"
+
+
 def _get_bind_delete_confirm_session(qq: str) -> Optional[Dict[str, Any]]:
     qq = _normalize_identity_key(str(qq))
     session = BIND_DELETE_CONFIRM_SESSIONS.get(qq)
@@ -4530,7 +4541,7 @@ async def manual_create_handle(event: MessageEvent, match=RegexMatched()):
             manual_create,
             event,
             f"已新增空白账号“{result.get('nickname') or nickname}”并切换为当前账号。\n"
-            f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}\n"
+            f"当前绑定：{_format_current_bind_summary_safe(identity_key)}\n"
             "该账号仅保存手动录入成绩，不关联鼓众广场或 Hiroba。",
         )
     except ManualAccountApiError as exc:
@@ -4591,7 +4602,7 @@ async def manual_claim_handle(event: MessageEvent, match=RegexMatched()):
             manual_claim,
             event,
             f"已认领手动账号“{result.get('nickname')}”并切换为当前账号。\n"
-            f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}",
+            f"当前绑定：{_format_current_bind_summary_safe(identity_key)}",
         )
     except ManualAccountApiError as exc:
         await _finish_text_reply(manual_claim, event, f"认领失败：{exc}")
@@ -4611,7 +4622,7 @@ async def manual_detach_handle(event: MessageEvent, match=RegexMatched()):
             manual_detach,
             event,
             "已从当前 bot 身份解绑，另一端和成绩仍然保留。\n"
-            f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}",
+            f"当前绑定：{_format_current_bind_summary_safe(identity_key)}",
         )
     except (ValueError, ManualAccountApiError) as exc:
         await _finish_text_reply(manual_detach, event, f"解绑失败：{exc}")
