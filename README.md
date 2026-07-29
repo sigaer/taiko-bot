@@ -4,6 +4,10 @@
 
 项目许可：`GPL-2.0-only`。完整文本见仓库根目录 [LICENSE](/home/sigaer/taiko-bot/LICENSE)。
 
+## 用户说明
+
+- [手动成绩账号使用说明](docs/manual-score-accounts.md)
+
 ## 1. 环境要求
 
 - Python `3.11` 推荐、也是当前主要测试版本
