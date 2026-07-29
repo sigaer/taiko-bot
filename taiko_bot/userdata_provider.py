@@ -4,6 +4,7 @@ import time
 from typing import Any, Dict, Iterable, Optional
 
 from .settings import Settings, get_settings
+from .storage import userdata_path, write_json_atomic
 from .viewer_client import (
     ViewerClientError,
     fetch_remote_userdata,
@@ -45,7 +46,12 @@ def update_userdata_cache_from_payload(
     settings: Settings | None = None,
 ) -> Dict[str, Any]:
     normalized = _normalize_payload(payload)
-    _ = (_get_settings(settings), source)
+    cfg = _get_settings(settings)
+    # This is a disposable read cache. The authoritative write remains on the
+    # viewer, while keeping the file cache lets legacy renderers and u0 reuse
+    # the same userdata contract without maintaining a second source of truth.
+    write_json_atomic(userdata_path(user_id, settings=cfg), normalized)
+    _ = source
     _REMOTE_USERDATA_CACHE[str(user_id).strip()] = normalized
     _REMOTE_REFRESH_TS[str(user_id).strip()] = time.monotonic()
     return normalized

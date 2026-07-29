@@ -24,6 +24,9 @@ class CenterBindSlot:
     visible: int
     is_current: bool
     source: str
+    display_name: str = ""
+    is_manual: bool = False
+    can_external_sync: bool = True
 
 
 def _get_settings(settings: Settings | None = None) -> Settings:
@@ -227,6 +230,13 @@ def _normalize_center_bind_payload(payload: Dict[str, Any]) -> Optional[Dict[str
                     is_current=bool(item.get("isCurrent")),
                     source=str(item.get("source") or "wahlap").strip().lower()
                     or "wahlap",
+                    display_name=str(
+                        item.get("displayName") or item.get("taikoId") or ""
+                    ).strip(),
+                    is_manual=bool(item.get("isManual")),
+                    can_external_sync=bool(
+                        item.get("canExternalSync", not item.get("isManual"))
+                    ),
                 )
             )
     current_source = (
@@ -240,11 +250,12 @@ def _normalize_center_bind_payload(payload: Dict[str, Any]) -> Optional[Dict[str
             "wahlap",
         )
     )
+    current_virtual = bool(payload.get("currentVirtual"))
     try:
-        current_slot = int(payload.get("currentSlot") or 0)
+        current_slot = int(payload.get("currentSlot") if payload.get("currentSlot") is not None else 0)
     except Exception:
         current_slot = 0
-    if current_slot <= 0:
+    if current_slot <= 0 and not current_virtual:
         current_slot = next(
             (item.slot for item in bindings if item.taiko_id == current_taiko_id),
             1,
@@ -252,7 +263,8 @@ def _normalize_center_bind_payload(payload: Dict[str, Any]) -> Optional[Dict[str
     return {
         "id": current_taiko_id,
         "visible": int(payload.get("visible") or 0),
-        "currentSlot": max(1, current_slot),
+        "currentSlot": 0 if current_virtual else max(1, current_slot),
+        "currentVirtual": current_virtual,
         "currentSource": current_source,
         "bindings": bindings,
     }

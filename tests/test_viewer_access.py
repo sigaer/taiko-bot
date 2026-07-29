@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+import asyncio
 
-from taiko_bot import userdata_provider, viewer_client
+import pytest
+
+from taiko_bot import manual_account, userdata_provider, viewer_client
 from taiko_bot.settings import Settings
 
 
@@ -160,6 +163,7 @@ def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
         "id": "1001",
         "visible": 1,
         "currentSlot": 1,
+        "currentVirtual": False,
         "currentSource": "wahlap",
         "bindings": [
             viewer_client.CenterBindSlot(
@@ -168,6 +172,7 @@ def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
                 visible=1,
                 is_current=True,
                 source="wahlap",
+                display_name="1001",
             )
         ],
     }
@@ -213,3 +218,53 @@ def test_ensure_userdata_available_fetches_remote_without_token(tmp_path, monkey
     assert fetch_calls == [("1001", settings)]
     assert userdata_provider.uses_center_userdata(settings) is True
     assert userdata_provider.get_cached_userdata("1001", settings=settings) == payload
+    assert (settings.userdata_dir / "1001data.json").exists()
+
+
+def test_center_bind_payload_preserves_manual_display_and_u0():
+    payload = viewer_client._normalize_center_bind_payload(
+        {
+            "found": True,
+            "currentTaikoId": "1001",
+            "currentSlot": 0,
+            "currentVirtual": True,
+            "currentSource": "wahlap",
+            "bindings": [
+                {
+                    "slot": 1,
+                    "taikoId": "1001",
+                    "isCurrent": True,
+                    "source": "wahlap",
+                },
+                {
+                    "slot": 2,
+                    "taikoId": "980000000000000001",
+                    "source": "manual",
+                    "displayName": "练习号",
+                    "isManual": True,
+                    "canExternalSync": False,
+                },
+                {
+                    "slot": 3,
+                    "taikoId": "1002",
+                    "source": "hiroba",
+                },
+            ],
+        }
+    )
+    assert payload is not None
+    assert payload["currentSlot"] == 0
+    assert payload["currentVirtual"] is True
+    assert payload["bindings"][1].display_name == "练习号"
+    assert payload["bindings"][1].is_manual is True
+    assert payload["bindings"][1].can_external_sync is False
+
+
+def test_manual_account_write_requires_independent_service_token(tmp_path):
+    settings = _make_settings(tmp_path)
+    with pytest.raises(manual_account.ManualAccountApiError, match="服务令牌未配置"):
+        asyncio.run(
+            manual_account.call_manual_account_api(
+                "onebot-v11:123", "create", settings=settings, nickname="练习号"
+            )
+        )

@@ -89,6 +89,7 @@ from .utils.score_calculator import (
 )
 import random
 import re
+import shlex
 import asyncio
 import subprocess
 import threading
@@ -113,6 +114,7 @@ from nonebot.adapters.onebot.v11.permission import GROUP_ADMIN, GROUP_OWNER
 from nonebot.matcher import Matcher
 from typing import Dict, Any, Tuple, List, Optional, Set, Sequence
 from taiko_bot.settings import get_settings
+from taiko_bot.manual_account import ManualAccountApiError, call_manual_account_api
 from taiko_bot.public_data import ensure_asset_resource_available
 from taiko_bot.userdata_provider import (
     UserdataProviderError,
@@ -188,6 +190,8 @@ BIND_VERIFY_BYPASS_IDS = {"2258735"}
 BIND_VERIFY_SESSIONS: Dict[str, Dict[str, Any]] = {}
 BIND_DELETE_CONFIRM_TIMEOUT_SECONDS = 300
 BIND_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
+MANUAL_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
+MANUAL_SCORE_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 HIROBA_CREDENTIAL_STATUS_CACHE_TTL_SECONDS = 60.0
 HIROBA_CREDENTIAL_STATUS_CACHE: Dict[str, Tuple[float, bool]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
@@ -1981,8 +1985,9 @@ def _center_bind_info_to_entry(info: Optional[Dict[str, Any]]) -> Optional[Dict[
     bindings = info.get("bindings") or []
     ids: List[str] = []
     sources: Dict[str, str] = {}
-    current_slot = int(info.get("currentSlot") or 1)
-    current_index = max(0, current_slot - 1)
+    names: Dict[str, str] = {}
+    current_slot = int(info.get("currentSlot") if info.get("currentSlot") is not None else 1)
+    current_index = 0
     for item in bindings:
         taiko_id = str(getattr(item, "taiko_id", "") or "").strip()
         if not taiko_id:
@@ -1991,6 +1996,11 @@ def _center_bind_info_to_entry(info: Optional[Dict[str, Any]]) -> Optional[Dict[
         source = str(getattr(item, "source", "") or "").strip().lower()
         if source:
             sources[taiko_id] = source
+        display_name = str(getattr(item, "display_name", "") or "").strip()
+        if display_name:
+            names[taiko_id] = display_name
+        if bool(getattr(item, "is_current", False)):
+            current_index = len(ids) - 1
     if not ids:
         taiko_id = str(info.get("id") or "").strip()
         if not taiko_id:
@@ -2006,6 +2016,7 @@ def _center_bind_info_to_entry(info: Optional[Dict[str, Any]]) -> Optional[Dict[
         "current_slot": current_slot,
         "current_index": max(0, min(current_index, len(ids) - 1)),
         "sources": sources,
+        "names": names,
     }
 
 
@@ -2086,7 +2097,19 @@ def _get_bind_ids(entry: Optional[Dict[str, Any]]) -> List[str]:
 
 
 def _has_virtual_bind_slot(entry: Optional[Dict[str, Any]]) -> bool:
-    return False
+    if not entry:
+        return False
+    sources = dict(entry.get("sources") or {})
+    return (
+        len(
+            [
+                taiko_id
+                for taiko_id in _get_bind_ids(entry)
+                if _infer_bind_source(taiko_id, sources) != "manual"
+            ]
+        )
+        >= 2
+    )
 
 
 def _get_selected_bind_slot_number(entry: Optional[Dict[str, Any]]) -> int:
@@ -2169,11 +2192,40 @@ def _resolve_read_bind_target(event: MessageEvent):
     visible = info["visible"]
     if visible == 0 and not is_self_query:
         return 403
+    entry = _center_bind_info_to_entry(info)
+    if entry and _get_selected_bind_slot_number(entry) == 0:
+        sources = dict(entry.get("sources") or {})
+        official_ids = [
+            taiko_id
+            for taiko_id in _get_bind_ids(entry)
+            if _infer_bind_source(taiko_id, sources) != "manual"
+        ]
+        ensure_multiple_userdatas_available(official_ids)
+        official_entry = {
+            **entry,
+            "ids": official_ids,
+            "current_index": min(
+                int(entry.get("current_index", 0) or 0),
+                max(0, len(official_ids) - 1),
+            ),
+            "sources": {taiko_id: sources.get(taiko_id, "wahlap") for taiko_id in official_ids},
+        }
+        materialized = materialize_merged_bind_userdata(
+            identity_key, official_entry, userdata_dir=_SETTINGS.userdata_dir
+        )
+        return {
+            "identity_key": identity_key,
+            "entry": entry,
+            "is_virtual": True,
+            "user_id": materialized.virtual_user_id,
+            "materialized": materialized,
+            "source": "merged-bind",
+        }
     selected_id = str(info["id"] or "").strip()
     ensure_userdata_available(selected_id)
     return {
         "identity_key": identity_key,
-        "entry": _center_bind_info_to_entry(info),
+        "entry": entry,
         "is_virtual": False,
         "user_id": selected_id,
         "source": str(info.get("currentSource") or "wahlap"),
@@ -2206,6 +2258,12 @@ def _build_update_command_hint(
 
     actual_source = _infer_bind_source(taiko_id, entry.get("sources") or {})
     actual_label = _bind_source_label(actual_source)
+    if actual_source == "manual":
+        return (
+            f"当前正在使用 u{selected_slot}：手动账号。\n"
+            "手动账号不关联鼓众广场或 Hiroba，请使用“录入成绩”维护数据。\n"
+            f"当前绑定：{_format_multi_bind_summary(entry)}{_build_bind_switch_hint(entry)}"
+        )
     recommended_command = "更新hiroba" if actual_source == "hiroba" else "taikoupdate"
     expected_label = _bind_source_label(expected_source)
     return (
@@ -2769,7 +2827,7 @@ def _infer_bind_source(taiko_id: str, sources: Optional[Dict[str, str]] = None) 
     taiko_id = str(taiko_id or "").strip()
     sources = sources or {}
     explicit = str(sources.get(taiko_id) or "").strip().lower()
-    if explicit in {"hiroba", "wahlap"}:
+    if explicit in {"hiroba", "wahlap", "manual"}:
         return explicit
     if _has_center_hiroba_credentials_cached(taiko_id):
         return "hiroba"
@@ -2793,6 +2851,8 @@ def _has_center_hiroba_credentials_cached(taiko_id: str) -> bool:
 
 
 def _bind_source_label(source: str) -> str:
+    if source == "manual":
+        return "手动"
     return "JP" if source == "hiroba" else "CN"
 
 
@@ -2817,7 +2877,11 @@ def _format_multi_bind_summary(entry: Optional[Dict[str, Any]]) -> str:
     for idx, taiko_id in enumerate(ids, start=1):
         marker = "（当前）" if idx == current_slot else ""
         source = _infer_bind_source(str(taiko_id), entry.get("sources") or {})
-        parts.append(f"u{idx}:{taiko_id}({_bind_source_label(source)}){marker}")
+        if source == "manual":
+            nickname = str((entry.get("names") or {}).get(taiko_id) or "手动账号")
+            parts.append(f"u{idx}:{nickname}(手动){marker}")
+        else:
+            parts.append(f"u{idx}:{taiko_id}({_bind_source_label(source)}){marker}")
     return " / ".join(parts)
 
 
@@ -2899,14 +2963,29 @@ def _switch_bind_record(
         return False, _taiko_bind_usage_message(event)
     ids = _get_bind_ids(entry)
     if slot_number == 0:
-        return False, "u0 合并账户已停用，请直接使用 u1 / u2 这类真实槽位。"
+        if not _has_virtual_bind_slot(entry):
+            return False, "当前至少需要绑定 2 个 CN/JP 账号后才能切换到 u0。"
+        switched = proxy_center_bind_switch_current(qq, 0, settings=_SETTINGS)
+        switched_entry = _center_bind_info_to_entry(switched)
+        return True, (
+            "已切换到 u0：合并账户（只读）\n"
+            f"当前绑定：{_format_multi_bind_summary(switched_entry)}"
+        )
     if slot_number < 1 or slot_number > len(ids):
         return False, f"当前仅已绑定 u1~u{len(ids)}。"
     switched = proxy_center_bind_switch_current(qq, slot_number, settings=_SETTINGS)
     switched_entry = _center_bind_info_to_entry(switched)
     summary = _format_multi_bind_summary(switched_entry)
     target_id = str((switched or {}).get("id") or ids[slot_number - 1])
-    return True, f"已切换到 u{slot_number}：{target_id}\n当前绑定：{summary}"
+    source = _infer_bind_source(
+        ids[slot_number - 1], (switched_entry or {}).get("sources") or {}
+    )
+    target_label = (
+        str((switched_entry or {}).get("names", {}).get(ids[slot_number - 1]) or "手动账号")
+        if source == "manual"
+        else target_id
+    )
+    return True, f"已切换到 u{slot_number}：{target_label}\n当前绑定：{summary}"
 
 
 def _remove_bind_record(
@@ -2915,6 +2994,21 @@ def _remove_bind_record(
     force_last: bool = False,
     event: Optional[MessageEvent] = None,
 ) -> Tuple[bool, str, bool]:
+    center_entry = _get_current_bind_entry(qq)
+    if center_entry:
+        try:
+            center_index, center_id = _resolve_bind_remove_target(center_entry, target)
+            center_source = _infer_bind_source(
+                center_id, center_entry.get("sources") or {}
+            )
+            if center_source == "manual":
+                return (
+                    False,
+                    "手动账号请使用“解绑空白账号”或“永久删除空白账号”。",
+                    False,
+                )
+        except ValueError:
+            pass
     db = _get_taiko_db_connection()
     cursor = db.cursor()
     try:
@@ -4346,11 +4440,405 @@ async def bind_remove_confirm_handle(event: MessageEvent):
     await _finish_text_reply(bind_remove_confirm, event, msg)
 
 
+def _resolve_manual_slot_taiko_id(
+    identity_key: str, slot_token: str = ""
+) -> Tuple[str, int]:
+    entry = _get_current_bind_entry(identity_key)
+    if not entry:
+        raise ValueError("当前还没有账号，请先发送“新增空白账号 昵称”。")
+    ids = _get_bind_ids(entry)
+    token = str(slot_token or "").strip().lower()
+    if token:
+        match = re.fullmatch(r"u([1-9]\d*)", token)
+        if not match:
+            raise ValueError("账号槽位无效，请使用 u1 / u2 这类形式。")
+        slot = int(match.group(1))
+    else:
+        slot = _get_selected_bind_slot_number(entry)
+    if slot <= 0 or slot > len(ids):
+        raise ValueError("请先切换到一个真实的手动账号槽位。")
+    taiko_id = ids[slot - 1]
+    if _infer_bind_source(taiko_id, entry.get("sources") or {}) != "manual":
+        raise ValueError(f"u{slot} 不是手动账号，请先切换或指定手动账号槽位。")
+    return taiko_id, slot
+
+
+def _manual_diff_level(token: str) -> int:
+    mapping = {
+        "1": 1, "简单": 1, "梅": 1,
+        "2": 2, "一般": 2, "竹": 2,
+        "3": 3, "困难": 3, "松": 3,
+        "4": 4, "魔王": 4, "鬼": 4, "表": 4,
+        "5": 5, "里谱": 5, "里": 5,
+    }
+    level = mapping.get(str(token or "").strip())
+    if not level:
+        raise ValueError("难度无效，请使用 1~5 或 简单/一般/困难/魔王/里谱。")
+    return level
+
+
+def _resolve_manual_song(
+    song_token: str, custom_title: str = "", *, require_unknown_title: bool = True
+) -> Tuple[int, str]:
+    token = str(song_token or "").strip()
+    if token.isdigit():
+        song_no = int(token)
+        rows, _ = _query_music_with_mode(token)
+        title = str(rows[0][1]) if len(rows) == 1 else str(custom_title or "").strip()
+        if not rows and not title and require_unknown_title:
+            raise ValueError('未收录数字 ID 必须追加 曲名="曲名"。')
+        return song_no, title
+    rows, _ = _query_music_with_mode(token)
+    if not rows:
+        raise ValueError("未找到歌曲；未收录曲目请使用数字 ID 并追加曲名。")
+    if len(rows) > 1:
+        candidates = " / ".join(f"ID {row[0]} {row[1]}" for row in rows[:8])
+        raise ValueError(f"曲名有歧义，请改用歌曲 ID：{candidates}")
+    return int(rows[0][0]), str(rows[0][1])
+
+
+def _manual_command_tokens(text: str, command: str) -> List[str]:
+    body = str(text or "").strip()[len(command):].strip()
+    try:
+        return shlex.split(body)
+    except ValueError as exc:
+        raise ValueError(f"参数引号不完整：{exc}") from exc
+
+
+manual_create = on_regex(r"^新增空白账号(?:\s+(.+))?\s*$", rule=taiko_rule)
+manual_rename = on_regex(r"^空白账号改名\s+(.+?)\s*$", rule=taiko_rule)
+manual_claim_code = on_regex(r"^生成认领码(?:\s+(u[1-9]\d*))?\s*$", rule=taiko_rule)
+manual_claim = on_regex(r"^认领空白账号\s+([A-Za-z0-9-]+)\s*$", rule=taiko_rule)
+manual_detach = on_regex(r"^解绑空白账号(?:\s+(u[1-9]\d*))?\s*$", rule=taiko_rule)
+manual_delete = on_regex(r"^永久删除空白账号(?:\s+(u[1-9]\d*))?\s*$", rule=taiko_rule)
+manual_delete_confirm = on_fullmatch("确认永久删除空白账号", rule=taiko_rule)
+manual_score_upsert = on_regex(r"^录入成绩\s+.+$", rule=taiko_rule)
+manual_score_get = on_regex(r"^查看成绩\s+.+$", rule=taiko_rule)
+manual_score_delete = on_regex(r"^删除成绩\s+.+$", rule=taiko_rule)
+manual_score_delete_confirm = on_fullmatch("确认删除成绩", rule=taiko_rule)
+
+
+@manual_create.handle()
+async def manual_create_handle(event: MessageEvent, match=RegexMatched()):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    nickname = str((match.group(1) if match else "") or "").strip() or "我的手动成绩"
+    try:
+        result = await call_manual_account_api(
+            identity_key, "create", settings=_SETTINGS, nickname=nickname
+        )
+        await _finish_text_reply(
+            manual_create,
+            event,
+            f"已新增空白账号“{result.get('nickname') or nickname}”并切换为当前账号。\n"
+            f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}\n"
+            "该账号仅保存手动录入成绩，不关联鼓众广场或 Hiroba。",
+        )
+    except ManualAccountApiError as exc:
+        await _finish_text_reply(manual_create, event, f"新增失败：{exc}")
+
+
+@manual_rename.handle()
+async def manual_rename_handle(event: MessageEvent, match=RegexMatched()):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        taiko_id, _ = _resolve_manual_slot_taiko_id(identity_key)
+        result = await call_manual_account_api(
+            identity_key,
+            "rename",
+            settings=_SETTINGS,
+            taikoId=taiko_id,
+            nickname=str(match.group(1) or "").strip(),
+        )
+        await _finish_text_reply(
+            manual_rename, event, f"手动账号已改名为“{result.get('nickname')}”。"
+        )
+    except (ValueError, ManualAccountApiError) as exc:
+        await _finish_text_reply(manual_rename, event, f"改名失败：{exc}")
+
+
+@manual_claim_code.handle()
+async def manual_claim_code_handle(event: MessageEvent, match=RegexMatched()):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        taiko_id, _ = _resolve_manual_slot_taiko_id(
+            identity_key, str((match.group(1) if match else "") or "")
+        )
+        result = await call_manual_account_api(
+            identity_key, "claim-code", settings=_SETTINGS, taikoId=taiko_id
+        )
+        await _finish_text_reply(
+            manual_claim_code,
+            event,
+            f"一次性认领码：{result.get('code')}\n"
+            "10 分钟内有效且只能使用一次；可在 viewer 个人档案中输入，"
+            "或由另一 bot 身份发送“认领空白账号 认领码”。",
+        )
+    except (ValueError, ManualAccountApiError) as exc:
+        await _finish_text_reply(manual_claim_code, event, f"生成失败：{exc}")
+
+
+@manual_claim.handle()
+async def manual_claim_handle(event: MessageEvent, match=RegexMatched()):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        result = await call_manual_account_api(
+            identity_key,
+            "claim",
+            settings=_SETTINGS,
+            code=str(match.group(1) or "").strip(),
+        )
+        await _finish_text_reply(
+            manual_claim,
+            event,
+            f"已认领手动账号“{result.get('nickname')}”并切换为当前账号。\n"
+            f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}",
+        )
+    except ManualAccountApiError as exc:
+        await _finish_text_reply(manual_claim, event, f"认领失败：{exc}")
+
+
+@manual_detach.handle()
+async def manual_detach_handle(event: MessageEvent, match=RegexMatched()):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        taiko_id, _ = _resolve_manual_slot_taiko_id(
+            identity_key, str((match.group(1) if match else "") or "")
+        )
+        await call_manual_account_api(
+            identity_key, "detach", settings=_SETTINGS, taikoId=taiko_id
+        )
+        await _finish_text_reply(
+            manual_detach,
+            event,
+            "已从当前 bot 身份解绑，另一端和成绩仍然保留。\n"
+            f"当前绑定：{_format_multi_bind_summary(_get_current_bind_entry(identity_key))}",
+        )
+    except (ValueError, ManualAccountApiError) as exc:
+        await _finish_text_reply(manual_detach, event, f"解绑失败：{exc}")
+
+
+@manual_delete.handle()
+async def manual_delete_handle(event: MessageEvent, match=RegexMatched()):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        taiko_id, slot = _resolve_manual_slot_taiko_id(
+            identity_key, str((match.group(1) if match else "") or "")
+        )
+        MANUAL_DELETE_CONFIRM_SESSIONS[identity_key] = {
+            "taiko_id": taiko_id,
+            "expires_at": time.time() + BIND_DELETE_CONFIRM_TIMEOUT_SECONDS,
+        }
+        await _finish_text_reply(
+            manual_delete,
+            event,
+            f"即将永久删除 u{slot} 手动账号及全部成绩历史。\n"
+            f"请在 {BIND_DELETE_CONFIRM_TIMEOUT_SECONDS // 60} 分钟内发送"
+            "“确认永久删除空白账号”。",
+        )
+    except ValueError as exc:
+        await _finish_text_reply(manual_delete, event, str(exc))
+
+
+@manual_delete_confirm.handle()
+async def manual_delete_confirm_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    session = MANUAL_DELETE_CONFIRM_SESSIONS.get(identity_key)
+    if not session or float(session.get("expires_at", 0)) < time.time():
+        MANUAL_DELETE_CONFIRM_SESSIONS.pop(identity_key, None)
+        await _finish_text_reply(
+            manual_delete_confirm, event, "没有待确认的永久删除操作，或确认已过期。"
+        )
+        return
+    try:
+        await call_manual_account_api(
+            identity_key,
+            "delete-account",
+            settings=_SETTINGS,
+            taikoId=session["taiko_id"],
+            confirmed=True,
+        )
+        MANUAL_DELETE_CONFIRM_SESSIONS.pop(identity_key, None)
+        await _finish_text_reply(
+            manual_delete_confirm,
+            event,
+            "手动账号已永久删除；服务端已留下带时间戳的恢复备份。",
+        )
+    except ManualAccountApiError as exc:
+        await _finish_text_reply(manual_delete_confirm, event, f"删除失败：{exc}")
+
+
+@manual_score_upsert.handle()
+async def manual_score_upsert_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        tokens = _manual_command_tokens(extract_plain_text(event).strip(), "录入成绩")
+        if len(tokens) < 6:
+            raise ValueError(
+                "格式：录入成绩 <歌曲ID或曲名> <难度> <分数> <良> <可> <不可> "
+                "[连打=n] [连击=n] [评价=n] [游玩=n] [通关=n] [全连=n] [全良=n]"
+            )
+        options: Dict[str, str] = {}
+        for token in tokens[6:]:
+            if "=" not in token:
+                raise ValueError(f"可选参数“{token}”需要使用 名称=数值。")
+            key, value = token.split("=", 1)
+            options[key.strip()] = value.strip()
+        song_no, title = _resolve_manual_song(tokens[0], options.get("曲名", ""))
+        level = _manual_diff_level(tokens[1])
+        values = {
+            key: int(value)
+            for key, value in zip(
+                ["high_score", "good_cnt", "ok_cnt", "ng_cnt"], tokens[2:6]
+            )
+        }
+        option_map = {
+            "连打": "pound_cnt", "连击": "combo_cnt", "评价": "best_score_rank",
+            "游玩": "stage_cnt", "通关": "clear_cnt",
+            "全连": "full_combo_cnt", "全良": "dondaful_combo_cnt",
+        }
+        for key, field in option_map.items():
+            if key in options:
+                values[field] = int(options[key])
+        taiko_id, slot = _resolve_manual_slot_taiko_id(identity_key)
+        result = await call_manual_account_api(
+            identity_key,
+            "score-upsert",
+            settings=_SETTINGS,
+            taikoId=taiko_id,
+            songNo=song_no,
+            level=level,
+            title=title,
+            values=values,
+        )
+        verb = "新增" if result.get("created") else "更新"
+        await _finish_text_reply(
+            manual_score_upsert,
+            event,
+            f"已{verb} u{slot} 的手动成绩：{title or f'ID {song_no}'} · "
+            f"{['', '简单', '一般', '困难', '魔王', '里谱'][level]} · "
+            f"{values['high_score']} 分\n"
+            "来源：手动录入（不进入官方排行或认证统计）",
+        )
+    except (ValueError, ManualAccountApiError) as exc:
+        await _finish_text_reply(manual_score_upsert, event, f"录入失败：{exc}")
+
+
+def _parse_manual_score_lookup(text: str, command: str) -> Tuple[int, str, int]:
+    tokens = _manual_command_tokens(text, command)
+    if len(tokens) != 2:
+        raise ValueError(f"格式：{command} <歌曲ID或曲名> <难度>")
+    song_no, title = _resolve_manual_song(tokens[0], require_unknown_title=False)
+    return _manual_diff_level(tokens[1]), title, song_no
+
+
+@manual_score_get.handle()
+async def manual_score_get_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        level, title, song_no = _parse_manual_score_lookup(
+            extract_plain_text(event).strip(), "查看成绩"
+        )
+        taiko_id, slot = _resolve_manual_slot_taiko_id(identity_key)
+        result = await call_manual_account_api(
+            identity_key,
+            "score-get",
+            settings=_SETTINGS,
+            taikoId=taiko_id,
+            songNo=song_no,
+            level=level,
+        )
+        item = result.get("item") or {}
+        await _finish_text_reply(
+            manual_score_get,
+            event,
+            f"u{slot} · {title or item.get('song_name') or f'ID {song_no}'} · "
+            f"{['', '简单', '一般', '困难', '魔王', '里谱'][level]}\n"
+            f"分数 {item.get('high_score', 0)}｜良 {item.get('good_cnt', 0)}｜"
+            f"可 {item.get('ok_cnt', 0)}｜不可 {item.get('ng_cnt', 0)}｜"
+            f"连击 {item.get('combo_cnt', 0)}\n"
+            "来源：手动录入（不进入官方排行或认证统计）",
+        )
+    except (ValueError, ManualAccountApiError) as exc:
+        await _finish_text_reply(manual_score_get, event, f"查询失败：{exc}")
+
+
+@manual_score_delete.handle()
+async def manual_score_delete_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        level, title, song_no = _parse_manual_score_lookup(
+            extract_plain_text(event).strip(), "删除成绩"
+        )
+        taiko_id, slot = _resolve_manual_slot_taiko_id(identity_key)
+        MANUAL_SCORE_DELETE_CONFIRM_SESSIONS[identity_key] = {
+            "taiko_id": taiko_id,
+            "song_no": song_no,
+            "level": level,
+            "expires_at": time.time() + BIND_DELETE_CONFIRM_TIMEOUT_SECONDS,
+        }
+        await _finish_text_reply(
+            manual_score_delete,
+            event,
+            f"即将删除 u{slot} 的手动成绩：{title or f'ID {song_no}'}。\n"
+            f"请在 {BIND_DELETE_CONFIRM_TIMEOUT_SECONDS // 60} 分钟内发送“确认删除成绩”。",
+        )
+    except ValueError as exc:
+        await _finish_text_reply(manual_score_delete, event, str(exc))
+
+
+@manual_score_delete_confirm.handle()
+async def manual_score_delete_confirm_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    session = MANUAL_SCORE_DELETE_CONFIRM_SESSIONS.get(identity_key)
+    if not session or float(session.get("expires_at", 0)) < time.time():
+        MANUAL_SCORE_DELETE_CONFIRM_SESSIONS.pop(identity_key, None)
+        await _finish_text_reply(
+            manual_score_delete_confirm, event, "没有待确认的成绩删除操作，或确认已过期。"
+        )
+        return
+    try:
+        await call_manual_account_api(
+            identity_key,
+            "score-delete",
+            settings=_SETTINGS,
+            taikoId=session["taiko_id"],
+            songNo=session["song_no"],
+            level=session["level"],
+            confirmed=True,
+        )
+        MANUAL_SCORE_DELETE_CONFIRM_SESSIONS.pop(identity_key, None)
+        await _finish_text_reply(
+            manual_score_delete_confirm, event, "手动成绩已删除，成就统计和历史已重算。"
+        )
+    except ManualAccountApiError as exc:
+        await _finish_text_reply(manual_score_delete_confirm, event, f"删除失败：{exc}")
+
+
 show_bind = on_fullmatch("给看", rule=taiko_rule)
 
 
 @show_bind.handle()
 async def show_bind_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    entry = _get_current_bind_entry(identity_key)
+    if entry:
+        taiko_id = _get_current_bind_taiko_id(entry)
+        if taiko_id and _infer_bind_source(
+            taiko_id, entry.get("sources") or {}
+        ) == "manual":
+            try:
+                await call_manual_account_api(
+                    identity_key,
+                    "visibility",
+                    settings=_SETTINGS,
+                    taikoId=taiko_id,
+                    visible=1,
+                )
+                await _finish_text_reply(show_bind, event, "给看!（手动录入）")
+                return
+            except ManualAccountApiError as exc:
+                await _finish_text_reply(show_bind, event, f"设置失败：{exc}")
+                return
     updated = _set_taiko_bind_visibility(get_identity_key(event=event), 1)
     if updated == 0:
         await _finish_text_reply(show_bind, event, _taiko_bind_usage_message(event))
@@ -4362,6 +4850,26 @@ unshow_bind = on_fullmatch("不给看", rule=taiko_rule)
 
 @unshow_bind.handle()
 async def unshow_bind_handle(event: MessageEvent):
+    identity_key = _normalize_identity_key(get_identity_key(event=event))
+    entry = _get_current_bind_entry(identity_key)
+    if entry:
+        taiko_id = _get_current_bind_taiko_id(entry)
+        if taiko_id and _infer_bind_source(
+            taiko_id, entry.get("sources") or {}
+        ) == "manual":
+            try:
+                await call_manual_account_api(
+                    identity_key,
+                    "visibility",
+                    settings=_SETTINGS,
+                    taikoId=taiko_id,
+                    visible=0,
+                )
+                await _finish_text_reply(unshow_bind, event, "不给看!（手动录入）")
+                return
+            except ManualAccountApiError as exc:
+                await _finish_text_reply(unshow_bind, event, f"设置失败：{exc}")
+                return
     updated = _set_taiko_bind_visibility(get_identity_key(event=event), 0)
     if updated == 0:
         await _finish_text_reply(unshow_bind, event, _taiko_bind_usage_message(event))

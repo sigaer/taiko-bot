@@ -49,6 +49,7 @@ HOST=0.0.0.0
 PORT=37564
 TAIKO_VIEWER_BASE_URL=https://viewer.sakura-bot.cn
 TAIKO_VIEWER_DEVELOPER_TOKEN=
+TAIKO_BOT_SERVICE_TOKEN=
 ```
 
 ### 必填/常用项
@@ -64,6 +65,10 @@ TAIKO_VIEWER_DEVELOPER_TOKEN=
   - 留空时，查询、更新、Hiroba、Wahlap 等中心代理接口仍可用，但按匿名额度计数。
   - 填写后，请求会带上 `Authorization: Bearer <token>`，按开发者额度计数。
   - 如果你只是先验证 bot 能否启动，可以先留空；后续需要更高调用额度时再填写。
+- `TAIKO_BOT_SERVICE_TOKEN`
+  - 用于创建、认领和维护手动成绩账号，必须与 viewer 的同名配置一致。
+  - 它不是开发者额度 token；未配置时仅手动账号写命令不可用。
+  - 不要将真实值提交到仓库。
 
 ### QQ 官方机器人相关
 

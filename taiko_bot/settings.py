@@ -54,6 +54,7 @@ class Settings:
     local_data_api_port: int
     local_data_api_base_url: str
     qq_markdown_image_base_url: str
+    bot_service_token: str = ""
 
 
 @lru_cache(maxsize=1)
@@ -145,6 +146,7 @@ def get_settings() -> Settings:
             "QQ_MARKDOWN_IMAGE_BASE_URL",
             f"{viewer_base_url}/qqbot-cache/taiko",
         ).rstrip("/"),
+        bot_service_token=os.getenv("TAIKO_BOT_SERVICE_TOKEN", "").strip(),
     )
 
 

@@ -125,6 +125,36 @@ def test_bind_id_classification_ranges():
     assert taiko._is_hiroba_taiko_no("12345678901") is False
 
 
+def test_manual_bind_summary_hides_internal_id_and_u0_excludes_manual():
+    taiko = _load_taiko_module()
+    entry = {
+        "ids": ["1001", "980000000000000001", "1002"],
+        "current_index": 1,
+        "current_slot": 2,
+        "sources": {
+            "1001": "wahlap",
+            "980000000000000001": "manual",
+            "1002": "hiroba",
+        },
+        "names": {"980000000000000001": "练习号"},
+    }
+    summary = taiko._format_multi_bind_summary(entry)
+    assert "u2:练习号(手动)（当前）" in summary
+    assert "980000000000000001" not in summary
+    assert taiko._has_virtual_bind_slot(entry) is True
+    assert taiko._manual_diff_level("里谱") == 5
+
+
+def test_unknown_manual_song_requires_title_only_when_writing(monkeypatch):
+    taiko = _load_taiko_module()
+    monkeypatch.setattr(taiko, "_query_music_with_mode", lambda *_args, **_kwargs: ([], None))
+    with pytest.raises(ValueError, match="必须追加"):
+        taiko._resolve_manual_song("999999")
+    assert taiko._resolve_manual_song(
+        "999999", require_unknown_title=False
+    ) == (999999, "")
+
+
 def test_bind_qq_prompt_handle_returns_instruction(monkeypatch):
     taiko = _load_taiko_module()
     replies: list[str] = []
@@ -263,9 +293,9 @@ def test_bind_hiroba_handle_keeps_running_after_initial_notice(monkeypatch):
 
     assert sent_messages == ["开始绑定 Hiroba 账号"]
     assert finished_messages == [
-        "已自动同步并绑定该 Bandai Namco ID 下的 2 个 Hiroba 账号。\n"
-        "已切换到 u1：123456789012\n"
-        "当前绑定：u1:123456789012(JP)（当前） / u2:876543210987(JP)\n"
+            "已自动同步并绑定该 Bandai Namco ID 下的 2 个 Hiroba 账号。\n"
+            "已切换到 u1：123456789012\n"
+            "当前绑定：u0:合并账户(只读) / u1:123456789012(JP)（当前） / u2:876543210987(JP)\n"
         "已在中心保存 Hiroba 凭据，请后续使用“更新hiroba”同步中心成绩。"
     ]
 
@@ -385,8 +415,11 @@ def test_build_update_command_hint_for_hiroba_account(monkeypatch):
 
     assert "当前正在使用 u1：519635636897（JP）。" in text
     assert "这不是 CN 服账号，请改用“更新hiroba”。" in text
-    assert "当前绑定：u1:519635636897(JP)（当前） / u2:12345678(CN)" in text
-    assert "如需切换其他账号，请先发送 u1 / u2。" in text
+    assert (
+        "当前绑定：u0:合并账户(只读) / "
+        "u1:519635636897(JP)（当前） / u2:12345678(CN)"
+    ) in text
+    assert "如需切换其他账号，请先发送 u0 / u1 / u2。" in text
 
 
 def test_build_update_command_hint_for_wahlap_account(monkeypatch):
