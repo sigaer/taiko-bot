@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from .snapshot_history import list_snapshot_files, parse_snapshot_time
+from taiko_runtime.source_commit import Source, source_transaction, source_group_transaction
 from taiko_bot.settings import get_settings
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
@@ -60,6 +61,15 @@ def materialize_merged_bind_userdata(
     *,
     userdata_dir: Path = USERDATA_DIR,
 ) -> MaterializedMergedBind:
+    ids = [str(value).strip() for value in entry.get("ids", []) if str(value).strip()]
+    virtual_id = build_virtual_user_id(identity_key)
+    with source_group_transaction(userdata_dir, virtual_id, ids) as transaction:
+        selected = max(0, min(int(entry.get("current_index", 0) or 0), len(ids) - 1))
+        transaction.view_identity = {"topology": ids, "profile_source": ids[selected] if ids else None}
+        return _materialize_with_source_lock(identity_key, entry, userdata_dir=userdata_dir, transaction=transaction)
+
+
+def _materialize_with_source_lock(identity_key, entry, *, userdata_dir, transaction):
     ids = [str(raw or "").strip() for raw in (entry.get("ids") or []) if str(raw or "").strip()]
     if len(ids) < 2:
         raise MergedBindError("当前绑定数量不足，无法生成 u0 合并账户。")
@@ -366,20 +376,23 @@ def _normalize_removed_key(raw_key: Any) -> Optional[SongKey]:
 
 
 def _write_full_snapshot_history(history_dir: Path, snapshots: List[SnapshotItem]) -> None:
-    history_dir.mkdir(parents=True, exist_ok=True)
-    for path in history_dir.glob("data_*.json"):
-        path.unlink(missing_ok=True)
-
-    for point_time, payload in snapshots:
-        snapshot_name = f"data_{point_time.strftime('%Y%m%d_%H%M%S_%f')}_merged-bind.json"
-        _write_json_atomic(history_dir / snapshot_name, payload)
+    with source_transaction(history_dir.parent, history_dir.name, "merged-bind") as transaction:
+        transaction.replace_history()
+        for point_time, payload in snapshots:
+            snapshot_name = f"data_{point_time.strftime('%Y%m%d_%H%M%S_%f')}_merged-bind.json"
+            transaction.put_history(snapshot_name, json.dumps(payload, ensure_ascii=False, indent=4))
 
 
 def _write_json_atomic(path: Path, payload: Dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temp_path = path.with_suffix(path.suffix + f".tmp-{datetime.now().timestamp():.0f}")
-    temp_path.write_text(json.dumps(payload, ensure_ascii=False, indent=4), encoding="utf-8")
-    temp_path.replace(path)
+    is_current = path.name.endswith("data.json") and not path.name.startswith("data_")
+    root = path.parent if is_current else path.parent.parent
+    source_id = path.name[:-len("data.json")] if is_current else path.parent.name
+    with source_transaction(root, source_id, "merged-bind") as transaction:
+        data = json.dumps(payload, ensure_ascii=False, indent=4)
+        if is_current:
+            transaction.put_current(data)
+        else:
+            transaction.put_history(path.name, data)
 
 
 def _song_key(song: Any) -> Optional[SongKey]:

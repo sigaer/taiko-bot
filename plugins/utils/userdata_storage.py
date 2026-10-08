@@ -8,6 +8,7 @@ from typing import Any, Dict, Optional, Set, Tuple
 import ujson as json
 
 from taiko_bot.settings import get_settings
+from taiko_runtime.source_commit import source_transaction
 
 from .taiko_db import get_taiko_db_connection
 
@@ -77,6 +78,12 @@ def save_userdata(
     source: Optional[str] = None,
 ) -> None:
     user_id = str(user_id).strip()
+    with source_transaction(TAIKO_SONG_DIR, user_id, source or "wahlap") as transaction:
+        _save_userdata_locked(user_id, userdata, source=source, transaction=transaction)
+
+
+def _save_userdata_locked(user_id, userdata, *, source, transaction):
+    user_id = str(user_id).strip()
     if not user_id:
         raise ValueError("user_id is required")
 
@@ -92,7 +99,7 @@ def save_userdata(
     user_history_dir = base_dir / user_id
     user_history_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    history_path = user_history_dir / f"data_{ts}.json"
+    history_path = user_history_dir / transaction.history_name(ts)
 
     prev_data = None
     if save_path.exists():
@@ -129,7 +136,8 @@ def save_userdata(
     def _has_full_snapshot() -> bool:
         for p in user_history_dir.glob("data_*.json"):
             try:
-                snap = json.load(open(p, "r", encoding="utf-8"))
+                with p.open("r", encoding="utf-8") as handle:
+                    snap = json.load(handle)
             except Exception:
                 continue
             meta = snap.get("_meta", {}) if isinstance(snap, dict) else {}
@@ -184,7 +192,5 @@ def save_userdata(
             "dojo": dojo_data,
         }
 
-    with open(save_path, "w", encoding="utf-8") as f:
-        f.write(payload)
-    with open(history_path, "w", encoding="utf-8") as f:
-        f.write(json.dumps(delta_snapshot, ensure_ascii=False, indent=4))
+    transaction.put_current(payload)
+    transaction.put_history(history_path.name, json.dumps(delta_snapshot, ensure_ascii=False, indent=4))
