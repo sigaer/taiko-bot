@@ -104,7 +104,13 @@ class Source:
                      self.store / "generations", self.history_path):
             if path.is_symlink():
                 raise CommitError("symlink_rejected")
-            path.mkdir(mode=0o700, exist_ok=True)
+            try:
+                path.mkdir(mode=0o700)
+            except FileExistsError:
+                if not path.is_dir():
+                    raise CommitError("unsafe_directory")
+            else:
+                fsync_dir(path.parent)
         self.pending_path = self.store / "pending.json"
         self.head_path = self.store / "head.json"
 
@@ -375,7 +381,10 @@ class Transaction:
 
     def history_name(self, timestamp, source=""):
         suffix = "_" + source if source else ""
-        return f"data_{timestamp}_{self.sequence + 1:020d}{suffix}.json"
+        # Both byte sorting and the legacy JS localeCompare put '.zcommit'
+        # after '.json' for the exact same compact timestamp. An '_' suffix
+        # instead sorts BEFORE legacy .json under ICU and breaks delta replay.
+        return f"data_{timestamp}{suffix}.zcommit_{self.sequence + 1:020d}.json"
 
     def put_history(self, name, data, overwrite=False):
         if self.revoked:

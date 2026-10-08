@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from typing import List
 
-_COMPACT_SNAPSHOT_RE = re.compile(r"^data_(\d{8}_\d{6}_\d{6})(?:_.+)?$")
+_COMPACT_SNAPSHOT_RE = re.compile(r"^data_(\d{8}_\d{6}_\d{6})(?:_.+|\.zcommit_\d{20})?$")
 _LEGACY_SNAPSHOT_RE = re.compile(r"^data_(\d{4}-\d{2}-\d{2}_\d{2}_\d{2}_\d{2})(?:_.+)?$")
 
 
