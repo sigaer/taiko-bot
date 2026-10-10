@@ -1,0 +1,1318 @@
+[
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "DOUBLE_TITLE_PREFIX",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c489090126857f758938fc5bf99435b31a3b627e1011866a5d1161570d90fcca",
+    "replacement": "DOUBLE_TITLE_PREFIX = _visibility.DOUBLE_TITLE_PREFIX"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "DOWN_SHELF_OVERRIDE_SONG_IDS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "7f38d043dbc852c83e1b77eeea2e28dc82f4f3d6c3512b215658b4982b6da9b0",
+    "replacement": "DOWN_SHELF_OVERRIDE_SONG_IDS = _visibility.DOWN_SHELF_OVERRIDE_SONG_IDS"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "HIDDEN_SONG_IDS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "1720d2eaa73d8d4ccb288b91c52ff102d41b9cfbdb610bb3bc00e93b7bb35e8a",
+    "replacement": "HIDDEN_SONG_IDS = _visibility.HIDDEN_SONG_IDS"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "normalize_song_id",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9412e0548e373ec24c18f9a8dfb03d8056a86645ca45f2dd02c5d71065311dfe",
+    "replacement": "normalize_song_id = _visibility.normalize_song_id"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "normalize_song_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c0bd82e0f0a495b5ea4b01f867e777fe8f5aba1d842aaf4b03a406038216614d",
+    "replacement": "normalize_song_title = _visibility.normalize_song_title"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "is_double_chart_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "bc83486ac74bf6fa53bc122e74f57144a82728273d9e01f03172a5e814f5c696",
+    "replacement": "is_double_chart_title = _visibility.is_double_chart_title"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "is_song_marked_down_shelf",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e34f71f6e552eceb61fa25ca7d5050b6adc2758b11cab8b185ee904a0724d2bf",
+    "replacement": "is_song_marked_down_shelf = _visibility.is_song_marked_down_shelf"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "is_song_publicly_visible",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3df808f0a05fdb1f411965e47f92230506f541c237ee8aed5e07efe7d47872ed",
+    "replacement": "is_song_publicly_visible = _visibility.is_song_publicly_visible"
+  },
+  {
+    "file": "plugins/utils/song_visibility.py",
+    "symbol": "is_song_id_publicly_visible",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "f5b2dc6cfb8fc39b70af4d83c883a6e120f7aa7f9bf217e6d54bbe3793d568f3",
+    "replacement": "def is_song_id_publicly_visible(song_id):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "normalize_song_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "70eac39502a6156031abb408de8e87ee18b65122f7297449da4954e95364a99a",
+    "replacement": "normalize_song_title = _identity.normalize_song_title"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "normalize_song_title_aggressive",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "d0fabbe363aad110543e89ba9e82b3bfa18668305dc30caade318efdcb0f6673",
+    "replacement": "normalize_song_title_aggressive = _identity.normalize_song_title_aggressive"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "_safe_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3c41bc25c8c2659e162c3bd80fa162123c7da02f0da0216d500a7af9a920d22d",
+    "replacement": "_safe_int = _identity._safe_int"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "_title_candidates",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a8d784c1be1b4c5c6795442ac2519d011f86acbcbc637aa0f95434eb9318be16",
+    "replacement": "_title_candidates = _identity._title_candidates"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "DuplicateSongGroup",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "eaad54610dbb7d63bac5319d3d8c486843ae48101910a4915221df5bd76ccf5b",
+    "replacement": "DuplicateSongGroup = _identity.DuplicateSongGroup"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "_build_group_cache",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "fe96e4e428f99255b877d4716b5f329ffcb28708e4fa4441ca2b77cf5caf4871",
+    "replacement": "@lru_cache(maxsize=4)"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "group_for_song_id",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a13e1f69ebb0800279d53c1397047f9fa8d971eab5004b7ca45edfc82556e6a4",
+    "replacement": "def group_for_song_id(song_id, song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "group_for_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2543f6a507d1e056d04b97925b9baf1e672886a4a72e7675a2f0decd15eb62b2",
+    "replacement": "def group_for_title(title, song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "default_song_id_for_query",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "28e1a0d463a4054b4af15bd33c15fe21ea9ca80b98cad37c132324dce897d56c",
+    "replacement": "def default_song_id_for_query(song_id=None, *, title=\"\", song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "duplicate_identity_key",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c971ebf951d68fb25d1463568e9b0cc7559d30b2982ef0f1adb66257b43e23db",
+    "replacement": "def duplicate_identity_key(song_id, level, *, song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "duplicate_identity_key_by_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c1b00173f46dbd142ec055e4dc2630cf06d99a2242d31abc4ea4509521f4cbe4",
+    "replacement": "def duplicate_identity_key_by_title(title, level, *, song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "collapse_query_results_by_group",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "1a8a4d3b952daa8ce101d408513fef9eadd1a2a1cdc0f32655f2bdc73c03913e",
+    "replacement": "def collapse_query_results_by_group(rows, *, song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/duplicate_versions.py",
+    "symbol": "group_ids_for_query",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "11d609a545d9a6d9b24907201fc9d20140fe7cf34234dcee108cb7c20563e53c",
+    "replacement": "def group_ids_for_query(song_id=None, *, title=\"\", song_data_path=SONG_DATA_PATH):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "MANUAL_PAIR_ID_GROUPS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9cc7fcbfce65729c100d7f5ed7a33b6d7fa383f426d8f8d7eb32ebe5eca1c9d1",
+    "replacement": "MANUAL_PAIR_ID_GROUPS = _client_groups.MANUAL_PAIR_ID_GROUPS"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_normalize_duplicate_song_level_signature",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "98212bf4650a2114050a1c9e33b475b30990bfa209ecc457d4a0e0fbcf652447",
+    "replacement": "_normalize_duplicate_song_level_signature = _client_groups._normalize_duplicate_song_level_signature"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "build_duplicate_song_groups",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e7c0ca329f20f50cf7fc38756396161f51b59f2bf3f3d4599dfb4c5154ecdf1a",
+    "replacement": "def build_duplicate_song_groups(song_data_path=get_settings().root_dir / \"songs/song_data.json\"):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "SongMetrics",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e7d25d441a44c3e40063ebb451939fd1244c026ace027f5772cbec0b384b3a4b",
+    "replacement": "SongMetrics = _models.SongMetrics"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "RatingResult",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e550679233979afc8ee5cb3bb1d261d5fd0199ee58c34a50123f89c0541d5e6b",
+    "replacement": "RatingResult = _models.RatingResult"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "build_const_table",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "153645d4e7300735ffb7a3373fb13ae9feb4542a64744a9fa48fb33dd838f094",
+    "replacement": "build_const_table = _v1.build_const_table"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "lookup_const_score",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a294246da92b4140a46d37935e04a5712b3406d9688c915d3da1fb622586911e",
+    "replacement": "lookup_const_score = _v1.lookup_const_score"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "calc_accuracy",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "70f5f95d79c6814bb1fc26fa8ee45558e03af6d679c9f72868dd04a504d16cab",
+    "replacement": "calc_accuracy = _v1.calc_accuracy"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_calc_accuracy_for_record",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "bc40ac3a84c90dd8286babe7c4822cb783b72d1a8bc2082f184b41911300f7cd",
+    "replacement": "_calc_accuracy_for_record = _v1._calc_accuracy_for_record"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "calc_y",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "d5ec00c96bf7a15f12970b13be19ae897a61721d377f37b92bc4731d183e0972",
+    "replacement": "calc_y = _v1.calc_y"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "accuracy_to_score",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e9a20c541b69f5e56610caa15cdbbde93db8a6f034483ce442419816141bfc06",
+    "replacement": "accuracy_to_score = _v1.accuracy_to_score"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "compute_P",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3342f4db1dd9ec0836f9352c22c2c29b5ea39fc5302881e102e9df7e9e062e42",
+    "replacement": "compute_P = _v1.compute_P"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "compute_Q",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0d572af02d2a1e6569f3cbfc494d7b91a81d855b190497eacc75c3e1a182c51f",
+    "replacement": "compute_Q = _v1.compute_Q"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "compute_AI",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e8a6ba9ba67d57875c39475101fdd18ae5a02cdd268494ff8e4d089b1df9bf00",
+    "replacement": "compute_AI = _v1.compute_AI"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "compute_AD_AE_AF_AG",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9e346fb031101055f39e95b45eead3fd8543d50bbdbd9bd899cfc21b4d497335",
+    "replacement": "compute_AD_AE_AF_AG = _dims.compute_AD_AE_AF_AG"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_scale_dim",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "74874618a7cb1ded8f0214c2eb5649800d0c3dfaed40ead1caa72ab48650bf48",
+    "replacement": "_scale_dim = _dims._scale_dim"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "compute_six_dims",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "39e8bc48d31fa0fedc4d6f10f8500cba02684663fe4b385f7a2fa4ad5b6279f7",
+    "replacement": "compute_six_dims = _dims.compute_six_dims"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_compute_results_from_userdata_records",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3c5f0463493c1b8ebafd1a8defd68103f478f2d6aa8cd9edd7b2f2666f507e7f",
+    "replacement": "def _compute_results_from_userdata_records(userdata_records, cfg, const_table, *, collapse_duplicate_versions=True):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "get_top20_weighted_average",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "18718c7b526e5573b74f36e726295c36761ab7609ce4c5d60a905d0a0c2acce1",
+    "replacement": "get_top20_weighted_average = _v1.get_top20_weighted_average"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "get_top20_median",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "557968cbd9686239dfcb4ee0cf49709e817f5f345b9cec85ea85486af8d4c8dd",
+    "replacement": "get_top20_median = _v1.get_top20_median"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "top_value_compensate",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a425e3a105764c98783f14af2d808cc42ab881839e3f4b1a8f7995efa2ae0087",
+    "replacement": "top_value_compensate = _v1.top_value_compensate"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "aggregate_topN_value",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "6c3212740d1ca5cc9d44fc24c37956619679d10c05db4a7d47ed810b157490ca",
+    "replacement": "aggregate_topN_value = _v1.aggregate_topN_value"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "compute_dim_topN_means",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "4cf67ba290f13f7569c368a16a687876e5257f0a692443bcede64969d91d8e6e",
+    "replacement": "compute_dim_topN_means = _v1.compute_dim_topN_means"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "SongStats",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "09f159e83c2be690810ddae8611e472b00b6968d44995d63580d2b7686b23783",
+    "replacement": "SongStats = _models.ClientSongStats"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_median",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "f5b598f85f3ed5151e2c65d658be89b51030ae616fc9c58133bfdcfd4ba697d4",
+    "replacement": "_median = _candidates._median"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_build_song_index_by_id_level",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "27ef9ed6b25e56525dc876b2de4e6eef6c99cffc4d53c67f8b5ab696c206e246",
+    "replacement": "_build_song_index_by_id_level = _catalog._build_song_index_by_id_level"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "get_song_chart_identity_key",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "f3c240f4e85c00b9ae8363f2a8828656f824527c5561f7f25da05f19f98cfb95",
+    "replacement": "def get_song_chart_identity_key(song_id, level):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_get_recommend_identity_key",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "14a7b99d67dc33b3a4a88edbd097297a5a64e8f41ad1e13f7dd5f05fff091d21",
+    "replacement": "_get_recommend_identity_key = get_song_chart_identity_key"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_build_song_index_by_identity",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "d7b70a929389cb7bf312c1742ffa2aa4871b4fb22252435ee5c12ab6c30ca551",
+    "replacement": "def _build_song_index_by_identity(songs):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_find_song_info_for_recommend_record",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "91813c2404ba3b59a4ae612a5f7805d6de46e997700bea4c1e5fba669cb018ab",
+    "replacement": "def _find_song_info_for_recommend_record(song_id, level, idx_by_id_level, idx_by_identity):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_get_title_like_existing",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "03e6362c8fad0948c183266d91ea19bc640a3b5f12761bb9b531ef1475bad915",
+    "replacement": "_get_title_like_existing = _catalog._get_title_like_existing"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "_get_song_indicator_value",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2426184069a96d1c32ba6c733538add4c2ab655e30e3a0026e0be199d257d1b6",
+    "replacement": "_get_song_indicator_value = _candidates._get_song_indicator_value"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "build_all_stats_for_user",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "4f01a48523119b83463d1bd84cf1a7112273b8266b6772f893391ffbff82db19",
+    "replacement": "def build_all_stats_for_user(user_id, json_path=\"./songs/rating_structured_with_ids.json\"):"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "recommend_songs",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "d89fb9efa0dfba0c3d7b3faa18ddb2ac864a183df9410d40ff3355823597fe64",
+    "replacement": "def recommend_songs(all_stats, songs_cfg, const_table, best_key=\"rating\", limit=20):"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "V2SongData",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "80278505555fc59c04e1007155865d51702d98e30aec71e9b610958cdea14724",
+    "replacement": "V2SongData = _models.V2SongData"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "V2RatingResult",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b7898f58a2d3cd5e2418d34dd5e81f208607bee5f9edad6e1a5e1e490334c75b",
+    "replacement": "V2RatingResult = _models.V2RatingResult"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_safe_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "aaad912372d14e650929ebef585b2601cad36a5f9bceecfcb039e7a131d862a6",
+    "replacement": "_safe_int = _v2._safe_int"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_clamp01",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "58008b7a56fb200a2745dd479645eb184edb74ac784bf221a3f0c7fa3af20e1b",
+    "replacement": "_clamp01 = _v2._clamp01"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_load_v2_song_map",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9cf5c2bb1743433d353311774796db5b557ef96f04133408bb10ca922c42ab50",
+    "replacement": "@lru_cache(maxsize=1)"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_calc_p",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9db0290969ddf583e50cf90b3b3d0cbe71ac479f9a5b6175a93d93e761585d1b",
+    "replacement": "_calc_p = _v2._calc_p"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_calc_w",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "4eff849343954c154ca0cad2fbee0851be46927cc914e581a406ee86bc076768",
+    "replacement": "_calc_w = _v2._calc_w"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_calc_single_rating",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "bd5298d84c07805a8d55ba6d862e8313751db61a4b1a825d39355d76e323a617",
+    "replacement": "_calc_single_rating = _v2._calc_single_rating"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_calc_ln_rating",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e0e80967e67cf416733a14a411063caa19478ca309ae0308242f14a546dcb644",
+    "replacement": "def _calc_ln_rating(rating, dimension_value, accuracy):"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_calculate_v2_from_chart",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "7dd8bb2df2ced33bb9db0d8f589e3f626b66cf416d6ae4ecd7b4339fc85c43e3",
+    "replacement": "def _calculate_v2_from_chart(chart, *, accuracy_per, bad_per):"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "_build_result_from_entry",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "530d617eb405792047284bf57da99b8d78dec66df80721f923735a1e3cd8e252",
+    "replacement": "def _build_result_from_entry(entry):"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "compute_all_v2_from_userdata_records",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a69beefd5252247ccf2d8fe3736c81b71e727dce6d37b31ebaa448b5deb9678a",
+    "replacement": "def compute_all_v2_from_userdata_records(userdata_records):"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "DIFFICULTY_BY_CLASS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c915af557eb30f45e4e3968e20e559ef7d12894ac5b2a52f30e9f4e11f68b10a",
+    "replacement": "DIFFICULTY_BY_CLASS = _hiroba.DIFFICULTY_BY_CLASS"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "DEFAULT_HIROBA_SYNC_LEVELS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "356d8ac0a7deed1ce407273e45b6871c8ab65cb458686550880392fd23d79adf",
+    "replacement": "DEFAULT_HIROBA_SYNC_LEVELS = _hiroba.DEFAULT_HIROBA_SYNC_LEVELS"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "BADGE_NAME_TO_RANK",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "03ccdde24e1a6bf2c6894006d59058522200b22d646bc8523b460cc4fd1fd134",
+    "replacement": "BADGE_NAME_TO_RANK = _hiroba.BADGE_NAME_TO_RANK"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "HirobaProfile",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "faefb2869d4f41f630ff3e75e6dc9c4d5942fa45a31f63e371272cdcbea3c427",
+    "replacement": "HirobaProfile = _hiroba.ClientHirobaProfile"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "HirobaSongRef",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "885ee95b9dfedf22f530812e46f14d300669c343623f91ad8e8d1c56a1477848",
+    "replacement": "HirobaSongRef = _hiroba.ClientHirobaSongRef"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "HirobaScoreDetail",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b47c9a69deb11f130e341ce081403e12bcce3a0469fad0070901677b92288996",
+    "replacement": "HirobaScoreDetail = _hiroba.HirobaScoreDetail"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "_parse_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "1bf37532964e30681cd5ac6265ff361a5514d1efdb5b8fbc92be47a20333d429",
+    "replacement": "_parse_int = _hiroba._parse_int"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "_direct_div_text",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "8a80d09af2380c43c5aa6235341fdacf192a8f74a1d1b4bb48ced2e267283f6f",
+    "replacement": "_direct_div_text = _hiroba._direct_div_text"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "parse_profile",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e323624642d5dc48d70a59f623fd3ba1424332b5e8584489248f91f67f6325c6",
+    "replacement": "parse_profile = partial(_hiroba.parse_profile, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "parse_mypage_achievement",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0cf20479487325120014dd16d1c594130604bea73fb1ec597085f084481e01f2",
+    "replacement": "parse_mypage_achievement = partial(_hiroba.parse_mypage_achievement, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "_level_from_link",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "1989a66938ea962b9ad18fb71c750c3133fd0377da2226e1aac9e1c6bcd625da",
+    "replacement": "_level_from_link = _hiroba._level_from_link"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "_is_played_crown_src",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b0ffb4271fcb158b060385188044cbb97baf5086b2c3f78b1db55144053b1a7f",
+    "replacement": "_is_played_crown_src = _hiroba._is_played_crown_src"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "parse_score_list_page",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "eb5d8b1cb54126f9c599420f646aed0a27342a1235595bcc50e7abff33421607",
+    "replacement": "parse_score_list_page = partial(_hiroba.parse_score_list_page, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "merge_song_refs",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "327f4b9ee9fc214757f3c7dda4a4485546b2ca95c0570faa54144cf81bfc4d9d",
+    "replacement": "merge_song_refs = partial(_hiroba.merge_song_refs, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "_badge_from_src",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "caf8d89c5efea6f382b66227624fb6a334d7e1d0cad0d1a6267573b946700539",
+    "replacement": "_badge_from_src = _hiroba._badge_from_src"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "_crown_from_src",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0e50db8a7f3e4a318948060d2d6d9a6f1001e297557464dad4b01036dcfc2707",
+    "replacement": "_crown_from_src = partial(_hiroba._crown_from_src, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "parse_score_detail",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "d401ea8cee2b4bff1d2a646979dd07b6818459aca0e49eea123920ab170e61d8",
+    "replacement": "parse_score_detail = partial(_hiroba.parse_score_detail, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "filter_song_refs_by_levels",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "21804b3bc4b34a0684d0f1e78787f8d17e4077065c3257bc88f342e9e459689a",
+    "replacement": "filter_song_refs_by_levels = partial(_hiroba.filter_song_refs_by_levels, profile=_hiroba.HIROBA_CLIENT_PROFILE)"
+  },
+  {
+    "file": "plugins/utils/hiroba/parser.py",
+    "symbol": "enumerate_fetch_tasks",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "39fa462500153fbe6e7336830ba551f81a8982f586b3eaa2a43ca2bde2421664",
+    "replacement": "enumerate_fetch_tasks = _hiroba.enumerate_fetch_tasks"
+  },
+  {
+    "file": "plugins/utils/hiroba/normalize.py",
+    "symbol": "build_profile_stub",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "280c8b6a15a3364ccd555ae4379fb33e69c8609f687fb3691ab51c6081249995",
+    "replacement": "build_profile_stub = _score.build_profile_stub"
+  },
+  {
+    "file": "plugins/utils/hiroba/normalize.py",
+    "symbol": "score_detail_to_userdata_record",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "54218f5d74b1e4aae8098d918f367720838d2270da07e11df320a300ff306df1",
+    "replacement": "def score_detail_to_userdata_record(detail):"
+  },
+  {
+    "file": "plugins/utils/hiroba/normalize.py",
+    "symbol": "_sanitize_achievement",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "5815e4b83fcf35e8564d6ea40c031540c99830ace07bb58c3bd0b25c58d947e2",
+    "replacement": "_sanitize_achievement = _score._sanitize_achievement"
+  },
+  {
+    "file": "plugins/utils/hiroba/normalize.py",
+    "symbol": "_compute_achievement_from_details",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3e39595b335d0d54d24ee06915d2d7ce2cc8e15370878ad88632ef0e6f6b649c",
+    "replacement": "_compute_achievement_from_details = _score._compute_achievement_from_details"
+  },
+  {
+    "file": "plugins/utils/hiroba/normalize.py",
+    "symbol": "build_userdata",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "cbbe208c9c7261243b104e10e18a5b14baf794b7d8f7830f4fbf079423d93aec",
+    "replacement": "def build_userdata(profile, details, achievement=None):"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "SpecialBalloonOverride",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a10984327daee4a333fbefe26a9c78bc20dc4742771ad40ae5db7d79cd079350",
+    "replacement": "SpecialBalloonOverride = _roll.SpecialBalloonOverride"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "_safe_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "051b420cbc4a1242a273eb7e6cdecf6dc3f24b4aa2236e546cb5de6546f46ec3",
+    "replacement": "_safe_int = _roll._safe_int"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "_safe_float",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c317c428898acb811801dd6bc4dff74590caad1013f45188030f21fd1df7530f",
+    "replacement": "_safe_float = _roll._safe_float"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "_normalize_balloons",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "ddc89f7bc11de1109f38534cb0da8595c7cd4814da6bce8e0d43453976bef67d",
+    "replacement": "_normalize_balloons = _roll._normalize_balloons"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "RatingRollBreakdown",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0567c888a35b35270f6685f00d9edba87b17f8a0759318a4ed502fb32d7dc75f",
+    "replacement": "RatingRollBreakdown = _roll.RatingRollBreakdown"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "_special_balloon_override",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c610a95b05f1d28a14dc555f88be4ad1ba6a3adf490d0ae7d452b4507bc18413",
+    "replacement": "_special_balloon_override = _roll._special_balloon_override"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "compute_rating_roll_breakdown",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "946d2eb1e9004b592923396db14d2cf7f4651c256fcd4a7fcb0a1839528d4989",
+    "replacement": "compute_rating_roll_breakdown = _roll.compute_rating_roll_breakdown"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "_safe_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "051b420cbc4a1242a273eb7e6cdecf6dc3f24b4aa2236e546cb5de6546f46ec3",
+    "replacement": "_safe_int = _dojo._safe_int"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "_safe_optional_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "956268d123d035964cb09e0703d29b63c723674b4044e96b4213a81602dc7ae6",
+    "replacement": "_safe_optional_int = _dojo._safe_optional_int"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "level_mark_to_icon",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "4cb89a9378bdf325384f7bd99052f0e73603ebc3463db33d8dfbc811f15d36ce",
+    "replacement": "level_mark_to_icon = _dojo.level_mark_to_icon"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "_normalize_song_metrics",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2b8eefb6e30400f8e794a95cc2858bf3245210b184ef143a4a987bfe6c3508cf",
+    "replacement": "_normalize_song_metrics = _dojo._normalize_song_metrics"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "normalize_dojo_scores",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0aba6a5ff28d633c7a6086fdc4c1ec34891f01b50e14f2d3b8e9c3067f0dec98",
+    "replacement": "def normalize_dojo_scores(payload):"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "build_dojo_score_map",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "246443b4cd63dbf9136b009ab15b4acac812a10aab7e66b6cca88e6d75e55cc3",
+    "replacement": "build_dojo_score_map = _dojo.build_dojo_score_map"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "ProgressChartItem",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e6154666017c9045252c6e8404d5812cfc07df1dc970ae11a342884ccda49a7a",
+    "replacement": "ProgressChartItem = _progress.ProgressChartItem"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "_to_float",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "5335940dfbf7bcc77527a5780040f35380f414bbeaa18d2f7db0f21e0d0892ae",
+    "replacement": "_to_float = _progress._to_float"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "_normalize_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "131c5d5aa2aa0989be52478169a7d50ced8c3fd8f7443ebd404ca731037039d7",
+    "replacement": "_normalize_title = _progress._normalize_title"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "_pick_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "eaa3a6b3fc0205f305667692dae9945a48683086d8007f877a3941a1913e74a5",
+    "replacement": "_pick_title = _progress._pick_title"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "_sort_items",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "079459320c78b04e4277a60b8a5f98ed6bd7584fedd5da28ce318c76756b960b",
+    "replacement": "def _sort_items(items):"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "_build_static_progress_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "ae693a0de450918febca4416cc389b28f94fb53f2045f6094195a6b5e6c9beab",
+    "replacement": "def _build_static_progress_title(song_id, level, progress_key):"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "available_pass_progress_keys",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "fed705c7dbb02c51eae0259f4e925b9c5d376c21fb9c0a3c19639de0c4afa91f",
+    "replacement": "@lru_cache(maxsize=1)"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "query_progress_items_by_pass_const",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3e1fe60f2eed8f2601a54aeaa85f38358f34fae6296f86af752e18cacdbda4b0",
+    "replacement": "def query_progress_items_by_pass_const(progress_key):"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "available_const_progress_keys",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c43b4eb8ea6bb058cd13c0711348719454b0e4187268c023175bc0c2b907f17a",
+    "replacement": "@lru_cache(maxsize=1)"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "query_progress_items_by_const",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "fe5a08448de0c1e24d2057e10ce83bbafb24bfc94e5e3d970420ab7b061a0d42",
+    "replacement": "def query_progress_items_by_const(const_value):"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "available_star_progress_values",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "064a2de1549f5ab90ed1adbc8daea195fc9c71072a391956d4da027471eb1309",
+    "replacement": "@lru_cache(maxsize=1)"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "query_progress_items_by_star",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2e78bedc8e1ef626faeac4f078eb19cf5e979692a68ba104fed7c5a93380a695",
+    "replacement": "def query_progress_items_by_star(star_value):"
+  },
+  {
+    "file": "plugins/utils/progress_star.py",
+    "symbol": "StarProgressSummary",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "1801c61752cdde3dc675e4063c790beeac20f3c0fd179377d8179b0746eced98",
+    "replacement": "StarProgressSummary = _progress.StarProgressSummary"
+  },
+  {
+    "file": "plugins/utils/progress_star.py",
+    "symbol": "build_star_progress_summary",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0209c32c46067a5d396c8314859b6cb61edc4a11dba66c9f93f69e7d76162cea",
+    "replacement": "def build_star_progress_summary(progress_items, best_map):"
+  },
+  {
+    "file": "plugins/utils/song_position.py",
+    "symbol": "PositionResult",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2df09ef0ced74a497c6695b0bd984370e0b344ebaf232a4044ff1ea06e549543",
+    "replacement": "PositionResult = _position.PositionResult"
+  },
+  {
+    "file": "plugins/utils/song_position.py",
+    "symbol": "_to_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "193641560361ed894f5048d0bb95930eabe72cd06570bdbde2fb0bd37dd7a600",
+    "replacement": "_to_int = _position._to_int"
+  },
+  {
+    "file": "plugins/utils/song_position.py",
+    "symbol": "_song_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "aaead37dbb48b2742c7a29746ff5521bbdf360b5546332f2396413fff50d5d95",
+    "replacement": "_song_title = _position._song_title"
+  },
+  {
+    "file": "plugins/utils/song_position.py",
+    "symbol": "_sort_key",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "58c64c3b2bf6f6d2f5d415f8ca8ae4cf7385b283ebd5392f90af20808ff7ba24",
+    "replacement": "_sort_key = _position._sort_key"
+  },
+  {
+    "file": "plugins/utils/song_position.py",
+    "symbol": "_load_song_catalog",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e5a86dd9426a38c4c4cb8090c85b23873aa534817ec9e1d090d6a6b0a32e051f",
+    "replacement": "@lru_cache(maxsize=4)"
+  },
+  {
+    "file": "plugins/utils/song_position.py",
+    "symbol": "get_song_position_by_id",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0cd036a52920f20b7e42e98b5a3ddc25395a6285d3c7db9f3474ddf8cc6d9f08",
+    "replacement": "def get_song_position_by_id(song_id):"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "ScoreLineRequest",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "08fa5700bfcca5ae52cea9b8068caa5171127e94d8b31b40ea5238c402196992",
+    "replacement": "ScoreLineRequest = _client_scoreline.ScoreLineRequest"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_safe_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "051b420cbc4a1242a273eb7e6cdecf6dc3f24b4aa2236e546cb5de6546f46ec3",
+    "replacement": "_safe_int = _scoreline._safe_int"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_safe_float",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c317c428898acb811801dd6bc4dff74590caad1013f45188030f21fd1df7530f",
+    "replacement": "_safe_float = _scoreline._safe_float"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_round_up_to_10",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "71e4a0053b06777f0033a15fe3b0e79161313f7bd1697467b386f438dcea081b",
+    "replacement": "_round_up_to_10 = _scoreline._round_up_to_10"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_normalize_title",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "088b6f168120788ecec1eb479cb64a7d550c2bdd66bd0b6aeecff6c7fc297407",
+    "replacement": "_normalize_title = _client_scoreline._normalize_title"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_score_target_map",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "85f10c4c42ecfbebe51713bdbb92b7316215a471e50fb8ee2f6a2326340477d3",
+    "replacement": "_score_target_map = _scoreline._score_target_map"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_extract_roll_times",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "26f9e466fc85e4ae059895ce78c9b1cd2d98162ae7e672bef2933228cd05db3c",
+    "replacement": "_extract_roll_times = _scoreline._extract_roll_times"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_extract_balloons",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b1fe636665a08ae24d19c553cc0a217636d6722c8fcc5d1b3ac401d550520f4c",
+    "replacement": "_extract_balloons = _scoreline._extract_balloons"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "rebuild_scoreline_dataset",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e21a22f8469c2f8c8b6a5a697b35b46e844a9771d84ec63a9ef5d890b1246ce3",
+    "replacement": "def rebuild_scoreline_dataset(output_path=UNIFIED_PATH):"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_build_chart_index",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "ebbb9a80ed7c5f21b935b65cbfa5afc363a32de8073730e0f958f124487396c3",
+    "replacement": "@lru_cache(maxsize=1)"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "get_scoreline_entry",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a3e801cc014c29941b346a665f3a3b7c70fd849e759f004b071ca17ed53c8050",
+    "replacement": "def get_scoreline_entry(song_id, level, fallback_title=\"\"):"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "available_levels_for_song",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "8488918d33224d9a981a0d1a44201683d43c1f7eb7b83c96d85e61a75a799579",
+    "replacement": "def available_levels_for_song(song_id, fallback_title=\"\"):"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "compute_roll_hits",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "7a73105adcaf4b5e0f670a7a1d4797dac060a014a4a61f87152a8522359b0428",
+    "replacement": "compute_roll_hits = _scoreline.compute_roll_hits"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "compute_scoreline_result",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "7a1c30b824fdf5a10094e2651c15b149e4d3322625f5ed702370950d498ef156",
+    "replacement": "compute_scoreline_result = _scoreline.compute_scoreline_result"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "parse_scoreline_request",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "05617e7199aceeff101e841c4f9f5ab7e5006330237214e536673754d7f298e4",
+    "replacement": "parse_scoreline_request = _client_scoreline.parse_scoreline_request"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "TargetRecommendationResult",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2c36f6902d2ae50dee8366eaa50d644820cb454878b7e0408354012ca7e1ffa5",
+    "replacement": "TargetRecommendationResult = _selection.TargetRecommendationResult"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "parse_target_recommendation_key",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9b7184b4a8eca9d5c6cd63836086f50e1a0acc3a068fb288b4209f356532d357",
+    "replacement": "parse_target_recommendation_key = _target.parse_target_recommendation_key"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "target_recommendation_displays",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "5e914bc82b84ec6aaec36c9c0efade8fb8c17b1c811e9dcdb75afe568a53d674",
+    "replacement": "target_recommendation_displays = _target.target_recommendation_displays"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "parse_target_recommendation_star_filter",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "7968a124818dd0674f516d6cb22328e2b83090acfee274c6d97880f4b9587c9a",
+    "replacement": "parse_target_recommendation_star_filter = _target.parse_target_recommendation_star_filter"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "parse_target_recommendation_request",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "abb9942131f5e151bb3c1e7dd2e6c694a6feae2fac3e2b07c2d255bd92af14d9",
+    "replacement": "parse_target_recommendation_request = _target.parse_target_recommendation_request"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_safe_int",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "051b420cbc4a1242a273eb7e6cdecf6dc3f24b4aa2236e546cb5de6546f46ec3",
+    "replacement": "_safe_int = _target._safe_int"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_safe_float",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c317c428898acb811801dd6bc4dff74590caad1013f45188030f21fd1df7530f",
+    "replacement": "_safe_float = _target._safe_float"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_clamp",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "3170751e61d5ada72805230c151f59abf224ab319e67ba6041e3b09f6b774705",
+    "replacement": "_clamp = _target._clamp"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_mean",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "4e8530e4d0c03052b30d9e23efaab20006bdda7bd7d7d34636f78c5932fb96a0",
+    "replacement": "_mean = _target._mean"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_userdata_records",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "f4c1c45e2af9feceb06d1f8f8ef69c7b4a1309bc2f48b79cd1d5b05ef31995eb",
+    "replacement": "_userdata_records = _selection._userdata_records"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_build_song_maps",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b6cef86a5a9961c9580ddee724e54e006d1f20ad2e23e0796406e2f4eb1ff2aa",
+    "replacement": "def _build_song_maps():"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_load_rating_lookup",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "d4a26fa80ea55b764ed19d3ef40b98900b4f365f4986f9074c3ea618670c214c",
+    "replacement": "@lru_cache(maxsize=1)"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_build_best_entry_map",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a9eecf60827f2c1454c189df9b623077190f67f853424c651d8d4d69f2b4ab95",
+    "replacement": "def _build_best_entry_map(records):"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_build_user_profile",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "cc51c01e8c86c03f050ea69dbc6161b3b6a5672b9ade0836b30e4c267b856207",
+    "replacement": "def _build_user_profile(records):"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_target_accuracy_hint",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a6e6a35c98fb5207d824712bf9b8ab49f8e146d58343c681e2f7a249e5a2acc2",
+    "replacement": "_target_accuracy_hint = _target._target_accuracy_hint"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_candidate_dimensions",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "efa75fbc57061178fd68d45d551772e2b1a4c6776b5b144de1c6e6c0c9cd61eb",
+    "replacement": "_candidate_dimensions = _target._candidate_dimensions"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_profile_weights",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "aae523ef2a7a4416d6dc7e6bd7e1c0c07afdb047655fffc8bfce3b9a27c69af4",
+    "replacement": "_profile_weights = _target._profile_weights"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_profile_match_score",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "97a968338ed4146a1cf69e4663ab0161d14219b7ff52d4029ae51fe0941089f4",
+    "replacement": "_profile_match_score = _target._profile_match_score"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_format_gap_text",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "bffa3dbda7def2e7ec8206e4673ccfa1597d7f31e19843df4aff9ee3c409b638",
+    "replacement": "_format_gap_text = _target._format_gap_text"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_achieved_target",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "7d8490bb44aa4f96597b5b3d811ded568ab9f3ea588f70f703f0b353dfdf9b4f",
+    "replacement": "_achieved_target = _target._achieved_target"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_target_text",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9bf2064ab93d9aa3df6daaf9fd3e7f403ccae57fc211143f990965e44c49bb5a",
+    "replacement": "_target_text = _target._target_text"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_build_row",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "f8b5fb200e18913d31e9275e326508ea83de3cc495e1a32a4bc054c65d6a2e50",
+    "replacement": "_build_row = _target._build_row"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "compute_target_recommendations_for_user",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "84878526be3b62633aa444270b5922a36c92dbce8b733ce6027bfdcc39f9bf0f",
+    "replacement": "def compute_target_recommendations_for_user(user_id, target_key, *, star_filter=None):"
+  },
+  {
+    "file": "plugins/utils/b30_single.py",
+    "symbol": "_compute_rating_for_entry",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "e5c0c82b2b3ee20c6a0820faa9271588cfb066828ddd30fdb0ac04f4a35b37f5",
+    "replacement": "Core score.single delegate with frozen client visibility and rating groups"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "ROTTER_TARMINATION_BALLOON_ROLL_SECONDS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "2e4059aef891cf845c19c000fd81d6a2b4336c875762a47358e4af1296425807",
+    "replacement": "ROTTER_TARMINATION_BALLOON_ROLL_SECONDS = _roll.ROTTER_TARMINATION_BALLOON_ROLL_SECONDS"
+  },
+  {
+    "file": "plugins/utils/evaluation_roll.py",
+    "symbol": "_SPECIAL_BALLOON_OVERRIDES",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "69b64a03b753cd3c3d33920a3511b4b604aec16843b907ab6b3b4f967387fc12",
+    "replacement": "_SPECIAL_BALLOON_OVERRIDES = _roll._SPECIAL_BALLOON_OVERRIDES"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "RatingAlgorithm",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b7d7e75b47b59eadabc6a570be615eead6c99d1ac774961e00854790232bb222",
+    "replacement": "RatingAlgorithm = _v1.RatingAlgorithm"
+  },
+  {
+    "file": "plugins/utils/score_calculator.py",
+    "symbol": "ACCURACY_WEIGHTS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "c3d9f306e82ba0e266ecc109deeedfc55f87a55fbafe4be6b48372c926d6d960",
+    "replacement": "ACCURACY_WEIGHTS = _v1.ACCURACY_WEIGHTS"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "DOUBLE_PLAY_TITLE_PREFIX",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "8c492138f45c2e7e73b8cca14f4ed8babe2c8dd5fa9873be4aafc50c97303731",
+    "replacement": "DOUBLE_PLAY_TITLE_PREFIX = _dataset.DOUBLE_PLAY_TITLE_PREFIX"
+  },
+  {
+    "file": "plugins/utils/taikob_v2.py",
+    "symbol": "DIFFICULTY_MAP",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "b51ff84b648ed226bcc088f6679e811d22a6ef094b63486f62d1deeeb0ba5cad",
+    "replacement": "DIFFICULTY_MAP = _dataset.DIFFICULTY_MAP"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "LEVEL_STAR_FIELD",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9084692b6415c2fac22414db612b9aebef7999ef6bfb236a2c13003e75f61cc3",
+    "replacement": "LEVEL_STAR_FIELD = _progress.LEVEL_STAR_FIELD"
+  },
+  {
+    "file": "plugins/utils/progress_catalog.py",
+    "symbol": "STAR_PROGRESS_LEVELS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "955cab8bc12ddc4a58493064e866995b3cd7a3f7e480f1238c6f0d2a50e7d7a0",
+    "replacement": "STAR_PROGRESS_LEVELS = _progress.STAR_PROGRESS_LEVELS"
+  },
+  {
+    "file": "plugins/utils/dojo_score.py",
+    "symbol": "LEVEL_MARK_TO_ICON",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "0ef0d8f9fa0724c349061c4331c87237cd3ee8730cb728102b6ed269d65ad6aa",
+    "replacement": "LEVEL_MARK_TO_ICON = _dojo.LEVEL_MARK_TO_ICON"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "RATING_CONFIG",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "1a3f1b60cabb784b39592d795a69bb95f0c901ed92a6cd65f1011318f73bea65",
+    "replacement": "RATING_CONFIG = _scoreline.RATING_CONFIG"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_RATING_ALIAS_TO_KEY",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "8e18dd5997404d9688e1e13a00a4cad598013a6775ebd46f0069889a3fe6d127",
+    "replacement": "_RATING_ALIAS_TO_KEY = _scoreline._RATING_ALIAS_TO_KEY"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_SORTED_RATING_ALIASES",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "9397ddc72c7c518e45a0eec89fae2d23d73a5fd63fb7a348c8eb2873bc30af53",
+    "replacement": "_SORTED_RATING_ALIASES = _scoreline._SORTED_RATING_ALIASES"
+  },
+  {
+    "file": "plugins/utils/score_line.py",
+    "symbol": "_DIFF_PREFIXES",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "6b7ed95371b0bd7f0d8c60a30d3f69178bf5ee8cdc10a81edde614f2266e92ad",
+    "replacement": "_DIFF_PREFIXES = _client_scoreline._DIFF_PREFIXES"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "SCORE_TARGETS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "196e18efffc8a78758fb2522eabb733229818d2d7754836e2d8dde69292a853f",
+    "replacement": "SCORE_TARGETS = _target.SCORE_TARGETS"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "FULL_COMBO_TARGET",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "ef5bfde0586faa0d7966027cacab5f3ad8c6350287b450e7720066576ffb3954",
+    "replacement": "FULL_COMBO_TARGET = _target.FULL_COMBO_TARGET"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "DONDAFUL_TARGET",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "a94960e279deb56009ce223f8637ee6d074ef28001eac8d92077656552ca0a67",
+    "replacement": "DONDAFUL_TARGET = _target.DONDAFUL_TARGET"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "TARGET_DISPLAY",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "8b24d196ca4595c333896ba29496ee20364ef04188a36e0143cd5a4513dfb632",
+    "replacement": "TARGET_DISPLAY = _target.TARGET_DISPLAY"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_TARGET_ALIASES",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "81b3757a33f848c915aa76efc23c5db07d652f8f4d524ff45f734ce3f2eb0654",
+    "replacement": "_TARGET_ALIASES = _target._TARGET_ALIASES"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_TARGET_ALIAS_KEYS_SORTED",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "13cea1a644b7d2e621ea77f8cb1935a73dc4fd09c1d2aa34024fa4fa8f25095c",
+    "replacement": "_TARGET_ALIAS_KEYS_SORTED = _target._TARGET_ALIAS_KEYS_SORTED"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "_STAR_FILTER_ALIASES",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "f74beb496fb10959839a695985072537db5f63af4830aa2256b7ffba3eb39027",
+    "replacement": "_STAR_FILTER_ALIASES = _target._STAR_FILTER_ALIASES"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "PROFILE_KEYS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "722c5d2f2bd36c4f38591629857ece225b5f61934619f397f0603b589ade3566",
+    "replacement": "PROFILE_KEYS = _target.PROFILE_KEYS"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "SCORE_TARGET_DIM_WEIGHTS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "cb8498724b510430066b255368337a811341d656736f52c159d3aa5a46c9fbe9",
+    "replacement": "SCORE_TARGET_DIM_WEIGHTS = _target.SCORE_TARGET_DIM_WEIGHTS"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "FULL_COMBO_DIM_WEIGHTS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "81794ec8c95a6dadcc018f58086cbdfd213cafe5fffb26a4944191a8a3c6ce3e",
+    "replacement": "FULL_COMBO_DIM_WEIGHTS = _target.FULL_COMBO_DIM_WEIGHTS"
+  },
+  {
+    "file": "plugins/utils/target_recommend.py",
+    "symbol": "DONDAFUL_DIM_WEIGHTS",
+    "legacyRevision": "46c8646847f8d642b53043b6123d8763e26c0a16",
+    "legacySha256": "5e80c9c7bd3527b4ac2441b7c346178d2e4e6bb64c81ff7681fd64d7b3100c67",
+    "replacement": "DONDAFUL_DIM_WEIGHTS = _target.DONDAFUL_DIM_WEIGHTS"
+  }
+]

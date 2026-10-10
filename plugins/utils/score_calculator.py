@@ -1,3 +1,11 @@
+
+from taiko_bot import domain as _domain
+from sakura_taiko_core.rating import v1 as _v1
+from sakura_taiko_core.dimension import v1 as _dims
+from sakura_taiko_core.models import calculation as _models
+from sakura_taiko_core.chart import catalog as _catalog, client_groups as _client_groups
+from sakura_taiko_core.score import calculation as _calculation
+from sakura_taiko_core.recommendation import candidates as _candidates
 import json
 import math
 import pandas as pd
@@ -28,97 +36,18 @@ UNPLAYED_BG = "#E8F3FF"  # 非常浅的蓝色，不影响可读性
 POSITIVE_COLOR = "#2E7D32"  # 淡绿（正向）
 NEGATIVE_COLOR = "#C62828"  # 淡红（负向）
 NEUTRAL_COLOR = "#000000"  # 黑色
-RatingAlgorithm = Literal["great-only", "comprehensive"]
-ACCURACY_WEIGHTS = {
-    "great-only": {"GREAT": 1.0, "GOOD": 0.0},
-    "comprehensive": {"GREAT": 1.0, "GOOD": 0.5},
-}
-MANUAL_PAIR_ID_GROUPS = [
-    (399, 400),
-    (433, 1265),
-    (939, 1263),
-    (450, 1257),
-    (1146, 1264),
-    (750, 1260),
-    (141, 1258),
-    (191, 1266),
-    (527, 1261),
-    (323, 1262),
-    (137, 1259),
-]
+RatingAlgorithm = _v1.RatingAlgorithm
+ACCURACY_WEIGHTS = _v1.ACCURACY_WEIGHTS
+MANUAL_PAIR_ID_GROUPS = _client_groups.MANUAL_PAIR_ID_GROUPS
 
 
-def _normalize_duplicate_song_level_signature(song: Dict[str, Any]) -> Tuple[str, ...]:
-    return tuple(str(song.get(f"level_{level}") or "").strip() for level in range(1, 6))
+_normalize_duplicate_song_level_signature = _client_groups._normalize_duplicate_song_level_signature
 
 
-def build_duplicate_song_groups(
-    song_data_path: str | Path = get_settings().root_dir / "songs" / "song_data.json",
-) -> List[Tuple[int, ...]]:
-    """
-    构建推荐流程的“同曲多 ID”分组。
-    - 保留手工维护的已知共谱分组
-    - 自动补充：song_data 中曲名完全一致且难度签名一致的多 ID 曲目
-    """
-
-    group_candidates: List[Tuple[int, ...]] = [tuple(group) for group in MANUAL_PAIR_ID_GROUPS]
-    try:
-        song_data = load_json(song_data_path)
-    except Exception:
-        song_data = []
-
-    if isinstance(song_data, list):
-        duplicate_ids_by_signature: Dict[Tuple[str, Tuple[str, ...]], Set[int]] = {}
-        for item in song_data:
-            if not isinstance(item, dict):
-                continue
-            if not is_song_publicly_visible(item):
-                continue
-            title = str(item.get("song_name") or "").strip()
-            if not title:
-                continue
-            try:
-                song_id = int(item.get("id"))
-            except Exception:
-                continue
-            signature = (title, _normalize_duplicate_song_level_signature(item))
-            duplicate_ids_by_signature.setdefault(signature, set()).add(song_id)
-
-        for ids in duplicate_ids_by_signature.values():
-            if len(ids) > 1:
-                group_candidates.append(tuple(sorted(ids)))
-
-    parent: Dict[int, int] = {}
-
-    def find(song_id: int) -> int:
-        root = parent.setdefault(song_id, song_id)
-        if root != song_id:
-            parent[song_id] = find(root)
-        return parent[song_id]
-
-    def union(left: int, right: int) -> None:
-        left_root = find(left)
-        right_root = find(right)
-        if left_root != right_root:
-            parent[right_root] = left_root
-
-    for group in group_candidates:
-        normalized = [int(song_id) for song_id in group]
-        if len(normalized) < 2:
-            continue
-        for song_id in normalized:
-            parent.setdefault(song_id, song_id)
-        anchor = normalized[0]
-        for song_id in normalized[1:]:
-            union(anchor, song_id)
-
-    merged: Dict[int, Set[int]] = {}
-    for song_id in list(parent):
-        merged.setdefault(find(song_id), set()).add(song_id)
-
-    return sorted(
-        [tuple(sorted(song_ids)) for song_ids in merged.values() if len(song_ids) > 1]
-    )
+def build_duplicate_song_groups(song_data_path=get_settings().root_dir / "songs/song_data.json"):
+    try: rows = load_json(song_data_path)
+    except Exception: rows = []
+    return _client_groups.build_rating_duplicate_groups(rows)
 
 
 PAIR_ID_GROUPS = build_duplicate_song_groups()
@@ -251,43 +180,10 @@ def _apply_playcount_xticks(
     )
 
 
-@dataclass
-class SongMetrics:
-    """最终用于六维属性的四个谱面维度（AD/AE/AF/AG）"""
-
-    complex_proc: float  # AD 复合处理
-    stamina: float  # AE 体力
-    speed: float  # AF 高速处理
-    rhythm: float  # AG 节奏处理
+SongMetrics = _models.SongMetrics
 
 
-@dataclass
-class RatingResult:
-    """返回：综合 AI + 六维 + 中间变量"""
-
-    song_id: int
-    level: int
-    song_name: str
-    high_score: int
-    const_value: float  # F 列：定数
-    accuracy: float  # G 列：良率(0~1)
-
-    M_const_score: float  # M 列：定数得点
-    N_acc_score: float  # N 列：精度得点
-    raw_complex_proc: float  # AD 复合处理原值
-    raw_stamina: float  # AE 体力原值
-    raw_speed: float  # AF 高速处理原值
-    raw_rhythm: float  # AG 节奏处理原值
-    P_param: float  # P 列：幂指数参数
-    Q_weight: float  # Q 列：二维权重
-    AI_rating: float  # AI 列：综合 rating
-
-    big_song: float  # AJ 大歌力
-    stamina: float  # AK 体力
-    speed: float  # AL 高速处理
-    accuracy_power: float  # AM 精度力
-    rhythm: float  # AN 节奏处理
-    complex_proc: float  # AO 复合处理
+RatingResult = _models.RatingResult
 
 
 # ---------- 数据加载 ----------
@@ -342,308 +238,56 @@ def load_on_shelf_song_ids(
 # ---------- 1. 定数 → M 列（定数得点） ----------
 
 
-def build_const_table(const_map: Dict[str, float]) -> List[tuple]:
-    """
-    const_map: {"1.0": 0.05, "1.5": 0.10, ...}
-    转成按定数排序的列表 [(1.0,0.05), (1.5,0.10), ...]
-    """
-    items: List[tuple] = []
-    for k, v in const_map.items():
-        items.append((float(k), float(v)))
-    items.sort(key=lambda x: x[0])
-    return items
+build_const_table = _v1.build_const_table
 
 
-def lookup_const_score(const_value: float, table: List[tuple]) -> float:
-    """
-    对应 M 列：
-    =INDEX(Sheet2!$B$2:$B$64, MATCH(F3,Sheet2!$A$2:$A$64,0))
-    这里做了插值 + 边界 clamp。
-    """
-    if not table:
-        raise ValueError("Const table is empty")
-
-    c = float(const_value)
-
-    if c <= table[0][0]:
-        return table[0][1]
-    if c >= table[-1][0]:
-        return table[-1][1]
-
-    prev_c, prev_s = table[0]
-    for cc, ss in table[1:]:
-        if abs(cc - c) < 1e-9:
-            return ss
-        if c < cc:
-            t = (c - prev_c) / (cc - prev_c)
-            return prev_s + t * (ss - prev_s)
-        prev_c, prev_s = cc, ss
-
-    return table[-1][1]
+lookup_const_score = _v1.lookup_const_score
 
 
 # ---------- 2. 良率 G → N 列（精度得点） ----------
-def calc_accuracy(
-    total_notes: int,
-    great_cnt: int,
-    good_cnt: int,
-    algorithm: RatingAlgorithm = "comprehensive",
-) -> float:
-    """
-    TS: calcAccuracy(totalNotes, userScore, algorithm)
-    accuracy = (great*Wg + good*Wk)/totalNotes
-    threshold: great-only 0.5, comprehensive 0.75
-    < threshold -> 0
-    """
-    if total_notes <= 0:
-        return 0.0
-    w = ACCURACY_WEIGHTS[algorithm]
-    acc = (great_cnt * w["GREAT"] + good_cnt * w["GOOD"]) / float(total_notes)
-    acc = max(0.0, min(1.0, acc))
-    threshold = 0.5 if algorithm == "great-only" else 0.75
-    return 0.0 if acc < threshold else acc
+calc_accuracy = _v1.calc_accuracy
 
 
-def _calc_accuracy_for_record(
-    total_notes: int,
-    great_cnt: int,
-    good_cnt: int,
-    dondaful_combo_cnt: int,
-    algorithm: RatingAlgorithm = "comprehensive",
-) -> float:
-    if dondaful_combo_cnt > 0:
-        return 1.0
-    return calc_accuracy(
-        total_notes=total_notes,
-        great_cnt=great_cnt,
-        good_cnt=good_cnt,
-        algorithm=algorithm,
-    )
+_calc_accuracy_for_record = _v1._calc_accuracy_for_record
 
 
-def calc_y(
-    accuracy: float,
-    normalization_factor: float = 15.5,
-    algorithm: RatingAlgorithm = "comprehensive",
-) -> float:
-    """
-    TS: calcY(accuracy, algorithm)
-    great-only: 旧Excel分段
-    comprehensive: 新分段 + 高段归一化拉伸到 NORMALIZATION_FACTOR
-    """
-    if algorithm == "great-only":
-        g0, g1, g2 = 0.5, 0.6832, 0.9625
-
-        def y1(a):
-            return 4425 * (a - 0.5) ** 4.876
-
-        def y2(a):
-            return 30.748 * a - 19.88
-
-        def y3(a):
-            return 0.228 * (2.718 ** (3.386 * (a**24.658))) + 8.862
-
-    else:
-        g0, g1, g2 = 0.75, 0.8278, 0.9793
-
-        def y1(a):
-            return 16730 * (a - 0.75) ** 3.805
-
-        def y2(a):
-            return 56.4468 * a - 45.7187
-
-        def y3(a):
-            return 0.2246 * (2.718 ** (120 * (a - 0.972))) + 9.02
-
-    if accuracy <= g0:
-        return 0.0
-    if accuracy <= g1:
-        return float(y1(accuracy))
-    if accuracy <= g2:
-        return float(y2(accuracy))
-
-    # 高段：归一化拉伸，使 accuracy=1 对齐到 NORMALIZATION_FACTOR
-    y_g2 = float(y3(g2))
-    y_1 = float(y3(1.0))
-    if abs(y_1 - y_g2) < 1e-12:
-        return normalization_factor
-    return y_g2 + (float(y3(accuracy)) - y_g2) / (y_1 - y_g2) * (
-        normalization_factor - y_g2
-    )
+calc_y = _v1.calc_y
 
 
-def accuracy_to_score(G: float) -> float:
-    """
-    对应 N 列公式：
-    =IF(AND(G3>=0.5,G3<=0.6832),
-         4425*POWER(G3-0.5,4.876),
-       IF(AND(G3>0.6832,G3<=0.9625),
-         30.748*G3-19.88,
-         0.228*POWER(2.718,3.386*POWER(G3,24.658))+8.862))
-    """
-    g = float(G)
-    if g < 0.5:
-        return 0
-    if 0.5 <= g <= 0.6832:
-        return 4425 * (g - 0.5) ** 4.876
-    elif 0.6832 < g <= 0.9625:
-        return 30.748 * g - 19.88
-    else:
-        return 0.228 * math.exp(3.386 * (g**24.658)) + 8.862
+accuracy_to_score = _v1.accuracy_to_score
 
 
 # ---------- 3. P 列：幂指数参数 ----------
 
 
-def compute_P(M: float, N: float, P1: float = 150.0) -> float:
-    """
-    对应：
-    = $P$1 - SQRT( POWER($P$1,2) - POWER(M3-N3,2)/2 )
-    """
-    diff = M - N
-    inner = P1**2 - (diff**2) / 2.0
-    inner = max(inner, 0.0)
-    return P1 - math.sqrt(inner)
+compute_P = _v1.compute_P
 
 
 # ---------- 4. Q 列：二维权重 ----------
 
 
-def compute_Q(M: float, N: float) -> float:
-    """
-    对应：
-    =MAX(
-       SQRT(25 - POWER(M3-15.5,2)/25 - POWER(N3-23,2)/69) - 4,
-       0.5
-     )
-    """
-    term = 25 - (M - 15.5) ** 2 / 25.0 - (N - 23.0) ** 2 / 69.0
-    if term < 0:
-        base = 0.0
-    else:
-        base = math.sqrt(term) - 4.0
-    return max(base, 0.5)
+compute_Q = _v1.compute_Q
 
 
 # ---------- 5. AI 列：综合 rating（幂平均） ----------
 
 
-def compute_AI(M: float, N: float, P: float, Q: float) -> float:
-    """
-    对应：
-    =POWER(Q3*POWER(M3,P3)+(1-Q3)*POWER(N3,P3),1/P3)
-    """
-    if abs(P) < 1e-9:
-        m = max(M, 1e-9)
-        n = max(N, 1e-9)
-        return math.exp(Q * math.log(m) + (1 - Q) * math.log(n))
-
-    value = Q * (M**P) + (1.0 - Q) * (N**P)
-    value = max(value, 0.0)
-    return value ** (1.0 / P)
+compute_AI = _v1.compute_AI
 
 
 # ---------- 6. 由 H~L 计算 AD,AE,AF,AG ----------
 
 
-def compute_AD_AE_AF_AG(song_info: dict) -> SongMetrics:
-    """
-    H：AD = 复合处理
-    I：平均密度
-    J：瞬间密度
-    K：叩き分け
-    L：BPM变化
-
-    AD = H
-    AE = IF(I>J, I+(I/100)*(1-J/I)*(100-I), I-(1-I/J)*I)
-    AF = IF(J>I, J-(1-I/J)*(J-I),       J+(1-J/I)*(I-J))
-    AG = K + (K/100)*(L/100)*(100-K)
-    """
-
-    def fnum(x, default=0.0):
-        try:
-            return float(x)
-        except Exception:
-            return default
-
-    H = fnum(song_info.get("复合处理", 0.0))
-    I = fnum(song_info.get("平均密度", 0.0))
-    J = fnum(song_info.get("瞬间密度", 0.0))
-    K = fnum(song_info.get("叩き分け", 0.0))
-    L = fnum(song_info.get("BPM变化", 0.0))
-
-    # AD
-    AD = H
-
-    # 数值安全防止除零
-    eps = 1e-9
-
-    # AE 体力
-    if I <= eps and J <= eps:
-        AE = 0.0
-    elif I > J:
-        AE = I + (I / 100.0) * (1.0 - J / max(I, eps)) * (100.0 - I)
-    else:
-        AE = I - (1.0 - I / max(J, eps)) * I
-
-    # AF 高速处理
-    if I <= eps and J <= eps:
-        AF = 0.0
-    elif J > I:
-        AF = J - (1.0 - I / max(J, eps)) * (J - I)
-    else:
-        AF = J + (1.0 - J / max(I, eps)) * (I - J)
-
-    # AG 节奏处理
-    AG = K + (K / 100.0) * (L / 100.0) * (100.0 - K)
-
-    return SongMetrics(
-        complex_proc=AD,
-        stamina=AE,
-        speed=AF,
-        rhythm=AG,
-    )
+compute_AD_AE_AF_AG = _dims.compute_AD_AE_AF_AG
 
 
 # ---------- 7. 六维属性 AJ~AO ----------
 
 
-def _scale_dim(dim_0_100: float) -> float:
-    """谱面维度 0–100 映射到 ~0–15.5，对应 *15.5/100"""
-    return float(dim_0_100) * 15.5 / 100.0
+_scale_dim = _dims._scale_dim
 
 
-def compute_six_dims(
-    AI: float, M: float, N: float, metrics: SongMetrics
-) -> Dict[str, float]:
-    """
-    对应 6 列：
-    AJ 大歌力 =SQRT(AI3*M3)
-    AK 体力   =SQRT(AI3*AE3*15.5/100)
-    AL 高速   =SQRT(AI3*AF3*15.5/100)
-    AM 精度力 =SQRT(AI3*N3)
-    AN 节奏   =SQRT(AI3*AG3*15.5/100)
-    AO 复合   =SQRT(AI3*AD3*15.5/100)
-    """
-    AI = float(AI)
-    M = float(M)
-    N = float(N)
-
-    big_song = math.sqrt(max(AI * M, 0.0))
-    stamina = math.sqrt(max(AI * _scale_dim(metrics.stamina), 0.0))
-    speed = math.sqrt(max(AI * _scale_dim(metrics.speed), 0.0))
-    accuracy_pow = math.sqrt(max(AI * N, 0.0))
-    rhythm = math.sqrt(max(AI * _scale_dim(metrics.rhythm), 0.0))
-    complex_power = math.sqrt(max(AI * _scale_dim(metrics.complex_proc), 0.0))
-
-    return {
-        "大歌力": big_song,
-        "体力": stamina,
-        "高速处理": speed,
-        "精度力": accuracy_pow,
-        "节奏处理": rhythm,
-        "复合处理": complex_power,
-    }
+compute_six_dims = _dims.compute_six_dims
 
 
 # ---------- 8. 总入口：从用户数据 + JSON 计算一整套 ----------
@@ -704,254 +348,21 @@ def compute_all_from_userdata_records(
     )
 
 
-def _compute_results_from_userdata_records(
-    userdata_records: List[Dict[str, Any]],
-    cfg: Dict[str, Any],
-    const_table: List[tuple],
-    *,
-    collapse_duplicate_versions: bool = True,
-) -> List[RatingResult]:
-    songs = cfg["songs"]
-    idx = _build_song_index_by_id_level(songs)
-    idx_by_identity = _build_song_index_by_identity(songs)
-    best_pair_keys: Dict[int, Tuple[int, int]] = {}
-    best_pair_acc: Dict[int, float] = {}
-    if collapse_duplicate_versions:
-        for rec in userdata_records:
-            try:
-                song_no = int(rec.get("song_no"))
-                level = int(rec.get("level"))
-            except Exception:
-                continue
-            if not is_song_id_publicly_visible(song_no):
-                continue
-            pair_id = PAIR_ID_MAP.get(song_no)
-            if pair_id is None:
-                continue
-            found = _find_song_info_for_recommend_record(
-                song_no, level, idx, idx_by_identity
-            )
-            if not found:
-                continue
-            _, song_info = found
-            total_notes = int(song_info.get("combo", 0) or 0)
-            good_cnt = int(rec.get("good_cnt", 0) or 0)
-            ok_cnt = int(rec.get("ok_cnt", 0) or 0)
-            dondaful_cnt = int(rec.get("dondaful_combo_cnt", 0) or 0)
-            accuracy = _calc_accuracy_for_record(
-                total_notes=total_notes,
-                great_cnt=good_cnt,
-                good_cnt=ok_cnt,
-                dondaful_combo_cnt=dondaful_cnt,
-                algorithm="comprehensive",
-            )
-            if accuracy > best_pair_acc.get(pair_id, -1.0):
-                best_pair_acc[pair_id] = accuracy
-                best_pair_keys[pair_id] = (song_no, level)
-    results: List[RatingResult] = []
-    for user_record in userdata_records:
-        song_no = user_record["song_no"]
-        level = user_record["level"]
-        if level < 4:
-            continue
-        if not is_song_id_publicly_visible(song_no):
-            continue
-        if collapse_duplicate_versions:
-            pair_id = PAIR_ID_MAP.get(song_no)
-            if pair_id is not None and best_pair_keys.get(pair_id) != (song_no, level):
-                continue
-        good_cnt = int(user_record.get("good_cnt", 0) or 0)  # 良
-        ok_cnt = int(user_record.get("ok_cnt", 0) or 0)  # 可
-
-        # 查找对应的歌曲
-        found = _find_song_info_for_recommend_record(song_no, level, idx, idx_by_identity)
-        song_name = None
-        if found:
-            song_key, song_info = found
-            song_name = songs[song_key]["song_name_cn"]
-            if level == 5:
-                song_name += "(里谱)"
-
-        if not song_name:
-            print(
-                f"警告：歌曲 {song_no} (level {level}) 在 structured JSON 中未找到匹配"
-            )
-            continue
-
-        # 获取歌曲的定数（score）
-        const_value = song_info["score"]
-
-        # 根据 good_cnt 计算良率
-        total_notes = int(song_info.get("combo", 0) or 0)
-        dondaful_cnt = int(user_record.get("dondaful_combo_cnt", 0) or 0)
-        accuracy = _calc_accuracy_for_record(
-            total_notes=total_notes,
-            great_cnt=good_cnt,
-            good_cnt=ok_cnt,
-            dondaful_combo_cnt=dondaful_cnt,
-            algorithm="comprehensive",
-        )
-        if accuracy == 0.0:
-            continue  # comprehensive 阈值未达（<0.75），前端行为是直接丢弃
-
-        # 由 H~L 计算 AD/AE/AF/AG
-        metrics = compute_AD_AE_AF_AG(song_info)
-
-        # 定数得点 M
-        M = lookup_const_score(const_value, const_table)
-
-        # 精度得点 N
-        N = calc_y(
-            accuracy=accuracy,
-            normalization_factor=15.5,
-            algorithm="comprehensive",
-        )
-        # P、Q
-        P = compute_P(M, N)
-        Q = compute_Q(M, N)
-
-        # 综合 AI
-        AI = compute_AI(M, N, P, Q)
-
-        # 六维属性
-        six = compute_six_dims(AI, M, N, metrics)
-
-        results.append(
-            RatingResult(
-                song_id=song_no,
-                level=level,
-                song_name=song_name,
-                high_score=int(user_record.get("high_score", 0) or 0),
-                const_value=const_value,
-                accuracy=accuracy,
-                M_const_score=M,
-                N_acc_score=N,
-                raw_complex_proc=metrics.complex_proc,
-                raw_stamina=metrics.stamina,
-                raw_speed=metrics.speed,
-                raw_rhythm=metrics.rhythm,
-                P_param=P,
-                Q_weight=Q,
-                AI_rating=AI,
-                big_song=six["大歌力"],
-                stamina=six["体力"],
-                speed=six["高速处理"],
-                accuracy_power=six["精度力"],
-                rhythm=six["节奏处理"],
-                complex_proc=six["复合处理"],
-            )
-        )
-
-    return results
+def _compute_results_from_userdata_records(userdata_records, cfg, const_table, *, collapse_duplicate_versions=True):
+    return _calculation._compute_results_from_userdata_records(userdata_records, cfg, const_table,
+        collapse_duplicate_versions=collapse_duplicate_versions, duplicate_groups=PAIR_ID_GROUPS,
+        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(userdata_records, cfg["songs"]),
+        identity_namespace="pair")
 
 
 # ---------- 排序并输出前20项 ----------
-def get_top20_weighted_average(results: List[RatingResult], attr: str) -> float:
-    """
-    对应前端 getTop20WeightedAverage：
-    - results: 一组对象（例如 RatingResult）
-    - attr: 需要计算的字段名，例如 "AI_rating"、"big_song"、"stamina" 等
-    返回：按 TS 逻辑计算的 top20 加权平均值
-    """
-    # 取出该字段的所有非空数值
-    values = []
-    for r in results:
-        v = getattr(r, attr, None)
-        if v is not None:
-            values.append(float(v))
-
-    if not values:
-        return 0.0
-
-    # 从大到小排序
-    values.sort(reverse=True)
-
-    # 取前 20
-    top = values[:20]
-    n = len(top)
-
-    # TS 中的权重设计：
-    # 1–5 名：40%（平均到 5 首，每首 0.4/5）
-    # 6–10 名：30%（平均到 5 首，每首 0.3/5）
-    # 11–16 名：20%（平均到 6 首，每首 0.2/6）
-    # 17–20 名：10%（平均到 4 首，每首 0.1/4）
-    base_weights = (
-        [0.4 / 5] * 5 + [0.3 / 5] * 5 + [0.2 / 6] * 6 + [0.1 / 4] * 4
-    )  # 共 20 项，和为 1
-
-    # 如果不足 20 条，裁剪并重新归一化
-    weights = base_weights[:n]
-    w_sum = sum(weights)
-    if w_sum == 0:
-        return 0.0
-    weights = [w / w_sum for w in weights]
-
-    return sum(v * w for v, w in zip(top, weights))
+get_top20_weighted_average = _v1.get_top20_weighted_average
 
 
-def get_top20_median(results: List[RatingResult], attr: str) -> float:
-    """
-    对应前端 getTop20Median：
-    从指定字段中取值 → 降序排序 → 取前 20 → 计算中位数
-    """
-    values = []
-    for r in results:
-        v = getattr(r, attr, None)
-        if v is not None:
-            values.append(float(v))
-
-    if not values:
-        return 0.0
-
-    values.sort(reverse=True)
-    top = values[:20]
-    n = len(top)
-
-    if n == 0:
-        return 0.0
-    if n % 2 == 1:
-        # 奇数个：取中间那一个
-        mid = n // 2
-        return top[mid]
-    else:
-        # 偶数个：取中间两个的平均
-        mid_right = n // 2
-        mid_left = mid_right - 1
-        return (top[mid_left] + top[mid_right]) / 2.0
+get_top20_median = _v1.get_top20_median
 
 
-def top_value_compensate(
-    rating_mid: float,
-    full_mid: float,
-    rating_ave: float,
-    full_ave: float,
-    threshold: float,
-    max_value: float = 15.5,
-) -> float:
-    """
-    对应 TS 的 topValueCompensate：
-
-    - rating_mid:  某一「评分子集」的 top20 中位数（例如：你真实游玩的曲目，AI_rating 的 top20 中位数）
-    - full_mid:    「完整曲池」的 top20 中位数（例如：所有曲目在该维度的设定值 top20 中位数）
-    - rating_ave:  「评分子集」的 top20 加权平均
-    - full_ave:    「完整曲池」的 top20 加权平均
-    - threshold:   补偿起点阈值（TS 中的 threshold）
-    - max_value:   理论上限值，默认 15.5（对应定数/六维的最大值）
-
-    返回：补偿后的“顶值评价”
-    """
-    # 若子集的加权平均还没到 threshold，直接用中位数，不做补偿
-    if rating_ave < threshold:
-        return rating_mid
-
-    # 防止 full_ave == threshold 时的除零
-    if full_ave <= threshold:
-        # 理论上不会发生；保守起见直接返回 rating_mid
-        return rating_mid
-
-    per = (rating_ave - threshold) / (full_ave - threshold)
-    # 线性插到 max_value 方向
-    return rating_mid + per * (max_value - full_mid)
+top_value_compensate = _v1.top_value_compensate
 
 
 def get_top_N(results: List[RatingResult], sort_by: str, N: int = 20) -> pd.DataFrame:
@@ -995,77 +406,10 @@ TOP20_COMPENSATE_TABLE = {
 }
 
 
-def aggregate_topN_value(results: List[RatingResult], col: str, N: int) -> float:
-    """
-    col: 中文列名（如“体力”“大歌力”），或 AI_rating
-    """
-    attr = CN_COL_TO_ATTR.get(col)
-    if not attr:
-        raise KeyError(f"未知维度列名: {col}")
-
-    values = [
-        float(getattr(r, attr)) for r in results if getattr(r, attr, None) is not None
-    ]
-
-    if not values:
-        return 0.0
-
-    values.sort(reverse=True)
-    top = values[:N]
-
-    # N != 20：旧行为（算术平均）
-    if N != 20:
-        return float(sum(top) / len(top))
-
-    # N == 20：TS 新版补偿算法
-    full_params = TOP20_COMPENSATE_TABLE.get(col)
-    if not full_params:
-        # 没配置就降级
-        mid = get_top20_median(results, attr)
-        ave = get_top20_weighted_average(results, attr)
-        return ave
-
-    full_mid, full_ave, threshold = full_params
-    rating_mid = get_top20_median(results, attr)
-    rating_ave = get_top20_weighted_average(results, attr)
-
-    return float(
-        top_value_compensate(
-            rating_mid, full_mid, rating_ave, full_ave, threshold, max_value=15.5
-        )
-    )
+aggregate_topN_value = _v1.aggregate_topN_value
 
 
-def compute_dim_topN_means(
-    results: List[RatingResult], N: int = 20
-) -> Dict[str, float]:
-    """
-    根据每个维度自己排序取 topN，再对该维度求平均。
-    返回一个 dict: {维度名: 该维度 topN 的平均值}
-    """
-    # df = pd.DataFrame(
-    #     [
-    #         {
-    #             "song_name": r.song_name,
-    #             "AI_rating": r.AI_rating,
-    #             "大歌力": r.big_song,
-    #             "体力": r.stamina,
-    #             "高速处理": r.speed,
-    #             "精度力": r.accuracy_power,
-    #             "节奏处理": r.rhythm,
-    #             "复合处理": r.complex_proc,
-    #         }
-    #         for r in results
-    #     ]
-    # )
-
-    dim_cols = ["大歌力", "体力", "高速处理", "精度力", "节奏处理", "复合处理"]
-    dim_means: Dict[str, float] = {}
-
-    for col in dim_cols:
-        dim_means[col] = aggregate_topN_value(results, col, N)
-
-    return dim_means
+compute_dim_topN_means = _v1.compute_dim_topN_means
 
 
 def plot_radar_from_values(
@@ -2034,320 +1378,44 @@ def generate_top_N_image(
 # ============================================================
 
 
-@dataclass
-class SongStats:
-    """
-    推荐算法用的用户侧统计对象（对齐 recommend.ts）
-    title 只用于展示，推荐内部匹配必须依赖歌曲身份键，不能依赖标题。
-    """
-
-    title: str
-    song_id: int
-    level: int
-
-    rating: float  # 对应：AI_rating
-    daigouryoku: float  # 对应：大歌力
-    stamina: float  # 对应：体力
-    speed: float  # 对应：高速处理
-    accuracy_power: float  # 对应：精度力
-    rhythm: float  # 对应：节奏处理
-    complex: float  # 对应：复合处理
-
-    great: int  # userdata good_cnt
-    good: int  # userdata ok_cnt
-    bad: int  # userdata ng_cnt
+SongStats = _models.ClientSongStats
 
 
-def _median(values: List[float]) -> float:
-    vs = sorted([float(v) for v in values if v is not None])
-    n = len(vs)
-    if n == 0:
-        return 0.0
-    mid = n // 2
-    if n % 2 == 1:
-        return vs[mid]
-    return (vs[mid - 1] + vs[mid]) / 2.0
+_median = _candidates._median
 
 
-def _build_song_index_by_id_level(songs: dict) -> Dict[tuple, tuple]:
-    """
-    (id, level) -> (song_key_in_cfg, song_info)
-    注意：song_key_in_cfg 是 songs 字典的 key，不一定等于 song_name_cn
-    """
-    idx = {}
-    for k in songs:
-        info = songs[k]
-        try:
-            sid = int(info.get("id"))
-            lvl = int(info.get("level"))
-        except Exception:
-            continue
-        idx[(sid, lvl)] = (k, info)
-    return idx
+_build_song_index_by_id_level = _catalog._build_song_index_by_id_level
 
 
-def get_song_chart_identity_key(song_id: int, level: int) -> Tuple[str, int, int]:
-    """
-    推荐流程的歌曲身份键：
-    - 已知双版本共谱歌曲：按 pair_id + level 视为同一项
-    - 其余歌曲：按 song_id + level 区分
-    """
-    pair_id = PAIR_ID_MAP.get(song_id)
-    if pair_id is not None:
-        return ("pair", pair_id, level)
-    return ("song", song_id, level)
+def get_song_chart_identity_key(song_id, level):
+    return _catalog._get_recommend_identity_key(song_id, level, PAIR_ID_MAP, identity_namespace="pair")
 
 
-def _get_recommend_identity_key(song_id: int, level: int) -> Tuple[str, int, int]:
-    return get_song_chart_identity_key(song_id, level)
+_get_recommend_identity_key = get_song_chart_identity_key
 
 
-def _build_song_index_by_identity(songs: dict) -> Dict[tuple, tuple]:
-    """
-    (identity_key) -> (song_key_in_cfg, song_info)
-    用于推荐流程按歌曲身份匹配，避免同标题歌曲互相串歌。
-    """
-    idx = {}
-    for k in songs:
-        info = songs[k]
-        try:
-            sid = int(info.get("id"))
-            lvl = int(info.get("level"))
-        except Exception:
-            continue
-        if not is_song_id_publicly_visible(sid):
-            continue
-        idx.setdefault(_get_recommend_identity_key(sid, lvl), (k, info))
-    return idx
+def _build_song_index_by_identity(songs):
+    return _catalog._build_song_index_by_identity(songs, PAIR_ID_MAP,
+        _domain.visibility_inputs(songs=songs), identity_namespace="pair")
 
 
-def _find_song_info_for_recommend_record(
-    song_id: int,
-    level: int,
-    idx_by_id_level: Dict[tuple, tuple],
-    idx_by_identity: Dict[tuple, tuple],
-) -> Optional[tuple]:
-    """
-    优先按原始 song_id + level 精确匹配；
-    如果结构化曲库没有该 ID，则回退到“同曲组 + 同难度”的谱面信息。
-    这样可以用同谱面版本完成计算，同时保留用户实际游玩的 song_id。
-    """
-    exact = idx_by_id_level.get((song_id, level))
-    if exact is not None:
-        return exact
-    return idx_by_identity.get(_get_recommend_identity_key(song_id, level))
+def _find_song_info_for_recommend_record(song_id, level, idx_by_id_level, idx_by_identity):
+    return _catalog._find_song_info_for_recommend_record(song_id, level, idx_by_id_level,
+        idx_by_identity, PAIR_ID_MAP, identity_namespace="pair")
 
 
-def _get_title_like_existing(song_info: dict, level: int) -> str:
-    """
-    完全复用你 compute_all_from_userdata 内的命名方式：
-    title = song_info["song_name_cn"] + "(里谱)" if level==5
-    这样 title 才能和你 RatingResult.song_name 保持一致，也能用于推荐。
-    """
-    title = song_info.get("song_name_cn") or song_info.get("曲名") or ""
-    if level == 5:
-        title += "(里谱)"
-    return title
+_get_title_like_existing = _catalog._get_title_like_existing
 
 
-def _get_song_indicator_value(
-    song_info: dict,
-    dimension: str,
-    const_table: List[tuple],
-) -> float:
-    """
-    对齐你要求：
-    - rating/daigouryoku/accuracy_power：来自 cfg["const_table"]["const_to_score"]（即 lookup_const_score）
-    - stamina/speed/rhythm/complex：来自 AD/AE/AF/AG 原始值（compute_AD_AE_AF_AG）
-    """
-    const_value = float(song_info.get("score", 0.0) or 0.0)
-
-    if dimension in ("rating", "daigouryoku", "accuracy_power"):
-        return float(lookup_const_score(const_value, const_table))
-
-    metrics = compute_AD_AE_AF_AG(song_info)
-    if dimension == "stamina":
-        return float(metrics.stamina)  # AE 原始
-    if dimension == "speed":
-        return float(metrics.speed)  # AF 原始
-    if dimension == "rhythm":
-        return float(metrics.rhythm)  # AG 原始
-    if dimension == "complex":
-        return float(metrics.complex_proc)  # AD 原始
-
-    return 0.0
+_get_song_indicator_value = _candidates._get_song_indicator_value
 
 
-def build_all_stats_for_user(
-    user_id: int,
-    json_path: str | Path = "./songs/rating_structured_with_ids.json",
-) -> tuple[List[SongStats], dict, List[tuple]]:
-    """
-    仅新增的“桥接层”：
-    - 读 userdata
-    - 读 cfg（songs + const_table）
-    - 对每条用户成绩，计算 AI + 六维（复用你现有函数）
-    - 不丢弃 accuracy<0.5：这类歌的 rating/六维记为0，但仍保留判定数，便于推荐做精度因子/已游玩判断
-    返回：(all_stats, songs_cfg, const_table)
-    """
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    userdata = load_json(userdata_path)["songs"]
-
+def build_all_stats_for_user(user_id, json_path="./songs/rating_structured_with_ids.json"):
+    records = load_json(USERDATA_DIR / f"{user_id}data.json")["songs"]
     cfg = load_rating_config(json_path)
-    songs = cfg["songs"]
-    const_map = cfg["const_table"]["const_to_score"]
-    const_table = build_const_table(const_map)
-    idx = _build_song_index_by_id_level(songs)
-    idx_by_identity = _build_song_index_by_identity(songs)
-
-    best_identity_keys: Dict[Tuple[str, int, int], Tuple[int, int]] = {}
-    best_identity_acc: Dict[Tuple[str, int, int], float] = {}
-    for rec in userdata:
-        try:
-            song_no = int(rec.get("song_no"))
-            level = int(rec.get("level"))
-        except Exception:
-            continue
-        if not is_song_id_publicly_visible(song_no):
-            continue
-        identity_key = _get_recommend_identity_key(song_no, level)
-        found = _find_song_info_for_recommend_record(
-            song_no, level, idx, idx_by_identity
-        )
-        if not found:
-            continue
-        _, song_info = found
-        total_notes = int(song_info.get("combo", 0) or 0)
-        great = int(rec.get("good_cnt", 0) or 0)
-        good = int(rec.get("ok_cnt", 0) or 0)
-        dondaful_cnt = int(rec.get("dondaful_combo_cnt", 0) or 0)
-        accuracy = _calc_accuracy_for_record(
-            total_notes=total_notes,
-            great_cnt=great,
-            good_cnt=good,
-            dondaful_combo_cnt=dondaful_cnt,
-            algorithm="comprehensive",
-        )
-        if accuracy > best_identity_acc.get(identity_key, -1.0):
-            best_identity_acc[identity_key] = accuracy
-            best_identity_keys[identity_key] = (song_no, level)
-
-    all_stats: List[SongStats] = []
-
-    for rec in userdata:
-        try:
-            song_no = int(rec.get("song_no"))
-            level = int(rec.get("level"))
-        except Exception:
-            continue
-        if not is_song_id_publicly_visible(song_no):
-            continue
-        identity_key = _get_recommend_identity_key(song_no, level)
-        if best_identity_keys.get(identity_key) != (song_no, level):
-            continue
-
-        found = _find_song_info_for_recommend_record(song_no, level, idx, idx_by_identity)
-        if not found:
-            continue
-
-        song_key, song_info = found
-        title = _get_title_like_existing(song_info, level)
-
-        # 判定数
-        great = int(rec.get("good_cnt", 0) or 0)
-        good = int(rec.get("ok_cnt", 0) or 0)
-        bad = int(rec.get("ng_cnt", 0) or 0)
-
-        const_value = float(song_info.get("score", 0.0) or 0.0)
-        # combo = float(song_info.get("combo", 0) or 0.0)
-        # accuracy = (great / combo) if combo > 0 else 0.0
-
-        # # 计算 AI + 六维（与原逻辑一致）
-        # M = lookup_const_score(const_value, const_table)
-        # N = accuracy_to_score(accuracy)
-
-        # if N == 0:
-        #     # 精度不足：按你已实现的行为，这类歌不会进入 rating 计算体系
-        #     # 但推荐需要“已游玩”信息，因此保留一条 stats，分数置0
-        #     all_stats.append(
-        #         SongStats(
-        #             title=title,
-        #             song_id=song_no,
-        #             level=level,
-        #             rating=0.0,
-        #             daigouryoku=0.0,
-        #             stamina=0.0,
-        #             speed=0.0,
-        #             accuracy_power=0.0,
-        #             rhythm=0.0,
-        #             complex=0.0,
-        #             great=great,
-        #             good=good,
-        #             bad=bad,
-        #         )
-        #     )
-        #     continue
-        total_notes = int(song_info.get("combo", 0) or 0)
-        dondaful_cnt = int(rec.get("dondaful_combo_cnt", 0) or 0)
-        accuracy = _calc_accuracy_for_record(
-            total_notes=total_notes,
-            great_cnt=great,
-            good_cnt=good,
-            dondaful_combo_cnt=dondaful_cnt,
-            algorithm="comprehensive",
-        )
-
-        M = lookup_const_score(const_value, const_table)
-        if accuracy == 0.0:
-            # comprehensive 未达阈值：仍保留已游玩信息，但 rating/六维为0
-            all_stats.append(
-                SongStats(
-                    title=title,
-                    song_id=song_no,
-                    level=level,
-                    rating=0.0,
-                    daigouryoku=0.0,
-                    stamina=0.0,
-                    speed=0.0,
-                    accuracy_power=0.0,
-                    rhythm=0.0,
-                    complex=0.0,
-                    great=great,
-                    good=good,
-                    bad=bad,
-                )
-            )
-            continue
-
-        N = calc_y(
-            accuracy=accuracy, normalization_factor=15.5, algorithm="comprehensive"
-        )
-        P = compute_P(M, N)
-        Q = compute_Q(M, N)
-        AI = compute_AI(M, N, P, Q)
-
-        metrics = compute_AD_AE_AF_AG(song_info)
-        six = compute_six_dims(AI, M, N, metrics)
-
-        all_stats.append(
-            SongStats(
-                title=title,
-                song_id=song_no,
-                level=level,
-                rating=float(AI),
-                daigouryoku=float(six["大歌力"]),
-                stamina=float(six["体力"]),
-                speed=float(six["高速处理"]),
-                accuracy_power=float(six["精度力"]),
-                rhythm=float(six["节奏处理"]),
-                complex=float(six["复合处理"]),
-                great=great,
-                good=good,
-                bad=bad,
-            )
-        )
-
-    return all_stats, songs, const_table
+    return _candidates.build_all_stats_from_records(records, cfg,
+        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(records, cfg["songs"]),
+        profile="recommend-client-20261010", identity_namespace="pair")
 
 
 def generate_recommend_image(
@@ -2585,234 +1653,10 @@ def generate_recommend_image(
     return buf
 
 
-def recommend_songs(
-    all_stats: List[SongStats],
-    songs_cfg: dict,
-    const_table: List[tuple],
-    best_key: str = "rating",
-    limit: int = 20,
-) -> List[dict]:
-    """
-    主推荐函数：复刻 recommend.ts 的总体行为（按你要求改 indicator 来源）
-    best_key 支持：rating / daigouryoku / stamina / speed / accuracy_power / rhythm / complex
-    返回 list[dict]，便于你直接转文字/转图片。
-    """
-    if not songs_cfg:
-        return []
-    if not all_stats:
-        return []
-
-    on_shelf_song_ids = load_on_shelf_song_ids()
-    song_info_by_identity = _build_song_index_by_identity(songs_cfg)
-
-    # 1) 用户侧 best20（按 best_key）
-    best20 = sorted(all_stats, key=lambda s: float(getattr(s, best_key)), reverse=True)[
-        :20
-    ]
-    best20_keys = {_get_recommend_identity_key(s.song_id, s.level) for s in best20}
-
-    # 2) best20IndicatorMedian：best20 的“谱面侧指标”中位数
-    best20_indicator_vals: List[float] = []
-    for s in best20:
-        found = song_info_by_identity.get(_get_recommend_identity_key(s.song_id, s.level))
-        if not found:
-            continue
-        _, song_info = found
-        v = _get_song_indicator_value(song_info, best_key, const_table)
-        if v > 0:
-            best20_indicator_vals.append(v)
-
-    best20_indicator_median = _median(best20_indicator_vals)
-    if best20_indicator_median <= 0:
-        return []
-
-    # 3) best20RatingMedian：用于“难度上限”过滤（谱面侧 rating 指标）
-    best20_rating_vals: List[float] = []
-    for s in best20:
-        found = song_info_by_identity.get(_get_recommend_identity_key(s.song_id, s.level))
-        if not found:
-            continue
-        _, song_info = found
-        best20_rating_vals.append(
-            _get_song_indicator_value(song_info, "rating", const_table)
-        )
-
-    best20_rating_median = _median(best20_rating_vals)
-
-    # 4) 构造 candidates：全曲库 - best20；合并“已游玩/未游玩”
-    played_map = {_get_recommend_identity_key(s.song_id, s.level): s for s in all_stats}
-    seen_candidate_keys = set()
-
-    candidates: List[dict] = []
-    for k in songs_cfg:
-        song_info = songs_cfg[k]
-        try:
-            song_id = int(song_info.get("id"))
-        except Exception:
-            song_id = None
-        if song_id is None:
-            continue
-        if on_shelf_song_ids and song_id not in on_shelf_song_ids:
-            continue
-
-        lvl = int(song_info.get("level", 0) or 0)
-        title = _get_title_like_existing(song_info, lvl)
-        identity_key = _get_recommend_identity_key(song_id, lvl)
-
-        if identity_key in best20_keys:
-            continue
-        if identity_key in seen_candidate_keys:
-            continue
-        seen_candidate_keys.add(identity_key)
-
-        # rating 上限过滤：songRatingIndicator <= best20RatingMedian + 0.2
-        song_rating_indicator = _get_song_indicator_value(
-            song_info, "rating", const_table
-        )
-        if song_rating_indicator > best20_rating_median + 0.2:
-            continue
-
-        st = played_map.get(identity_key)
-        is_unplayed = st is None
-        if is_unplayed:
-            st = SongStats(
-                title=title,
-                song_id=song_id,
-                level=lvl,
-                rating=0.0,
-                daigouryoku=0.0,
-                stamina=0.0,
-                speed=0.0,
-                accuracy_power=0.0,
-                rhythm=0.0,
-                complex=0.0,
-                great=0,
-                good=0,
-                bad=0,
-            )
-        display_title = title
-        display_song_id = song_id
-        display_level = lvl
-        if not is_unplayed:
-            display_title = str(st.title)
-            display_song_id = int(st.song_id)
-            display_level = int(st.level)
-
-        # 谱面侧 best_key 指标
-        song_indicator = _get_song_indicator_value(song_info, best_key, const_table)
-        if song_indicator <= 0:
-            continue
-
-        user_score_value = float(getattr(st, best_key))
-
-        # accuracyFactor：未游玩=0.5；已游玩 acc>=0.5 => 1-acc；否则=1
-        total_notes = float(song_info.get("combo", 0) or 0)
-        if is_unplayed:
-            user_acc = 0.0
-            accuracy_factor = 0.5
-        else:
-            # user_acc = (st.great / total_notes) if total_notes > 0 else 0.0
-            # if user_acc >= 0.5:
-            #     accuracy_factor = 1.0 - user_acc
-            # else:
-            #     accuracy_factor = 1.0
-            user_acc = 0.0
-            if total_notes > 0:
-                user_acc = (st.great + 0.5 * st.good) / total_notes
-
-            if user_acc >= 0.5:
-                accuracy_factor = 1.0 - user_acc
-            else:
-                accuracy_factor = 1.0
-        indicator_dev_signed = (
-            song_indicator - best20_indicator_median
-        ) / best20_indicator_median
-        indicator_dev_abs = abs(indicator_dev_signed)
-        score_dev = (
-            abs(user_score_value - best20_indicator_median) / best20_indicator_median
-        )
-
-        balance_score = (
-            indicator_dev_abs * 1.0 - score_dev * 2.0 - accuracy_factor * 1.5
-        )
-
-        is_in_strict_range = (
-            song_indicator <= best20_indicator_median * 1.05
-            and song_indicator >= best20_indicator_median * 0.90
-        )
-
-        candidates.append(
-            {
-                "title": display_title,
-                "song_id": display_song_id,
-                "level": display_level,
-                "is_unplayed": is_unplayed,
-                "recommend_score": balance_score,
-                "indicator_deviation_percent": indicator_dev_signed,  # 展示
-                "indicator_deviation_abs": indicator_dev_abs,  # 排序
-                "score_deviation_percent": score_dev,
-                "user_indicator": user_score_value,
-                "reference_indicator": best20_indicator_median,
-                "accuracy": user_acc,
-                "accuracy_factor": accuracy_factor,
-                "is_in_strict_range": is_in_strict_range,
-                "song_indicator": song_indicator,
-                "rating_indicator": song_rating_indicator,
-            }
-        )
-
-    # 5) 未游玩额外阈值：indicatorDev<=0.10
-    UNPLAYED_INDICATOR_DEVIATION_THRESHOLD = 0.10
-    unplayed = [
-        c
-        for c in candidates
-        if c["is_unplayed"]
-        and c["indicator_deviation_abs"] <= UNPLAYED_INDICATOR_DEVIATION_THRESHOLD
-    ]
-    played = [c for c in candidates if not c["is_unplayed"]]
-
-    # 6) 分层排序
-    strict_unplayed = [c for c in unplayed if c["is_in_strict_range"]]
-    strict_played = [c for c in played if c["is_in_strict_range"]]
-    loose_unplayed = [c for c in unplayed if not c["is_in_strict_range"]]
-    loose_played = [c for c in played if not c["is_in_strict_range"]]
-
-    # 严格范围：按 recommend_score 升序（未游玩优先由先拼接保证）
-    strict_unplayed.sort(key=lambda c: c["recommend_score"])
-    strict_played.sort(key=lambda c: c["recommend_score"])
-
-    # 非严格范围：按 indicator 偏差升序
-    loose_unplayed.sort(key=lambda c: c["indicator_deviation_abs"])
-    loose_played.sort(key=lambda c: c["indicator_deviation_abs"])
-
-    # 7) 输出：尽量未游玩/已游玩各一半
-    half = int(limit) // 2
-    out: List[dict] = []
-
-    def take(src: List[dict], k: int):
-        nonlocal out
-        if k <= 0 or not src:
-            return
-        out.extend(src[:k])
-        del src[:k]
-
-    take(strict_unplayed, min(half, len(strict_unplayed)))
-    take(strict_played, min(limit - len(out), len(strict_played)))
-
-    if len(out) < limit:
-        need_unplayed = max(0, half - len([x for x in out if x["is_unplayed"]]))
-        take(loose_unplayed, min(need_unplayed, len(loose_unplayed)))
-    if len(out) < limit:
-        take(loose_played, min(limit - len(out), len(loose_played)))
-
-    if len(out) < limit:
-        take(loose_unplayed, min(limit - len(out), len(loose_unplayed)))
-    if len(out) < limit:
-        take(strict_unplayed, min(limit - len(out), len(strict_unplayed)))
-    if len(out) < limit:
-        take(strict_played, min(limit - len(out), len(strict_played)))
-
-    return out[:limit]
+def recommend_songs(all_stats, songs_cfg, const_table, best_key="rating", limit=20):
+    return _candidates.recommend_songs(all_stats, songs_cfg, const_table, best_key, limit,
+        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(songs=songs_cfg),
+        on_shelf_song_ids=load_on_shelf_song_ids(), identity_namespace="pair")
 
 
 def compute_recommendations_for_user(

@@ -5,6 +5,8 @@ __pycache__/
 .mypy_cache/
 .cursor/
 node_modules/
+build/
+*.egg-info/
 runtime/
 
 assets/*

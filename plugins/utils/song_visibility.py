@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from taiko_bot import domain as _domain
+from sakura_taiko_core.chart import visibility as _visibility
+
 import json
 from functools import lru_cache
 from pathlib import Path
@@ -8,60 +11,29 @@ from typing import Any, Dict, Mapping, Set
 from taiko_bot.settings import get_settings
 
 SONG_DATA_PATH = get_settings().root_dir / "songs" / "song_data.json"
-DOUBLE_TITLE_PREFIX = "【双打】"
+DOUBLE_TITLE_PREFIX = _visibility.DOUBLE_TITLE_PREFIX
 
 # 当前 taiko_song_database.json 中 isDeleted=1，但 song_data 仍保留在架的曲目。
 # 开源 bot 不携带 taiko_song_database.json，因此在这里冻结覆盖表。
-DOWN_SHELF_OVERRIDE_SONG_IDS = frozenset({231, 678, 987, 1167, 1200})
+DOWN_SHELF_OVERRIDE_SONG_IDS = _visibility.DOWN_SHELF_OVERRIDE_SONG_IDS
 
 # 段位特供曲，仅保留在原始 JSON 中，所有对外逻辑都应忽略。
-HIDDEN_SONG_IDS = frozenset({1429})
+HIDDEN_SONG_IDS = _visibility.HIDDEN_SONG_IDS
 
 
-def normalize_song_id(value: Any) -> int | None:
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
+normalize_song_id = _visibility.normalize_song_id
 
 
-def normalize_song_title(song: Mapping[str, Any] | None) -> str:
-    if not isinstance(song, Mapping):
-        return ""
-    return str(song.get("song_name") or song.get("song_name_jp") or "").strip()
+normalize_song_title = _visibility.normalize_song_title
 
 
-def is_double_chart_title(title: Any) -> bool:
-    return str(title or "").strip().startswith(DOUBLE_TITLE_PREFIX)
+is_double_chart_title = _visibility.is_double_chart_title
 
 
-def is_song_marked_down_shelf(song_id: Any, shelf_status: Any) -> bool:
-    normalized_id = normalize_song_id(song_id)
-    if normalized_id in DOWN_SHELF_OVERRIDE_SONG_IDS:
-        return True
-    return shelf_status in (1, "1", "已下架")
+is_song_marked_down_shelf = _visibility.is_song_marked_down_shelf
 
 
-def is_song_publicly_visible(
-    song: Mapping[str, Any] | None = None,
-    *,
-    song_id: Any = None,
-    title: Any = None,
-    shelf_status: Any = None,
-) -> bool:
-    if isinstance(song, Mapping):
-        song_id = song.get("id", song_id)
-        title = normalize_song_title(song) or title
-        shelf_status = song.get("shelf_status", shelf_status)
-
-    normalized_id = normalize_song_id(song_id)
-    if normalized_id in HIDDEN_SONG_IDS:
-        return False
-    if is_double_chart_title(title):
-        return False
-    if is_song_marked_down_shelf(normalized_id, shelf_status):
-        return False
-    return True
+is_song_publicly_visible = _visibility.is_song_publicly_visible
 
 
 @lru_cache(maxsize=1)
@@ -100,11 +72,5 @@ def load_public_song_ids() -> Set[int]:
     }
 
 
-def is_song_id_publicly_visible(song_id: Any) -> bool:
-    normalized_id = normalize_song_id(song_id)
-    if normalized_id in HIDDEN_SONG_IDS:
-        return False
-    song = get_song_metadata(normalized_id)
-    if song is None:
-        return normalized_id not in DOWN_SHELF_OVERRIDE_SONG_IDS
-    return is_song_publicly_visible(song)
+def is_song_id_publicly_visible(song_id):
+    return _visibility.is_song_id_publicly_visible(song_id, song_index=load_song_index())

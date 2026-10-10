@@ -10,7 +10,7 @@
 
 ## 1. 环境要求
 
-- Python `3.11` 推荐、也是当前主要测试版本
+- Python `3.11` 或以上（当前主要测试版本为 3.11）
 - 实际可安装范围以 `pyproject.toml` 为准
 - Windows、Linux、macOS 均可运行
 - 一个可直连的 OneBot V11 客户端
@@ -26,6 +26,7 @@ Set-Location .\taiko-bot
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
+python -m pip install -r requirements-domain.txt
 python -m pip install -e .
 Copy-Item .env.example .env
 ```
@@ -38,11 +39,19 @@ cd taiko-bot
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
+python -m pip install -r requirements-domain.txt
 python -m pip install -e .
 cp .env.example .env
 ```
 
 如果本机还没有 Python 3.11，可先从 `https://www.python.org/downloads/` 安装，或使用系统包管理器安装。
+
+领域依赖固定为 `sakura-taiko-core==0.1.2` / `sakura-taiko-contract==0.1.0`。
+`requirements-domain.txt` 使用固定 Git revision，安装需要 Git、GitHub SSH 读取权限，
+以及这两个私有依赖仓库的授权。没有仓库读取权限时，向维护者获取这两个版本的 wheel，
+先运行 `python -m pip install <contract-wheel> <core-wheel>`，再安装本项目。
+不要用其他版本替代；启动会检查依赖版本。
+详细的验证、版本和回退说明见 [Phase 4 记录](docs/taiko-domain-extraction/phase4-client.md)。
 
 ## 3. 配置 `.env`
 

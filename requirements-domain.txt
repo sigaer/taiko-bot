@@ -1,0 +1,3 @@
+# Install authorized, immutable domain sources before installing this client.
+sakura-taiko-contract @ git+ssh://git@ssh.github.com:443/sigaer/taiko-viewer.git@23f89b4f70e5a64ae76c33ac04c6c2d242808df1#subdirectory=packages/sakura-taiko-contract
+sakura-taiko-core[hiroba] @ git+ssh://git@ssh.github.com:443/sigaer/sakura-taiko-core.git@0b7319d94b041daafb0a0d32e3ccc95e50da8810

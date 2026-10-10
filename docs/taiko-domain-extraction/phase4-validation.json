@@ -1,0 +1,94 @@
+{
+  "phase": 4,
+  "gate": "CLIENT_VALIDATION_PASS",
+  "clientVersion": "0.2.0",
+  "baseline": "46c8646847f8d642b53043b6123d8763e26c0a16",
+  "coreCommit": "0b7319d94b041daafb0a0d32e3ccc95e50da8810",
+  "coreTag": "v0.1.2",
+  "corePackage": {
+    "phase": 4,
+    "packageVersion": "0.1.2",
+    "gate": "CORE_PACKAGE_PASS",
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "wheelHashes": {
+      "sakura_taiko_contract-0.1.0-py3-none-any.whl": "61c63fda6949c6c8c4f84dd63b170482cc127dcf957facad056663bcf6f240d7",
+      "sakura_taiko_core-0.1.2-py3-none-any.whl": "f34c1d0a3e58f5a7ce232ca50741e3235260eb8dabaedd95b41d84e7d0d0d47f"
+    },
+    "installationIsolated": true,
+    "productionConsumersChanged": false,
+    "goldenCases": {
+      "ratingV1Aggregation": 252,
+      "ratingV2Formula": 168,
+      "ratingV2Aggregation": 144,
+      "recommendationCandidates": 126,
+      "recommendationTargets": 60,
+      "rollTargetTolerance": 96,
+      "tja": 7
+    },
+    "dependencyBoundary": "PASS",
+    "inputs": "synthetic; no production userdata or DB access",
+    "wheelCodeMatchesSource": true,
+    "runtimeModules": 52,
+    "clientServiceCases": {
+      "visibility": 8,
+      "visibilityIds": 10,
+      "ratingCases": 2,
+      "recommendations": 7,
+      "hirobaCases": 7,
+      "scorelineRequests": 7,
+      "scorelineQueries": 5,
+      "progressCases": 8,
+      "positionCases": 8,
+      "targetCases": 18,
+      "csvRows": 6
+    }
+  },
+  "clientRegression": {
+    "tests": "48",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "1.894"
+  },
+  "installedClient": {
+    "gate": "INSTALLED_CLIENT_PASS",
+    "client": "0.2.0",
+    "core": "0.1.2",
+    "contract": "0.1.0",
+    "delegatedModules": 14,
+    "wheelCodeMatchesSource": true,
+    "commandImport": true,
+    "personalDataReads": 0,
+    "networkRequests": 0,
+    "productionWrites": 0
+  },
+  "delegatedSymbols": 188,
+  "delegatedModules": 14,
+  "commandSha256": "25014419bda9da3a47754b114d556590f11d6a5bc0e21f2be739c7bfba6645b1",
+  "wheelHashes": {
+    "taiko_bot-0.2.0-py3-none-any.whl": "2a29f8d3fc51aacbcb45f82c11f52b82df13eb1718d3945e6572c9c3429ba90a"
+  },
+  "activeBusinessProcess": false,
+  "productionCenterCoreVersion": "0.1.1",
+  "productionViewerRuntimeChanged": false,
+  "privacy": {
+    "personalProductionRecords": 0,
+    "realHttpRequests": 0,
+    "productionMutations": 0,
+    "testStorage": "isolated synthetic SQLite/filesystem under /var/tmp"
+  },
+  "gitPinInstallation": {
+    "sakura_taiko_core-0.1.2.dist-info": {
+      "commit": "0b7319d94b041daafb0a0d32e3ccc95e50da8810",
+      "requestedRevision": "0b7319d94b041daafb0a0d32e3ccc95e50da8810"
+    },
+    "sakura_taiko_contract-0.1.0.dist-info": {
+      "commit": "23f89b4f70e5a64ae76c33ac04c6c2d242808df1",
+      "requestedRevision": "23f89b4f70e5a64ae76c33ac04c6c2d242808df1"
+    }
+  },
+  "gitPinCodeMatchesSource": true,
+  "wheelExcludesRuntimeData": true
+}

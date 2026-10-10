@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from taiko_bot import domain as _domain
+from sakura_taiko_core.chart import progress_catalog as _progress
+
 import json
 import re
 from dataclasses import dataclass
@@ -15,39 +18,17 @@ SONG_DATA_PATH = BASE / "songs" / "song_data.json"
 RATING_PATH = BASE / "songs" / "rating_structured_with_ids.json"
 STATIC_PROGRESS_PATH = BASE / "songs" / "song_difficulty.json"
 
-LEVEL_STAR_FIELD = {
-    1: "level_1",
-    2: "level_2",
-    3: "level_3",
-    4: "level_4",
-    5: "level_5",
-}
-STAR_PROGRESS_LEVELS = (4, 5)
+LEVEL_STAR_FIELD = _progress.LEVEL_STAR_FIELD
+STAR_PROGRESS_LEVELS = _progress.STAR_PROGRESS_LEVELS
 
 
-@dataclass(frozen=True)
-class ProgressChartItem:
-    song_id: int
-    level: int
-    title: str
+ProgressChartItem = _progress.ProgressChartItem
 
 
-def _to_float(value: Any) -> float | None:
-    try:
-        if value in (None, "", "-"):
-            return None
-        return float(value)
-    except (TypeError, ValueError):
-        return None
+_to_float = _progress._to_float
 
 
-def _normalize_title(base_title: str, level: int) -> str:
-    title = str(base_title or "").strip()
-    if not title:
-        return title
-    if level == 5 and "里" not in title and "裏" not in title:
-        return f"{title}（里）"
-    return title
+_normalize_title = _progress._normalize_title
 
 
 @lru_cache(maxsize=1)
@@ -84,28 +65,11 @@ def _load_rating_entries() -> List[Dict[str, Any]]:
     return []
 
 
-def _pick_title(song: Dict[str, Any] | None, chart: Dict[str, Any]) -> str:
-    title = (
-        (chart.get("song_name_cn") or "").strip()
-        or (song or {}).get("song_name", "")
-        or (song or {}).get("song_name_jp", "")
-        or chart.get("曲名", "")
-        or f"ID{chart.get('id')}"
-    )
-    level = int(chart.get("level", 4) or 4)
-    return _normalize_title(str(title), level)
+_pick_title = _progress._pick_title
 
 
-def _sort_items(items: Iterable[ProgressChartItem]) -> List[ProgressChartItem]:
-    song_index = load_song_index()
-    return sorted(
-        items,
-        key=lambda item: (
-            int((song_index.get(item.song_id) or {}).get("sort", 10**9) or 10**9),
-            item.song_id,
-            item.level,
-        ),
-    )
+def _sort_items(items):
+    return _progress._sort_items(items, catalog=_domain_catalog())
 
 
 @lru_cache(maxsize=1)
@@ -122,154 +86,37 @@ def _load_static_progress_map() -> Dict[str, List[int]]:
     return result
 
 
-def _build_static_progress_title(song_id: int, level: int, progress_key: str) -> str:
-    song = load_song_index().get(song_id)
-    base_title = (
-        (song or {}).get("song_name")
-        or (song or {}).get("song_name_jp")
-        or f"ID{song_id}"
-    )
-    title = _normalize_title(str(base_title), level)
-    if song_id == 775:
-        if progress_key == "10.1":
-            title += "（普通谱面）"
-        elif progress_key == "10.6":
-            title += "（达人谱面）"
-    elif song_id == 1037:
-        if progress_key == "10.0":
-            title += "（全普通）"
-        elif progress_key == "10.4":
-            title += "（全达人）"
-    return title
+def _build_static_progress_title(song_id, level, progress_key):
+    return _progress._build_static_progress_title(song_id, level, progress_key, catalog=_domain_catalog())
 
 
 @lru_cache(maxsize=1)
-def available_pass_progress_keys() -> Set[str]:
-    active_song_ids = load_active_song_ids()
-    keys: Set[str] = set()
-    for key, raw_items in _load_static_progress_map().items():
-        if not re.fullmatch(r"\d+\.\d", key):
-            continue
-        for raw_id in raw_items:
-            if not isinstance(raw_id, int):
-                continue
-            song_id = raw_id - 100000 if raw_id >= 100000 else raw_id
-            if song_id in active_song_ids:
-                keys.add(key)
-                break
-    return keys
+def available_pass_progress_keys():
+    return _progress.available_pass_progress_keys(catalog=_domain_catalog(static=True))
 
 
-def query_progress_items_by_pass_const(progress_key: str) -> List[ProgressChartItem]:
-    if progress_key not in _load_static_progress_map():
-        return []
-    active_song_ids = load_active_song_ids()
-    dedup: Dict[tuple[int, int], ProgressChartItem] = {}
-    for raw_id in _load_static_progress_map().get(progress_key, []):
-        if not isinstance(raw_id, int):
-            continue
-        is_ura = raw_id >= 100000
-        song_id = raw_id - 100000 if is_ura else raw_id
-        level = 5 if is_ura else 4
-        if song_id not in active_song_ids:
-            continue
-        key = (song_id, level)
-        if key in dedup:
-            continue
-        dedup[key] = ProgressChartItem(
-            song_id=song_id,
-            level=level,
-            title=_build_static_progress_title(song_id, level, progress_key),
-        )
-    return _sort_items(dedup.values())
+def query_progress_items_by_pass_const(progress_key):
+    return _progress.query_progress_items_by_pass_const(progress_key, catalog=_domain_catalog(static=True))
 
 
 @lru_cache(maxsize=1)
-def available_const_progress_keys() -> Set[str]:
-    keys: Set[str] = set()
-    active_song_ids = load_active_song_ids()
-    for chart in _load_rating_entries():
-        try:
-            song_id = int(chart.get("id"))
-        except (TypeError, ValueError):
-            continue
-        if song_id not in active_song_ids:
-            continue
-        const_value = _to_float(chart.get("score"))
-        if const_value is None:
-            continue
-        keys.add(f"{const_value:.1f}")
-    return keys
+def available_const_progress_keys():
+    return _progress.available_const_progress_keys(catalog=_domain_catalog(rating=True))
 
 
-def query_progress_items_by_const(const_value: float) -> List[ProgressChartItem]:
-    active_song_ids = load_active_song_ids()
-    song_index = load_song_index()
-    dedup: Dict[tuple[int, int], ProgressChartItem] = {}
-    for chart in _load_rating_entries():
-        score = _to_float(chart.get("score"))
-        if score is None or abs(score - const_value) >= 1e-6:
-            continue
-        try:
-            song_id = int(chart.get("id"))
-            level = int(chart.get("level"))
-        except (TypeError, ValueError):
-            continue
-        if song_id not in active_song_ids:
-            continue
-        key = (song_id, level)
-        if key in dedup:
-            continue
-        dedup[key] = ProgressChartItem(
-            song_id=song_id,
-            level=level,
-            title=_pick_title(song_index.get(song_id), chart),
-        )
-    return _sort_items(dedup.values())
+def query_progress_items_by_const(const_value):
+    return _progress.query_progress_items_by_const(const_value, catalog=_domain_catalog(rating=True))
 
 
 @lru_cache(maxsize=1)
-def available_star_progress_values() -> Set[int]:
-    values: Set[int] = set()
-    for song_id in load_active_song_ids():
-        song = load_song_index().get(song_id)
-        if not song:
-            continue
-        for level in STAR_PROGRESS_LEVELS:
-            try:
-                star_value = int(song.get(LEVEL_STAR_FIELD[level]))
-            except (TypeError, ValueError):
-                continue
-            if 1 <= star_value <= 10:
-                values.add(star_value)
-    return values
+def available_star_progress_values():
+    return _progress.available_star_progress_values(catalog=_domain_catalog())
 
 
-def query_progress_items_by_star(star_value: int) -> List[ProgressChartItem]:
-    if star_value < 1 or star_value > 10:
-        return []
-    items: List[ProgressChartItem] = []
-    for song_id in load_active_song_ids():
-        song = load_song_index().get(song_id)
-        if not song:
-            continue
-        title = (
-            (song.get("song_name") or "").strip()
-            or (song.get("song_name_jp") or "").strip()
-            or f"ID{song_id}"
-        )
-        for level in STAR_PROGRESS_LEVELS:
-            try:
-                value = int(song.get(LEVEL_STAR_FIELD[level]))
-            except (TypeError, ValueError):
-                continue
-            if value != star_value:
-                continue
-            items.append(
-                ProgressChartItem(
-                    song_id=song_id,
-                    level=level,
-                    title=_normalize_title(title, level),
-                )
-            )
-    return _sort_items(items)
+def query_progress_items_by_star(star_value):
+    return _progress.query_progress_items_by_star(star_value, catalog=_domain_catalog())
+
+def _domain_catalog(*, rating=False, static=False):
+    return _progress.ProgressCatalogInputs(song_index=load_song_index(),
+        active_song_ids=load_active_song_ids(), rating_entries=_load_rating_entries() if rating else [],
+        static_progress_map=_load_static_progress_map() if static else {}, profile="progress-client-20261010")
