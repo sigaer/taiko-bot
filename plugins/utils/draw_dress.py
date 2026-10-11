@@ -1,4 +1,6 @@
 from __future__ import annotations
+from taiko_bot.userdata_provider import get_cached_userdata, ensure_userdata_history_available, ensure_userdata_view_available
+from taiko_bot.history_adapter import previous_song_map, previous_dojo_state
 
 import json
 from functools import lru_cache
@@ -7,18 +9,15 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
-from taiko_bot.settings import get_settings
 
 from .dojo_score import (
     build_dojo_score_map,
     level_mark_to_icon,
     normalize_dojo_scores,
 )
-from .snapshot_history import list_snapshot_files
 from .song_visibility import is_song_id_publicly_visible, is_song_publicly_visible
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-USERDATA_DIR = get_settings().userdata_dir
 ASSETS_DIR = ROOT_DIR / "assets" / "dress"
 OUTPUT_DIR = ROOT_DIR / "output"
 TEMPLATES_DIR = ROOT_DIR / "assets" / "templates"
@@ -392,82 +391,16 @@ def _normalize_removed_key(raw: Any) -> Optional[Tuple[int, int]]:
 
 def _load_previous_song_map(
     user_id: int,
+    history_snapshots=None,
 ) -> Optional[Dict[Tuple[int, int], Dict[str, Any]]]:
-    history_dir = USERDATA_DIR / str(user_id)
-    if not history_dir.exists():
-        return None
-    history_files = list_snapshot_files(history_dir)
-    if len(history_files) < 2:
-        return None
-
-    song_states: List[List[Dict[str, Any]]] = []
-    current_songs: List[Dict[str, Any]] = []
-    for history_file in history_files:
-        try:
-            with open(history_file, "r", encoding="utf-8") as f:
-                payload = json.load(f)
-        except Exception:
-            continue
-        if not isinstance(payload, dict):
-            continue
-
-        if _snapshot_is_full(payload) or not song_states:
-            raw_songs = payload.get("songs") or []
-            current_songs = [dict(song) for song in raw_songs if isinstance(song, dict)]
-        else:
-            song_map = _build_song_map(current_songs)
-            for song in payload.get("songs") or []:
-                if not isinstance(song, dict):
-                    continue
-                key = _song_key(song)
-                if key is None:
-                    continue
-                song_map[key] = dict(song)
-            for raw_key in payload.get("songs_removed") or []:
-                key = _normalize_removed_key(raw_key)
-                if key is None:
-                    continue
-                song_map.pop(key, None)
-            current_songs = list(song_map.values())
-
-        song_states.append([dict(song) for song in current_songs])
-
-    if len(song_states) < 2:
-        return None
-    return _build_song_map(song_states[-2])
+    snapshots = history_snapshots if history_snapshots is not None else ensure_userdata_history_available(str(user_id))
+    return previous_song_map(snapshots, is_full=_snapshot_is_full, build_map=_build_song_map,
+                             key_for=_song_key, removed_key=_normalize_removed_key)
 
 
-def _load_previous_dojo_state(user_id: int) -> Optional[Dict[str, Any]]:
-    history_dir = USERDATA_DIR / str(user_id)
-    if not history_dir.exists():
-        return None
-    history_files = list_snapshot_files(history_dir)
-    if len(history_files) < 2:
-        return None
-
-    dojo_states: List[Dict[str, Any]] = []
-    current_dojo: Optional[Dict[str, Any]] = None
-    for history_file in history_files:
-        try:
-            with open(history_file, "r", encoding="utf-8") as f:
-                payload = json.load(f)
-        except Exception:
-            continue
-        if not isinstance(payload, dict):
-            continue
-
-        if _snapshot_is_full(payload):
-            if "dojo" in payload:
-                current_dojo = normalize_dojo_scores(payload.get("dojo") or {})
-        elif "dojo" in payload:
-            current_dojo = normalize_dojo_scores(payload.get("dojo") or {})
-
-        if current_dojo is not None:
-            dojo_states.append(json.loads(json.dumps(current_dojo, ensure_ascii=False)))
-
-    if len(dojo_states) < 2:
-        return None
-    return dojo_states[-2]
+def _load_previous_dojo_state(user_id: int, history_snapshots=None) -> Optional[Dict[str, Any]]:
+    snapshots = history_snapshots if history_snapshots is not None else ensure_userdata_history_available(str(user_id))
+    return previous_dojo_state(snapshots, normalize=normalize_dojo_scores)
 
 
 def _to_int(value: Any, default: int = 0) -> int:
@@ -1066,12 +999,7 @@ def _resolve_base_size(
 
 
 def build_dress_image(user_id: int) -> Image.Image:
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-
-    with open(userdata_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
+    userdata = get_cached_userdata(str(user_id))
 
     profile = userdata.get("profile") or {}
     game_costume = profile.get("gameCostume") or {}
@@ -1982,12 +1910,7 @@ def _render_my_don_rank_summary_panel(
 
 
 def render_my_don_image(user_id: int, save_path: Optional[Path | str] = None) -> bytes:
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-
-    with open(userdata_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
+    userdata = get_cached_userdata(str(user_id))
 
     final_img = _render_my_don_base_panel(user_id, userdata)
 
@@ -2006,17 +1929,13 @@ def render_update_changes_image(
     save_path: Optional[Path | str] = None,
     show_all: bool = False,
 ) -> bytes:
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-
-    with open(userdata_path, "r", encoding="utf-8") as f:
-        userdata = json.load(f)
+    view = ensure_userdata_view_available(str(user_id))
+    userdata, history = view["userdata"], view["snapshots"]
 
     left_sections: List[Dict[str, Any]] = []
     right_sections: List[Dict[str, Any]] = []
-    previous_map = _load_previous_song_map(user_id)
-    previous_dojo = _load_previous_dojo_state(user_id)
+    previous_map = _load_previous_song_map(user_id, history)
+    previous_dojo = _load_previous_dojo_state(user_id, history)
     songs = userdata.get("songs") or []
     if previous_map is not None and isinstance(songs, list):
         current_map = _build_song_map(

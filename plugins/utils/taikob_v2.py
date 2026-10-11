@@ -111,14 +111,7 @@ def _build_result_from_entry(entry):
 
 
 def _load_userdata_payload(user_id: int | str) -> Any:
-    cached = get_cached_userdata(str(user_id))
-    if isinstance(cached, dict):
-        return cached
-    userdata_path = get_settings().userdata_dir / f"{str(user_id)}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-    with userdata_path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+    return get_cached_userdata(str(user_id))
 
 
 def _extract_userdata_records(payload: Any) -> List[Dict[str, Any]]:

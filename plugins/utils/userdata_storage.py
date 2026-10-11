@@ -76,6 +76,11 @@ def save_userdata(
     *,
     source: Optional[str] = None,
 ) -> None:
+    # Kept as a fail-closed compatibility boundary until the obsolete native
+    # Hiroba module is removed. Only the center may publish personal scores.
+    from taiko_bot.viewer_client import ViewerClientError
+    raise ViewerClientError("本地成绩写入已停用，请使用中心成绩更新接口。", status_code=410)
+
     user_id = str(user_id).strip()
     if not user_id:
         raise ValueError("user_id is required")

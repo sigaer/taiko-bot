@@ -32,7 +32,6 @@ from .score_calculator import (
 )
 
 ROOT_DIR = get_settings().root_dir
-USERDATA_DIR = get_settings().userdata_dir
 SCORELINE_PATH = ROOT_DIR / "songs" / "taiko_goku_onis.json"
 RATING_PATH = ROOT_DIR / "songs" / "rating_structured_with_ids.json"
 SONG_DATA_PATH = ROOT_DIR / "songs" / "song_data.json"
@@ -79,14 +78,7 @@ _mean = _target._mean
 
 
 def _load_userdata_payload(user_id: str | int) -> Dict[str, Any]:
-    cached = get_cached_userdata(str(user_id))
-    if isinstance(cached, dict):
-        return cached
-    path = USERDATA_DIR / f"{str(user_id)}data.json"
-    if not path.exists():
-        raise FileNotFoundError(f"userdata not found: {path}")
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    return payload if isinstance(payload, dict) else {"songs": payload}
+    return get_cached_userdata(str(user_id))
 
 
 _userdata_records = _selection._userdata_records

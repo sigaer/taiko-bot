@@ -192,6 +192,14 @@ python bot.py
 - `GET /local-api/v1/userdata/{user_id}/history`
 - `GET/PUT /local-api/v1/runtime/draw-guess`
 
+成绩与历史 GET 要求调用者自己的 `Authorization: Bearer <token>`；中心核验该凭据的 Source 权限。本地接口不会替匿名请求使用配置中的 Bot 服务 token。
+
+私有读取每次访问中心；精确条件 GET 可在完整授权复核后确认缓存内容。内存缓存按中心地址、凭据哈希、Source 和 current/history 隔离，最多64项、总计32MiB、单项4MiB、存活30秒。过期强制重新获取，任何401/403/429/503或连接失败均拒绝旧缓存；不把成绩写入普通Source-ID磁盘缓存。需要同时使用成绩和历史的加载器核对同一个已验证发布版本，变化时最多重试一次。
+
+客户端 0.2.4 的私有历史加载器请求 `?format=raw-v1`，需要中心 Viewer 0.82.0 的已激活服务。Phase 6 中的仓库提交是激活前准备，当前线上版本仍须以部署台账为准。默认 SDK 历史 DTO 保持兼容；新私有加载器拒绝缺少排序元数据的非空历史。`fileName` 与捕获的文件时间只保留旧排序语义，不表示游玩时间或测量事实；u0 使用带微秒的合并配方名称，不伪造磁盘时间。趋势、更新图、B30 和当前段位进度由中心历史重建，B30/更新图/当前段位使用同一 current/history 版本；本地查询 token 在读取前后复核。旧本地成绩写入及原生 Hiroba 同步入口返回410，现有命令继续使用中心代理。
+
+u0 读取由中心合并全部成员，客户端不写本地合并成绩。内部 `u0v1_` 标识完整编码 Bot principal，保留官方身份中的大小写、下划线和尾部字符。中心必须证明 principal 的 `bind_read` 与所有成绩成员的 `source_read`；u0 历史还需所有成员的 `history_read`，因为历史包含当前观察点。普通账号须有已验证 QQ 与完整自有成绩绑定。合并发布标识包含全部成员的版本及绑定/profile 选择，与单成员标识分别验证。
+
 以下接口已经停用，会返回 `410 Gone`：
 
 - `GET/PUT /local-api/v1/runtime/multi-bind`

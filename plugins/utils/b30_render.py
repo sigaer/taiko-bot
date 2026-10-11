@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import get_cached_userdata
+from taiko_bot.userdata_provider import ensure_userdata_view_available
 
 from .b30_single import (
     _compute_rating_for_entry,
@@ -38,7 +38,7 @@ from .score_calculator import (
     _compute_results_from_userdata_records,
     aggregate_topN_value,
     build_daily_rating_points,
-    compute_all_from_userdata,
+    compute_all_from_userdata_records,
     compute_dim_topN_means,
     get_song_chart_identity_key,
     load_rating_config,
@@ -382,8 +382,9 @@ def compute_b30_update_diff(
     rating_index: Dict[Tuple[int, int], dict],
     const_table: List[tuple],
     current_top_entries: List[Tuple[float, Dict[str, Any]]],
+    history_snapshots=None,
 ) -> Tuple[Set[Tuple[str, int, int]], Dict[str, float]]:
-    prev_map = _load_previous_song_map(user_id)
+    prev_map = _load_previous_song_map(user_id, history_snapshots)
     if not prev_map:
         return set(), {}
 
@@ -509,8 +510,8 @@ def _render_radar_image(
     return img
 
 
-def _format_update_date(user_id: int) -> str:
-    ts = getUtime(user_id)
+def _format_update_date(user_id: int, observed_at=None) -> str:
+    ts = observed_at or getUtime(user_id)
     if not ts:
         return "更新于未知"
     try:
@@ -715,17 +716,15 @@ def render_b30_image(
     assets_base: str | Path = ASSETS_DIR,
     rating_json_path: str | Path = RATING_JSON_DEFAULT,
     userdata: Optional[Dict[str, Any]] = None,
+    history_snapshots=None,
 ) -> bytes:
     assets_base = Path(assets_base)
     template_path = Path(template_path)
+    if not isinstance(userdata, dict) or history_snapshots is None:
+        view = ensure_userdata_view_available(str(user_id))
+        userdata, history_snapshots = view["userdata"], view["snapshots"]
+    observed_at = str(datetime.datetime.now().replace(microsecond=0))
     template = Image.open(template_path).convert("RGBA")
-
-    userdata = userdata if isinstance(userdata, dict) else get_cached_userdata(str(user_id))
-    if userdata is None:
-        userdata_path = get_settings().userdata_dir / f"{user_id}data.json"
-        if not userdata_path.exists():
-            raise FileNotFoundError(f"userdata not found: {userdata_path}")
-        userdata = _load_json(userdata_path)
     entries = userdata.get("songs", []) if isinstance(userdata, dict) else []
 
     song_db = _load_json(Path(song_db_path))
@@ -734,7 +733,7 @@ def render_b30_image(
     _, rating_index, const_table = _load_rating_resources(str(rating_json_path))
     top_entries = _pick_top_entries(entries, rating_index, const_table, N)
 
-    results = compute_all_from_userdata(user_id)
+    results = compute_all_from_userdata_records(entries)
     overall = aggregate_topN_value(results, "AI_rating", N)
     new_keys, dim_deltas = compute_b30_update_diff(
         user_id,
@@ -743,6 +742,7 @@ def render_b30_image(
         rating_index=rating_index,
         const_table=const_table,
         current_top_entries=top_entries,
+        history_snapshots=history_snapshots,
     )
 
     grid_x1, grid_y1, grid_x2, _ = GRID_BOX
@@ -780,7 +780,7 @@ def render_b30_image(
         stroke_fill=BLACK,
     )
 
-    update_text = _format_update_date(user_id)
+    update_text = _format_update_date(user_id, observed_at)
     update_bbox = draw.textbbox((0, 0), update_text, font=update_font, stroke_width=2)
     update_w = update_bbox[2] - update_bbox[0]
     update_h = update_bbox[3] - update_bbox[1]

@@ -14,7 +14,6 @@ from taiko_bot.userdata_provider import get_cached_userdata
 from .draw_dress import render_my_don_image
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
-USERDATA_DIR = get_settings().userdata_dir
 SONG_DATA_PATH = ROOT_DIR / "songs" / "song_data.json"
 
 _FONT_CANDIDATES = [
@@ -53,12 +52,6 @@ def _load_song_name_map() -> Dict[int, str]:
 
 def _load_user_play_counts(user_id: int) -> Dict[int, int]:
     userdata = get_cached_userdata(str(user_id))
-    if userdata is None:
-        userdata_path = USERDATA_DIR / f"{user_id}data.json"
-        if not userdata_path.exists():
-            raise FileNotFoundError(f"userdata not found: {userdata_path}")
-        with userdata_path.open("r", encoding="utf-8") as f:
-            userdata = json.load(f)
     songs = userdata.get("songs", [])
     if not isinstance(songs, list):
         return {}

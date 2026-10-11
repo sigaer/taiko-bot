@@ -354,6 +354,10 @@ def fetch_remote_userdata_history(
         require_developer_token=True,
         timeout=90.0,
     )
+    return normalize_userdata_history(payload)
+
+
+def normalize_userdata_history(payload: Dict[str, Any]) -> list[Dict[str, Any]]:
     snapshots = payload.get("snapshots")
     if not isinstance(snapshots, list):
         raise ViewerClientError("中心返回的历史快照格式无效。")
@@ -363,9 +367,14 @@ def fetch_remote_userdata_history(
             continue
         captured_at = str(item.get("capturedAt") or "").strip()
         snapshot_payload = item.get("payload")
+        if payload.get("historyFormat") == "raw-v1":
+            from .history_adapter import validate_raw_snapshot
+            normalized.append(validate_raw_snapshot(item))
+            continue
         if not captured_at or not isinstance(snapshot_payload, dict):
             continue
-        normalized.append({"capturedAt": captured_at, "payload": snapshot_payload})
+        item_value = {"capturedAt": captured_at, "payload": snapshot_payload}
+        normalized.append(item_value)
     return normalized
 
 

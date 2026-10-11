@@ -200,26 +200,28 @@ def test_all_private_source_binding_and_hiroba_accessors_require_token(tmp_path,
         assert kwargs.get("require_developer_token", False) is private_source
 
 
-def test_ensure_userdata_available_fetches_remote_without_token(tmp_path, monkeypatch):
-    settings = _make_settings(tmp_path, viewer_developer_token="")
+def test_ensure_userdata_available_revalidates_without_private_disk_cache(tmp_path, monkeypatch):
+    settings = _make_settings(tmp_path, viewer_developer_token="synthetic")
     payload = {"songs": [{"song_id": 1}], "username": "demo"}
     fetch_calls = []
 
-    def fake_fetch_remote_userdata(user_id, settings=None):
-        fetch_calls.append((user_id, settings))
-        return payload
+    def fake_fetch_remote_userdata(kind, user_id, *, settings, etag):
+        fetch_calls.append((kind, user_id, settings, etag))
+        from taiko_bot.private_read_client import PrivateReadReply
+        return PrivateReadReply(payload, None)
 
     monkeypatch.setattr(
-        userdata_provider, "fetch_remote_userdata", fake_fetch_remote_userdata
+        userdata_provider, "fetch_private_read", fake_fetch_remote_userdata
     )
 
     result = userdata_provider.ensure_userdata_available("1001", settings=settings)
 
     assert result == payload
-    assert fetch_calls == [("1001", settings)]
+    assert fetch_calls == [("current", "1001", settings, None)]
     assert userdata_provider.uses_center_userdata(settings) is True
     assert userdata_provider.get_cached_userdata("1001", settings=settings) == payload
-    assert (settings.userdata_dir / "1001data.json").exists()
+    assert len(fetch_calls) == 2
+    assert not (settings.userdata_dir / "1001data.json").exists()
 
 
 def test_center_bind_payload_preserves_manual_display_and_u0():

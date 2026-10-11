@@ -11,7 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import get_cached_userdata
+from taiko_bot.userdata_provider import get_cached_userdata, ensure_userdata_history_available, ensure_userdata_view_available
+from taiko_bot.history_adapter import ordered_raw_history
 
 from .dojo_score import (
     build_dojo_score_map,
@@ -23,7 +24,6 @@ from .dojo_score import (
 BASE = get_settings().root_dir
 CURRENT_CONFIG_PATH = BASE / "songs" / "grade_dojo_nijiiro_2025_simple.json"
 HISTORY_CONFIG_PATH = BASE / "songs" / "grade_dojo_nijiiro_history_simple.json"
-USERDATA_DIR = get_settings().userdata_dir
 UP_TEMPLATE_PATH = BASE / "assets" / "templates" / "dani_up.png"
 DOWN_TEMPLATE_PATH = BASE / "assets" / "templates" / "dani_down.png"
 DIFF_DIR = BASE / "assets" / "icons" / "diff"
@@ -282,20 +282,13 @@ def normalize_dani_grade_name(text: str) -> Optional[str]:
 
 
 def _load_history_dojo_payload_for_dan(
-    user_id: int, dan_id: int
+    user_id: int, dan_id: int, history_snapshots=None,
 ) -> Optional[Dict[str, Any]]:
     if dan_id <= 0:
         return None
-    history_dir = USERDATA_DIR / str(user_id)
-    if not history_dir.exists():
-        return None
-
-    for history_file in sorted(history_dir.glob("data_*.json"), reverse=True):
-        try:
-            payload = json.loads(history_file.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        if not isinstance(payload, dict) or "dojo" not in payload:
+    snapshots = history_snapshots if history_snapshots is not None else ensure_userdata_history_available(str(user_id))
+    for stamp, name, payload in reversed(ordered_raw_history(snapshots, filename_order=True)):
+        if "dojo" not in payload:
             continue
 
         dojo_payload = normalize_dojo_scores(payload.get("dojo") or {})
@@ -2030,6 +2023,7 @@ def render_dani_progress_image_bytes(
     version: str = CURRENT_DANI_VERSION,
     explicit_version: bool = False,
     userdata: Optional[Dict[str, Any]] = None,
+    history_snapshots=None,
 ) -> bytes:
     version = str(version or CURRENT_DANI_VERSION)
     try:
@@ -2040,7 +2034,11 @@ def render_dani_progress_image_bytes(
         return _render_notice("未找到对应段位。")
 
     canonical = str(grade["grade"])
-    userdata = userdata if isinstance(userdata, dict) else get_cached_userdata(str(user_id))
+    if version == CURRENT_DANI_VERSION and history_snapshots is None:
+        view = ensure_userdata_view_available(str(user_id))
+        userdata, history_snapshots = view["userdata"], view["snapshots"]
+    else:
+        userdata = userdata if isinstance(userdata, dict) else get_cached_userdata(str(user_id))
     if userdata is None:
         return _render_notice(f"未找到用户 {user_id} 的成绩数据。")
     best_map = _build_best_entry_map(userdata.get("songs", []))
@@ -2067,7 +2065,7 @@ def render_dani_progress_image_bytes(
         dojo_map = build_dojo_score_map(dojo_payload)
         dojo_entry = dojo_map.get(dan_id or -1)
         if not dojo_entry and dan_id:
-            history_dojo_payload = _load_history_dojo_payload_for_dan(user_id, dan_id)
+            history_dojo_payload = _load_history_dojo_payload_for_dan(user_id, dan_id, history_snapshots)
             if history_dojo_payload:
                 dojo_payload = history_dojo_payload
                 dojo_map = build_dojo_score_map(dojo_payload)

@@ -1,19 +1,16 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import secrets
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Optional
 
-from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import ensure_userdata_available, get_cached_userdata
+from taiko_bot.userdata_provider import ensure_userdata_available, UserdataProviderError
 from taiko_runtime.platform_adapter import ONEBOT_V11_PLATFORM, format_identity_for_display
 
 from .taiko_db import ensure_schema, get_taiko_db_connection
 
-USERDATA_DIR = get_settings().userdata_dir
 TOKEN_BYTES = 24
 
 
@@ -161,39 +158,21 @@ def _resolve_token_binding(token: str) -> Dict[str, Any]:
         db.close()
 
 
-def _load_local_userdata(taiko_id: str) -> Dict[str, Any]:
-    cached = get_cached_userdata(str(taiko_id))
-    if isinstance(cached, dict):
-        return cached
-    path = USERDATA_DIR / f"{taiko_id}data.json"
-    if not path.exists():
-        raise PublicScoreTokenError(404, "userdata_missing", "本地成绩文件不存在。")
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except Exception as error:
-        raise PublicScoreTokenError(500, "userdata_invalid", f"本地成绩文件损坏：{error}") from error
-
-
 def fetch_latest_userdata_by_token(token: str) -> Dict[str, Any]:
     resolved = _resolve_token_binding(token)
     taiko_id = resolved["taiko_id"]
-    local_payload: Optional[Dict[str, Any]] = None
     try:
-        local_payload = _load_local_userdata(taiko_id)
-    except PublicScoreTokenError:
-        local_payload = None
-
-    try:
-        ensure_userdata_available(taiko_id, force_refresh=True)
-    except Exception as error:
-        if local_payload is None:
-            raise PublicScoreTokenError(
-                502, "update_failed", f"拉取中心成绩失败：{error}"
-            ) from error
+        payload = ensure_userdata_available(taiko_id, force_refresh=True)
+    except UserdataProviderError as error:
+        raise PublicScoreTokenError(error.status_code, "source_unavailable", "成绩暂不可用，请稍后重试。") from None
+    except Exception:
+        raise PublicScoreTokenError(503, "source_unavailable", "成绩暂不可用，请稍后重试。") from None
+    if _resolve_token_binding(token) != resolved:
+        raise PublicScoreTokenError(401, "invalid_token", "成绩查询 token 已失效。")
 
     return {
         "ok": True,
         "taikoId": taiko_id,
         "fetchedAt": datetime.utcnow().isoformat(timespec="seconds") + "Z",
-        "data": _load_local_userdata(taiko_id),
+        "data": payload,
     }

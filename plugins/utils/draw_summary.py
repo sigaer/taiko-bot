@@ -16,6 +16,7 @@
 """
 
 from __future__ import annotations
+from taiko_bot.userdata_provider import get_cached_userdata
 import os
 import json
 import math
@@ -427,14 +428,7 @@ def paste_contain(
 
 
 def load_userdata(user_id: int) -> Dict[str, Any]:
-    p = get_settings().userdata_dir / f"{user_id}data.json"
-    if p.exists():
-        return load_json(p)
-    # 兼容：有些人直接放在当前目录
-    p2 = Path(f"./{user_id}data.json")
-    if p2.exists():
-        return load_json(p2)
-    raise FileNotFoundError(f"找不到用户数据：{p} 或 {p2}")
+    return get_cached_userdata(str(user_id))
 
 
 def load_song_db() -> Dict[int, Dict[str, Any]]:
@@ -956,8 +950,8 @@ def render_taiko_2025_summary(user_id: int) -> bytes:
     # 8) 年度关键词：雷达图 + 最大维度名 + best10 文本
     # =========================
     score_calc = import_score_calculator()
-    results = score_calc.compute_all_from_userdata(
-        user_id=user_id, json_path=RATING_STRUCT_PATH
+    results = score_calc.compute_all_from_userdata_records(
+        userdata_records=songs, json_path=RATING_STRUCT_PATH
     )
     if results:
         radar_img, max_dim = generate_radar_only(score_calc, results, bg_hex="#fde2bb")

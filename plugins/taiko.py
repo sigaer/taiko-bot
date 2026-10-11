@@ -3,11 +3,7 @@ from .utils.public_score_token import (
     get_taiko_db_connection,
     issue_public_score_token_for_taiko_id,
 )
-from .utils.merged_bind import (
-    MergedBindError,
-    MergedBindMissingUserdataError,
-    materialize_merged_bind_userdata,
-)
+from taiko_bot.merged_source_id import build_center_virtual_user_id
 from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
 from .utils import (
     render_pass_progress_image_bytes,
@@ -81,7 +77,7 @@ from .utils.const_query import (
     render_const_query_notice,
 )
 from .utils.score_calculator import (
-    compute_all_from_userdata,
+    compute_all_from_userdata_records,
     generate_top_N_image,
     getUtime,
     generate_rating_trend_image,
@@ -118,8 +114,8 @@ from taiko_bot.manual_account import ManualAccountApiError, call_manual_account_
 from taiko_bot.public_data import ensure_asset_resource_available
 from taiko_bot.userdata_provider import (
     UserdataProviderError,
-    ensure_multiple_userdatas_available,
     ensure_userdata_history_available,
+    ensure_userdata_view_available,
     ensure_userdata_available,
     update_userdata_cache_from_payload,
 )
@@ -192,8 +188,6 @@ BIND_DELETE_CONFIRM_TIMEOUT_SECONDS = 300
 BIND_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_SCORE_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
-HIROBA_CREDENTIAL_STATUS_CACHE_TTL_SECONDS = 60.0
-HIROBA_CREDENTIAL_STATUS_CACHE: Dict[str, Tuple[float, bool]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
 DIM_MAP = {
     "rating": "rating",
@@ -631,7 +625,6 @@ DRAW_GUESS_REPORT_DELETE_THRESHOLD = 5
 DRAW_GUESS_DB_LOCK = asyncio.Lock()
 DRAW_GUESS_MAKE_SESSIONS: Dict[str, Dict[str, Any]] = {}
 DRAW_GUESS_GROUP_SESSIONS: Dict[str, Dict[str, Any]] = {}
-USERDATA_DIR = _SETTINGS.userdata_dir
 SONG_METRIC_MAX_SHOW = 30
 SONG_METRIC_DIFF_PRIORITY = {
     5: 0,
@@ -981,11 +974,7 @@ def _build_song_title_map() -> Dict[int, Dict[str, Any]]:
 
 
 def _load_user_song_records(user_id: int) -> List[Dict[str, Any]]:
-    userdata_path = USERDATA_DIR / f"{user_id}data.json"
-    if not userdata_path.exists():
-        raise FileNotFoundError(f"userdata not found: {userdata_path}")
-    with userdata_path.open("r", encoding="utf-8") as f:
-        payload = json.load(f)
+    payload = ensure_userdata_available(str(user_id))
     songs = payload.get("songs")
     if not isinstance(songs, list):
         return []
@@ -2194,31 +2183,13 @@ def _resolve_read_bind_target(event: MessageEvent):
         return 403
     entry = _center_bind_info_to_entry(info)
     if entry and _get_selected_bind_slot_number(entry) == 0:
-        sources = dict(entry.get("sources") or {})
-        official_ids = [
-            taiko_id
-            for taiko_id in _get_bind_ids(entry)
-            if _infer_bind_source(taiko_id, sources) != "manual"
-        ]
-        ensure_multiple_userdatas_available(official_ids)
-        official_entry = {
-            **entry,
-            "ids": official_ids,
-            "current_index": min(
-                int(entry.get("current_index", 0) or 0),
-                max(0, len(official_ids) - 1),
-            ),
-            "sources": {taiko_id: sources.get(taiko_id, "wahlap") for taiko_id in official_ids},
-        }
-        materialized = materialize_merged_bind_userdata(
-            identity_key, official_entry, userdata_dir=_SETTINGS.userdata_dir
-        )
+        virtual_id = build_center_virtual_user_id(identity_key)
+        ensure_userdata_available(virtual_id)
         return {
             "identity_key": identity_key,
             "entry": entry,
             "is_virtual": True,
-            "user_id": materialized.virtual_user_id,
-            "materialized": materialized,
+            "user_id": virtual_id,
             "source": "merged-bind",
         }
     selected_id = str(info["id"] or "").strip()
@@ -2235,7 +2206,7 @@ def _resolve_read_bind_target(event: MessageEvent):
 def _resolve_read_bind_target_safe(event: MessageEvent):
     try:
         return _resolve_read_bind_target(event)
-    except (MergedBindMissingUserdataError, MergedBindError, UserdataProviderError) as error:
+    except UserdataProviderError as error:
         return {"error": str(error)}
 
 
@@ -2838,16 +2809,7 @@ def _has_center_hiroba_credentials_cached(taiko_id: str) -> bool:
     normalized = str(taiko_id or "").strip()
     if not normalized:
         return False
-    cached = HIROBA_CREDENTIAL_STATUS_CACHE.get(normalized)
-    now = time.monotonic()
-    if cached and now - cached[0] < HIROBA_CREDENTIAL_STATUS_CACHE_TTL_SECONDS:
-        return cached[1]
-    try:
-        result = bool(has_center_hiroba_credentials(normalized))
-    except Exception:
-        result = False
-    HIROBA_CREDENTIAL_STATUS_CACHE[normalized] = (now, result)
-    return result
+    return bool(has_center_hiroba_credentials(normalized))
 
 
 def _bind_source_label(source: str) -> str:
@@ -5557,7 +5519,10 @@ async def taikob_handle(event: MessageEvent):
         return
 
     try:
-        result = compute_all_from_userdata(taiko_id)
+        if not args:
+            view = ensure_userdata_view_available(taiko_id, settings=_SETTINGS)
+            current_userdata = view["userdata"]
+        result = compute_all_from_userdata_records(current_userdata.get("songs") or [])
     except FileNotFoundError:
         await taikob.finish("您还未上传数据哦~请先发送“taikoupdate”进行上传")
     except TypeError as e:
@@ -5568,7 +5533,7 @@ async def taikob_handle(event: MessageEvent):
 
     # 无附加参数：使用 b30 模板汇总图
     if not args:
-        img_buf = render_b30_image(taiko_id, N=N, userdata=current_userdata)
+        img_buf = render_b30_image(taiko_id, N=N, userdata=current_userdata, history_snapshots=view["snapshots"])
         img_jpg = _to_jpeg_bytes(img_buf, quality=85)
         await _finish_image_reply(taikob, event, img_jpg)
         return

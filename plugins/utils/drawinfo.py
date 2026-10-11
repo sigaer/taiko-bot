@@ -98,7 +98,6 @@ POUND_COL_X_CENTER = 955
 STAT_Y_OFFSET = -35
 STAT_LINE_H = 40
 # 资源路径
-USERDATA_DIR = str(_SETTINGS.userdata_dir)
 RATING_DB_PATH = str(_SETTINGS.root_dir / "songs" / "rating_structured_with_ids.json")
 FONT_FILE_NAME = "DDFont.ttf"
 RAW_DIM_KEYS = ["复合处理", "平均密度", "瞬间密度", "节奏处理", "BPM变化", "HS变化"]
@@ -753,13 +752,7 @@ def _compose_with_side_radar(
 
 
 def get_score_by_id_and_level(song_no, user_id, level):
-    cached = get_cached_userdata(str(user_id))
-    if isinstance(cached, dict):
-        user_data = cached.get("songs", [])
-    else:
-        user_json_path = os.path.join(USERDATA_DIR, f"{user_id}data.json")
-        with open(user_json_path, "r", encoding="utf-8") as f:
-            user_data = json.load(f)["songs"]
+    user_data = get_cached_userdata(str(user_id)).get("songs", [])
 
     # 聚合该曲成绩
     entries = _collect_entries_for_song(user_data, song_no)
@@ -808,13 +801,7 @@ def generate_score_image(
     template_path = str(template_path_obj)
 
     # --- 载入用户成绩 JSON ---
-    cached = get_cached_userdata(str(user_id))
-    if isinstance(cached, dict):
-        user_data = cached.get("songs", [])
-    else:
-        user_json_path = os.path.join(USERDATA_DIR, f"{user_id}data.json")
-        with open(user_json_path, "r", encoding="utf-8") as f:
-            user_data = json.load(f)["songs"]
+    user_data = get_cached_userdata(str(user_id)).get("songs", [])
 
     # --- 载入歌曲数据库（曲名/定数/BPM等）---
     with open(db_path_obj, "r", encoding="utf-8") as f:

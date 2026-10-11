@@ -114,6 +114,9 @@ def sync_hiroba_userdata(
     request_delay: float = 0.15,
     progress: ProgressCallback = None,
 ) -> str:
+    from taiko_bot.viewer_client import ViewerClientError
+    raise ViewerClientError("本地 Hiroba 同步已停用，请使用中心同步接口。", status_code=410)
+
     requested_taiko_no = str(taiko_no or "").strip()
     if requested_taiko_no:
         cooldown_msg = peek_hiroba_sync_cooldown(requested_taiko_no)
@@ -267,6 +270,9 @@ def sync_multiple_hiroba_userdatas(
     request_delay: float = 0.15,
     progress: ProgressCallback = None,
 ) -> List[str]:
+    from taiko_bot.viewer_client import ViewerClientError
+    raise ViewerClientError("本地 Hiroba 同步已停用，请使用中心同步接口。", status_code=410)
+
     playable_cards = discover_hiroba_playable_cards(email, password)
     if not playable_cards:
         raise HirobaError("该 Bandai Namco ID 下没有可同步的 Hiroba 太鼓番。")

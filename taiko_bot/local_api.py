@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import asdict
+from dataclasses import asdict, replace
+import re
 from typing import Any, Dict
 
 from fastapi import FastAPI, HTTPException, Request
@@ -24,6 +25,14 @@ from .userdata_provider import (
 
 class JsonPayload(BaseModel):
     payload: Dict[str, Any]
+
+
+def _private_caller_settings(request: Request, settings):
+    match = re.fullmatch(r"Bearer ([A-Za-z0-9_-]{16,256})", request.headers.get("authorization", "").strip(), re.I)
+    if not match:
+        raise HTTPException(status_code=401, detail="请提供已授权的访问凭据。")
+    # The configured service token belongs to the Bot, not anonymous HTTP callers.
+    return replace(settings, viewer_developer_token=match[1])
 
 
 def create_app() -> FastAPI:
@@ -74,11 +83,11 @@ def create_app() -> FastAPI:
         return {"ok": True}
 
     @app.get("/v1/userdata/{user_id}")
-    async def get_userdata(user_id: str) -> Dict[str, Any]:
+    async def get_userdata(user_id: str, request: Request) -> Dict[str, Any]:
         try:
-            return ensure_userdata_available(user_id, settings=settings)
+            return ensure_userdata_available(user_id, settings=_private_caller_settings(request, settings))
         except UserdataProviderError as exc:
-            raise HTTPException(status_code=404, detail=str(exc)) from exc
+            raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
 
     @app.put("/v1/userdata/{user_id}")
     async def put_userdata(user_id: str, payload: JsonPayload) -> Dict[str, Any]:
@@ -88,11 +97,11 @@ def create_app() -> FastAPI:
         )
 
     @app.get("/v1/userdata/{user_id}/history")
-    async def get_userdata_history(user_id: str) -> Dict[str, Any]:
+    async def get_userdata_history(user_id: str, request: Request) -> Dict[str, Any]:
         try:
-            snapshots = ensure_userdata_history_available(user_id, settings=settings)
+            snapshots = ensure_userdata_history_available(user_id, settings=_private_caller_settings(request, settings))
         except UserdataProviderError as exc:
-            raise HTTPException(status_code=404, detail=str(exc)) from exc
+            raise HTTPException(status_code=exc.status_code, detail=str(exc)) from exc
         return {"userId": user_id, "snapshots": snapshots}
 
     @app.post("/v1/arcades/sync")

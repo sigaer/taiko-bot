@@ -1,26 +1,22 @@
 from __future__ import annotations
 
-import time
 from typing import Any, Dict, Iterable, Optional
+import time
 
 from .settings import Settings, get_settings
-from .storage import userdata_path, write_json_atomic
-from .viewer_client import (
-    ViewerClientError,
-    fetch_remote_userdata,
-    fetch_remote_userdata_history,
-)
+from .private_read_client import fetch_private_read
+from .private_read_cache import PrivateReadCache, private_cache_key
+from .viewer_client import ViewerClientError, normalize_userdata_history
 
 
 class UserdataProviderError(RuntimeError):
-    pass
+    def __init__(self, message: str, *, status_code: int = 503):
+        super().__init__(message)
+        self.status_code = status_code
 
 
 REMOTE_USERDATA_CACHE_TTL_SECONDS = 30
-_REMOTE_REFRESH_TS: Dict[str, float] = {}
-_REMOTE_USERDATA_CACHE: Dict[str, Dict[str, Any]] = {}
-_REMOTE_HISTORY_CACHE: Dict[str, list[Dict[str, Any]]] = {}
-_REMOTE_HISTORY_REFRESH_TS: Dict[str, float] = {}
+_PRIVATE_READ_CACHE = PrivateReadCache(ttl_seconds=REMOTE_USERDATA_CACHE_TTL_SECONDS)
 
 
 def _get_settings(settings: Settings | None = None) -> Settings:
@@ -38,104 +34,83 @@ def _normalize_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     return normalized
 
 
-def update_userdata_cache_from_payload(
-    user_id: str,
-    payload: Dict[str, Any],
-    *,
-    source: str = "viewer-cache",
-    settings: Settings | None = None,
-) -> Dict[str, Any]:
-    normalized = _normalize_payload(payload)
-    cfg = _get_settings(settings)
-    # This is a disposable read cache. The authoritative write remains on the
-    # viewer, while keeping the file cache lets legacy renderers and u0 reuse
-    # the same userdata contract without maintaining a second source of truth.
-    write_json_atomic(userdata_path(user_id, settings=cfg), normalized)
-    _ = source
-    _REMOTE_USERDATA_CACHE[str(user_id).strip()] = normalized
-    _REMOTE_REFRESH_TS[str(user_id).strip()] = time.monotonic()
-    return normalized
+def update_userdata_cache_from_payload(user_id: str, payload: Dict[str, Any], *, source: str = "viewer-cache", settings: Settings | None = None) -> Dict[str, Any]:
+    # Mutation responses remain available to their caller. They do not create a
+    # reusable authority claim or a Source-ID disk cache for other requests.
+    _ = user_id, source, settings
+    return _normalize_payload(payload)
 
 
-def ensure_userdata_available(
-    user_id: str,
-    *,
-    force_refresh: bool = False,
-    settings: Settings | None = None,
-) -> Dict[str, Any]:
-    cfg = _get_settings(settings)
-    normalized_user_id = str(user_id).strip()
-    cached = _REMOTE_USERDATA_CACHE.get(normalized_user_id)
-    if cached is not None and not force_refresh and uses_center_userdata(cfg):
-        refreshed_at = _REMOTE_REFRESH_TS.get(normalized_user_id, 0.0)
-        if time.monotonic() - refreshed_at < REMOTE_USERDATA_CACHE_TTL_SECONDS:
-            return cached
-    if not uses_center_userdata(cfg):
-        if cached is not None:
-            return cached
-        raise UserdataProviderError("未配置可用的 viewer 地址，且当前没有可用的中心成绩缓存。")
+def _private_history(payload):
+    snapshots = normalize_userdata_history(payload)
+    if snapshots and payload.get("historyFormat") != "raw-v1":
+        raise ViewerClientError("中心历史格式暂不兼容，请更新中心服务。", status_code=503)
+    return snapshots
+
+
+def _read(kind: str, user_id: str, *, force_refresh: bool, settings: Settings, with_view=False, deadline=None):
+    source = str(user_id).strip()
+    key = private_cache_key(kind, source, settings)
+    if not uses_center_userdata(settings) or not settings.viewer_developer_token.strip():
+        _PRIVATE_READ_CACHE.discard(key)
+        raise UserdataProviderError("请配置中心成绩地址和有效访问凭据。", status_code=401)
+    cached = None if force_refresh else _PRIVATE_READ_CACHE.get(key)
     try:
-        remote_payload = fetch_remote_userdata(user_id, settings=cfg)
-    except ViewerClientError as exc:
-        if cached is not None:
-            return cached
-        raise UserdataProviderError(str(exc)) from exc
-    normalized = update_userdata_cache_from_payload(
-        user_id, remote_payload, source="viewer-cache", settings=cfg
-    )
-    _REMOTE_REFRESH_TS[normalized_user_id] = time.monotonic()
-    return normalized
+        reply = fetch_private_read(kind, source, settings=settings, etag=cached.etag if cached else None, **({"deadline": deadline} if deadline is not None else {}))
+        if reply.not_modified:
+            if cached is None or reply.etag != cached.etag:
+                raise ViewerClientError("中心成绩缓存确认无效。", status_code=503)
+            payload = cached.payload()
+        else:
+            payload = reply.payload
+        if not isinstance(payload, dict):
+            raise ViewerClientError("中心成绩响应无效。", status_code=503)
+        if kind == "history":
+            _private_history(payload)
+        if reply.etag:
+            _PRIVATE_READ_CACHE.put(key, reply.etag, payload)
+        else:
+            _PRIVATE_READ_CACHE.discard(key)
+        return (payload, reply.source_view) if with_view else payload
+    except ViewerClientError as error:
+        _PRIVATE_READ_CACHE.discard(key)
+        raise UserdataProviderError(str(error), status_code=error.status_code) from error
+    except Exception:
+        _PRIVATE_READ_CACHE.discard(key)
+        raise UserdataProviderError("中心成绩响应无效。", status_code=503) from None
 
 
-def ensure_multiple_userdatas_available(
-    user_ids: Iterable[str],
-    *,
-    force_refresh: bool = False,
-    settings: Settings | None = None,
-) -> Dict[str, Dict[str, Any]]:
+def ensure_userdata_available(user_id: str, *, force_refresh: bool = False, settings: Settings | None = None) -> Dict[str, Any]:
+    return _normalize_payload(_read("current", user_id, force_refresh=force_refresh, settings=_get_settings(settings)))
+
+
+def ensure_multiple_userdatas_available(user_ids: Iterable[str], *, force_refresh: bool = False, settings: Settings | None = None) -> Dict[str, Dict[str, Any]]:
     results: Dict[str, Dict[str, Any]] = {}
     for raw_user_id in user_ids:
         user_id = str(raw_user_id or "").strip()
-        if not user_id or user_id in results:
-            continue
-        results[user_id] = ensure_userdata_available(
-            user_id,
-            force_refresh=force_refresh,
-            settings=settings,
-        )
+        if user_id and user_id not in results:
+            results[user_id] = ensure_userdata_available(user_id, force_refresh=force_refresh, settings=settings)
     return results
 
 
-def get_cached_userdata(
-    user_id: str, settings: Settings | None = None
-) -> Optional[Dict[str, Any]]:
-    _ = _get_settings(settings)
-    return _REMOTE_USERDATA_CACHE.get(str(user_id).strip())
+def get_cached_userdata(user_id: str, settings: Settings | None = None) -> Dict[str, Any]:
+    """Legacy name, same live-authorized read. Never return an offline snapshot."""
+    return ensure_userdata_available(user_id, settings=settings)
 
 
-def ensure_userdata_history_available(
-    user_id: str,
-    *,
-    force_refresh: bool = False,
-    settings: Settings | None = None,
-) -> list[Dict[str, Any]]:
+def ensure_userdata_history_available(user_id: str, *, force_refresh: bool = False, settings: Settings | None = None) -> list[Dict[str, Any]]:
+    return _private_history(_read("history", user_id, force_refresh=force_refresh, settings=_get_settings(settings)))
+
+
+def ensure_userdata_view_available(user_id: str, *, settings: Settings | None = None) -> Dict[str, Any]:
+    """A bounded current/history pair from one verified center publication."""
     cfg = _get_settings(settings)
-    normalized_user_id = str(user_id).strip()
-    cached = _REMOTE_HISTORY_CACHE.get(normalized_user_id)
-    if cached is not None and not force_refresh and uses_center_userdata(cfg):
-        refreshed_at = _REMOTE_HISTORY_REFRESH_TS.get(normalized_user_id, 0.0)
-        if time.monotonic() - refreshed_at < REMOTE_USERDATA_CACHE_TTL_SECONDS:
-            return cached
-    if not uses_center_userdata(cfg):
-        if cached is not None:
-            return cached
-        raise UserdataProviderError("未配置可用的 viewer 地址，且当前没有可用的中心历史缓存。")
-    try:
-        history = fetch_remote_userdata_history(user_id, settings=cfg)
-    except ViewerClientError as exc:
-        if cached is not None:
-            return cached
-        raise UserdataProviderError(str(exc)) from exc
-    _REMOTE_HISTORY_CACHE[normalized_user_id] = history
-    _REMOTE_HISTORY_REFRESH_TS[normalized_user_id] = time.monotonic()
-    return history
+    deadline = time.monotonic() + 180
+    for attempt in range(2):
+        current, current_view = _read("current", user_id, force_refresh=bool(attempt), settings=cfg, with_view=True, deadline=deadline)
+        history, history_view = _read("history", user_id, force_refresh=bool(attempt), settings=cfg, with_view=True, deadline=deadline)
+        if current_view and current_view == history_view:
+            return {"userdata": _normalize_payload(current), "snapshots": _private_history(history), "sourceView": current_view}
+        if not current_view or not history_view:
+            break
+    raise UserdataProviderError("中心成绩暂不可用，请稍后重试。", status_code=503)

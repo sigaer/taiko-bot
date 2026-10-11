@@ -21,15 +21,14 @@ import os
 import datetime
 from matplotlib.transforms import offset_copy
 from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import get_cached_userdata
+from taiko_bot.userdata_provider import get_cached_userdata, ensure_userdata_history_available
+from taiko_bot.history_adapter import iter_trend_history
 
-from .snapshot_history import list_snapshot_files, parse_snapshot_time
 from .song_visibility import (
     is_song_id_publicly_visible,
     is_song_publicly_visible,
 )
 
-USERDATA_DIR = get_settings().userdata_dir
 
 # ---------- 数据结构 ----------
 UNPLAYED_BG = "#E8F3FF"  # 非常浅的蓝色，不影响可读性
@@ -308,9 +307,6 @@ def compute_all_from_userdata(
     """
     # 用户数据文件路径
     userdata_blob = get_cached_userdata(str(user_id))
-    if userdata_blob is None:
-        userdata_path = USERDATA_DIR / f"{user_id}data.json"
-        userdata_blob = load_json(userdata_path)  # 读取用户数据
     userdata = (
         userdata_blob.get("songs", [])
         if isinstance(userdata_blob, dict)
@@ -541,14 +537,8 @@ def get_topN_by_rating(results: List[RatingResult], N: int = 20) -> pd.DataFrame
 
 # ---------- 主程序 ----------
 def getUtime(user_id):
-    if get_cached_userdata(str(user_id)) is not None:
-        return str(datetime.datetime.now().replace(microsecond=0))
-    path = str(USERDATA_DIR / f"{user_id}data.json")
-    if os.path.exists(path):
-        ts = round(os.path.getctime(path))
-        return str(datetime.datetime.fromtimestamp(ts))
-    else:
-        return None
+    get_cached_userdata(str(user_id))
+    return str(datetime.datetime.now().replace(microsecond=0))
 
 
 def _song_key(song: Dict[str, Any]) -> tuple:
@@ -571,7 +561,17 @@ def load_user_snapshots(
     user_id: int,
     history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> List[Tuple[datetime.datetime, Dict[str, Any]]]:
-    if history_snapshots is not None:
+    return list(iter_user_snapshots(user_id, history_snapshots=history_snapshots))
+
+
+def iter_user_snapshots(user_id, history_snapshots=None):
+    if history_snapshots is None:
+        history_snapshots = ensure_userdata_history_available(str(user_id))
+    if not history_snapshots or all(isinstance(item, dict) and item.get("historyFormat") == "raw-v1" for item in history_snapshots):
+        yield from iter_trend_history(history_snapshots)
+    else:
+        # Existing explicit, caller-supplied center DTOs retain their old
+        # already-prepared semantics; implicit reads use the versioned format.
         snapshots: List[Tuple[datetime.datetime, Dict[str, Any]]] = []
         for item in history_snapshots:
             if not isinstance(item, dict):
@@ -586,66 +586,7 @@ def load_user_snapshots(
                 continue
             snapshots.append((dt, payload))
         snapshots.sort(key=lambda item: item[0])
-        return snapshots
-
-    history_dir = USERDATA_DIR / str(user_id)
-    if not history_dir.exists():
-        return []
-    snapshot_files = list_snapshot_files(history_dir)
-    if not snapshot_files:
-        return []
-
-    snapshots: List[Tuple[datetime.datetime, Dict[str, Any]]] = []
-    current_profile: Dict[str, Any] = {}
-    current_achievement: Dict[str, Any] = {}
-    song_map: Dict[tuple, Dict[str, Any]] = {}
-    has_base = False
-
-    for path in snapshot_files:
-        try:
-            snapshot = load_json(path)
-        except Exception:
-            continue
-        dt = parse_snapshot_time(path)
-        meta = snapshot.get("_meta", {}) if isinstance(snapshot, dict) else {}
-        is_full = bool(meta.get("full")) or (
-            isinstance(snapshot, dict)
-            and "songs" in snapshot
-            and "profile" in snapshot
-            and "achievement" in snapshot
-            and not meta
-        )
-
-        if is_full:
-            current_profile = snapshot.get("profile", {}) if isinstance(snapshot, dict) else {}
-            current_achievement = snapshot.get("achievement", {}) if isinstance(snapshot, dict) else {}
-            songs = snapshot.get("songs", []) if isinstance(snapshot, dict) else []
-            song_map = {_song_key(s): s for s in songs}
-            has_base = True
-        else:
-            if not has_base:
-                continue
-            if "profile" in snapshot:
-                current_profile = snapshot.get("profile") or {}
-            if "achievement" in snapshot:
-                current_achievement = snapshot.get("achievement") or {}
-            for s in snapshot.get("songs", []) or []:
-                song_map[_song_key(s)] = s
-            for key in snapshot.get("songs_removed", []) or []:
-                song_map.pop(tuple(key), None)
-
-        snapshots.append(
-            (
-                dt,
-                {
-                    "profile": current_profile,
-                    "achievement": current_achievement,
-                    "songs": list(song_map.values()),
-                },
-            )
-        )
-
-    return snapshots
+        yield from snapshots
 
 
 def _limit_trend_points_to_recent_days(
@@ -666,9 +607,7 @@ def build_daily_rating_points(
     max_days: Optional[int] = 30,
     history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> List[TrendPoint]:
-    snapshots = load_user_snapshots(user_id, history_snapshots=history_snapshots)
-    if not snapshots:
-        return []
+    snapshots = iter_user_snapshots(user_id, history_snapshots=history_snapshots)
 
     cfg = load_rating_config(json_path)
     const_map = cfg["const_table"]["const_to_score"]
@@ -721,9 +660,7 @@ def build_playcount_rating_points(
     max_points: Optional[int] = 80,
     history_snapshots: Optional[List[Dict[str, Any]]] = None,
 ) -> List[PlayTrendPoint]:
-    snapshots = load_user_snapshots(user_id, history_snapshots=history_snapshots)
-    if not snapshots:
-        return []
+    snapshots = iter_user_snapshots(user_id, history_snapshots=history_snapshots)
 
     cfg = load_rating_config(json_path)
     const_map = cfg["const_table"]["const_to_score"]
@@ -1411,7 +1348,7 @@ _get_song_indicator_value = _candidates._get_song_indicator_value
 
 
 def build_all_stats_for_user(user_id, json_path="./songs/rating_structured_with_ids.json"):
-    records = load_json(USERDATA_DIR / f"{user_id}data.json")["songs"]
+    records = get_cached_userdata(str(user_id))["songs"]
     cfg = load_rating_config(json_path)
     return _candidates.build_all_stats_from_records(records, cfg,
         default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(records, cfg["songs"]),
