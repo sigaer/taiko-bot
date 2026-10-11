@@ -174,6 +174,7 @@ def bind_hiroba_credentials(
     password: str,
     target_taiko_no: str = "",
     configured_by_qq: str = "",
+    request_id: str | None = None,
     settings: Settings | None = None,
 ) -> Dict[str, Any]:
     cfg = _get_settings(settings)
@@ -181,13 +182,15 @@ def bind_hiroba_credentials(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/bind",
         settings=cfg,
+        require_developer_token=True,
         json_payload={
             "email": str(email or "").strip(),
             "password": str(password or "").strip(),
             "targetTaikoNo": str(target_taiko_no or "").strip(),
             "configuredByQq": str(configured_by_qq or "").strip(),
+            **({"requestId": request_id} if request_id is not None else {}),
         },
-        timeout=180.0,
+        timeout=300.0,
     )
     taiko_ids = payload.get("taikoIds")
     if not isinstance(taiko_ids, list):
@@ -374,6 +377,7 @@ def has_center_hiroba_credentials(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/hiroba/credentials/{str(taiko_id).strip()}",
         settings=cfg,
+        require_developer_token=True,
         timeout=60.0,
     )
     return bool(payload.get("hasCredentials"))

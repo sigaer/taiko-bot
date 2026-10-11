@@ -57,7 +57,7 @@ def _make_settings(tmp_path: Path, *, viewer_developer_token: str = "") -> Setti
     )
 
 
-def test_source_and_binding_accessors_require_token_while_hiroba_credentials_await_migration(tmp_path, monkeypatch):
+def test_all_private_source_binding_and_hiroba_accessors_require_token(tmp_path, monkeypatch):
     settings = _make_settings(tmp_path, viewer_developer_token="")
     calls = []
 
@@ -196,7 +196,7 @@ def test_source_and_binding_accessors_require_token_while_hiroba_credentials_awa
     assert len(calls) == 10
     for _method, _url, kwargs in calls:
         assert kwargs["settings"] is settings
-        private_source = any(path in _url for path in ["/api/developer/userdata/", "/api/taiko/proxy/userdata/", "/api/taiko/proxy/bind"])
+        private_source = any(path in _url for path in ["/api/developer/userdata/", "/api/taiko/proxy/userdata/", "/api/taiko/proxy/bind", "/api/taiko/proxy/hiroba/"])
         assert kwargs.get("require_developer_token", False) is private_source
 
 
@@ -279,6 +279,8 @@ def test_manual_account_write_requires_independent_service_token(tmp_path):
     lambda cfg: viewer_client.fetch_center_bind_info("onebot_v11:12345",settings=cfg),
     lambda cfg: viewer_client.proxy_center_bind_upsert("onebot_v11:12345","1001",settings=cfg),
     lambda cfg: viewer_client.proxy_center_bind_switch_current("onebot_v11:12345",1,settings=cfg),
+    lambda cfg: viewer_client.bind_hiroba_credentials(email="demo@example.test",password="synthetic",settings=cfg),
+    lambda cfg: viewer_client.has_center_hiroba_credentials("1001",settings=cfg),
 ])
 def test_private_source_calls_without_token_fail_before_network(tmp_path,monkeypatch,call):
     settings=_make_settings(tmp_path)
@@ -298,3 +300,13 @@ def test_binding_mutations_forward_retry_ids_without_changing_existing_call_sign
     viewer_client.proxy_center_bind_switch_current("onebot_v11:12345", 1, settings)
     assert [call["json_payload"].get("requestId") for call in calls] == [retry_id, retry_id, None]
     assert all(call["require_developer_token"] for call in calls)
+
+
+def test_hiroba_binding_forwards_optional_retry_id_and_bounds_wait(tmp_path, monkeypatch):
+    settings = _make_settings(tmp_path, viewer_developer_token="synthetic")
+    calls = []
+    monkeypatch.setattr(viewer_client, "_request_json", lambda *args, **kwargs: calls.append(kwargs) or {"taikoIds": [], "bind": None})
+    for request in ({"request_id": "a" * 32}, {}):
+        assert viewer_client.bind_hiroba_credentials(email="demo@example.test", password="synthetic", settings=settings, **request)["taikoIds"] == []
+    assert [call["json_payload"].get("requestId") for call in calls] == ["a" * 32, None]
+    assert all(call["timeout"] == 300 and call["require_developer_token"] for call in calls)
