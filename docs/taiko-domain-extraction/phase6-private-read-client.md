@@ -25,3 +25,15 @@ u0由中心在全成员SH与principal/所有Source证明下合并，标识完整
 最终 memory QA 72.334s，250ms 采样峰值 533839872 bytes，child maxRSS 399568KiB，high/max/OOM 均 0；systemd 成功退出。初轮 fixture/TS/SDK guard 失败如实保留；fixture 初始化失败留下的 66 条孤立测试 QQ 行已逐条证明所有权并在 `_test` / 双显式 opt-in 下删除，剩余 0，初始化现在受 finally 清理。中心证据为 `docs/taiko-domain-extraction/evidence/phase6-client-binding-mutation-validation.json`。
 
 本版本需要 Viewer 0.82.0 中心协议激活和显式 service grant，当前只标准 commit/push，不启动客户端。Viewer 仍本地预备，线上 0.81.11 未切换；Source A 9.81.21 未变，运行 R 未同步。Phase 6 / native authority 整轮仍 IN_PROGRESS：客户端 QQ 迁移/token issuer、native Hiroba/QQ、全部 Writer/P1a、Read Model、成本/运维和统一激活仍待完成。回退本子步以 client `47bf5c1` / 0.2.4 与 Viewer `39c2327` 成对恢复，不能恢复旧本地 authority 到已激活中心。
+
+## 6.3e.8.6d 网页成绩 token 中心签发（子步骤 PASS）
+
+2026-10-12，client 0.2.6 源码轮完成。私聊命令从中心读取发送者当前绑定，再提交该 principal 与具体实账号到 `/api/taiko/proxy/bind/score-token`。不使用提及用户/可见他人绑定作为 owner，也不再按账号 ID 查询本地 SQLite 所属。隐藏的自有实账号可签发；u0、manual、他人/失效授权拒绝，错误不泄漏底层诊断。中心响应 `private, no-store`，Vary Authorization/Cookie。
+
+中心捕获 pool/runtime paths，Source EX → principal gate → SQL，事务前后及 COMMIT 前证明完整 caller/grant、全部 Bot binding/选择和普通 owner 的对应 web Source/platform。服务须显式 `score_token_issue`、principal 与全部绑定 Source，provisioning 拒绝省略 principal 的该 scope。中心既有 token 表/48hex 格式与 mask 保留，单次事务旋转；ACK 丢失只在仍持 EX、捕获 pool 的新连接证明精确 token 与 caller/current 后成功。签发请求仅一次，不自动重试，不保存含 token 的 durable receipt；用户再次发送命令明确旋转 token。
+
+没有实际业务调用者的旧本地 bearer helper 在任何 IO 前 410，原本地 token 表作为历史未使用 schema 保留，不从中读写私有授权。其 10 项旧 local-authority 测试被 24 项中心 transport/command/retirement 用例替代；完整 client 195 项（171 保留 +24）及两条既有警告通过。命令 AST 验证私聊、群聊拒绝、隐藏自有、空/manual/u0/中心拒绝及发送者传递；原 parity suite 仍执行其既有 NoneBot module import，但未宣称完整 Bot 启动/adapter QA。
+
+既有绑定 SQL 66 项通过，最终新 token SQL/HTTP 25 项及 TS 通过，合计 91 项分属两轮；包含 actual Python SDK → owned H3、全成员 service policy、返回前撤权、rollback/lease loss、Source/principal 队列、exact ACK proof/captured pool 替换以及两个 COMMIT 真进程退出。最终 QA 26.613s/471056384byte cgroup 250ms 采样、child maxRSS 361936KiB、high/max/OOM0，systemd 成功清理。初轮转导出 import 失败（150 pass/3 fail）及 test top-level import 绕过 fixture 注册（66 pass/1 file fail）已修正并留档；没有生产数据/凭据复制或写入。
+
+Source A 9.81.21 unchanged，Viewer 0.82 仍本地预备，运行 R/线上 0.81.11/PID 未变，不启动 client 0.2.6。详细日志/hash/commit/remote 见中心 `phase6-client-score-token-validation.json`。QQ 迁移、native Hiroba/QQ、全 Writer/P1a、Read Model/百万成本/运维、固定 R 依赖与统一激活仍待，Gate 6 IN_PROGRESS。回退本步为 client `a8f1b38` /0.2.5 与 Viewer `80c8d3c` 配套源码，禁止恢复旧本地 authority 到已激活中心。

@@ -41,10 +41,16 @@ def _request(action, body, *, settings, request_id):
     if not isinstance(nonce, str) or not re.fullmatch(r'[a-f0-9]{32}|[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}', nonce):
         raise _failure(400)
     body = {**body, 'requestId':nonce}
+    return post_center_binding_operation(action, body, settings=settings, attempts=2)
+
+
+def post_center_binding_operation(action, body, *, settings, attempts=1):
+    if action not in {'remove', 'visibility', 'score-token'} or attempts not in (1, 2):
+        raise _failure(400)
     headers = _build_headers(settings, require_developer_token=True)
     url = settings.viewer_base_url.rstrip('/')+'/api/taiko/proxy/bind/'+action
     end = time.monotonic()+DEADLINE_SECONDS
-    for attempt in range(2):
+    for attempt in range(attempts):
         try:
             remaining = end-time.monotonic()
             if remaining <= 0:
@@ -68,10 +74,10 @@ def _request(action, body, *, settings, request_id):
                         raise _failure(502)
                     return payload
         except ViewerClientError as error:
-            if error.status_code != 503 or attempt:
+            if error.status_code != 503 or attempt == attempts-1:
                 raise
         except Exception:
-            if attempt:
+            if attempt == attempts-1:
                 raise _failure(502) from None
     raise _failure(502)
 

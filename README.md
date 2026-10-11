@@ -261,3 +261,5 @@ source .venv/bin/activate
 - 地图查询：`xx哪有鼓`
 - 绑定与多账号：绑定、切换账号；当前槽位由 viewer 中心统一维护
 - 本地维护接口：公共数据同步、地图同步、运行态存储、中心数据代理查询
+
+网页成绩 token 仅在私聊中为发送者的中心当前实账号签发，服务需显式 `score_token_issue` scope、principal 及全部绑定 Source 授权。隐藏的自有账号可用，u0/手动/他人绑定拒绝。签发 POST 不自动重试；再次发送命令会生成新 token 并使旧 token 失效。旧本地 bearer helper 已停用。客户端 0.2.6 需与 Viewer 0.82.0 中心协议一起激活。

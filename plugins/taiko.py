@@ -1,8 +1,8 @@
 from .utils.public_score_token import (
     PublicScoreTokenError,
-    get_taiko_db_connection,
     issue_public_score_token_for_taiko_id,
 )
+from .utils.taiko_db import get_taiko_db_connection
 from taiko_bot.merged_source_id import build_center_virtual_user_id
 from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
 from .utils import (
@@ -4959,26 +4959,34 @@ async def public_score_token_handle(event: MessageEvent):
             "该 token 可直接读取完整成绩，请私聊机器人发送“网页成绩token”生成，避免群聊泄露。",
             reply_message=True,
         )
-
-    taiko_id = _resolve_bound_taiko_id(event)
-    if taiko_id == 404:
-        await public_score_token.finish(
-            _taiko_bind_usage_message(event), reply_message=True
-        )
-    if taiko_id == 403:
-        await public_score_token.finish(
-            "当前绑定不可见，无法生成网页成绩 token。", reply_message=True
-        )
+        return
 
     try:
-        issued = issue_public_score_token_for_taiko_id(str(taiko_id))
+        identity_key = _normalize_identity_key(get_identity_key(event=event))
+        info = fetch_center_bind_info(identity_key, _SETTINGS)
+    except ViewerClientError as error:
+        await public_score_token.finish(str(error), reply_message=True)
+        return
+    except Exception:
+        await public_score_token.finish("中心绑定服务暂不可用，请稍后重试。", reply_message=True)
+        return
+    if info is None:
+        await public_score_token.finish(_taiko_bind_usage_message(event), reply_message=True)
+        return
+    if info.get("currentVirtual") or info.get("currentSource") == "manual":
+        await public_score_token.finish("请切换到自己的实账号生成成绩 token。", reply_message=True)
+        return
+    try:
+        issued = issue_public_score_token_for_taiko_id(str(info["id"]), identity_key=identity_key)
     except PublicScoreTokenError as error:
         await public_score_token.finish(str(error), reply_message=True)
-    except Exception as error:
-        logger.exception("生成网页成绩 token 失败")
-        await public_score_token.finish(
-            f"生成网页成绩 token 失败：{error}", reply_message=True
-        )
+        return
+    except ViewerClientError as error:
+        await public_score_token.finish(str(error), reply_message=True)
+        return
+    except Exception:
+        await public_score_token.finish("中心成绩 token 服务暂不可用，请稍后重试。", reply_message=True)
+        return
 
     token = str(issued["token"])
     await public_score_token.finish(
@@ -4986,7 +4994,7 @@ async def public_score_token_handle(event: MessageEvent):
         f"当前鼓众ID：{issued['taiko_id']}\n"
         f"来源绑定：{issued['owner_display']}\n"
         f"token：{token}\n"
-        f"请在对应的网页输入这串token"
+        "请在对应的网页输入这串 token。\n"
         "请妥善保管，不要发到群里。",
         reply_message=True,
     )

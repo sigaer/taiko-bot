@@ -52,7 +52,10 @@ from taiko_runtime.platform_adapter import parse_identity_key
 cfg=SimpleNamespace(viewer_base_url=request['baseUrl'],viewer_developer_token=request['token'])
 
 try:
-    if request.get('mode')=='command':
+    if request['action']=='score-token':
+        from taiko_bot.score_token_client import issue_center_score_token
+        result=issue_center_score_token(request['taikoId'],request['principal'],settings=cfg)
+    elif request.get('mode')=='command':
         names={'_normalize_identity_key','_center_bind_info_to_entry','_remove_bind_record','_set_taiko_bind_visibility',
                '_resolve_bind_remove_target','_format_multi_bind_summary','_get_bind_ids','_get_selected_bind_slot_number',
                '_has_virtual_bind_slot','_infer_bind_source','_bind_source_label'}
