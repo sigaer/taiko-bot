@@ -74,11 +74,13 @@ TAIKO_BOT_SERVICE_TOKEN=
   - viewer 服务地址。
   - 默认是 `https://viewer.sakura-bot.cn`。
 - `TAIKO_VIEWER_DEVELOPER_TOKEN`
-  - 私有成绩读取、历史、Wahlap 更新和 Hiroba 同步必须配置有效 token。
+  - 私有成绩读取、历史、Wahlap 更新、Hiroba 同步和 QQ 绑定读取/写入/切换必须配置有效 token。
   - 请求使用 `Authorization: Bearer <token>`，每日额度与成绩授权分别核验。
   - 普通 token 可读取其 Viewer 账号自有绑定；跨账号服务需要私有运维按 token 登记 `source_read`、`history_read`、`wahlap_update`、`hiroba_sync` 和明确 Source 范围。
   - 在 Viewer Phase 6 最终激活前完成服务授权登记；登记流程见 Viewer 的 `docs/taiko-domain-extraction/source-service-operations.md`。
-  - 公共曲库、公开 Wahlap 玩家资料和排行榜保持原调用用途。Hiroba 凭据管理与 QQ bind 代理授权迁移仍在 Phase 6 后续步骤，不能把本步当作其完成证明。
+  - QQ 中心服务另需 `bind_read`、`bind_write`、`bind_current`，并显式登记 `principals` 身份范围；Source 范围必须包含该身份的全部绑定。身份格式为裸数字 QQ、`onebot_v11:QQ` 或 `qq_official:openid`，不同格式分别授权。
+  - 普通 token 的 QQ 绑定访问要求 Viewer 账号已验证该 QQ；添加账号还要求自有同来源绑定。切换和添加 SDK 可传 `request_id`，同一凭据/授权/意图重试返回当前绑定，不重复修改或覆盖后来选择。
+  - 公共曲库、公开 Wahlap 玩家资料和排行榜保持原调用用途。Hiroba 凭据管理仍在 Phase 6 后续步骤。
   - Hiroba 同步最多等待 900 秒；上游数据量及冷却规则沿用中心实现。
 - `TAIKO_BOT_SERVICE_TOKEN`
   - 用于创建、认领和维护手动成绩账号，必须与 viewer 的同名配置一致。

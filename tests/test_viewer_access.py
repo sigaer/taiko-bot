@@ -57,7 +57,7 @@ def _make_settings(tmp_path: Path, *, viewer_developer_token: str = "") -> Setti
     )
 
 
-def test_source_accessors_require_token_and_other_proxies_await_migration(tmp_path, monkeypatch):
+def test_source_and_binding_accessors_require_token_while_hiroba_credentials_await_migration(tmp_path, monkeypatch):
     settings = _make_settings(tmp_path, viewer_developer_token="")
     calls = []
 
@@ -159,7 +159,7 @@ def test_source_accessors_require_token_and_other_proxies_await_migration(tmp_pa
         password="secret",
         settings=settings,
     )["taikoIds"] == ["1001", "1002"]
-    assert viewer_client.fetch_center_bind_info("qq:123", settings=settings) == {
+    assert viewer_client.fetch_center_bind_info("onebot_v11:12345", settings=settings) == {
         "id": "1001",
         "visible": 1,
         "currentSlot": 1,
@@ -176,7 +176,7 @@ def test_source_accessors_require_token_and_other_proxies_await_migration(tmp_pa
             )
         ],
     }
-    assert viewer_client.proxy_center_bind_switch_current("qq:123", 2, settings=settings)[
+    assert viewer_client.proxy_center_bind_switch_current("onebot_v11:12345", 2, settings=settings)[
         "currentSource"
     ] == "hiroba"
     assert viewer_client.fetch_remote_userdata_history("1001", settings=settings) == [
@@ -196,7 +196,7 @@ def test_source_accessors_require_token_and_other_proxies_await_migration(tmp_pa
     assert len(calls) == 10
     for _method, _url, kwargs in calls:
         assert kwargs["settings"] is settings
-        private_source = "/api/developer/userdata/" in _url or "/api/taiko/proxy/userdata/" in _url
+        private_source = any(path in _url for path in ["/api/developer/userdata/", "/api/taiko/proxy/userdata/", "/api/taiko/proxy/bind"])
         assert kwargs.get("require_developer_token", False) is private_source
 
 
@@ -276,6 +276,9 @@ def test_manual_account_write_requires_independent_service_token(tmp_path):
     lambda cfg: viewer_client.fetch_remote_userdata_history("1001",settings=cfg),
     lambda cfg: viewer_client.proxy_center_userdata_update("1001",settings=cfg),
     lambda cfg: viewer_client.proxy_center_hiroba_sync("1001",settings=cfg),
+    lambda cfg: viewer_client.fetch_center_bind_info("onebot_v11:12345",settings=cfg),
+    lambda cfg: viewer_client.proxy_center_bind_upsert("onebot_v11:12345","1001",settings=cfg),
+    lambda cfg: viewer_client.proxy_center_bind_switch_current("onebot_v11:12345",1,settings=cfg),
 ])
 def test_private_source_calls_without_token_fail_before_network(tmp_path,monkeypatch,call):
     settings=_make_settings(tmp_path)
@@ -283,3 +286,15 @@ def test_private_source_calls_without_token_fail_before_network(tmp_path,monkeyp
     with pytest.raises(viewer_client.ViewerClientError) as caught:
         call(settings)
     assert caught.value.status_code==500
+
+
+def test_binding_mutations_forward_retry_ids_without_changing_existing_call_signatures(tmp_path, monkeypatch):
+    settings = _make_settings(tmp_path, viewer_developer_token="synthetic")
+    calls = []
+    monkeypatch.setattr(viewer_client, "_request_json", lambda *args, **kwargs: calls.append(kwargs) or {"found": False})
+    retry_id = "a" * 32
+    viewer_client.proxy_center_bind_upsert("onebot_v11:12345", "1001", request_id=retry_id, settings=settings)
+    viewer_client.proxy_center_bind_switch_current("onebot_v11:12345", 1, settings, request_id=retry_id)
+    viewer_client.proxy_center_bind_switch_current("onebot_v11:12345", 1, settings)
+    assert [call["json_payload"].get("requestId") for call in calls] == [retry_id, retry_id, None]
+    assert all(call["require_developer_token"] for call in calls)

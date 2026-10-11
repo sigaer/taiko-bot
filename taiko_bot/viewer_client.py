@@ -282,6 +282,7 @@ def fetch_center_bind_info(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/bind",
         settings=cfg,
+        require_developer_token=True,
         params={"identityKey": str(identity_key or "").strip()},
         timeout=60.0,
     )
@@ -294,6 +295,7 @@ def proxy_center_bind_upsert(
     *,
     visible: int = 0,
     source: str = "wahlap",
+    request_id: str | None = None,
     settings: Settings | None = None,
 ) -> Optional[Dict[str, Any]]:
     cfg = _get_settings(settings)
@@ -301,11 +303,13 @@ def proxy_center_bind_upsert(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/bind",
         settings=cfg,
+        require_developer_token=True,
         json_payload={
             "identityKey": str(identity_key or "").strip(),
             "taikoId": str(taiko_id or "").strip(),
             "visible": int(visible or 0),
             "source": str(source or "").strip().lower() or "wahlap",
+            **({"requestId": request_id} if request_id is not None else {}),
         },
         timeout=90.0,
     )
@@ -316,15 +320,19 @@ def proxy_center_bind_switch_current(
     identity_key: str,
     slot: int,
     settings: Settings | None = None,
+    *,
+    request_id: str | None = None,
 ) -> Optional[Dict[str, Any]]:
     cfg = _get_settings(settings)
     payload = _request_json(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/bind/current",
         settings=cfg,
+        require_developer_token=True,
         json_payload={
             "identityKey": str(identity_key or "").strip(),
             "slot": int(slot),
+            **({"requestId": request_id} if request_id is not None else {}),
         },
         timeout=90.0,
     )
