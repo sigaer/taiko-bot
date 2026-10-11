@@ -34,6 +34,6 @@ u0由中心在全成员SH与principal/所有Source证明下合并，标识完整
 
 没有实际业务调用者的旧本地 bearer helper 在任何 IO 前 410，原本地 token 表作为历史未使用 schema 保留，不从中读写私有授权。其 10 项旧 local-authority 测试被 24 项中心 transport/command/retirement 用例替代；完整 client 195 项（171 保留 +24）及两条既有警告通过。命令 AST 验证私聊、群聊拒绝、隐藏自有、空/manual/u0/中心拒绝及发送者传递；原 parity suite 仍执行其既有 NoneBot module import，但未宣称完整 Bot 启动/adapter QA。
 
-既有绑定 SQL 66 项通过，最终新 token SQL/HTTP 25 项及 TS 通过，合计 91 项分属两轮；包含 actual Python SDK → owned H3、全成员 service policy、返回前撤权、rollback/lease loss、Source/principal 队列、exact ACK proof/captured pool 替换以及两个 COMMIT 真进程退出。最终 QA 26.613s/471056384byte cgroup 250ms 采样、child maxRSS 361936KiB、high/max/OOM0，systemd 成功清理。初轮转导出 import 失败（150 pass/3 fail）及 test top-level import 绕过 fixture 注册（66 pass/1 file fail）已修正并留档；没有生产数据/凭据复制或写入。
+既有绑定 SQL 66 项通过，最终 token 24 项实际 SQL/HTTP +1 项纯 provisioning 策略检查及 TS 通过；与既有绑定合计 90 项 SQL/HTTP +1 项策略，分属两轮；包含 actual Python SDK → owned H3、全成员 service policy、返回前撤权、rollback/lease loss、Source/principal 队列、exact ACK proof/captured pool 替换以及两个 COMMIT 真进程退出。最终 QA 26.613s/471056384byte cgroup 250ms 采样、child maxRSS 361936KiB、high/max/OOM0，systemd 成功清理。初轮转导出 import 失败（150 pass/3 fail）及 test top-level import 绕过 fixture 注册（66 pass/1 file fail）已修正并留档；没有生产数据/凭据复制或写入。
 
 Source A 9.81.21 unchanged，Viewer 0.82 仍本地预备，运行 R/线上 0.81.11/PID 未变，不启动 client 0.2.6。详细日志/hash/commit/remote 见中心 `phase6-client-score-token-validation.json`。QQ 迁移、native Hiroba/QQ、全 Writer/P1a、Read Model/百万成本/运维、固定 R 依赖与统一激活仍待，Gate 6 IN_PROGRESS。回退本步为 client `a8f1b38` /0.2.5 与 Viewer `80c8d3c` 配套源码，禁止恢复旧本地 authority 到已激活中心。
