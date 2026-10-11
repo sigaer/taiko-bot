@@ -2009,21 +2009,12 @@ def _center_bind_info_to_entry(info: Optional[Dict[str, Any]]) -> Optional[Dict[
     }
 
 
-def _set_taiko_bind_visibility(identity_key: str, visible: int) -> int:
-    try:
-        identity_key = _normalize_identity_key(identity_key)
-        info = _get_taiko_bind_info_from_center(identity_key)
-        if info is None:
-            return 0
-        proxy_center_bind_upsert(
-            identity_key,
-            str(info["id"]),
-            visible=int(visible),
-            source=str(info.get("currentSource") or "wahlap"),
-        )
-        return 1
-    except Exception:
-        return 0
+def _set_taiko_bind_visibility(identity_key: str, visible: int, event=None) -> int:
+    from taiko_bot.binding_mutation_client import set_center_bind_visibility, command_request_id
+    principal = _normalize_identity_key(identity_key)
+    result = set_center_bind_visibility(principal, visible, settings=_SETTINGS,
+        request_id=command_request_id(event, principal, "visibility"))
+    return result["matched"]
 
 
 def _taiko_bind_usage_message(event: Optional[MessageEvent] = None) -> str:
@@ -2740,10 +2731,6 @@ def _load_multi_bind_store() -> Dict[str, Dict[str, Any]]:
     return cleaned
 
 
-def _save_multi_bind_store(store: Dict[str, Dict[str, Any]]) -> None:
-    TAIKO_MULTI_BIND_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with TAIKO_MULTI_BIND_PATH.open("w", encoding="utf-8") as f:
-        json.dump(store, f, ensure_ascii=False, indent=2)
 
 
 def _ensure_multi_bind_entry(
@@ -2967,102 +2954,39 @@ def _remove_bind_record(
     force_last: bool = False,
     event: Optional[MessageEvent] = None,
 ) -> Tuple[bool, str, bool]:
-    center_entry = _get_current_bind_entry(qq)
-    if center_entry:
-        try:
-            center_index, center_id = _resolve_bind_remove_target(center_entry, target)
-            center_source = _infer_bind_source(
-                center_id, center_entry.get("sources") or {}
-            )
-            if center_source == "manual":
-                return (
-                    False,
-                    "手动账号请使用“解绑空白账号”或“永久删除空白账号”。",
-                    False,
-                )
-        except ValueError:
-            pass
-    db = _get_taiko_db_connection()
-    cursor = db.cursor()
+    from taiko_bot.binding_mutation_client import remove_center_bind, command_request_id
+    principal = _normalize_identity_key(qq)
+    if force_last and not re.fullmatch(r"[0-9]{1,25}", target):
+        return False, "删除确认已失效，请重新发送“删除绑定”。", False
+    info = fetch_center_bind_info(principal, _SETTINGS)
+    entry = _center_bind_info_to_entry(info)
+    if not entry:
+        return False, _taiko_bind_usage_message(event), False
     try:
-        qq = _normalize_identity_key(qq)
-        cursor.execute("select id from bind where qq=%s", (qq,))
-        row = cursor.fetchone()
-        if row is None:
-            return False, _taiko_bind_usage_message(event), False
-
-        current_db_id = str(row[0] or "").strip()
-        store = _load_multi_bind_store()
-        entry = _ensure_multi_bind_entry(store, qq, current_db_id)
-        if entry is None:
-            return False, "当前没有可删除的鼓众广场ID。", False
-
-        try:
-            remove_index, remove_id = _resolve_bind_remove_target(entry, target)
-        except ValueError as e:
-            return False, str(e), False
-
-        ids = list(entry.get("ids") or [])
-        current_index = int(entry.get("current_index", 0) or 0)
-        current_index = max(0, min(current_index, len(ids) - 1))
-
-        if len(ids) == 1 and not force_last:
-            return (
-                False,
-                f"当前只剩最后 1 个鼓众广场ID：{remove_id}\n"
-                f"如需确认删除，请在 {BIND_DELETE_CONFIRM_TIMEOUT_SECONDS // 60} 分钟内发送“确认删除绑定”。",
-                True,
-            )
-
-        ids.pop(remove_index)
-        removed_sources = dict(entry.get("sources") or {})
-        if remove_id in removed_sources:
-            removed_sources.pop(remove_id, None)
-        if ids:
-            if remove_index < current_index:
-                current_index -= 1
-            elif remove_index == current_index:
-                current_index = min(remove_index, len(ids) - 1)
-
-            selected_slot = int(entry.get("current_slot", current_index + 1) or 0)
-            if len(ids) < 2:
-                current_slot = 1
-            elif selected_slot == 0:
-                current_slot = 0
-            else:
-                current_slot = current_index + 1
-
-            entry = {
-                "ids": ids,
-                "current_index": current_index,
-                "current_slot": current_slot,
-                "sources": {
-                    str(taiko_id): str(source)
-                    for taiko_id, source in removed_sources.items()
-                    if str(taiko_id) in ids
-                },
-            }
-            store[str(qq)] = entry
-            cursor.execute(
-                "update bind set id=%s where qq=%s", (ids[current_index], qq)
-            )
-            summary = _format_multi_bind_summary(entry)
-            reply = f"已删除绑定：{remove_id}\n当前绑定：{summary}"
-        else:
-            store.pop(str(qq), None)
-            cursor.execute("delete from bind where qq=%s", (qq,))
-            reply = f"已删除最后一个绑定：{remove_id}\n当前已无绑定的鼓众广场ID。"
-
-        _save_multi_bind_store(store)
-        db.commit()
-        BIND_DELETE_CONFIRM_SESSIONS.pop(str(qq), None)
-        return True, reply, False
-    finally:
-        try:
-            cursor.close()
-        except Exception:
-            pass
-        db.close()
+        _, target_id = _resolve_bind_remove_target(entry, target)
+    except ValueError as error:
+        return False, str(error), False
+    if (entry.get("sources") or {}).get(target_id) == "manual":
+        return False, "手动账号请使用“解绑空白账号”或“永久删除空白账号”。", False
+    try:
+        result = remove_center_bind(principal, target_id, force_last=force_last, settings=_SETTINGS,
+            request_id=command_request_id(event, principal, "remove"))
+    except ViewerClientError as error:
+        if error.status_code == 404:
+            return False, str(error), False
+        raise
+    if result["needsConfirmation"]:
+        BIND_DELETE_CONFIRM_SESSIONS[principal] = {"taiko_id":target_id,
+            "expires_at":_now_ts()+BIND_DELETE_CONFIRM_TIMEOUT_SECONDS}
+        return (False, f"当前只剩最后 1 个鼓众广场ID：{target_id}\n"
+            f"如需确认删除，请在 {BIND_DELETE_CONFIRM_TIMEOUT_SECONDS // 60} 分钟内发送“确认删除绑定”。", True)
+    BIND_DELETE_CONFIRM_SESSIONS.pop(principal, None)
+    after = _center_bind_info_to_entry(result["binding"])
+    if after:
+        reply = f"已删除绑定：{target_id}\n当前绑定：{_format_multi_bind_summary(after)}"
+    else:
+        reply = f"已删除最后一个绑定：{target_id}\n当前已无绑定的鼓众广场ID。"
+    return True, reply, False
 
 
 def _query_music_with_mode(
@@ -4367,19 +4291,7 @@ async def bind_remove_handle(event: MessageEvent):
         )
     except Exception as e:
         await _finish_text_reply(bind_remove, event, f"删除绑定失败：{e}")
-
-    if needs_confirm:
-        session = _load_multi_bind_store().get(identity_key)
-        current_id = ""
-        if session:
-            try:
-                _, current_id = _resolve_bind_remove_target(session, target)
-            except Exception:
-                current_id = ""
-        BIND_DELETE_CONFIRM_SESSIONS[identity_key] = {
-            "taiko_id": current_id,
-            "expires_at": _now_ts() + BIND_DELETE_CONFIRM_TIMEOUT_SECONDS,
-        }
+        return
 
     await _finish_text_reply(bind_remove, event, msg)
 
@@ -4409,6 +4321,7 @@ async def bind_remove_confirm_handle(event: MessageEvent):
         )
     except Exception as e:
         await _finish_text_reply(bind_remove_confirm, event, f"删除绑定失败：{e}")
+        return
 
     await _finish_text_reply(bind_remove_confirm, event, msg)
 
@@ -4812,7 +4725,11 @@ async def show_bind_handle(event: MessageEvent):
             except ManualAccountApiError as exc:
                 await _finish_text_reply(show_bind, event, f"设置失败：{exc}")
                 return
-    updated = _set_taiko_bind_visibility(get_identity_key(event=event), 1)
+    try:
+        updated = _set_taiko_bind_visibility(get_identity_key(event=event), 1, event=event)
+    except ViewerClientError as error:
+        await _finish_text_reply(show_bind, event, str(error))
+        return
     if updated == 0:
         await _finish_text_reply(show_bind, event, _taiko_bind_usage_message(event))
     await _finish_text_reply(show_bind, event, "给看!")
@@ -4843,7 +4760,11 @@ async def unshow_bind_handle(event: MessageEvent):
             except ManualAccountApiError as exc:
                 await _finish_text_reply(unshow_bind, event, f"设置失败：{exc}")
                 return
-    updated = _set_taiko_bind_visibility(get_identity_key(event=event), 0)
+    try:
+        updated = _set_taiko_bind_visibility(get_identity_key(event=event), 0, event=event)
+    except ViewerClientError as error:
+        await _finish_text_reply(unshow_bind, event, str(error))
+        return
     if updated == 0:
         await _finish_text_reply(unshow_bind, event, _taiko_bind_usage_message(event))
     await _finish_text_reply(unshow_bind, event, "不给看!")

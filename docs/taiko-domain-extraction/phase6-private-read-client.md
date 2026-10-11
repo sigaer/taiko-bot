@@ -13,3 +13,15 @@ u0由中心在全成员SH与principal/所有Source证明下合并，标识完整
 跨仓库受限QA：Source62 +5subtests、pipe12、SQL/HTTP143、TS通过，172.261s/504815616byte采样peak，high/max/OOM0；最后3个本地Writer禁用用例加入后仅重新跑client153，未无故重复未变的Source/Viewer。详细日志、hash、unit/commit/push见Viewer `docs/taiko-domain-extraction/evidence/phase6-client-history-validation.json`。
 
 尚未完成全Writer/P1a、native credential/QQ/token issuer最后接入、Read Model/invalidation、百万冷暖IO/RSS、trusted ops、R固定依赖/停止旧Writer/统一激活、真实online产品smoke。回退：client adae96e（0.2.3）、Source356cd1ef、Viewer834962b；旧实现可从这些Git对象恢复，中心与客户端协议一起回退，不打开旧缓存的错误fallback。
+
+## 6.3e.8.6c 绑定删除与可见性（子步骤 PASS）
+
+2026-10-12，client 0.2.5 源码轮完成。删除绑定改用中心 authenticated GET 与 remove POST，位置只用于解析具体账号 ID；最后一个绑定的确认保存中心已证明的 ID 和现有 TTL，不再读取本地 JSON。给看/不给看调用 visibility POST，中心修改整个 principal 的可见性，不经 upsert 重建绑定或重置 u0。删除当前账号保留客户端原有的后继选择规则；原生 Bot 的选择 profile 保持独立。手动账号删除继续使用既有专用生命周期接口。
+
+中心一次 SQL 事务修改绑定、槽位、选择状态与精确所属 Hiroba 凭据。删除和可见性分别要求显式 service scopes `bind_remove` / `bind_visibility`，旧 `bind_write` 不获得新权限；principal 和全部成员 Source 仍须授权。小型 durable receipt 绑定 actor/grant、意图及操作效果，同 nonce 重试返回当前绑定和原操作结果，不删除后来重新绑定的账号，也不覆盖后来的选择/可见性。客户端最多两次同请求重试，256KiB 流式响应上限，90s 分块检查期限及最长 10s 单次 socket 等待；这不是严格的 90s 进程硬期限。错误状态与重定向不回退本地权限或数据库。
+
+最终 guarded client 181 项通过（153 既有、28 新增，2 条既有警告），局部 TypeScript 和实际 SQL/HTTP 66 项通过。同轮先前未变的凭据/访问控制 78 项通过，合计 144 项 SQL，分属两次 QA，未冒称同一次执行。包含真实 Python SDK/命令 AST 到 owned H3 HTTP、5 个冻结客户端删除选择样例、最后确认、重绑重试、撤权/回滚/ACK loss 与四个 COMMIT 前后真实进程退出。上游、完整 NoneBot 注册、线上产品验收与百万数据性能不在本轮范围。
+
+最终 memory QA 72.334s，250ms 采样峰值 533839872 bytes，child maxRSS 399568KiB，high/max/OOM 均 0；systemd 成功退出。初轮 fixture/TS/SDK guard 失败如实保留；fixture 初始化失败留下的 66 条孤立测试 QQ 行已逐条证明所有权并在 `_test` / 双显式 opt-in 下删除，剩余 0，初始化现在受 finally 清理。中心证据为 `docs/taiko-domain-extraction/evidence/phase6-client-binding-mutation-validation.json`。
+
+本版本需要 Viewer 0.82.0 中心协议激活和显式 service grant，当前只标准 commit/push，不启动客户端。Viewer 仍本地预备，线上 0.81.11 未切换；Source A 9.81.21 未变，运行 R 未同步。Phase 6 / native authority 整轮仍 IN_PROGRESS：客户端 QQ 迁移/token issuer、native Hiroba/QQ、全部 Writer/P1a、Read Model、成本/运维和统一激活仍待完成。回退本子步以 client `47bf5c1` / 0.2.4 与 Viewer `39c2327` 成对恢复，不能恢复旧本地 authority 到已激活中心。
