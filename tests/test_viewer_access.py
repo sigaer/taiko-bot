@@ -57,7 +57,7 @@ def _make_settings(tmp_path: Path, *, viewer_developer_token: str = "") -> Setti
     )
 
 
-def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
+def test_source_accessors_require_token_and_other_proxies_await_migration(tmp_path, monkeypatch):
     settings = _make_settings(tmp_path, viewer_developer_token="")
     calls = []
 
@@ -196,7 +196,8 @@ def test_center_accessors_do_not_require_token(tmp_path, monkeypatch):
     assert len(calls) == 10
     for _method, _url, kwargs in calls:
         assert kwargs["settings"] is settings
-        assert kwargs.get("require_developer_token", False) is False
+        private_source = "/api/developer/userdata/" in _url or "/api/taiko/proxy/userdata/" in _url
+        assert kwargs.get("require_developer_token", False) is private_source
 
 
 def test_ensure_userdata_available_fetches_remote_without_token(tmp_path, monkeypatch):
@@ -268,3 +269,17 @@ def test_manual_account_write_requires_independent_service_token(tmp_path):
                 "onebot-v11:123", "create", settings=settings, nickname="练习号"
             )
         )
+
+
+@pytest.mark.parametrize("call", [
+    lambda cfg: viewer_client.fetch_remote_userdata("1001",settings=cfg),
+    lambda cfg: viewer_client.fetch_remote_userdata_history("1001",settings=cfg),
+    lambda cfg: viewer_client.proxy_center_userdata_update("1001",settings=cfg),
+    lambda cfg: viewer_client.proxy_center_hiroba_sync("1001",settings=cfg),
+])
+def test_private_source_calls_without_token_fail_before_network(tmp_path,monkeypatch,call):
+    settings=_make_settings(tmp_path)
+    monkeypatch.setattr(viewer_client.httpx,"Client",lambda *a,**k:pytest.fail("Network attempted without source credential"))
+    with pytest.raises(viewer_client.ViewerClientError) as caught:
+        call(settings)
+    assert caught.value.status_code==500

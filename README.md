@@ -74,10 +74,12 @@ TAIKO_BOT_SERVICE_TOKEN=
   - viewer 服务地址。
   - 默认是 `https://viewer.sakura-bot.cn`。
 - `TAIKO_VIEWER_DEVELOPER_TOKEN`
-  - 用于把 viewer 中心接口的每日额度从 `100` 次提升到 `2500` 次。
-  - 留空时，查询、更新、Hiroba、Wahlap 等中心代理接口仍可用，但按匿名额度计数。
-  - 填写后，请求会带上 `Authorization: Bearer <token>`，按开发者额度计数。
-  - 如果你只是先验证 bot 能否启动，可以先留空；后续需要更高调用额度时再填写。
+  - 私有成绩读取、历史、Wahlap 更新和 Hiroba 同步必须配置有效 token。
+  - 请求使用 `Authorization: Bearer <token>`，每日额度与成绩授权分别核验。
+  - 普通 token 可读取其 Viewer 账号自有绑定；跨账号服务需要私有运维按 token 登记 `source_read`、`history_read`、`wahlap_update`、`hiroba_sync` 和明确 Source 范围。
+  - 在 Viewer Phase 6 最终激活前完成服务授权登记；登记流程见 Viewer 的 `docs/taiko-domain-extraction/source-service-operations.md`。
+  - 公共曲库、公开 Wahlap 玩家资料和排行榜保持原调用用途。Hiroba 凭据管理与 QQ bind 代理授权迁移仍在 Phase 6 后续步骤，不能把本步当作其完成证明。
+  - Hiroba 同步最多等待 900 秒；上游数据量及冷却规则沿用中心实现。
 - `TAIKO_BOT_SERVICE_TOKEN`
   - 用于创建、认领和维护手动成绩账号，必须与 viewer 的同名配置一致。
   - 它不是开发者额度 token；未配置时仅手动账号写命令不可用。

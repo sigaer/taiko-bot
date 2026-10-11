@@ -121,6 +121,7 @@ def fetch_remote_userdata(
         "GET",
         f"{cfg.viewer_base_url}/api/developer/userdata/{str(user_id).strip()}",
         settings=cfg,
+        require_developer_token=True,
     )
 
 
@@ -136,6 +137,7 @@ def proxy_center_userdata_update(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/userdata/{str(user_id).strip()}/update",
         settings=cfg,
+        require_developer_token=True,
         json_payload={"showAll": show_all, "includeImage": include_image},
         timeout=300.0,
     )
@@ -155,13 +157,14 @@ def proxy_center_hiroba_sync(
         "POST",
         f"{cfg.viewer_base_url}/api/taiko/proxy/userdata/{str(user_id).strip()}/sync-hiroba",
         settings=cfg,
+        require_developer_token=True,
         json_payload={
             "email": email,
             "password": password,
             "showAll": show_all,
             "includeImage": include_image,
         },
-        timeout=300.0,
+        timeout=900.0,
     )
 
 
@@ -337,6 +340,7 @@ def fetch_remote_userdata_history(
         "GET",
         f"{cfg.viewer_base_url}/api/taiko/proxy/userdata/{str(user_id).strip()}/history",
         settings=cfg,
+        require_developer_token=True,
         timeout=90.0,
     )
     snapshots = payload.get("snapshots")
