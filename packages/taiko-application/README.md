@@ -1,6 +1,6 @@
-# taiko-application 0.2.0 — Phase 2B
+# taiko-application 0.3.0 — Phase 2C
 
-Independent Python distribution for Dani and score presentation. Install this subproject,
+Independent Python distribution for Dani, score presentation and injected queries. Install this subproject,
 not the taiko-bot root distribution (which has a different Core pin).
 
 ```sh
@@ -150,3 +150,76 @@ image, so this is not a draw_dress integration claim. Daily/Writer is never run.
 The standalone test replays captured contexts from the installed wheel without
 Sakura imports, any writes, network or data-file reads. This acceptance covers
 score presentation, not full Bot events or production deployment.
+
+## Phase 2C: queries
+
+`taiko_application.query` accepts explicit request contexts and returns the legacy
+query result types. No file, SQL, userdata, history, sync or Writer implementation
+is included. Context mappings belong to the caller: keep them stable during a
+request. Exceptions for malformed inputs, list ordering, duplicates, nulls and
+numeric precision retain the legacy behavior; this is extraction, not validation
+policy redesign.
+
+| Context | Application function | Result |
+| --- | --- | --- |
+| `SongQueryContext` | `query_music` | rows plus matching mode |
+| `SongQueryContext` | `query_aliases` | title, aliases, display ID |
+| `ConstantQueryContext` | `query_charts_by_const` | `ConstChartRow` list |
+| `PaginationContext` | `paginate_rows` | page rows, current page, total pages |
+| `ProgressQueryContext` | progress catalog functions / `summarize_progress` | chart list / Core summary |
+| `RecommendationContext` | `project_*` functions | existing recommendation/rating DTO |
+
+Song contexts inject catalogs, Core identity group maps and `SimilarityProvider`.
+Sakura supplies its existing `fuzzywuzzy.fuzz.ratio`; Application does not choose
+or install another fuzzy matcher. Optional `group_provider` preserves lazy host
+catalog acquisition for name/alias matches. Explicit ID and fuzzy queries do not
+invoke it. Alias listing uses prepared maps. All provider implementations remain
+caller-owned; callers are responsible for their authorization and side effects.
+
+Constant contexts carry prepared song indexes and rating entries. Pagination
+preserves page clamping and the original errors for invalid page sizes/types.
+Progress contexts carry the existing Core `ProgressCatalogInputs`, prepared
+chart/score summaries and availability keys. Recommendation contexts carry
+already computed rating objects, ordinary rows or a structural target result.
+No entire score calculator or recommendation algorithm was copied. Core 0.1.1
+continues to implement identity, aggregation and progress rules.
+
+Sakura retains command parsing/registration, authorization, current/history and
+catalog reads, caches, upstream computations, renderers and message sending.
+The six modified query modules delegate through contexts; compatibility exports
+refer to the same Application model/helper implementations.
+
+### Query parity reproduction
+
+Build/install this subproject's wheel into a disposable target, keeping Core
+0.1.1 and Contract 0.1.0. Set `PYTHONPATH` to that target and run from a non-Sakura
+working directory through `scripts/memory/run_qa.sh`:
+
+```sh
+python tests/query/run_parity.py \
+  --reference /path/to/frozen-six-query-modules \
+  --adapter /path/to/candidate/taiko/plugins \
+  --installed /path/to/isolated-wheel-target \
+  --output /var/tmp/query-parity
+python tests/query/standalone.py \
+  --installed /path/to/isolated-wheel-target \
+  --evidence /var/tmp/query-parity/parity.json \
+  --output /var/tmp/query-standalone.json
+```
+
+`tests/query/provenance.json` pins six complete Phase 2B source files; references
+remain external to Git. The small legacy modules execute in full. For the giant
+NoneBot plugin, the harness compiles and executes complete unchanged query
+function bodies selected by AST, avoiding unrelated startup/Writer imports.
+This is execution parity, not an AST-only behavior test or full Bot session.
+Only acquisition and upstream result providers are substituted with the same
+synthetic fixture; matching, filtering, grouping, Core formulas and projections
+execute unchanged. Tests compare old, adapter and direct Application output,
+including field/list ordering and exception type/message, acquisition order and
+input immutability. Normal cases must succeed, not merely share an exception.
+
+Coverage includes normal/empty/invalid queries, duplicate titles and explicit
+IDs, aliases, multi-page constants, page bounds, progress summaries and ordinary/
+target/rating explanations. An independent installed-wheel process replays eight
+successful results with Sakura/SQL/network imports blocked and all query-time IO
+forbidden. No production userdata, database or full Bot event is accessed.
