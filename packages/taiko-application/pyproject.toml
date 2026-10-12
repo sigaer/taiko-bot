@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taiko-application"
+version = "0.1.0"
+description = "Taiko Application — Dani display extraction (Phase 2A)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "GPL-2.0-only"}
+dependencies = ["sakura-taiko-core==0.1.1", "sakura-taiko-contract==0.1.0", "Pillow>=10.4.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
