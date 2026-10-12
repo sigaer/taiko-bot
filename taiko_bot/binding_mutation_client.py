@@ -44,8 +44,8 @@ def _request(action, body, *, settings, request_id):
     return post_center_binding_operation(action, body, settings=settings, attempts=2)
 
 
-def post_center_binding_operation(action, body, *, settings, attempts=1):
-    if action not in {'remove', 'visibility', 'score-token'} or attempts not in (1, 2):
+def post_center_binding_operation(action, body, *, settings, attempts=1, error_for_status=_failure):
+    if action not in {'remove', 'visibility', 'score-token', 'qq-code', 'qq-migrate'} or attempts not in (1, 2):
         raise _failure(400)
     headers = _build_headers(settings, require_developer_token=True)
     url = settings.viewer_base_url.rstrip('/')+'/api/taiko/proxy/bind/'+action
@@ -54,35 +54,35 @@ def post_center_binding_operation(action, body, *, settings, attempts=1):
         try:
             remaining = end-time.monotonic()
             if remaining <= 0:
-                raise _failure(504)
+                raise error_for_status(504)
             timeout = httpx.Timeout(min(10, remaining), connect=min(5, remaining))
             with httpx.Client(timeout=timeout, trust_env=False, follow_redirects=False) as client:
                 with client.stream('POST', url, headers=headers, json=body) as response:
                     if 300 <= response.status_code < 400:
-                        raise _failure(502)
+                        raise error_for_status(502)
                     if response.status_code >= 400:
-                        raise _failure(response.status_code)
+                        raise error_for_status(response.status_code)
                     data = bytearray()
                     for chunk in response.iter_bytes(chunk_size=16384):
                         if time.monotonic() >= end:
-                            raise _failure(504)
+                            raise error_for_status(504)
                         if len(data)+len(chunk) > BODY_LIMIT:
-                            raise _failure(502)
+                            raise error_for_status(502)
                         data.extend(chunk)
                     payload = json.loads(data)
                     if not isinstance(payload, dict) or payload.get('ok') is not True:
-                        raise _failure(502)
+                        raise error_for_status(502)
                     return payload
         except ViewerClientError as error:
             if error.status_code != 503 or attempt == attempts-1:
                 raise
         except Exception:
             if attempt == attempts-1:
-                raise _failure(502) from None
-    raise _failure(502)
+                raise error_for_status(502) from None
+    raise error_for_status(502)
 
 
-def _result(payload, action, principal, target=None):
+def binding_from_payload(payload, principal):
     records=payload.get('bindings')
     if (payload.get('identityKey')!=principal or type(payload.get('found')) is not bool
             or not isinstance(records,list) or len(records)>128 or payload['found']!=bool(records)):
@@ -101,6 +101,14 @@ def _result(payload, action, principal, target=None):
     if records and (len(selected)!=1 or payload.get('currentTaikoId')!=selected[0]['taikoId']
             or payload.get('taikoId')!=selected[0]['taikoId'] or payload.get('currentSource')!=selected[0]['source']):
         raise _failure(502)
+    try:
+        return _normalize_center_bind_payload(payload)
+    except Exception:
+        raise _failure(502) from None
+
+
+def _result(payload, action, principal, target=None):
+    binding=binding_from_payload(payload,principal)
     effect = payload.get('operation')
     if not isinstance(effect, dict) or effect.get('kind') != action:
         raise _failure(502)
@@ -111,10 +119,6 @@ def _result(payload, action, principal, target=None):
             raise _failure(502)
     elif set(effect) != {'kind','matched'} or type(effect['matched']) is not int or not 0 <= effect['matched'] <= 128:
         raise _failure(502)
-    try:
-        binding=_normalize_center_bind_payload(payload)
-    except Exception:
-        raise _failure(502) from None
     return {'binding': binding, **effect}
 
 

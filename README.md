@@ -79,6 +79,7 @@ TAIKO_BOT_SERVICE_TOKEN=
   - 普通 token 可读取其 Viewer 账号自有绑定；跨账号服务需要私有运维按 token 登记 `source_read`、`history_read`、`wahlap_update`、`hiroba_sync` 和明确 Source 范围。
   - 在 Viewer Phase 6 最终激活前完成服务授权登记；登记流程见 Viewer 的 `docs/taiko-domain-extraction/source-service-operations.md`。
   - QQ 中心服务另需 `bind_read`、`bind_write`、`bind_current`；删除和可见性分别需 `bind_remove`、`bind_visibility`，旧写权限不会自动取得删除权限。须显式登记 `principals`，Source 范围必须包含该身份的全部绑定。身份格式为裸数字 QQ、`onebot_v11:QQ` 或 `qq_official:openid`，不同格式分别授权。
+  - QQ 历史迁移另需 `bind_migrate`。用原 QQ 私聊旧 bot 发送 `迁移验证码`，再私聊目标 bot 发送 `绑定QQ QQ号 验证码`。迁移接口只接受 canonical `onebot_v11:QQ` / `qq_official:openid`；服务授权须覆盖原绑定和目标已有全部 Source。验证码十分钟有效，申请不自动重试；消费重试固定同一码/目标，不恢复后来删除的绑定。客户端不再读本地 SQLite/JSON 作为 QQ 迁移依据。
   - 普通 token 的 QQ 绑定访问要求 Viewer 账号已验证该 QQ；添加账号还要求自有同来源绑定。切换和添加 SDK 可传 `request_id`，同一凭据/授权/意图重试返回当前绑定，不重复修改或覆盖后来选择。
   - Hiroba 凭据状态另需 `hiroba_credential_status`；绑定需 `hiroba_bind`、明确 Source/`principals` 范围。普通 token 绑定要求已有自有 Hiroba 绑定；跨账号服务覆盖发现的全部卡片及 QQ 的已有全部成员。密码仅经 HTTPS 请求体及中心私有 stdin，不进入 worker argv。
   - Hiroba 凭据绑定 SDK 支持可选 `request_id`，等待上限 300 秒；同一授权及意图的已提交重试跳过登录、重复写入和重置后来选择。公共曲库、公开 Wahlap 玩家资料和排行榜保持原调用用途；缓存授权与其余 Phase 6 激活条件仍须完成。

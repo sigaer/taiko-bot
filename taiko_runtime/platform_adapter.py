@@ -329,7 +329,7 @@ def _build_qq_quick_action_keyboard():
                 InlineKeyboardRow(
                     buttons=[
                         _build_button("bind", "绑定", "绑定"),
-                        _build_button("bind_qq", "绑定QQ", "绑定QQ"),
+                        _build_button("bind_qq", "旧绑定迁移", "绑定QQ"),
                     ]
                 ),
                 InlineKeyboardRow(

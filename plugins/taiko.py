@@ -2022,8 +2022,7 @@ def _taiko_bind_usage_message(event: Optional[MessageEvent] = None) -> str:
     if event is not None and is_qq_official_event(event):
         return (
             f"{base}\n"
-            "如果您以前在其他 bot 上绑定过数据，直接点击【绑定QQ】按钮并输入 QQ 号完成快捷绑定。"
-            "如发现冒绑将被拉入黑名单。"
+            "旧绑定迁移：请用原 QQ 私聊旧 bot 发送“迁移验证码”，再私聊这里发送“绑定QQ QQ号 验证码”。"
         )
     return base
 
@@ -2535,250 +2534,25 @@ def _finalize_bind_without_verification(
     )
 
 
-def _build_legacy_qq_identity_key(qq_number: str) -> str:
-    return _normalize_identity_key(
-        build_identity_key(ONEBOT_V11_PLATFORM, str(qq_number or "").strip())
-    )
-
-
-def _merge_bind_id_lists(primary_ids: List[str], secondary_ids: List[str]) -> List[str]:
-    merged: List[str] = []
-    for raw_id in list(primary_ids) + list(secondary_ids):
-        taiko_id = str(raw_id or "").strip()
-        if not taiko_id or taiko_id in merged:
-            continue
-        merged.append(taiko_id)
-    return merged
-
-
-def _migrate_bind_from_legacy_qq(
-    legacy_qq: str, target_identity_key: str
-) -> Tuple[bool, str]:
-    source_identity_key = _build_legacy_qq_identity_key(legacy_qq)
-    target_identity_key = _normalize_identity_key(target_identity_key)
-    if not source_identity_key or not target_identity_key:
-        return False, "缺少有效身份信息，无法迁移绑定。"
-
-    db = _get_taiko_db_connection()
-    cursor = db.cursor()
-    try:
-        source_row = None
-        for source_lookup_key in [source_identity_key, str(legacy_qq or "").strip()]:
-            if not source_lookup_key:
-                continue
-            cursor.execute(
-                "select id, coalesce(visible, 0) from bind where qq=%s",
-                (source_lookup_key,),
-            )
-            source_row = cursor.fetchone()
-            if source_row is not None:
-                break
-        if source_row is None:
-            return (
-                False,
-                f"未找到 QQ {legacy_qq} 的历史绑定记录。\n"
-                "请直接发送“绑定 你的鼓众广场ID”进行挑战验证。",
-            )
-
-        source_db_id = str(source_row[0] or "").strip()
-        source_visible = int(source_row[1] or 0)
-        store = _load_multi_bind_store()
-        source_entry = _ensure_multi_bind_entry(
-            store, source_identity_key, source_db_id
-        )
-        source_ids = list((source_entry or {}).get("ids") or [])
-        if not source_ids and source_db_id:
-            source_ids = [source_db_id]
-        if not source_ids:
-            return (
-                False,
-                f"QQ {legacy_qq} 的历史绑定记录不完整。\n"
-                "请直接发送“绑定 你的鼓众广场ID”进行挑战验证。",
-            )
-
-        source_current_index = int((source_entry or {}).get("current_index", 0) or 0)
-        source_current_index = max(0, min(source_current_index, len(source_ids) - 1))
-        source_current_id = source_ids[source_current_index]
-
-        target_info = _get_taiko_bind_info_from_center(target_identity_key)
-        target_entry = _center_bind_info_to_entry(target_info)
-        target_ids = list((target_entry or {}).get("ids") or [])
-        target_visible = int((target_info or {}).get("visible") or source_visible)
-
-        merged_ids = _merge_bind_id_lists(source_ids, target_ids)
-        source_sources = (
-            dict((source_entry or {}).get("sources") or {})
-            if isinstance(source_entry, dict)
-            else {}
-        )
-        target_sources = (
-            dict((target_entry or {}).get("sources") or {})
-            if isinstance(target_entry, dict)
-            else {}
-        )
-        merged_sources: Dict[str, str] = {}
-        for taiko_id in merged_ids:
-            explicit_source = str(
-                source_sources.get(taiko_id) or target_sources.get(taiko_id) or ""
-            ).strip()
-            if explicit_source:
-                merged_sources[taiko_id] = explicit_source
-
-        is_first_binding = not bool(target_ids)
-        for taiko_id in merged_ids:
-            proxy_center_bind_upsert(
-                target_identity_key,
-                taiko_id,
-                visible=target_visible,
-                source=str(merged_sources.get(taiko_id) or "wahlap"),
-                settings=_SETTINGS,
-            )
-        proxy_center_bind_upsert(
-            target_identity_key,
-            source_current_id,
-            visible=target_visible,
-            source=str(merged_sources.get(source_current_id) or "wahlap"),
-            settings=_SETTINGS,
-        )
-    except Exception:
-        raise
-    finally:
+def _migrate_bind_from_legacy_qq(legacy_qq: str, target_identity_key: str, *, code: str = "") -> Tuple[bool, str]:
+    from taiko_bot.qq_migration_client import migrate_center_qq_bindings
+    principal = _normalize_identity_key(target_identity_key)
+    result = migrate_center_qq_bindings(legacy_qq,principal,code=code,settings=_SETTINGS)
+    entry = _center_bind_info_to_entry(result['binding'])
+    BIND_VERIFY_SESSIONS.pop(principal,None)
+    if entry is None:
+        return True,"迁移已完成，目前没有绑定账号。"
+    try:summary = _format_multi_bind_summary(entry)
+    except Exception:summary = "请查询当前绑定。"
+    action = "完成迁移" if result['firstBinding'] else "完成合并"
+    tip = ""
+    if result['firstBinding'] and not result['replayed']:
         try:
-            cursor.close()
+            source = entry['sources'][result['sourceCurrentId']]
+            tip = _build_bind_auto_update_tip(principal,result['sourceCurrentId'],True,source=source)
         except Exception:
-            pass
-        db.close()
-
-    BIND_VERIFY_SESSIONS.pop(target_identity_key, None)
-    action_text = "完成迁移" if is_first_binding else "完成合并"
-    migrated_entry = _get_current_bind_entry(target_identity_key)
-    summary = _format_multi_bind_summary(migrated_entry)
-    current_source = str(merged_sources.get(source_current_id) or "wahlap")
-    auto_update_tip = _build_bind_auto_update_tip(
-        target_identity_key,
-        source_current_id,
-        is_first_binding,
-        source=current_source,
-    )
-    return (
-        True,
-        f"已根据 QQ {legacy_qq} 的历史绑定{action_text}。\n当前绑定：{summary}"
-        f"{auto_update_tip}",
-    )
-
-
-def _normalize_multi_bind_ids(ids: Any) -> List[str]:
-    out: List[str] = []
-    seen = set()
-    if not isinstance(ids, list):
-        return out
-    for raw in ids:
-        value = str(raw or "").strip()
-        if not value or value in seen:
-            continue
-        seen.add(value)
-        out.append(value)
-    return out
-
-
-def _load_multi_bind_store() -> Dict[str, Dict[str, Any]]:
-    path = TAIKO_MULTI_BIND_PATH
-    if not path.exists():
-        return {}
-    try:
-        with path.open("r", encoding="utf-8") as f:
-            raw = json.load(f)
-    except Exception:
-        return {}
-    if not isinstance(raw, dict):
-        return {}
-
-    cleaned: Dict[str, Dict[str, Any]] = {}
-    for raw_qq, payload in raw.items():
-        if not isinstance(payload, dict):
-            continue
-        qq = _normalize_identity_key(str(raw_qq).strip())
-        ids = _normalize_multi_bind_ids(payload.get("ids"))
-        if not qq or not ids:
-            continue
-        try:
-            current_index = int(payload.get("current_index", 0) or 0)
-        except Exception:
-            current_index = 0
-        current_index = max(0, min(current_index, len(ids) - 1))
-        try:
-            current_slot = int(payload.get("current_slot", current_index + 1) or 0)
-        except Exception:
-            current_slot = current_index + 1
-        if len(ids) < 2:
-            current_slot = 1
-        else:
-            current_slot = max(0, min(current_slot, len(ids)))
-        sources = payload.get("sources") if isinstance(payload, dict) else {}
-        if not isinstance(sources, dict):
-            sources = {}
-        cleaned_sources = {
-            str(taiko_id): str(source)
-            for taiko_id, source in sources.items()
-            if str(taiko_id) in ids and str(source).strip()
-        }
-        cleaned[qq] = {
-            "ids": ids,
-            "current_index": current_index,
-            "current_slot": current_slot,
-            "sources": cleaned_sources,
-        }
-    return cleaned
-
-
-
-
-def _ensure_multi_bind_entry(
-    store: Dict[str, Dict[str, Any]], qq: str, fallback_id: str = ""
-) -> Optional[Dict[str, Any]]:
-    qq = _normalize_identity_key(str(qq).strip())
-    fallback = str(fallback_id or "").strip()
-    payload = store.get(qq)
-    ids = _normalize_multi_bind_ids(
-        payload.get("ids") if isinstance(payload, dict) else None
-    )
-    if not ids and fallback:
-        ids = [fallback]
-    if not ids:
-        return None
-
-    try:
-        current_index = int((payload or {}).get("current_index", 0) or 0)
-    except Exception:
-        current_index = 0
-    try:
-        current_slot = int((payload or {}).get("current_slot", current_index + 1) or 0)
-    except Exception:
-        current_slot = current_index + 1
-    if fallback and fallback in ids:
-        current_index = ids.index(fallback)
-        if current_slot != 0:
-            current_slot = current_index + 1
-    current_index = max(0, min(current_index, len(ids) - 1))
-    if len(ids) < 2:
-        current_slot = 1
-    else:
-        current_slot = max(0, min(current_slot, len(ids)))
-    sources = (payload or {}).get("sources") if isinstance(payload, dict) else {}
-    if not isinstance(sources, dict):
-        sources = {}
-    entry = {
-        "ids": ids,
-        "current_index": current_index,
-        "current_slot": current_slot,
-        "sources": {
-            str(taiko_id): str(source)
-            for taiko_id, source in sources.items()
-            if str(taiko_id) in ids and str(source).strip()
-        },
-    }
-    store[qq] = entry
-    return entry
+            tip = "\n账号已绑定，本次自动更新未完成，请稍后手动更新。"
+    return True,f"已根据 QQ {legacy_qq} 的历史绑定{action}。\n当前绑定：{summary}{tip}"
 
 
 def _infer_bind_source(taiko_id: str, sources: Optional[Dict[str, str]] = None) -> str:
@@ -3911,31 +3685,53 @@ async def qq_official_ping_handle(event: MessageEvent):
     await _finish_text_reply(qq_official_ping, event, "pong")
 
 
-bind_qq = on_regex(r"(?i)^/?绑定\s*qq\s*([1-9]\d{4,11})$", rule=taiko_rule)
+qq_migration_code = on_fullmatch("迁移验证码", rule=taiko_rule)
+
+
+@qq_migration_code.handle()
+async def qq_migration_code_handle(event: MessageEvent):
+    if not _is_private_message_event(event):
+        await _finish_text_reply(qq_migration_code,event,"请私聊旧 bot 申请迁移验证码。")
+        return
+    from taiko_bot.qq_migration_client import issue_center_qq_migration_code
+    principal = _normalize_identity_key(get_identity_key(event=event))
+    try:
+        code = await asyncio.to_thread(issue_center_qq_migration_code,principal,settings=_SETTINGS)
+    except ViewerClientError as error:
+        await _finish_text_reply(qq_migration_code,event,str(error))
+        return
+    except Exception:
+        await _finish_text_reply(qq_migration_code,event,"迁移验证码暂不可用，请稍后重试。")
+        return
+    await _finish_text_reply(qq_migration_code,event,
+        f"请私聊新 bot 发送：绑定QQ {principal.split(':',1)[1]} {code}\n验证码十分钟内有效。")
+
+
+bind_qq = on_regex(r"(?i)^/?绑定\s*qq\s*([1-9]\d{4,14})(?:\s+([a-f0-9]{32}))?$", rule=taiko_rule)
 bind_qq_prompt = on_fullmatch("绑定QQ", rule=taiko_rule)
 
 
 @bind_qq_prompt.handle()
 async def bind_qq_prompt_handle(event: MessageEvent):
-    await _finish_text_reply(
-        bind_qq_prompt,
-        event,
-        "快捷绑定需要手动输入 QQ 号。\n"
-        "请发送“绑定QQ 你的QQ号”继续。\n"
-        "注意：官 bot 无法直接获取你的 QQ 号，所以点按钮后不会自动完成绑定。",
-    )
+    await _finish_text_reply(bind_qq_prompt,event,
+        "请用原 QQ 私聊旧 bot 发送“迁移验证码”，再私聊这里发送“绑定QQ QQ号 验证码”。")
 
 
 @bind_qq.handle()
 async def bind_qq_handle(event: MessageEvent, match=RegexMatched()):
-    identity_key = _normalize_identity_key(get_identity_key(event=event))
-    legacy_qq = str(match.group(1) or "").strip()
+    if not _is_private_message_event(event):
+        await _finish_text_reply(bind_qq,event,"请私聊 bot 完成 QQ 绑定迁移。")
+        return
+    principal = _normalize_identity_key(get_identity_key(event=event))
     try:
-        success, reply_msg = _migrate_bind_from_legacy_qq(legacy_qq, identity_key)
-    except Exception as e:
-        await _finish_text_reply(bind_qq, event, f"迁移绑定失败：{e}")
-
-    await _finish_text_reply(bind_qq, event, reply_msg, quick_actions=success)
+        success,reply = await asyncio.to_thread(_migrate_bind_from_legacy_qq,str(match.group(1)),principal,code=str(match.group(2) or '').lower())
+    except ViewerClientError as error:
+        await _finish_text_reply(bind_qq,event,str(error))
+        return
+    except Exception:
+        await _finish_text_reply(bind_qq,event,"迁移结果暂无法确认，请查询当前绑定后再重试。")
+        return
+    await _finish_text_reply(bind_qq,event,reply,quick_actions=success)
 
 
 bind = on_regex(r"^/?绑定(?:\s+|\+)?([0-9]{0,12})$", rule=taiko_rule)

@@ -180,9 +180,7 @@ def test_bind_qq_prompt_handle_returns_instruction(monkeypatch):
         asyncio.run(taiko.bind_qq_prompt_handle(FakeOneBotGroupEvent(text="绑定QQ")))
 
     assert replies == [
-        "快捷绑定需要手动输入 QQ 号。\n"
-        "请发送“绑定QQ 你的QQ号”继续。\n"
-        "注意：官 bot 无法直接获取你的 QQ 号，所以点按钮后不会自动完成绑定。"
+        "请用原 QQ 私聊旧 bot 发送“迁移验证码”，再私聊这里发送“绑定QQ QQ号 验证码”。"
     ]
 
 

@@ -52,7 +52,22 @@ from taiko_runtime.platform_adapter import parse_identity_key
 cfg=SimpleNamespace(viewer_base_url=request['baseUrl'],viewer_developer_token=request['token'])
 
 try:
-    if request['action']=='score-token':
+    if request['action'] in {'qq-code','qq-migrate'}:
+        from taiko_bot.qq_migration_client import issue_center_qq_migration_code,migrate_center_qq_bindings
+        if request['action']=='qq-code':result={'code':issue_center_qq_migration_code(request['principal'],settings=cfg)}
+        elif request.get('mode')=='command':
+            names={'_normalize_identity_key','_center_bind_info_to_entry','_migrate_bind_from_legacy_qq'}
+            nodes=[ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0)]
+            nodes += [node for node in ast.parse((Path(__file__).resolve().parents[1]/'plugins/taiko.py').read_text()).body if isinstance(node,ast.FunctionDef) and node.name in names]
+            ns={'parse_identity_key':parse_identity_key,'_SETTINGS':cfg,'BIND_VERIFY_SESSIONS':{},
+                '_format_multi_bind_summary':lambda entry:' / '.join(entry['ids']),
+                '_build_bind_auto_update_tip':lambda *a,**kw:''}
+            exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'<actual-client-QQ-adapter>','exec'),ns)
+            result={'reply':ns['_migrate_bind_from_legacy_qq'](request['qq'],request['principal'],code=request.get('code',''))}
+        else:
+            result=migrate_center_qq_bindings(request['qq'],request['principal'],code=request.get('code',''),settings=cfg)
+            binding=result.pop('binding');result['ids']=[] if binding is None else [slot.taiko_id for slot in binding['bindings']]
+    elif request['action']=='score-token':
         from taiko_bot.score_token_client import issue_center_score_token
         result=issue_center_score_token(request['taikoId'],request['principal'],settings=cfg)
     elif request.get('mode')=='command':
