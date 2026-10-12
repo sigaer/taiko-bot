@@ -106,7 +106,7 @@ def main():
         Path(taiko_application.__file__).is_relative_to(a.installed.resolve()),
         "must test installed wheel",
     )
-    require(version("taiko-application") == "0.3.0", "Application version")
+    require(version("taiko-application") == "0.4.0", "Application version")
     require(version("sakura-taiko-core") == "0.1.1", "Core unchanged")
     require(version("sakura-taiko-contract") == "0.1.0", "Contract unchanged")
     provenance = json.loads(Path(__file__).with_name("provenance.json").read_text())

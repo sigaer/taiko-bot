@@ -1,6 +1,6 @@
-# taiko-application 0.3.0 — Phase 2C
+# taiko-application 0.4.0 — Phase 2D
 
-Independent Python distribution for Dani, score presentation and injected queries. Install this subproject,
+Independent Python distribution for Dani, score presentation, queries and command usecases. Install this subproject,
 not the taiko-bot root distribution (which has a different Core pin).
 
 ```sh
@@ -223,3 +223,84 @@ IDs, aliases, multi-page constants, page bounds, progress summaries and ordinary
 target/rating explanations. An independent installed-wheel process replays eight
 successful results with Sakura/SQL/network imports blocked and all query-time IO
 forbidden. No production userdata, database or full Bot event is accessed.
+
+## Phase 2D: command usecases
+
+`taiko_application.commands` provides `execute_b30`, `execute_score`,
+`execute_song`, `execute_constant`, `execute_progress`, and
+`execute_recommendation`. Each accepts a `CommandContext` and its explicit frozen
+`*Ports` dataclass. The caller supplies existing query, calculation, rendering,
+parser and resource providers. This package contains no framework event,
+authorization decision, data loader implementation or message sender.
+
+`CommandContext` carries plain text/regex captures, the host-authorized subject,
+resource settings and a lazy missing-data hint provider. It is not an authorization
+token: the host must establish access before calling an execution usecase and
+retain all existing before-send checks. Contexts/providers are per request and
+must not be shared as mutable account state. Providers can perform existing host
+IO; their storage, lock, transaction and Writer implementation remains outside
+Application, unchanged. No new database or sync interface is introduced.
+
+`CommandResult` distinguishes text, image, silent finish, fumen selection and fuzzy
+fumen selection. Image payloads retain bytes/BytesIO behavior. `delivery` and
+`prefix_text` preserve the legacy choice of reply helper versus direct text
+finish. Fumen results carry the selected difficulty/song; host delivery retains
+file lookup, missing-resource fallback and QQ/OneBot transport behavior.
+A `None` result preserves a command's no-op path rather than sending a message.
+
+B30 and progress use `prepare_b30` / `prepare_progress` before the host's existing
+permission check. They return parsed values, a terminal result, or (progress
+only) `None`. Only successfully prepared requests proceed to authorization and
+execution. This preserves invalid-argument versus permission-error precedence.
+Score and recommendation retain authorization before input interpretation.
+Public song and constant command registration/rules remain unchanged in Sakura.
+
+Sakura's six handler decorators and signatures stay in `plugins/taiko.py`.
+Handlers perform platform extraction and authorization, construct providers, then
+hand the returned result to `_deliver_application_command`. Original commands
+outside these six registrations, data acquisition, renderers, Writer, SQL, sync,
+Core and Contract are not moved. Score here means `tinfo`; score mutation,
+estimation, scoreline commands and unrelated handlers remain outside Phase 2D.
+Song query here means `xx是什么歌`; alias mutation is not part of this extraction.
+
+### Command parity reproduction
+
+Use the existing memory QA wrapper and an independently installed wheel target,
+with Python 3.11, Core 0.1.1, Contract 0.1.0 and Pillow 11.3.0:
+
+```sh
+python tests/commands/run_parity.py \
+  --reference /path/to/frozen-phase2c/taiko.py \
+  --adapter /path/to/candidate/taiko/plugins/taiko.py \
+  --images /path/to/pinned-phase2c-score-fixture-images \
+  --installed /path/to/isolated-wheel-target \
+  --output /var/tmp/command-parity
+python tests/commands/standalone.py \
+  --installed /path/to/isolated-wheel-target \
+  --images /path/to/pinned-phase2c-score-fixture-images \
+  --evidence /var/tmp/command-parity/parity.json \
+  --output /var/tmp/command-standalone.json
+```
+
+The complete old command function bodies execute, selected by their decorators
+from a SHA256-pinned reference. The candidate handler bodies and Application
+usecases execute on the same synthetic event/input providers. AST selection only
+avoids NoneBot startup and unrelated infrastructure; it does not replace command
+branches, error mapping, text composition or JPEG conversion. Permission-failure
+cases exercise the actual retained handler checks and safe binding wrapper with
+an injected authority result, asserting no execution-usecase/data-provider call.
+The group-level rule/framework scheduler is not started.
+
+Rendering/calculation/data and final message transport are explicit fixture
+boundaries. Images are fixed PNG outputs from earlier score-renderer fixtures;
+constant/progress/fumen providers use image payload fixtures, not a fresh claim
+of rendering those types. Command acceptance checks provider identity, arguments,
+call order, exact text, prefixes, empty/silent behavior, PNG/JPEG bytes hash,
+pixel hash, dimensions and mode. Thus it tests business dispatch and output
+preservation, not full Bot/network delivery or private-data access. Existing
+renderer parity remains separate evidence.
+
+An independent process directly invokes all six usecases from the installed
+wheel without reading Sakura source. It blocks host/SQL/network imports and all
+query-time IO after Pillow plugin initialization. Phase 2D is a candidate feature
+branch only; no production install or restart is part of this delivery.

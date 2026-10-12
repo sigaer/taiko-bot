@@ -43,7 +43,7 @@ import taiko_application
 assert Path(taiko_application.__file__).is_relative_to(args.installed.resolve())
 assert version("sakura-taiko-core") == "0.1.1"
 assert version("sakura-taiko-contract") == "0.1.0"
-assert version("taiko-application") == "0.3.0"
+assert version("taiko-application") == "0.4.0"
 classes = {
     "b30_single": B30SingleRenderer,
     "b30_render": B30Renderer,
