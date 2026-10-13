@@ -325,3 +325,14 @@ center plugin dispatch and full fresh cross-host renderer integration are not
 proven. See [dual-host validation](tests/dual_host/README.md) for exact boundaries,
 installation order, retained implementations and reproduction. No main merge or
 production rollout is authorized by these candidate artifacts.
+
+## Phase 2E-R: dual-host recovery
+
+The center acceptance uses its existing source layout, with installed Application,
+Core 0.1.1 and Contract 0.1.0, plus explicitly archived runtime_memory support.
+It does not require a center wheel. The client candidate 0.2.9 installs with
+Core 0.1.2 and the same Application 0.5.0. See [recovery tests and exact host
+locks](tests/recovery/README.md) for actual NoneBot event dispatch, real B30/tinfo
+renderer chains, source provenance and send-time authorization revocation tests.
+The client now revalidates authority before sending private command results and
+locates B30/tinfo resources through its existing root setting. Production is unchanged.

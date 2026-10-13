@@ -17,7 +17,9 @@ from .dojo_score import (
 )
 from .song_visibility import is_song_id_publicly_visible, is_song_publicly_visible
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+from taiko_bot.settings import get_settings
+
+ROOT_DIR = get_settings().root_dir
 ASSETS_DIR = ROOT_DIR / "assets" / "dress"
 OUTPUT_DIR = ROOT_DIR / "output"
 TEMPLATES_DIR = ROOT_DIR / "assets" / "templates"

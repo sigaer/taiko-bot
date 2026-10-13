@@ -132,7 +132,7 @@ TYPE_MAP = {
 }
 
 _RATING_INDEX_CACHE = {"mtime": None, "index": {}, "const_table": []}
-ROOT_DIR = Path(__file__).resolve().parents[2]
+ROOT_DIR = get_settings().root_dir
 
 
 # ---------- 基础工具 ----------

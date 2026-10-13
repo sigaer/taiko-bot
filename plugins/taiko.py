@@ -5259,7 +5259,7 @@ async def taikob_handle(event: MessageEvent):
     result = execute_b30(
         CommandContext(profile="client", user_id=taiko_id), ports, prepared
     )
-    await _deliver_application_command(taikob, event, result)
+    await _deliver_private_application_command(taikob, event, result, bind_target)
 
 
 music_info = on_regex(r"^/?tinfo\s?(.+)$", rule=taiko_rule)
@@ -5300,7 +5300,7 @@ async def music_info_handle(event: MessageEvent):
         ),
         ports,
     )
-    await _deliver_application_command(music_info, event, result)
+    await _deliver_private_application_command(music_info, event, result, bind_target)
 
 
 # 查配置
@@ -5728,7 +5728,7 @@ async def _(event: MessageEvent):
         ports,
         prepared,
     )
-    await _deliver_application_command(matcher, event, result)
+    await _deliver_private_application_command(matcher, event, result, bind_target)
 
 
 # ========== NoneBot 命令 ==========
@@ -6024,7 +6024,7 @@ async def taikorec_handle(event: MessageEvent):
         ),
         ports,
     )
-    await _deliver_application_command(taikorec, event, result)
+    await _deliver_private_application_command(taikorec, event, result, bind_target)
 
 
 # ================
@@ -7104,6 +7104,17 @@ async def _(matcher: Matcher, event: MessageEvent):
         if seg.type == "json":
             print(seg.data["data"])
             return
+
+
+async def _deliver_private_application_command(matcher, event, result, bind_target):
+    from taiko_runtime.application_delivery import deliver_private_result
+
+    await deliver_private_result(
+        matcher, event, result, bind_target,
+        resolve=_resolve_read_bind_target_safe,
+        finish_text=_finish_text_reply,
+        deliver=_deliver_application_command,
+    )
 
 
 async def _deliver_application_command(matcher, event, result):

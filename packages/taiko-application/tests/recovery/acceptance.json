@@ -1,0 +1,139 @@
+{
+  "status": "PHASE_2E_DUAL_HOST_INTEGRATION_COMPLETE",
+  "center_runtime": "CENTER_SOURCE_RUNTIME_PASS",
+  "center_wheel": "CENTER_WHEEL_NOT_REQUIRED",
+  "application": "0.5.0",
+  "client_host": "0.2.9",
+  "center_core": "0.1.1",
+  "client_core": "0.1.2",
+  "contract": "0.1.0",
+  "center_dispatch": 23,
+  "client_dispatch": 39,
+  "real_chain_parity": [
+    {
+      "host": "center",
+      "command": "b30",
+      "parity": "PASS",
+      "renderer": {
+        "renderer": "render_b30_image",
+        "bytes_sha256": "f6604659c11894cddc6160257301a281ac90c5db2aeca9e9094d4ff4e2c1656f",
+        "pixels_sha256": "449970349ef0c35ebed14dce3e64a1e6bab8d77bddd391dc9e9406a255a7c6ca",
+        "dimensions": [
+          1080,
+          3030
+        ],
+        "mode": "RGBA"
+      },
+      "send_time_extra_requests": []
+    },
+    {
+      "host": "center",
+      "command": "score",
+      "parity": "PASS",
+      "renderer": {
+        "renderer": "generate_score_image",
+        "bytes_sha256": "979c322f30e6ef1cd68530d9bb5d43172f9d28da5974ccb4cd524a5080e5fd11",
+        "pixels_sha256": "5de6bef668eed77f68952453d77d3d178708179ef049959a420bef230b7d998f",
+        "dimensions": [
+          1060,
+          3110
+        ],
+        "mode": "RGBA"
+      },
+      "send_time_extra_requests": []
+    },
+    {
+      "host": "client",
+      "command": "b30",
+      "parity": "PASS",
+      "renderer": {
+        "renderer": "render_b30_image",
+        "bytes_sha256": "581b9b5a7b7e715285946e22c269666dfceb79998662b9b54d5c9940e9bb5018",
+        "pixels_sha256": "4cd423222f89dde6232583b06b0707ad55e6d4f652c50bc6f0bc4bbfd84644eb",
+        "dimensions": [
+          1080,
+          3030
+        ],
+        "mode": "RGBA"
+      },
+      "send_time_extra_requests": [
+        "/api/taiko/proxy/bind",
+        "/api/developer/userdata/42"
+      ]
+    },
+    {
+      "host": "client",
+      "command": "score",
+      "parity": "PASS",
+      "renderer": {
+        "renderer": "generate_score_image",
+        "bytes_sha256": "92d6806d2309d06d3aac307e6de27d92340cc5fc5ce85d4698db4fb714b0ed86",
+        "pixels_sha256": "06b3570975e0457b65527413eb0da36bde0b63da1b3d36101ed500f6f2e34569",
+        "dimensions": [
+          2884,
+          1220
+        ],
+        "mode": "RGBA"
+      },
+      "send_time_extra_requests": [
+        "/api/taiko/proxy/bind",
+        "/api/developer/userdata/42"
+      ]
+    }
+  ],
+  "temporal_cases": 10,
+  "renderer_function_scope": [
+    {
+      "path": "plugins/utils/b30_render.py",
+      "function_class_AST": "UNCHANGED",
+      "change": "resource root uses existing settings"
+    },
+    {
+      "path": "plugins/utils/b30_single.py",
+      "function_class_AST": "UNCHANGED",
+      "change": "resource root uses existing settings"
+    },
+    {
+      "path": "plugins/utils/drawinfo.py",
+      "function_class_AST": "UNCHANGED",
+      "change": "resource root uses existing settings"
+    },
+    {
+      "path": "plugins/utils/draw_dress.py",
+      "function_class_AST": "UNCHANGED",
+      "change": "resource root uses existing settings"
+    }
+  ],
+  "command_changes": [
+    {
+      "name": "taikob_handle",
+      "old_line": 5194,
+      "new_line": 5194
+    },
+    {
+      "name": "music_info_handle",
+      "old_line": 5269,
+      "new_line": 5269
+    },
+    {
+      "name": "_",
+      "old_line": 5680,
+      "new_line": 5680
+    },
+    {
+      "name": "taikorec_handle",
+      "old_line": 5962,
+      "new_line": 5962
+    }
+  ],
+  "other_host_functions_unchanged": 253,
+  "application_source_unchanged": true,
+  "sakura_worktree_clean": true,
+  "wheel_sha256": "4bd6e94142918c8ee3ee2a5064d7fa631caeb231b8b00578e65ff8558a329c11",
+  "qa": {
+    "exit_code": 0,
+    "elapsed_seconds": 63.34276121109724,
+    "max_child_rss_kib": 307908
+  },
+  "unresolved_blockers": []
+}

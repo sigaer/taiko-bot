@@ -30,7 +30,9 @@ from .score_calculator import (
 )
 from .song_visibility import is_song_id_publicly_visible
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+from taiko_bot.settings import get_settings
+
+ROOT_DIR = get_settings().root_dir
 ASSETS_DIR = ROOT_DIR / "assets"
 TEMPLATE_DEFAULT = ASSETS_DIR / "templates" / "b30_single.png"
 SONG_DB_DEFAULT = ROOT_DIR / "songs" / "song_data.json"
