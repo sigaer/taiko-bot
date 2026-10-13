@@ -1,0 +1,80 @@
+{
+  "method": "Static source audit only; refresh not executed",
+  "result": "BLOCKED",
+  "hosts": {
+    "center": [
+      {
+        "path": "plugins/utils/__init__.py",
+        "function": "_load_score_json",
+        "line": 1984,
+        "source": "def _load_score_json() -> List[Dict[str, Any]]:\n    \"\"\"\n    读取并缓存统一后的极分数据列表。\n    每项至少包含 id / level / initial_points。\n    \"\"\"\n    from .score_line import load_scoreline_data\n\n    return load_scoreline_data(JSON_PATH)",
+        "file_sha256": "034ba9ee4ad55798b09c08bd41883edc7800622debb7149027a483e50f561f00"
+      },
+      {
+        "path": "plugins/utils/__init__.py",
+        "function": "_get_initial_points",
+        "line": 1996,
+        "source": "def _get_initial_points(song_id: int, level: int) -> int:\n    \"\"\"\n    在列表型 JSON 中，遍历查找 id==song_id 且 level==level 的项，返回 initial_points（良的基础分值）。\n    若存在多条匹配，取第一条；若不存在匹配则报错。\n    \"\"\"\n    data_list = _load_score_json()\n\n    for item in data_list:\n        # 允许 id 为字符串/数字，做一次安全解析\n        try:\n            item_id = int(item.get(\"id\"))\n        except Exception:\n            continue\n        item_level = item.get(\"level\")\n\n        if item_id == song_id and item_level == level:\n            if \"initial_points\" not in item:\n                raise KeyError(\n                    f\"id={song_id}, level={level} 的记录缺少 'initial_points'\"\n                )\n            ip = item[\"initial_points\"]\n            return ip\n\n    raise KeyError(f\"未在 {JSON_PATH} 中找到 id={song_id}, level={level} 的分值记录。\")",
+        "file_sha256": "034ba9ee4ad55798b09c08bd41883edc7800622debb7149027a483e50f561f00"
+      },
+      {
+        "path": "plugins/utils/__init__.py",
+        "function": "compute_score",
+        "line": 2022,
+        "source": "def compute_score(song_id: int, good: int, ok: int, drumroll: int=0, level: int=4) -> int:\n    return compute_score_from_points(_get_initial_points(song_id, level=level), good, ok, drumroll)",
+        "file_sha256": "034ba9ee4ad55798b09c08bd41883edc7800622debb7149027a483e50f561f00"
+      },
+      {
+        "path": "plugins/utils/score_line.py",
+        "function": "_ensure_scoreline_dataset_current",
+        "line": 62,
+        "source": "def _ensure_scoreline_dataset_current() -> int:\n    source_mtime_ns = _scoreline_source_mtime_ns()\n    if not UNIFIED_PATH.exists() or UNIFIED_PATH.stat().st_mtime_ns < source_mtime_ns:\n        rebuild_scoreline_dataset(UNIFIED_PATH)\n    return UNIFIED_PATH.stat().st_mtime_ns",
+        "file_sha256": "4bd660d467089b8007b2e4a13f9c6e43372a5dcb4596f5c4b508f868cb5ccb60"
+      },
+      {
+        "path": "plugins/utils/score_line.py",
+        "function": "rebuild_scoreline_dataset",
+        "line": 69,
+        "source": "def rebuild_scoreline_dataset(output_path: Path | None=None) -> Tuple[int, int]:\n    output_path = output_path or UNIFIED_PATH\n    score_rows = json.loads(SCORE_PATH.read_text(encoding='utf-8'))\n    song_rows = json.loads(SONG_DATA_PATH.read_text(encoding='utf-8'))\n    stream_rows = json.loads(ALL_LEVELS_STREAM_PATH.read_text(encoding='utf-8'))\n    if not isinstance(stream_rows, list):\n        raise ValueError(f'全难度流式分数线数据不是列表: {ALL_LEVELS_STREAM_PATH}')\n    merged, matched_count = domain_scoreline_dataset.build_scoreline_dataset(score_rows, song_rows, stream_rows)\n    output_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + '\\n', encoding='utf-8')\n    _load_scoreline_data.cache_clear()\n    _build_chart_index.cache_clear()\n    return (len(merged), matched_count)",
+        "file_sha256": "4bd660d467089b8007b2e4a13f9c6e43372a5dcb4596f5c4b508f868cb5ccb60"
+      },
+      {
+        "path": "plugins/utils/score_line.py",
+        "function": "load_scoreline_data",
+        "line": 90,
+        "source": "def load_scoreline_data(scoreline_path: str | Path | None = None) -> List[Dict[str, Any]]:\n    requested_path = Path(scoreline_path) if scoreline_path is not None else UNIFIED_PATH\n    if requested_path == UNIFIED_PATH:\n        return _load_scoreline_data(_ensure_scoreline_dataset_current())\n    return json.loads(requested_path.read_text(encoding=\"utf-8\"))",
+        "file_sha256": "4bd660d467089b8007b2e4a13f9c6e43372a5dcb4596f5c4b508f868cb5ccb60"
+      }
+    ],
+    "client": [
+      {
+        "path": "plugins/utils/__init__.py",
+        "function": "_load_score_json",
+        "line": 1678,
+        "source": "def _load_score_json() -> Dict[str, Any]:\n    \"\"\"\n    读取并缓存统一后的 taiko_goku_onis.json。\n    期望结构：列表，每项至少包含 id / level / initial_points。\n    \"\"\"\n    from .score_line import ROLL_PATH, SCORE_PATH, SONG_DATA_PATH, rebuild_scoreline_dataset\n\n    source_mtime = max(\n        SCORE_PATH.stat().st_mtime,\n        ROLL_PATH.stat().st_mtime,\n        SONG_DATA_PATH.stat().st_mtime,\n    )\n    if not JSON_PATH.exists() or JSON_PATH.stat().st_mtime < source_mtime:\n        rebuild_scoreline_dataset(JSON_PATH)\n    if not JSON_PATH.exists():\n        raise FileNotFoundError(f\"未找到分值配置文件: {JSON_PATH}\")\n    with JSON_PATH.open(\"r\", encoding=\"utf-8\") as f:\n        data = json.load(f)\n    return data",
+        "file_sha256": "dab8910c09b1420ce68421ad775cbc21d59ca47c1bac4046c3493eef3d573c63"
+      },
+      {
+        "path": "plugins/utils/__init__.py",
+        "function": "_get_initial_points",
+        "line": 1701,
+        "source": "def _get_initial_points(song_id: int, level: int) -> int:\n    \"\"\"\n    在列表型 JSON 中，遍历查找 id==song_id 且 level==level 的项，返回 initial_points（良的基础分值）。\n    若存在多条匹配，取第一条；若不存在匹配则报错。\n    \"\"\"\n    data_list = _load_score_json()\n\n    for item in data_list:\n        # 允许 id 为字符串/数字，做一次安全解析\n        try:\n            item_id = int(item.get(\"id\"))\n        except Exception:\n            continue\n        item_level = item.get(\"level\")\n\n        if item_id == song_id and item_level == level:\n            if \"initial_points\" not in item:\n                raise KeyError(\n                    f\"id={song_id}, level={level} 的记录缺少 'initial_points'\"\n                )\n            ip = item[\"initial_points\"]\n            return ip\n\n    raise KeyError(f\"未在 {JSON_PATH} 中找到 id={song_id}, level={level} 的分值记录。\")",
+        "file_sha256": "dab8910c09b1420ce68421ad775cbc21d59ca47c1bac4046c3493eef3d573c63"
+      },
+      {
+        "path": "plugins/utils/__init__.py",
+        "function": "compute_score",
+        "line": 1727,
+        "source": "def compute_score(\n    song_id: int, good: int, ok: int, drumroll: int = 0, level: int = 4\n) -> int:\n    \"\"\"\n    计算总分（支持里/表对应 level）：\n      - 良基础分值 = initial_points\n      - 可基础分值 = (initial_points // 2) 再“舍去个位” => ((initial_points // 2) // 10) * 10\n      - 连打分 = drumroll * 100\n    \"\"\"\n    initial_points = _get_initial_points(song_id, level=level)\n    good_base = initial_points\n    # “除以2后舍去个位”（例如 390 -> 190, 391 -> 190）\n    ok_base = (initial_points // 2) // 10 * 10\n    total = good * good_base + ok * ok_base + drumroll * 100\n    return int(total)",
+        "file_sha256": "dab8910c09b1420ce68421ad775cbc21d59ca47c1bac4046c3493eef3d573c63"
+      },
+      {
+        "path": "plugins/utils/score_line.py",
+        "function": "rebuild_scoreline_dataset",
+        "line": 57,
+        "source": "def rebuild_scoreline_dataset(output_path=UNIFIED_PATH):\n    merged, matched = _client_scoreline.build_scoreline_dataset(\n        json.loads(SCORE_PATH.read_text(encoding=\"utf-8\")),\n        json.loads(ROLL_PATH.read_text(encoding=\"utf-8\")),\n        json.loads(SONG_DATA_PATH.read_text(encoding=\"utf-8\")))\n    output_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + \"\\n\", encoding=\"utf-8\")\n    _load_scoreline_data.cache_clear()\n    return len(merged), matched",
+        "file_sha256": "0b059ae76bd8ab39d79a3b3aa0f4d7c8a33b318f1feb37c2c5b1efd6e28bd67f"
+      }
+    ]
+  }
+}
