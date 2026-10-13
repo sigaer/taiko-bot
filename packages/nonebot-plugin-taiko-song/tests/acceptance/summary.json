@@ -1,0 +1,37 @@
+{
+  "status": "PHASE_2F_A_OWNERSHIP_CUTOVER_COMPLETE",
+  "bases": {
+    "client": "5f8465fc385f55cf52966fcd5b4c1a84e9a16d2a",
+    "application": "44aaf6564d2921a72fe8b96bca1fb391bae2da80",
+    "center": "c8ed8c11088152ed2190bc422337a293f02fd9f0"
+  },
+  "hosts": {
+    "center": {
+      "cases": 34,
+      "core": "0.1.1",
+      "contract": "0.1.0",
+      "installed_source_matches": true,
+      "other_registered_commands": 73
+    },
+    "client": {
+      "cases": 34,
+      "core": "0.1.2",
+      "contract": "0.1.0",
+      "installed_source_matches": true,
+      "other_registered_commands": 69
+    }
+  },
+  "wheel_sha256": {
+    "nonebot_plugin_taiko_song-0.1.0-py3-none-any.whl": "ee51ffe92155a43fa0ecd4ef0ec4e90a5acc53bbff0a46ddfe4c16a588dd0fa9",
+    "taiko_bot-0.2.10-py3-none-any.whl": "b890dbe6a3238214ba5a194bb0ef189a3a5d9d9174ecaf1714c47a74f287d319"
+  },
+  "fixture_hashes": {
+    "song_alias.json": "1fe3d5a077adb8be5536adb0c42669122fffa88b27f0524bd0ff4e276b1e350d",
+    "song_data.json": "4ba31415061eb45fb28c27bf738a2155af858c75a01d8310062e2514279d4327"
+  },
+  "fumen_reference": {
+    "source": "Sakura c8ed8c1 taiko/assets/fumens/Oni/1007.png",
+    "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+    "synthetic_mapping_song_id": 1367
+  }
+}

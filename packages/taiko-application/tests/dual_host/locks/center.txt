@@ -1,0 +1,5 @@
+# Python 3.11.4; installed distributions, runtime only. Use retained wheelhouse.
+pillow==11.3.0
+sakura-taiko-contract==0.1.0
+sakura-taiko-core==0.1.1
+taiko-application==0.5.0

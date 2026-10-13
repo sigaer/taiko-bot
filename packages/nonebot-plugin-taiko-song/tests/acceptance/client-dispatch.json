@@ -1,0 +1,874 @@
+{
+  "host": "client",
+  "status": "PASS",
+  "cases": [
+    {
+      "platform": "onebot",
+      "text": "トロいか2000是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000\n"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "id1367是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "fixture-alias是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "トロいか200X是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：トロいか2000\n匹配度：0.88\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "里id1367是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n里谱 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "简单id1367是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n简单 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "onebot",
+      "text": "???是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "not a command",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "onebot",
+      "text": "taiko トロいか2000是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：トロいか2000\n匹配度：0.73\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "太鼓 什么歌 トロいか2000",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "onebot",
+      "text": "   是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：xx是什么歌"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "text": "id999999999是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：poxei♦DOON\n匹配度：0.19"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "enabled": false,
+      "mention": false,
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "onebot",
+      "enabled": true,
+      "mention": true,
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "トロいか2000是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "id1367是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "fixture-alias是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "トロいか200X是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "里id1367是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "简单id1367是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "???是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "not a command",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "taiko トロいか2000是什么歌",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：トロいか2000\n匹配度：0.73"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "qq",
+      "text": "太鼓 什么歌 トロいか2000",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "   是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "text": "id999999999是什么歌",
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "enabled": false,
+      "mention": false,
+      "sent": [],
+      "application_calls": []
+    },
+    {
+      "platform": "qq",
+      "enabled": true,
+      "mention": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：トロいか2000\n匹配度：0.73"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "mode": "empty",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到任何歌曲？"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "qq",
+      "mode": "empty",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "Markdown消息"
+              }
+            },
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "未找到任何歌曲？"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "group_id": null,
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "modal": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "onebot",
+      "mode": "provider_error",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "queryMusic 调用失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "platform": "qq",
+      "mode": "provider_error",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "queryMusic 调用失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    }
+  ],
+  "old_matchers": 0,
+  "new_matchers": 1,
+  "other_registrations_unchanged": 69,
+  "plugin_source": "/var/tmp/taiko-phase2fa-20261013/client-env/lib/python3.11/site-packages/nonebot_plugin_taiko_song/__init__.py",
+  "core": "0.1.2",
+  "contract": "0.1.0"
+}
