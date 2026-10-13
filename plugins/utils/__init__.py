@@ -1696,47 +1696,6 @@ def _load_score_json() -> Dict[str, Any]:
     return data
 
 
-def find_by_volume(
-    data: Dict[str, Dict[str, Dict[str, int]]],
-    target: int | Tuple[int, int],
-    stat_key: str = "total",
-) -> List[Tuple[str, str]]:
-    """
-    按物量查找歌曲与难度。
-
-    参数:
-      - data: 由 load_note_counts 读出的字典
-      - target: 目标物量。可以是整数(精确匹配)或 (lo, hi) 区间(闭区间)
-      - stat_key: 统计项，默认 'total'；也可用 '1'/'2'/'3'/'4' 之一
-
-    返回:
-      - [(title, "Course|Level"), ...]，已按标题、难度名排序
-    """
-    if stat_key not in {"1", "2", "3", "4", "total"}:
-        raise ValueError("stat_key 必须是 '1','2','3','4' 或 'total'")
-    courseMap = {
-        "Edit": "里谱",
-        "Oni": "魔王",
-        "Hard": "困难",
-        "Normal": "一般",
-        "Easy": "简单",
-    }
-    is_range = isinstance(target, tuple)
-    lo, hi = target if is_range else (target, target)
-
-    hits: List[Tuple[str, str]] = []
-    for title, courses in data.items():
-        for course_level, counts in courses.items():
-            course_level = courseMap.get(course_level.split("|")[0])
-            val = int(counts.get(stat_key, None))
-            if val is None:
-                continue
-            if lo <= val <= hi:
-                hits.append((title, course_level))
-
-    # 按曲名、难度字符串排序，便于展示稳定
-    hits.sort(key=lambda x: (x[0], x[1]))
-    return hits
 
 
 def _get_initial_points(song_id: int, level: int) -> int:

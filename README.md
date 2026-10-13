@@ -265,9 +265,9 @@ source .venv/bin/activate
 
 网页成绩 token 仅在私聊中为发送者的中心当前实账号签发，服务需显式 `score_token_issue` scope、principal 及全部绑定 Source 授权。隐藏的自有账号可用，u0/手动/他人绑定拒绝。签发 POST 不自动重试；再次发送命令会生成新 token 并使旧 token 失效。旧本地 bearer helper 已停用。客户端 0.2.6 需与 Viewer 0.82.0 中心协议一起激活。
 
-### 歌曲插件归属切换候选（Phase 2F-A）
+### 公共曲目插件归属切换候选（Phase 2F-B）
 
-本功能分支将 `xx是什么歌` 改为独立发行的 NoneBot 插件；安装客户端前须先准备
-Application 0.5.0 与 `nonebot-plugin-taiko-song` 0.1.0 的 wheel。
+本功能分支由同一外部插件统一注册 `xx是什么歌`、别名、三类位置、难度 ID 与物量查询；安装客户端前须先准备
+Application 0.5.0 与 `nonebot-plugin-taiko-song` 0.2.0 的 wheel。
 [安装顺序、宿主配置和验收边界](packages/nonebot-plugin-taiko-song/README.md)。
 客户端仍固定 Core 0.1.2 / Contract 0.1.0，其他私人命令保持 main 已合并的授权热修补。

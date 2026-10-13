@@ -50,3 +50,7 @@ async def handle(matcher: Matcher, event: Event):
             _is_rejected_fuzzy_query_result=provider.rejected_fuzzy,
             _resolve_what_song_query=provider.resolve))
     await deliver(matcher, event, result)
+
+
+# Registration remains in a dedicated module as this plugin grows.
+from . import public_commands  # noqa: E402,F401
