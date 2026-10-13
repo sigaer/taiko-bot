@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "taiko_parent": "5f8465f",
+  "sakura_parent": "390175e",
+  "miku_and_all_non_taiko_tree_unchanged": true,
+  "runtime_source_matches_frozen_candidates": true,
+  "private_guard_call_ASTs_unchanged": 35,
+  "production_P0_four_code_hashes_unchanged": true,
+  "frozen_candidate_worktrees_unchanged": true,
+  "repository_deploy_workflows": 0,
+  "scope": "Only source branches; no deploy script/service action or main push. External repository webhooks are not inspected.",
+  "hosts": {
+    "center": {
+      "host": "center",
+      "status": "PASS",
+      "external": 9,
+      "host_public": 0,
+      "host_score_cmd": 1,
+      "core": "0.1.1",
+      "contract": "0.1.0",
+      "application": "0.5.0",
+      "plugin": "0.3.0",
+      "frozen_wheel_cases": 26,
+      "full_dependency_resolution": true,
+      "source_subproject_install": true,
+      "installed_python_source_matches": true
+    },
+    "client": {
+      "host": "client",
+      "status": "PASS",
+      "external": 9,
+      "host_public": 0,
+      "host_score_cmd": 1,
+      "core": "0.1.2",
+      "contract": "0.1.0",
+      "application": "0.5.0",
+      "plugin": "0.3.0",
+      "frozen_wheel_cases": 26,
+      "full_dependency_resolution": true,
+      "source_subproject_install": true,
+      "installed_python_source_matches": true
+    }
+  },
+  "frozen_wheels": {
+    "taiko_bot-0.2.12-py3-none-any.whl": "23188d68750d565c26478ba5bace7488bd77facd72074c3ce3257edbae299ce3",
+    "taiko_application-0.5.0-py3-none-any.whl": "5f801acea42bc35d8a313721edf9eba6b5274a1b1510aaa5458b5eb297030095",
+    "nonebot_plugin_taiko_song-0.3.0-py3-none-any.whl": "9e68e7c646f73ba6240ac4d68c364a5d674060488ea016255b3a7dda80dff005"
+  },
+  "frozen_source_commits": {
+    "taiko": "abef35b77d120c5eb87fb8ce0f1c1de1be07e354",
+    "sakura": "7c94305c974bf16de49f40d71e075530bb6ff011"
+  },
+  "note": "Existing F-B/F-C/F-P behavior evidence retained. This run changes only installation documentation after exact cherry-picks. No production deployment authorized. Source builds may have different ZIP/metadata hashes; frozen artifacts retained separately."
+}

@@ -27,7 +27,7 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
 python -m pip install -r requirements-domain.txt
-python -m pip install -e .
+python -m pip install ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -e .
 Copy-Item .env.example .env
 ```
 
@@ -40,7 +40,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install -r requirements-domain.txt
-python -m pip install -e .
+python -m pip install ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -e .
 cp .env.example .env
 ```
 
@@ -49,7 +49,9 @@ cp .env.example .env
 领域依赖固定为 `sakura-taiko-core==0.1.2` / `sakura-taiko-contract==0.1.0`。
 `requirements-domain.txt` 使用固定 Git revision，安装需要 Git、GitHub SSH 读取权限，
 以及这两个私有依赖仓库的授权。没有仓库读取权限时，向维护者获取这两个版本的 wheel，
-先运行 `python -m pip install <contract-wheel> <core-wheel>`，再安装本项目。
+先运行 `python -m pip install <contract-wheel> <core-wheel>`，再按上面的同仓子项目命令安装本项目。
+Application 0.5.0 与歌曲插件 0.3.0 从本仓子项目构建安装，不假设它们已发布到 PyPI。
+中心源码宿主的独立安装顺序及 wheel 交付方式见 [公共插件安装说明](docs/public-plugin-installation.md)。
 不要用其他版本替代；启动会检查依赖版本。
 详细的验证、版本和回退说明见 [Phase 4 记录](docs/taiko-domain-extraction/phase4-client.md)。
 
