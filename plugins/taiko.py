@@ -5222,10 +5222,13 @@ async def taikob_handle(event: MessageEvent):
             extra_args, V2_TAIKOB_DIM_ALIASES
         )
         if N != 20:
+            await _require_private_send_authority(taikob, event, bind_target)
             await taikob.finish("v2 目前仅支持 taikob20 v2")
         if dynamic_origin:
+            await _require_private_send_authority(taikob, event, bind_target)
             await taikob.finish("taikob20 v2 暂不支持 -r 参数")
         if v2_unknown_tokens:
+            await _require_private_send_authority(taikob, event, bind_target)
             await taikob.finish(f"taikob20 v2 仅支持单维度参数：{TAIKOB_V2_DIM_USAGE}")
         try:
             if v2_dim is not None and v2_dim != "综合Rating":
@@ -5238,8 +5241,10 @@ async def taikob_handle(event: MessageEvent):
             else:
                 img_buf = render_b20_v2_image(taiko_id)
         except FileNotFoundError:
+            await _require_private_send_authority(taikob, event, bind_target)
             await taikob.finish("缺少 taikob20 v2 数据文件，请先同步公共曲库后再试")
         img_jpg = _to_jpeg_bytes(img_buf, quality=85)
+        await _require_private_send_authority(taikob, event, bind_target)
         await _finish_image_reply(taikob, event, img_jpg)
         return
 
@@ -5249,17 +5254,21 @@ async def taikob_handle(event: MessageEvent):
             current_userdata = view["userdata"]
         result = compute_all_from_userdata_records(current_userdata.get("songs") or [])
     except FileNotFoundError:
+        await _require_private_send_authority(taikob, event, bind_target)
         await taikob.finish("您还未上传数据哦~请先发送“taikoupdate”进行上传")
     except TypeError as e:
+        await _require_private_send_authority(taikob, event, bind_target)
         await taikob.finish("请更新数据~")
 
     if not result:
+        await _require_private_send_authority(taikob, event, bind_target)
         await taikob.finish("请游玩鬼难度歌曲后再来使用哦~")
 
     # 无附加参数：使用 b30 模板汇总图
     if not args:
         img_buf = render_b30_image(taiko_id, N=N, userdata=current_userdata, history_snapshots=view["snapshots"])
         img_jpg = _to_jpeg_bytes(img_buf, quality=85)
+        await _require_private_send_authority(taikob, event, bind_target)
         await _finish_image_reply(taikob, event, img_jpg)
         return
 
@@ -5274,6 +5283,7 @@ async def taikob_handle(event: MessageEvent):
             userdata=current_userdata,
         )
         img_jpg = _to_jpeg_bytes(img_buf, quality=85)
+        await _require_private_send_authority(taikob, event, bind_target)
         await _finish_image_reply(taikob, event, img_jpg)
         return
 
@@ -5286,6 +5296,7 @@ async def taikob_handle(event: MessageEvent):
         font_path=TAIKOB_FONT_PATH,
     )
     img_jpg = _to_jpeg_bytes(img_buf, quality=85)
+    await _require_private_send_authority(taikob, event, bind_target)
     await _finish_image_reply(taikob, event, img_jpg)
 
 
@@ -5315,6 +5326,7 @@ async def music_info_handle(event: MessageEvent):
     # 用纯文本重新匹配参数（而不是直接用 match.group）
     m = re.match(r"^/?tinfo\s?(.+)$", plain_text)
     if not m:
+        await _require_private_send_authority(music_info, event, bind_target)
         await music_info.finish("格式不正确，应为：tinfo 歌名")
     music_name = m.group(1)
     music_list = queryMusic(music_name)
@@ -5322,6 +5334,7 @@ async def music_info_handle(event: MessageEvent):
     fuzzy_hint = ""
     msg = ""
     if len(music_list) == 0:
+        await _require_private_send_authority(music_info, event, bind_target)
         await _finish_text_reply(music_info, event, "未找到任何歌曲？")
     elif _is_fuzzy_query_result(music_list):
         fuzzy_hint = _build_fuzzy_query_hint(music_list)
@@ -5332,25 +5345,31 @@ async def music_info_handle(event: MessageEvent):
         msg = "你要找的可能是：\n"
         for music in music_list:
             msg += f"id{music[0]} {music[1]}\n"
+        await _require_private_send_authority(music_info, event, bind_target)
         await music_info.finish(msg)
     if music_id == -1:
+        await _require_private_send_authority(music_info, event, bind_target)
         await music_info.finish("查询失败，怎么回事呢？")
     else:
         try:
             res_img = generate_score_image(song_no=music_id, user_id=user_id)
         except FileNotFoundError as e:
             print(e)
+            await _require_private_send_authority(music_info, event, bind_target)
             await _finish_text_reply(
                 music_info, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
             )
         except Exception as e:
+            await _require_private_send_authority(music_info, event, bind_target)
             await music_info.finish(f"{e}")
         img_jpg = _to_jpeg_bytes(res_img, quality=85)
         if fuzzy_hint:
+            await _require_private_send_authority(music_info, event, bind_target)
             await _finish_image_reply(
                 music_info, event, img_jpg, prefix_text=fuzzy_hint
             )
         else:
+            await _require_private_send_authority(music_info, event, bind_target)
             await _finish_image_reply(music_info, event, img_jpg)
 
 
@@ -5808,6 +5827,7 @@ async def _(event: MessageEvent):
             explicit_version=dani_request.get("explicitVersion") == "1",
             userdata=current_userdata,
         )
+        await _require_private_send_authority(matcher, event, bind_target)
         await _finish_image_reply(matcher, event, png)
         return
 
@@ -5820,6 +5840,7 @@ async def _(event: MessageEvent):
 
         if mode == "过关":
             if not pass_available:
+                await _require_private_send_authority(matcher, event, bind_target)
                 await _finish_text_reply(
                     matcher,
                     event,
@@ -5834,6 +5855,7 @@ async def _(event: MessageEvent):
             )
         elif mode in {"综合", "定数"}:
             if not dynamic_available:
+                await _require_private_send_authority(matcher, event, bind_target)
                 await _finish_text_reply(
                     matcher,
                     event,
@@ -5863,6 +5885,7 @@ async def _(event: MessageEvent):
                 )
             else:
                 return
+        await _require_private_send_authority(matcher, event, bind_target)
         await _finish_image_reply(matcher, event, png)
         return
 
@@ -5879,6 +5902,7 @@ async def _(event: MessageEvent):
             page=page,
             userdata=current_userdata,
         )
+        await _require_private_send_authority(matcher, event, bind_target)
         await _finish_image_reply(matcher, event, png)
         return
 
@@ -5896,6 +5920,7 @@ async def _(event: MessageEvent):
         page=page,
         userdata=current_userdata,
     )
+    await _require_private_send_authority(matcher, event, bind_target)
     await _finish_image_reply(matcher, event, png)
 
 
@@ -6150,12 +6175,14 @@ async def taikorec_handle(event: MessageEvent):
         )
         if target_key:
             if target_error == "too_many_args":
+                await _require_private_send_authority(taikorec, event, bind_target)
                 await _finish_text_reply(
                     taikorec,
                     event,
                     "目标推荐固定返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星",
                 )
             if target_error == "invalid_star":
+                await _require_private_send_authority(taikorec, event, bind_target)
                 await _finish_text_reply(
                     taikorec,
                     event,
@@ -6169,6 +6196,7 @@ async def taikorec_handle(event: MessageEvent):
                     star_filter=target_star_filter,
                 )
             except FileNotFoundError:
+                await _require_private_send_authority(taikorec, event, bind_target)
                 await _finish_text_reply(
                     taikorec,
                     event,
@@ -6176,11 +6204,13 @@ async def taikorec_handle(event: MessageEvent):
                 )
             except Exception:
                 logger.exception("target recommendation failed: user_id=%s", taiko_id)
+                await _require_private_send_authority(taikorec, event, bind_target)
                 await _finish_text_reply(
                     taikorec, event, "目标推荐计算失败，请检查曲库/数据匹配是否正常"
                 )
 
             if not result.is_enough:
+                await _require_private_send_authority(taikorec, event, bind_target)
                 await _finish_text_reply(taikorec, event, result.message)
 
             img_buf = render_target_recommendation_image_bytes(
@@ -6191,6 +6221,7 @@ async def taikorec_handle(event: MessageEvent):
                 assets_base=ASSETS_DIR,
                 font_path=FONT_PATH,
             )
+            await _require_private_send_authority(taikorec, event, bind_target)
             await _finish_image_reply(taikorec, event, img_buf)
             return
 
@@ -6215,6 +6246,7 @@ async def taikorec_handle(event: MessageEvent):
 
     dim_key = DIM_MAP.get(dim_in, None)
     if not dim_key:
+        await _require_private_send_authority(taikorec, event, bind_target)
         await _finish_text_reply(
             taikorec,
             event,
@@ -6241,11 +6273,13 @@ async def taikorec_handle(event: MessageEvent):
         )
     except FileNotFoundError as e:
         print(e)
+        await _require_private_send_authority(taikorec, event, bind_target)
         await _finish_text_reply(
             taikorec, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
         )
     except Exception as e:
         print(e)
+        await _require_private_send_authority(taikorec, event, bind_target)
         await _finish_text_reply(
             taikorec, event, "推荐计算失败，请检查曲库/数据匹配是否正常"
         )
@@ -6260,6 +6294,7 @@ async def taikorec_handle(event: MessageEvent):
         font_path=FONT_PATH,
     )
 
+    await _require_private_send_authority(taikorec, event, bind_target)
     await _finish_image_reply(taikorec, event, img_buf)
 
 
@@ -7395,3 +7430,10 @@ async def _(matcher: Matcher, event: MessageEvent):
         if seg.type == "json":
             print(seg.data["data"])
             return
+
+
+async def _require_private_send_authority(matcher, event, bind_target):
+    from taiko_runtime.send_authority import has_current_send_authority
+
+    if not has_current_send_authority(event, bind_target, _resolve_read_bind_target_safe):
+        await _finish_text_reply(matcher, event, "授权已失效，请重新查询。")

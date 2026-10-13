@@ -1,0 +1,58 @@
+{
+  "status": "CLIENT_SEND_AUTH_HOTFIX_READY",
+  "base": "fa0983dcc56ca109555a33d90aac0fecca6bdf0d",
+  "client_version": "0.2.8",
+  "core": "0.1.2",
+  "contract": "0.1.0",
+  "application_dependency": false,
+  "guarded_exits": 35,
+  "normal_and_existing_error_parity": 24,
+  "candidate_dispatch_cases": 54,
+  "revocation_real_renderer_cases": 10,
+  "payload_parity": [
+    {
+      "command": "b30",
+      "output_parity": "PASS",
+      "extra_requests": 2,
+      "mock_recheck_ms": 1.9943080842494965,
+      "png": [
+        {
+          "renderer": "render_b30_image",
+          "bytes_sha256": "581b9b5a7b7e715285946e22c269666dfceb79998662b9b54d5c9940e9bb5018",
+          "pixels_sha256": "4cd423222f89dde6232583b06b0707ad55e6d4f652c50bc6f0bc4bbfd84644eb",
+          "dimensions": [
+            1080,
+            3030
+          ],
+          "mode": "RGBA"
+        }
+      ]
+    },
+    {
+      "command": "score",
+      "output_parity": "PASS",
+      "extra_requests": 2,
+      "mock_recheck_ms": 1.5290677547454834,
+      "png": [
+        {
+          "renderer": "generate_score_image",
+          "bytes_sha256": "92d6806d2309d06d3aac307e6de27d92340cc5fc5ce85d4698db4fb714b0ed86",
+          "pixels_sha256": "06b3570975e0457b65527413eb0da36bde0b63da1b3d36101ed500f6f2e34569",
+          "dimensions": [
+            2884,
+            1220
+          ],
+          "mode": "RGBA"
+        }
+      ]
+    }
+  ],
+  "wheel_sha256": "f978b03d0c032cac6acea3d48c708aa94356bee471a6a62c7e8805bbf586395f",
+  "unchanged": [
+    "all command AST except send guards",
+    "all dependencies",
+    "renderers",
+    "taiko_bot providers/cache/storage",
+    "Writer/SQL/sync/Core formulas"
+  ]
+}
