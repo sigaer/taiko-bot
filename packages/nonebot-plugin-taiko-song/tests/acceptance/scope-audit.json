@@ -1,0 +1,27 @@
+{
+  "center": {
+    "unchanged_functions_and_classes": 312,
+    "removed": [
+      "_should_handle_what_song",
+      "('what_song.handle()',)",
+      "_extract_what_song_query"
+    ],
+    "reference_sha256": "1415ab39c4175558507fce0ae272cb377fc5633d01c86d65f90eef7ea7a25e31"
+  },
+  "client": {
+    "unchanged_functions_and_classes": 253,
+    "removed": [
+      "_should_handle_what_song",
+      "('what_song.handle()',)",
+      "_extract_official_what_song_query"
+    ],
+    "send_authority_helper_unchanged": true,
+    "send_auth_calls": 35,
+    "reference_sha256": "54625a80f63d9c1f093061d6428731eb8f7e1c56d7bc2bdc9af1f2c3374aec37"
+  },
+  "application": {
+    "version": "0.5.0",
+    "unchanged_files": 62,
+    "reference": "44aaf656"
+  }
+}

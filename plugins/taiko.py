@@ -277,11 +277,6 @@ DIFF_MAP = {
     "简单": "Kantan",
 }
 ALIAS_QUERY_REGEX = re.compile(r"^(?P<q>.+?)有什么别名[？?]?$")
-WHAT_SONG_REGEX = re.compile(r"^(?P<q>.+?)是什么歌[？?]?$")
-WHAT_SONG_OFFICIAL_PATTERNS = (
-    re.compile(r"^(?:taiko|太鼓)\s+(?P<q>.+?)是什么歌[？?]?$", re.IGNORECASE),
-    re.compile(r"^(?:taiko|太鼓)\s*(?:什么歌|是啥歌)\s+(?P<q>.+)$", re.IGNORECASE),
-)
 SONG_WHERE_REGEX = re.compile(r"^(?P<q>.+?)歌在哪[？?]?$")
 SONG_POSITION_REGEX = re.compile(r"^(?P<q>.+?)在什么位置[？?]?$")
 SONG_POS_BY_ID_REGEX = re.compile(r"^位置\s*(?:id)?\s*(?P<id>\d+)\s*[？?]?$")
@@ -715,22 +710,8 @@ def _is_qq_official_event(event: MessageEvent) -> bool:
     return is_qq_official_event(event)
 
 
-def _extract_official_what_song_query(text: str) -> Optional[str]:
-    normalized = str(text or "").strip()
-    for pattern in WHAT_SONG_OFFICIAL_PATTERNS:
-        match = pattern.match(normalized)
-        if not match:
-            continue
-        query = str(match.group("q") or "").strip()
-        if query:
-            return query
-    return None
 
 
-def _should_handle_what_song(event: MessageEvent) -> bool:
-    if not is_qq_official_event(event):
-        return True
-    return _extract_official_what_song_query(extract_plain_text(event)) is not None
 
 
 def _is_private_message_event(event: MessageEvent) -> bool:
@@ -6722,90 +6703,8 @@ async def city_arcade_query_handle(bot: Bot, event: MessageEvent):
 # =========================
 # 例：千本桜是什么歌
 # 这里用正则捕获 xx
-what_song = on_regex(
-    WHAT_SONG_REGEX.pattern,
-    priority=10,
-    rule=taiko_rule & tsearch_rule & Rule(_should_handle_what_song),
-    block=True,
-)
 
 
-@what_song.handle()
-async def _(matcher: Matcher, event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-
-    msg_text = extract_plain_text(event)
-
-    # =========================
-    # ② 以 "@菌菌" 开头：提示不能复制粘贴
-    # =========================
-    if msg_text.startswith("@菌菌"):
-        # await matcher.finish("您似乎复制粘贴了'@菌菌'3个字符，这是个无法复制的指令哦~")
-        await matcher.finish()
-
-    raw_q = ""
-    m = WHAT_SONG_REGEX.match(msg_text)
-    if m:
-        raw_q = m.group("q").strip()
-    elif is_qq_official_event(event):
-        raw_q = _extract_official_what_song_query(msg_text) or ""
-    if not raw_q:
-        await matcher.finish("格式不正确，应为：xx是什么歌")
-
-    if not raw_q:
-        await matcher.finish("请提供要查询的关键词，例如：千本桜是什么歌")
-
-    diff = "Oni"
-    stripped_q = raw_q
-    # 兼容难度前缀（梅/竹/松/鬼/里/简单/普通/困难/魔王）
-    if raw_q.startswith("简单"):
-        diff = "Kantan"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("普通"):
-        diff = "Futsuu"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("困难"):
-        diff = "Muzukashii"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("魔王"):
-        diff = "Oni"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("梅"):
-        diff = "Kantan"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("竹"):
-        diff = "Futsuu"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("松"):
-        diff = "Muzukashii"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("鬼"):
-        diff = "Oni"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("里"):
-        diff = "InnerOni"
-        stripped_q = raw_q[1:].strip()
-
-    try:
-        res: Any = _resolve_what_song_query(raw_q, stripped_q)
-    except Exception as e:
-        await matcher.finish(f"queryMusic 调用失败：{e}")
-
-    if len(res) == 0:
-        await _finish_text_reply(matcher, event, "未找到任何歌曲？")
-    elif _is_fuzzy_query_result(res):
-        await _finish_fuzzy_query_with_fumen(matcher, event, res, difficulty=diff)
-    elif len(res) > 1:
-        msg = "你要找的可能是：\n"
-        for music in res:
-            msg += f"id{music[0]} {music[1]}\n"
-        await matcher.finish(msg)
-
-    song_id = str(res[0][0]).strip()
-
-    # 返回 Oni 难度谱面
-    await _send_fumen_or_hint(matcher, event, diff, song_id)
 
 
 # =========================

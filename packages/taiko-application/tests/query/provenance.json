@@ -1,0 +1,79 @@
+{
+  "reference": {
+    "progress_star.py": "a3e5a48c323a67185ff7bba2101411b1fcf23e69de8f47c9b06b6ac3cf2b321b",
+    "duplicate_versions.py": "bc0ff6c665be3c22eabaf85d8281bf8663ee15fc9606780daabdc13c4fb86109",
+    "recommendation_intelligence.py": "0aa66d8b74bbb93ec305157a54f725576d07df77a769c437c3492513f8a96100",
+    "taiko.py": "1791ce3472ac841ced908dba058539ecebbcad4b6cd9b2b3e2e435a855871dc3",
+    "progress_catalog.py": "1aa395f4e7a696d6baf5daa90e8b7d2de1a839c6b1e0a3b08bbe614315664890",
+    "const_query.py": "cfec6aa7e26a83cdd509568aa9d89e4e3d2dacbb1b84492f5aa21b4136d2ff2a"
+  },
+  "symbols": {
+    "const_query": [
+      "ConstChartRow",
+      "_to_float",
+      "_fmt_num",
+      "_load_song_index",
+      "_load_rating_entries",
+      "_pick_title",
+      "query_charts_by_const",
+      "paginate_rows",
+      "_load_font",
+      "_font_drop",
+      "_draw_text",
+      "_col_width_for_chars",
+      "_col_width_for_texts",
+      "_draw_centered_in_cell",
+      "_draw_title_block",
+      "_truncate_to_width",
+      "_draw_vertical_gradient",
+      "_load_icon_cached",
+      "render_const_query_notice",
+      "render_const_query_image"
+    ],
+    "progress_catalog": [
+      "load_song_index",
+      "load_active_song_ids",
+      "_load_rating_entries",
+      "_sort_items",
+      "_load_static_progress_map",
+      "_build_static_progress_title",
+      "available_pass_progress_keys",
+      "query_progress_items_by_pass_const",
+      "available_const_progress_keys",
+      "query_progress_items_by_const",
+      "load_star_progress_chart_keys",
+      "available_star_progress_values",
+      "query_progress_items_by_star",
+      "_progress_inputs"
+    ],
+    "progress_star": [
+      "build_star_progress_summary"
+    ],
+    "recommendation_intelligence": [
+      "_round",
+      "build_player_rating_intelligence",
+      "project_ordinary_recommendations",
+      "build_ordinary_recommendation_intelligence",
+      "project_target_recommendations",
+      "build_target_recommendation_intelligence",
+      "_parser",
+      "main"
+    ],
+    "duplicate_versions": [
+      "_load_song_data_mtime",
+      "_build_group_cache",
+      "_group_cache",
+      "build_duplicate_song_groups",
+      "group_for_song_id",
+      "group_for_title",
+      "default_song_id_for_query",
+      "duplicate_identity_key",
+      "duplicate_identity_key_by_title",
+      "collapse_query_results_by_group",
+      "group_ids_for_query",
+      "choose_best_record",
+      "choose_best_record_in_group",
+      "alias_entry_for_song_id"
+    ]
+  }
+}
