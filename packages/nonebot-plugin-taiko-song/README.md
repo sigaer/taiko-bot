@@ -102,3 +102,22 @@ resources remain external. Generic runtime support provenance is recorded in the
 prior Phase 2E-R evidence. Never point these tests at a production runtime root.
 
 Status: **PHASE_2F_B_COMPLETE**. No main merge, deployment or production restart.
+
+## Phase 2F-C candidate update (0.3.0)
+
+The current candidate adds `const_query` and `patterns` to this existing package,
+for nine external matchers. The preceding sections describe the retained 0.2.0
+baseline; its evidence remains historical. Application stays 0.5.0; the client
+candidate is 0.2.12, with the same precise host Core/Contract versions.
+
+`score_cmd` is explicitly **blocked**: its public configuration loader can rebuild
+and write the scoreline dataset. It remains entirely host-owned. This candidate
+is **PHASE_2F_C_BLOCKED**, not three-command completion.
+
+Current installation, ownership/removal list, exact locks, real dispatch/PNG
+parity and remaining command names are documented in
+[the Phase 2F-C report](../../../docs/phase2fc-catalog-cutover.md) and
+`tests/catalog-acceptance/`. Reproduction uses `tests/catalog_dispatch.py` with
+`PYTHONHASHSEED=0`; sampling resets to seed 73013 for every old/new comparison.
+Run only via the existing bounded QA wrapper. The original seven commands retain
+their source and have representative real-dispatch regression coverage here.

@@ -67,13 +67,6 @@ from .utils.arcade_map import (
     format_taiko_city_shop_summary,
     query_taiko_shops_by_city,
 )
-from .utils.const_query import (
-    DEFAULT_PAGE_SIZE,
-    paginate_rows,
-    query_charts_by_const,
-    render_const_query_image,
-    render_const_query_notice,
-)
 from .utils.score_calculator import (
     compute_all_from_userdata_records,
     generate_top_N_image,
@@ -5225,282 +5218,21 @@ async def music_info_handle(event: MessageEvent):
 # [n分音符] 配置 [bpm] [难度]
 # 若省略分音符，则默认按 16 分音符处理
 # 也支持仅输入 bpm / bpm区间 查歌名
-patterns = on_regex(r"^/?查配置(?:\s*.+)?$", rule=taiko_rule)
-
-_CHART_CONFIG_BPM_RE = re.compile(r"^\d+(?:-\d+)?$")
-_CHART_CONFIG_PATTERN_RE = re.compile(r"^[ox]+$", re.IGNORECASE)
-_CHART_CONFIG_LEVEL_RE = re.compile(r"^[鬼松竹梅]\d+$")
 
 
-def _parse_chart_config_query(command_text: str) -> Optional[Dict[str, str]]:
-    args_text = re.sub(r"^/?查配置\s*", "", command_text).strip()
-    if not args_text:
-        return None
-
-    tokens = args_text.split()
-    if len(tokens) == 1 and _CHART_CONFIG_BPM_RE.fullmatch(tokens[0]):
-        return {"mode": "bpm_only", "bpm_str": tokens[0]}
-    if (
-        len(tokens) == 2
-        and any(_CHART_CONFIG_BPM_RE.fullmatch(token) for token in tokens)
-        and any(_CHART_CONFIG_LEVEL_RE.fullmatch(token) for token in tokens)
-    ):
-        return {
-            "mode": "bpm_level_only",
-            "bpm_str": next(
-                token for token in tokens if _CHART_CONFIG_BPM_RE.fullmatch(token)
-            ),
-            "level": next(
-                token for token in tokens if _CHART_CONFIG_LEVEL_RE.fullmatch(token)
-            ),
-        }
-
-    division = "16"
-    token_index = 0
-    if (
-        len(tokens) >= 2
-        and _CHART_CONFIG_BPM_RE.fullmatch(tokens[0])
-        and _CHART_CONFIG_PATTERN_RE.fullmatch(tokens[1])
-    ):
-        division = tokens[0]
-        token_index = 1
-
-    if token_index >= len(tokens):
-        return None
-
-    pattern_name = tokens[token_index].lower()
-    if not _CHART_CONFIG_PATTERN_RE.fullmatch(pattern_name):
-        return None
-
-    bpm_str = None
-    level = None
-    remain_tokens = tokens[token_index + 1 :]
-    if remain_tokens:
-        first = remain_tokens.pop(0)
-        if _CHART_CONFIG_BPM_RE.fullmatch(first):
-            bpm_str = first
-            if remain_tokens:
-                second = remain_tokens.pop(0)
-                if not _CHART_CONFIG_LEVEL_RE.fullmatch(second):
-                    return None
-                level = second
-        elif _CHART_CONFIG_LEVEL_RE.fullmatch(first):
-            level = first
-        else:
-            return None
-
-    if remain_tokens:
-        return None
-
-    return {
-        "mode": "pattern",
-        "division": division,
-        "pattern_name": pattern_name,
-        "bpm_str": bpm_str,
-        "level": level,
-    }
 
 
-def _parse_chart_config_bpm_range(
-    bpm_str: Optional[str],
-) -> Optional[Tuple[int, int]]:
-    if not bpm_str:
-        return None
-    if "-" in bpm_str:
-        lo, hi = map(int, bpm_str.split("-", 1))
-        return (min(lo, hi), max(lo, hi))
-
-    bpm = int(bpm_str)
-    return (bpm, bpm)
 
 
-def _collect_chart_config_bpm_ids(
-    by_bpm: Dict[str, List[str]], bpm_range: Optional[Tuple[int, int]]
-) -> Set[str]:
-    if not bpm_range:
-        return set()
-
-    bpm_ids = set()
-    for bpm in range(bpm_range[0], bpm_range[1] + 1):
-        ids = by_bpm.get(str(bpm))
-        if ids:
-            bpm_ids.update(ids)
-    return bpm_ids
 
 
-def _collect_chart_config_level_ids(
-    by_level: Dict[str, List[str]], level: Optional[str], level_map: Dict[str, str]
-) -> Set[str]:
-    if not level:
-        return set()
-
-    level_number = level[1:]
-    level_rank = level[0]
-    target_diff = by_level.get(str(level_number), [])
-
-    if level_rank == "鬼":
-        return set(filter(lambda x: x[-3:] in ["dit", "Oni"], target_diff))
-
-    suffix = level_map.get(level_rank, "")
-    return set(filter(lambda x: x[-3:] == suffix, target_diff))
 
 
-def _resolve_chart_config_song_name(song_meta: Dict[str, Any], title: str) -> str:
-    meta = song_meta.get(title, {})
-    return meta.get("song_name") or meta.get("song_name_jp") or title
 
 
-def _sample_chart_config_items(items: List[str], limit: int = 10) -> List[str]:
-    if len(items) > limit:
-        return random.sample(items, limit)
-    return items
 
 
-@patterns.handle()
-async def music_info_handle(event: MessageEvent):
-    level_map = {
-        "松": "ard",
-        "竹": "mal",
-        "梅": "asy",
-    }
-    letter_map = {
-        "Edit": "里谱",
-        "Oni": "魔王",
-        "Hard": "困难",
-        "Normal": "一般",
-        "Easy": "简单",
-    }
 
-    parsed_query = _parse_chart_config_query(str(event.get_message()).strip())
-    if not parsed_query:
-        await _finish_text_reply(
-            patterns,
-            event,
-            "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。",
-        )
-
-    bpm_range = _parse_chart_config_bpm_range(parsed_query.get("bpm_str"))
-    pattern_data = json.load(
-        open("songs/analyze_result_filtered.json", "r", encoding="utf-8")
-    )
-    by_bpm = pattern_data["by_bpm"]
-    by_level = pattern_data["by_level"]
-    by_tag = pattern_data["by_tag"]
-    song_meta = pattern_data["song_meta"]
-
-    def format_items(ids: List[str]) -> List[str]:
-        out = []
-        for song_id in ids:
-            title, course = song_id.split("||", 1)
-            out.append(
-                f"{_resolve_chart_config_song_name(song_meta, title)} {letter_map.get(course, course)}"
-            )
-        return out
-
-    if parsed_query["mode"] == "bpm_only":
-        bpm_ids = _collect_chart_config_bpm_ids(by_bpm, bpm_range)
-        if not bpm_ids:
-            await _finish_text_reply(patterns, event, "未找到满足该 BPM 条件的歌曲。")
-
-        song_names = sorted(
-            {
-                _resolve_chart_config_song_name(song_meta, song_id.split("||", 1)[0])
-                for song_id in bpm_ids
-            }
-        )
-        song_count = len(song_names)
-        song_show = _sample_chart_config_items(song_names, 10)
-
-        msg_lines = ["为您找到以下歌曲：", f"【BPM匹配】{song_count} 首"]
-        if song_count > 10:
-            msg_lines.append("（随机返回10条）")
-        msg_lines.extend(song_show)
-        await _finish_text_reply(patterns, event, "\n".join(msg_lines))
-    if parsed_query["mode"] == "bpm_level_only":
-        level = parsed_query["level"]
-        bpm_ids = _collect_chart_config_bpm_ids(by_bpm, bpm_range)
-        level_ids = _collect_chart_config_level_ids(by_level, level, level_map)
-        matched_ids = list(bpm_ids & level_ids)
-        if not matched_ids:
-            await _finish_text_reply(
-                patterns, event, "未找到满足该 BPM 和难度条件的谱面。"
-            )
-
-        match_count = len(matched_ids)
-        match_show = _sample_chart_config_items(matched_ids, 10)
-        msg_lines = ["为您找到以下谱面：", f"【BPM+难度匹配】{match_count} 条"]
-        if match_count > 10:
-            msg_lines.append("（随机返回10条）")
-        msg_lines.extend(format_items(match_show))
-        await _finish_text_reply(patterns, event, "\n".join(msg_lines))
-
-    division = parsed_query["division"]
-    pattern_name = parsed_query["pattern_name"]
-    level = parsed_query.get("level")
-    dp = f"{division} {pattern_name}"
-
-    # ---------- 1) 获取“精确命中集合” ----------
-    exact_list = by_tag.get(dp, [])
-    exact_set = set(exact_list)
-
-    # ---------- 2) 若输入长度>=6，获取“子串命中集合”（同division下的 tag key 做包含判断） ----------
-    substr_set = set()
-    if len(pattern_name) >= 6:
-        prefix = f"{division} "
-        for tag_key, ids in by_tag.items():
-            if not tag_key.startswith(prefix):
-                continue
-            long_pat = tag_key[len(prefix) :].lower()
-            if pattern_name in long_pat:
-                substr_set.update(ids)
-
-        # 子串集合里去掉已经在精确集合中的部分，避免重复计入“子串命中”
-        substr_set -= exact_set
-
-    if not exact_set and not substr_set:
-        await _finish_text_reply(patterns, event, "未找到匹配的谱面")
-
-    # ---------- 3) BPM / 难度过滤函数（复用） ----------
-    def apply_filters(song_ids: Set[str]) -> List[str]:
-        if not song_ids:
-            return []
-
-        filtered = set(song_ids)
-
-        if bpm_range:
-            filtered &= _collect_chart_config_bpm_ids(by_bpm, bpm_range)
-
-        if level:
-            filtered &= _collect_chart_config_level_ids(by_level, level, level_map)
-
-        return list(filtered)
-
-    exact_res = apply_filters(exact_set)
-    substr_res = apply_filters(substr_set)
-
-    if not exact_res and not substr_res:
-        await _finish_text_reply(patterns, event, "未找到满足该条件的谱面。")
-
-    exact_count = len(exact_res)
-    substr_count = len(substr_res)
-    exact_show = _sample_chart_config_items(exact_res, 10)
-    substr_show = _sample_chart_config_items(substr_res, 10)
-
-    msg_lines = ["为您找到以下谱面："]
-
-    if exact_count > 0:
-        msg_lines.append(f"\n【精确匹配】{exact_count} 条")
-        if exact_count > 10:
-            msg_lines.append("（随机返回10条）")
-        msg_lines.extend(format_items(exact_show))
-
-    if len(pattern_name) >= 6 and substr_count > 0:
-        msg_lines.append(f"\n【子串匹配】{substr_count} 条")
-        if substr_count > 10:
-            msg_lines.append("（随机返回10条）")
-        msg_lines.extend(format_items(substr_show))
-
-    await _finish_text_reply(patterns, event, "\n".join(msg_lines))
 
 
 twso = on_regex(r"^/?查分$", rule=taiko_rule)
@@ -5550,76 +5282,8 @@ async def twso_handle(event: MessageEvent):
 
 
 
-const_query = on_regex(
-    r"^/?查定数\s*(\d+\.\d)(?:\s+(.+))?\s*$",
-    rule=taiko_rule,
-    block=True,
-)
 
 
-@const_query.handle()
-async def const_query_handle(event: MessageEvent, match=RegexMatched()):
-    if not await _ensure_asset_resources_ready(const_query, event, "core-assets"):
-        return
-    const_text = match.group(1)
-    extra_text = (match.group(2) or "").strip()
-    try:
-        const_value = float(const_text)
-    except ValueError:
-        await _finish_text_reply(const_query, event, "定数格式错误，示例：查定数6.6")
-        return
-
-    page = 1
-    show_shelf_status = False
-    for token in extra_text.split():
-        if token in ("含下架", "下架"):
-            show_shelf_status = True
-            continue
-        try:
-            page = int(token)
-        except ValueError:
-            await _finish_text_reply(
-                const_query,
-                event,
-                "参数错误。示例：查定数6.6 / 查定数8.5 2 / 查定数6.6 含下架",
-            )
-            return
-        if page < 1:
-            await _finish_text_reply(
-                const_query, event, "页码必须是正整数，示例：查定数8.5 2"
-            )
-            return
-
-    rows = query_charts_by_const(
-        const_value,
-        include_shelf_status=show_shelf_status,
-    )
-    if not rows:
-        png = render_const_query_notice(f"未找到定数 {const_value:g} 的曲目。")
-        await _finish_image_reply(const_query, event, png)
-        return
-
-    total_pages = max(1, (len(rows) + DEFAULT_PAGE_SIZE - 1) // DEFAULT_PAGE_SIZE)
-    if extra_text and page > total_pages:
-        await _finish_text_reply(
-            const_query,
-            event,
-            f"定数 {const_value:g} 共 {len(rows)} 首，有效页码 1-{total_pages}。",
-        )
-        return
-
-    page_rows, page, total_pages = paginate_rows(rows, page=page)
-    global_offset = (page - 1) * DEFAULT_PAGE_SIZE
-    png = render_const_query_image(
-        const_value,
-        page_rows,
-        page=page,
-        global_offset=global_offset,
-        total_count=len(rows),
-        total_pages=total_pages,
-        show_shelf_status=show_shelf_status,
-    )
-    await _finish_image_reply(const_query, event, png)
 
 
 

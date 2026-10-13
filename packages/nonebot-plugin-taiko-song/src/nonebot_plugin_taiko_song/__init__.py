@@ -54,3 +54,5 @@ async def handle(matcher: Matcher, event: Event):
 
 # Registration remains in a dedicated module as this plugin grows.
 from . import public_commands  # noqa: E402,F401
+
+from . import catalog_commands  # noqa: E402,F401
