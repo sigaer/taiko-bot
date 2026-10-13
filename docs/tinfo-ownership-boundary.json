@@ -1,0 +1,53 @@
+{
+  "status": "PHASE_2F_D1_BLOCKED",
+  "analysis": "static AST/text only; no import, SQL, private data, materialization or runtime execution",
+  "commits": {
+    "taiko": "14fc23a428be5b627af71d39f359aae1c755f171",
+    "sakura": "38826aab306f7e51290f71682fd915b2537d1276"
+  },
+  "center_tinfo_virtual_path": [
+    {
+      "file": "taiko/plugins/taiko.py",
+      "function": "music_info_handle",
+      "line": 5960,
+      "calls": "_resolve_read_bind_target_safe",
+      "sha256": "7db2ba60722cb61c23e5e7689881751fc2a595893d0f3e8c4821f010b902e3a6"
+    },
+    {
+      "file": "taiko/plugins/taiko.py",
+      "function": "_resolve_read_bind_target_safe",
+      "line": 2497,
+      "calls": "_resolve_read_bind_target",
+      "sha256": "7db2ba60722cb61c23e5e7689881751fc2a595893d0f3e8c4821f010b902e3a6"
+    },
+    {
+      "file": "taiko/plugins/taiko.py",
+      "function": "_resolve_read_bind_target",
+      "line": 2446,
+      "calls": "materialize_merged_bind_userdata",
+      "sha256": "7db2ba60722cb61c23e5e7689881751fc2a595893d0f3e8c4821f010b902e3a6"
+    },
+    {
+      "file": "taiko/plugins/utils/merged_bind.py",
+      "function": "materialize_merged_bind_userdata",
+      "line": 62,
+      "calls": "materialize",
+      "sha256": "4e9948d7eb697335688d81ed6c663f684ba42bbb47f8e04d5c33470f6115e4df"
+    },
+    {
+      "file": "taiko/taiko_store/merged_materialization.py",
+      "function": "materialize",
+      "line": 36,
+      "calls": "store.publish",
+      "sha256": "24a9e7b1c0db1c5ebdbe218898f45c10e597282654c221ae5176a6928fd14c7f"
+    }
+  ],
+  "writes": "exclusive -> stage current/history -> publish; conditional when materialized dependency changes or is absent",
+  "reverse_dependency": "taiko_store.merged_materialization imports plugins.utils.merged_bind",
+  "client_private_guards": 35,
+  "client_tinfo_guards": 8,
+  "implementation_changes": 0,
+  "parity": "NOT_RUN",
+  "revocation_timing": "NOT_RUN",
+  "blocker": "Complete u0 semantics require an existing materializing storage path; external read-only ownership cannot use it without a write-capable bridge or changing read/storage semantics."
+}
