@@ -28,7 +28,7 @@ try:
 except PublicDataSyncError as exc:
     logger.warning(f"initial taiko public data sync degraded: {exc}")
 
-nonebot.init()
+nonebot.init(taiko_song_profile="client")
 app = nonebot.get_asgi()
 
 driver = nonebot.get_driver()

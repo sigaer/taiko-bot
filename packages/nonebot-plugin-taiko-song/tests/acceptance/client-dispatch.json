@@ -1,0 +1,3544 @@
+{
+  "host": "client",
+  "status": "PASS",
+  "cases": [
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id900001有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "d6df45b0934a8e2924bb1753a02d85a80ea6a065d81e4742d8be39b851790bb9",
+                  "pixels": "74e3822e058e66db7b0d2e294efe6a8190d2f2ea47d6037f5fd4a11409fe4ab5",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id1367有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "f127244d58b7874b2834e107ee44cb96cdd8ef9155308f9fe96ed18d85dcfdf0",
+                  "pixels": "26140ee27e0b00034f89cac3fbd6dd76d8a6af38b489ed1252b6a8c222242df2",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "トロいか2000有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "fixture-alias有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "f127244d58b7874b2834e107ee44cb96cdd8ef9155308f9fe96ed18d85dcfdf0",
+                  "pixels": "26140ee27e0b00034f89cac3fbd6dd76d8a6af38b489ed1252b6a8c222242df2",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "トロいか200X有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：トロいか2000\n匹配度：0.88\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "f127244d58b7874b2834e107ee44cb96cdd8ef9155308f9fe96ed18d85dcfdf0",
+                  "pixels": "26140ee27e0b00034f89cac3fbd6dd76d8a6af38b489ed1252b6a8c222242df2",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "???有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "c2f539f0c6133a6641f961030d1cdfa5ea3f8e54fddfeb7d1c044a92d31fea72",
+                  "pixels": "d7ad3a565d05e64b6aa2e5c9c67dfd71f6db21462d39333cf59c04b676aaa707",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": " 有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：xx有什么别名"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "有什么别名",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id900001有什么别名",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id900001有什么别名",
+      "options": {
+        "mention": true
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id900001有什么别名",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "id1367歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "トロいか2000歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "fixture-alias歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "里id1367歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "???歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": " 歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：xx在哪"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "歌在哪",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "id1367歌在哪",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "id1367歌在哪",
+      "options": {
+        "mention": true
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "id1367歌在哪",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "id1367在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "トロいか2000在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "???在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": " 在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：xx在什么位置"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "在什么位置",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "id1367在什么位置",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "id1367在什么位置",
+      "options": {
+        "mention": true
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "id1367在什么位置",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id999999999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id999999999 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 idINVALID",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id1367",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id1367",
+      "options": {
+        "mention": true
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id1367",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "里 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n里谱 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "鬼 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "表 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "松 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Muzukashii/1367.png（路径：assets/fumens/Muzukashii/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "竹 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Futsuu/1367.png（路径：assets/fumens/Futsuu/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "梅 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n简单 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "简单 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n简单 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "一般 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Futsuu/1367.png（路径：assets/fumens/Futsuu/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "困难 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Muzukashii/1367.png（路径：assets/fumens/Muzukashii/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "魔王 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "鬼 id999999999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Oni/999999999.png（路径：assets/fumens/Oni/999999999.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "鬼 idINVALID",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "里 id1367",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "里 id1367",
+      "options": {
+        "mention": true
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "里 id1367",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量123",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量777",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "以下为对应物量的谱面：(共30条)\n仅显示前20条：\nSynthetic 00 里谱\nSynthetic 00 魔王\nSynthetic 01 里谱\nSynthetic 01 魔王\nSynthetic 02 里谱\nSynthetic 02 魔王\nSynthetic 03 里谱\nSynthetic 03 魔王\nSynthetic 04 里谱\nSynthetic 04 魔王\nSynthetic 05 里谱\nSynthetic 05 魔王\nSynthetic 06 里谱\nSynthetic 06 魔王\nSynthetic 07 里谱\nSynthetic 07 魔王\nSynthetic 08 里谱\nSynthetic 08 魔王\nSynthetic 09 里谱\nSynthetic 09 魔王\n"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "没有找到对应物量的谱面。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量INVALID",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量123 tail",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量123",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量123",
+      "options": {
+        "mention": true
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量123",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "what_song",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id900001有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "d6df45b0934a8e2924bb1753a02d85a80ea6a065d81e4742d8be39b851790bb9",
+                  "pixels": "74e3822e058e66db7b0d2e294efe6a8190d2f2ea47d6037f5fd4a11409fe4ab5",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id1367有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "f127244d58b7874b2834e107ee44cb96cdd8ef9155308f9fe96ed18d85dcfdf0",
+                  "pixels": "26140ee27e0b00034f89cac3fbd6dd76d8a6af38b489ed1252b6a8c222242df2",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "トロいか2000有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "fixture-alias有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "f127244d58b7874b2834e107ee44cb96cdd8ef9155308f9fe96ed18d85dcfdf0",
+                  "pixels": "26140ee27e0b00034f89cac3fbd6dd76d8a6af38b489ed1252b6a8c222242df2",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "トロいか200X有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：トロいか2000\n匹配度：0.88"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "f127244d58b7874b2834e107ee44cb96cdd8ef9155308f9fe96ed18d85dcfdf0",
+                  "pixels": "26140ee27e0b00034f89cac3fbd6dd76d8a6af38b489ed1252b6a8c222242df2",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "???有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "c2f539f0c6133a6641f961030d1cdfa5ea3f8e54fddfeb7d1c044a92d31fea72",
+                  "pixels": "d7ad3a565d05e64b6aa2e5c9c67dfd71f6db21462d39333cf59c04b676aaa707",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": " 有什么别名",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "有什么别名",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id900001有什么别名",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id900001有什么别名",
+      "options": {
+        "mention": true
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "d6df45b0934a8e2924bb1753a02d85a80ea6a065d81e4742d8be39b851790bb9",
+                  "pixels": "74e3822e058e66db7b0d2e294efe6a8190d2f2ea47d6037f5fd4a11409fe4ab5",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id900001有什么别名",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "id1367歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "トロいか2000歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "fixture-alias歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "里id1367歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "???歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": " 歌在哪",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "歌在哪",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "id1367歌在哪",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "id1367歌在哪",
+      "options": {
+        "mention": true
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "id1367歌在哪",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "id1367在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "トロいか2000在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：\nid1367 トロいか2000\nid900001 トロいか2000"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "???在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "你要找的可能是：†バチ!ムチ!?マッスルキングダム†\n匹配度：0.10"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": " 在什么位置",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "在什么位置",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "id1367在什么位置",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "id1367在什么位置",
+      "options": {
+        "mention": true
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "id1367在什么位置",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id999999999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id999999999 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 idINVALID",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id1367",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id1367",
+      "options": {
+        "mention": true
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id1367",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "里 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n里谱 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "鬼 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "表 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "松 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Muzukashii/1367.png（路径：assets/fumens/Muzukashii/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "竹 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Futsuu/1367.png（路径：assets/fumens/Futsuu/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "梅 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n简单 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "简单 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n简单 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "一般 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Futsuu/1367.png（路径：assets/fumens/Futsuu/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "困难 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Muzukashii/1367.png（路径：assets/fumens/Muzukashii/1367.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "魔王 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "鬼 id999999999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到谱面文件：Oni/999999999.png（路径：assets/fumens/Oni/999999999.png）"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "鬼 idINVALID",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "里 id1367",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "里 id1367",
+      "options": {
+        "mention": true
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n里谱 id1367"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "里 id1367",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量123",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量777",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "以下为对应物量的谱面：(共30条)\n仅显示前20条：\nSynthetic 00 里谱\nSynthetic 00 魔王\nSynthetic 01 里谱\nSynthetic 01 魔王\nSynthetic 02 里谱\nSynthetic 02 魔王\nSynthetic 03 里谱\nSynthetic 03 魔王\nSynthetic 04 里谱\nSynthetic 04 魔王\nSynthetic 05 里谱\nSynthetic 05 魔王\nSynthetic 06 里谱\nSynthetic 06 魔王\nSynthetic 07 里谱\nSynthetic 07 魔王\nSynthetic 08 里谱\nSynthetic 08 魔王\nSynthetic 09 里谱\nSynthetic 09 魔王\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "没有找到对应物量的谱面。"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量INVALID",
+      "options": {},
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量123 tail",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量123",
+      "options": {
+        "enabled": false
+      },
+      "sent": [],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量123",
+      "options": {
+        "mention": true
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量123",
+      "options": {
+        "tsearch": false
+      },
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "what_song",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：Destination 2F29\n匹配度：0.36"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "application_calls": [
+        "execute_song"
+      ]
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id1",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【SongA】id1\n分类：游戏音乐\n位序：第 3 / 3（在架）\n排序号 sort：20"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id2",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【SongB】id2\n分类：游戏音乐\n位序：第 1 / 3（在架）\n排序号 sort：10"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id3",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【SongC】id3\n分类：游戏音乐\n位序：第 2 / 3（在架）\n排序号 sort：10"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id4",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id4 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id5",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【PopSong】id5\n分类：流行音乐\n位序：第 1 / 1（在架）\n排序号 sort：5"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id9999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id9999 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id1",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【SongA】id1\n分类：游戏音乐\n位序：第 3 / 3（在架）\n排序号 sort：20"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id2",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【SongB】id2\n分类：游戏音乐\n位序：第 1 / 3（在架）\n排序号 sort：10"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id3",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【SongC】id3\n分类：游戏音乐\n位序：第 2 / 3（在架）\n排序号 sort：10"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id4",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id4 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id5",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【PopSong】id5\n分类：流行音乐\n位序：第 1 / 1（在架）\n排序号 sort：5"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id9999",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id9999 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id900002",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id900002 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id900002有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：スーハー2000\n匹配度：0.43\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5a802f2c0cc0f522416c17cf660ed8685d1a28c55c4e42b52f34310b0b6aa189",
+                  "pixels": "7d2b88fc8f8a89d703c942dca72838fb48f4fd04153f9425dbb6a54995fb3ef5",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id900002",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id900002 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id900002有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：スーハー2000\n匹配度：0.43"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5a802f2c0cc0f522416c17cf660ed8685d1a28c55c4e42b52f34310b0b6aa189",
+                  "pixels": "7d2b88fc8f8a89d703c942dca72838fb48f4fd04153f9425dbb6a54995fb3ef5",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id1429",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id1429 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id1429有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：Destination 2F29\n匹配度：0.27\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "805230f43fb1bae6780e91499acd12996b90e2b6d3f82b8b4dd2010a272daa59",
+                  "pixels": "e2a14a7070684d519d3241b8d67a2adb5e758218fac06e4553cf1bc08e864d82",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id1429",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id1429 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id1429有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：Destination 2F29\n匹配度：0.27"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "805230f43fb1bae6780e91499acd12996b90e2b6d3f82b8b4dd2010a272daa59",
+                  "pixels": "e2a14a7070684d519d3241b8d67a2adb5e758218fac06e4553cf1bc08e864d82",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "text": "位置 id900003",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id900003 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id900003有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：スーハー2000\n匹配度：0.43\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5a802f2c0cc0f522416c17cf660ed8685d1a28c55c4e42b52f34310b0b6aa189",
+                  "pixels": "7d2b88fc8f8a89d703c942dca72838fb48f4fd04153f9425dbb6a54995fb3ef5",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "text": "位置 id900003",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到 id900003 的歌曲信息。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id900003有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：スーハー2000\n匹配度：0.43"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5a802f2c0cc0f522416c17cf660ed8685d1a28c55c4e42b52f34310b0b6aa189",
+                  "pixels": "7d2b88fc8f8a89d703c942dca72838fb48f4fd04153f9425dbb6a54995fb3ef5",
+                  "dimensions": [
+                    980,
+                    136
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "トロいか2000有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的歌曲。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "トロいか2000歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的歌曲。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "トロいか2000在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的歌曲。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "トロいか2000有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的歌曲。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "トロいか2000歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的歌曲。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "トロいか2000在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的歌曲。"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "トロいか2000有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "查询歌曲失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "text": "トロいか2000歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "查询歌曲失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "text": "トロいか2000在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "查询歌曲失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "トロいか2000有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "查询歌曲失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "text": "トロいか2000歌在哪",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "查询歌曲失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "text": "トロいか2000在什么位置",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "查询歌曲失败：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "text": "id1367有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "公开资源暂不可用"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "text": "鬼 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "公开资源暂不可用"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "text": "id1367有什么别名",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "公开资源暂不可用"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "text": "鬼 id1367",
+      "options": {},
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "公开资源暂不可用"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": []
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "text": "太鼓查物量123",
+      "options": {
+        "expected_error": true
+      },
+      "sent": [],
+      "errors": [
+        [
+          "JSONDecodeError",
+          "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+        ]
+      ]
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "text": "太鼓查物量123",
+      "options": {
+        "expected_error": true
+      },
+      "sent": [],
+      "errors": [
+        [
+          "JSONDecodeError",
+          "Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+        ]
+      ]
+    }
+  ],
+  "old_matchers": {
+    "alias_query": 0,
+    "song_position_phrase": 0,
+    "diff_by_id": 0,
+    "song_where": 0,
+    "song_pos_by_id": 0,
+    "note_count": 0,
+    "what_song": 0
+  },
+  "new_matchers": {
+    "alias_query": 1,
+    "song_position_phrase": 1,
+    "diff_by_id": 1,
+    "song_where": 1,
+    "song_pos_by_id": 1,
+    "note_count": 1,
+    "what_song": 1
+  },
+  "other_registrations_unchanged": 63,
+  "plugin_source": "/var/tmp/taiko-phase2fb-20261013/client-env/lib/python3.11/site-packages/nonebot_plugin_taiko_song/__init__.py",
+  "core": "0.1.2",
+  "contract": "0.1.0"
+}

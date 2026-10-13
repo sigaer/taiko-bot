@@ -1,175 +1,16 @@
-"""按定数查询曲库并渲染分页表格图片。"""
-
 from __future__ import annotations
-
-import io
-import json
-import math
-import os
-from dataclasses import dataclass
+import io, math, os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
-
 from PIL import Image, ImageDraw, ImageFont
-from taiko_bot.settings import get_settings
-
-from .song_visibility import is_song_publicly_visible
-
-BASE = get_settings().root_dir
-RATING_PATH = BASE / "songs" / "rating_structured_with_ids.json"
-SONG_DATA_PATH = BASE / "songs" / "song_data.json"
-FONT_PATH = BASE / "assets" / "fonts" / "DDFont.ttf"
-PROGRESS_BG_PATH = BASE / "assets" / "templates" / "progress_bg.png"
-
-LEVEL_LABELS = {
-    1: "简单",
-    2: "一般",
-    3: "困难",
-    4: "鬼",
-    5: "里",
-}
-
-LEVEL_STAR_FIELD = {
-    1: "level_1",
-    2: "level_2",
-    3: "level_3",
-    4: "level_4",
-    5: "level_5",
-}
-
-DEFAULT_PAGE_SIZE = 25
+from taiko_application.query.constant import ConstChartRow, LEVEL_LABELS, DEFAULT_PAGE_SIZE, _fmt_num
+from .config import root
+BASE = root()
+FONT_PATH = BASE / "assets/fonts/DDFont.ttf"
+PROGRESS_BG_PATH = BASE / "assets/templates/progress_bg.png"
 BPM_COL_MIN_CHARS = 15
-
-
-@dataclass(frozen=True)
-class ConstChartRow:
-    song_id: int
-    level: int
-    const_value: float
-    title_cn: str
-    title_jp: str
-    diff_label: str
-    star: str
-    bpm: str
-    combo: int
-    density: str
-    stamina: str
-    average: str
-    song_type: str
-    shelf_status: int
-
-
-def _to_float(value: Any) -> Optional[float]:
-    try:
-        if value is None or value == "" or value == "-":
-            return None
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def _fmt_num(value: Any, digits: int = 1) -> str:
-    num = _to_float(value)
-    if num is None:
-        return "-"
-    if digits <= 0:
-        return str(int(round(num)))
-    return f"{num:.{digits}f}"
-
-
-@lru_cache(maxsize=1)
-def _load_song_index() -> Dict[int, Dict[str, Any]]:
-    with open(SONG_DATA_PATH, "r", encoding="utf-8") as f:
-        songs = json.load(f)
-    return {int(s["id"]): s for s in songs if s.get("id") is not None}
-
-
-@lru_cache(maxsize=1)
-def _load_rating_entries() -> List[Dict[str, Any]]:
-    with open(RATING_PATH, "r", encoding="utf-8") as f:
-        payload = json.load(f)
-    songs = payload.get("songs") or {}
-    if isinstance(songs, dict):
-        return list(songs.values())
-    if isinstance(songs, list):
-        return songs
-    return []
-
-
-def _pick_title(song: Optional[Dict[str, Any]], chart: Dict[str, Any]) -> Tuple[str, str]:
-    cn = (
-        (chart.get("song_name_cn") or "").strip()
-        or (song or {}).get("song_name", "")
-        or (song or {}).get("song_name_jp", "")
-        or chart.get("曲名", "")
-        or f"ID{chart.get('id')}"
-    )
-    jp = (
-        (song or {}).get("song_name_jp", "")
-        or chart.get("曲名", "")
-        or cn
-    )
-    return str(cn), str(jp)
-
-
-def query_charts_by_const(
-    const_value: float,
-    *,
-    include_shelf_status: bool = False,
-) -> List[ConstChartRow]:
-    song_index = _load_song_index()
-    rows: List[ConstChartRow] = []
-    for chart in _load_rating_entries():
-        score = _to_float(chart.get("score"))
-        if score is None or abs(score - const_value) >= 1e-6:
-            continue
-        try:
-            song_id = int(chart.get("id"))
-            level = int(chart.get("level"))
-        except (TypeError, ValueError):
-            continue
-        song = song_index.get(song_id)
-        if not include_shelf_status and not is_song_publicly_visible(song, song_id=song_id):
-            continue
-        title_cn, title_jp = _pick_title(song, chart)
-        star_field = LEVEL_STAR_FIELD.get(level, "level_4")
-        star_raw = (song or {}).get(star_field, "-")
-        star = "-" if star_raw in (None, "", "-") else str(star_raw)
-        rows.append(
-            ConstChartRow(
-                song_id=song_id,
-                level=level,
-                const_value=const_value,
-                title_cn=title_cn,
-                title_jp=title_jp,
-                diff_label=LEVEL_LABELS.get(level, f"L{level}"),
-                star=star,
-                bpm=str(chart.get("bpm") or "-"),
-                combo=int(chart.get("combo") or 0),
-                density=_fmt_num(chart.get("平均密度")),
-                stamina=_fmt_num(chart.get("体力")),
-                average=_fmt_num(chart.get("平均")),
-                song_type=str((song or {}).get("type") or "-"),
-                shelf_status=int((song or {}).get("shelf_status", 0) or 0),
-            )
-        )
-    rows.sort(key=lambda r: (r.song_id, r.level))
-    return rows
-
-
-def paginate_rows(
-    rows: List[ConstChartRow], *, page: int, page_size: int = DEFAULT_PAGE_SIZE
-) -> Tuple[List[ConstChartRow], int, int]:
-    total = len(rows)
-    if total == 0:
-        return [], 1, 1
-    total_pages = max(1, math.ceil(total / page_size))
-    page = max(1, min(page, total_pages))
-    start = (page - 1) * page_size
-    end = start + page_size
-    return rows[start:end], page, total_pages
-
+CATEGORY_COL_MIN_TEXT = "南梦宫原创音乐"
 
 def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     path = str(FONT_PATH)
@@ -209,6 +50,19 @@ def _col_width_for_chars(
     return int(draw.textlength(sample, font=font)) + padding
 
 
+def _col_width_for_texts(
+    draw: ImageDraw.ImageDraw,
+    font: ImageFont.ImageFont,
+    texts: List[str],
+    *,
+    padding: int = 20,
+) -> int:
+    width = 0.0
+    for text in texts:
+        width = max(width, draw.textlength(text, font=font))
+    return int(width) + padding
+
+
 def _draw_centered_in_cell(
     draw: ImageDraw.ImageDraw,
     *,
@@ -231,6 +85,63 @@ def _draw_centered_in_cell(
     ty = row_top + (row_h - th) // 2 - 1
     _draw_text(draw, (tx, ty), display, font=font, fill=fill)
     return (tx, ty, tx + tw, ty + th)
+
+
+def _draw_title_block(
+    draw: ImageDraw.ImageDraw,
+    *,
+    title: str,
+    subtitle: str,
+    title_font: ImageFont.ImageFont,
+    subtitle_font: ImageFont.ImageFont,
+    cell_x: int,
+    cell_w: int,
+    row_top: int,
+    row_h: int,
+) -> None:
+    max_width = max(0, cell_w - 16)
+    main_text = _truncate_to_width(draw, title, title_font, max_width)
+    if not main_text:
+        return
+
+    subtitle_text = ""
+    if subtitle and subtitle != title:
+        subtitle_text = _truncate_to_width(draw, subtitle, subtitle_font, max_width)
+
+    main_box = draw.textbbox((0, 0), main_text, font=title_font)
+    main_w = main_box[2] - main_box[0]
+    main_h = main_box[3] - main_box[1]
+
+    subtitle_w = 0
+    subtitle_h = 0
+    line_gap = 8
+    block_h = main_h
+    if subtitle_text:
+        subtitle_box = draw.textbbox((0, 0), subtitle_text, font=subtitle_font)
+        subtitle_w = subtitle_box[2] - subtitle_box[0]
+        subtitle_h = subtitle_box[3] - subtitle_box[1]
+        block_h += line_gap + subtitle_h
+
+    block_top = row_top + (row_h - block_h) // 2 - 1
+    title_x = cell_x + (cell_w - main_w) // 2
+    _draw_text(
+        draw,
+        (title_x, block_top),
+        main_text,
+        font=title_font,
+        fill=(44, 49, 53, 245),
+    )
+
+    if subtitle_text:
+        subtitle_x = cell_x + (cell_w - subtitle_w) // 2
+        subtitle_y = block_top + main_h + line_gap
+        _draw_text(
+            draw,
+            (subtitle_x, subtitle_y),
+            subtitle_text,
+            font=subtitle_font,
+            fill=(96, 104, 108, 210),
+        )
 
 
 def _truncate_to_width(
@@ -319,7 +230,7 @@ def render_const_query_image(
     pad = 24
     title_row_h = 74
     header_h = 58
-    row_h = 56
+    row_h = 72
     footer_h = 44 if pages > 1 else 0
 
     title_font = _load_font(46)
@@ -332,6 +243,12 @@ def render_const_query_image(
     bpm_col_w = _col_width_for_chars(
         tmp_draw, row_font, BPM_COL_MIN_CHARS, padding=24
     )
+    category_col_w = _col_width_for_texts(
+        tmp_draw,
+        row_font,
+        ["分类", CATEGORY_COL_MIN_TEXT],
+        padding=24,
+    )
     cols = [
         ("#", 68),
         ("难度", 92),
@@ -339,11 +256,13 @@ def render_const_query_image(
         ("ID", 116),
         ("★", 68),
         ("BPM", bpm_col_w),
-        ("连打", 92),
+        ("物量", 92),
         ("密度", 92),
         ("体力", 92),
+        ("节奏", 92),
+        ("复合", 92),
         ("综合", 92),
-        ("分类", 156),
+        ("分类", category_col_w),
     ]
     table_w = sum(cw for _, cw in cols) + 8
     panel_h = title_row_h + header_h + len(rows) * row_h + 14 + footer_h
@@ -389,7 +308,11 @@ def render_const_query_image(
         col_starts.append(x)
         x += cw
 
-    title_text = f"定数 {const_value:g} · 共{total}首 · 第{page}/{pages}页"
+    title_parts = [f"定数 {const_value:g}"]
+    if show_shelf_status:
+        title_parts.append("含下架")
+    title_parts.extend((f"共{total}首", f"第{page}/{pages}页"))
+    title_text = " · ".join(title_parts)
     title_row_y = panel_y + 8
     draw.rounded_rectangle(
         (panel_x + 8, title_row_y, panel_x + table_w - 8, title_row_y + title_row_h - 6),
@@ -446,6 +369,8 @@ def render_const_query_image(
             str(row.combo),
             row.density,
             row.stamina,
+            row.rhythm,
+            row.complex_proc,
             row.average,
             row.song_type,
         ]
@@ -465,7 +390,20 @@ def render_const_query_image(
             if col_idx == 1 and diff_icon is not None:
                 continue
             cx = col_starts[col_idx]
-            _, ty, _, ty2 = _draw_centered_in_cell(
+            if col_idx == 2:
+                _draw_title_block(
+                    draw,
+                    title=row.title_cn,
+                    subtitle=row.title_jp,
+                    title_font=row_font,
+                    subtitle_font=small_font,
+                    cell_x=cx,
+                    cell_w=cw,
+                    row_top=row_top,
+                    row_h=row_h,
+                )
+                continue
+            _draw_centered_in_cell(
                 draw,
                 text=text,
                 font=row_font,
@@ -475,18 +413,6 @@ def render_const_query_image(
                 row_h=row_h,
                 fill=(44, 49, 53, 245),
             )
-            if col_idx == 2 and row.title_jp and row.title_jp != row.title_cn:
-                sub = _truncate_to_width(draw, row.title_jp, small_font, cw - 16)
-                if sub:
-                    sb = draw.textbbox((0, 0), sub, font=small_font)
-                    sw = sb[2] - sb[0]
-                    _draw_text(
-                        draw,
-                        (cx + (cw - sw) // 2, ty2 + 1),
-                        sub,
-                        font=small_font,
-                        fill=(96, 104, 108, 210),
-                    )
 
         if show_shelf_status and row.shelf_status == 1:
             badge = "下架"

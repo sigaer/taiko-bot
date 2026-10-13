@@ -1,0 +1,3362 @@
+{
+  "host": "center",
+  "status": "PASS",
+  "random_seed": 73013,
+  "python_hash_seed": "0",
+  "command_file_writes": 0,
+  "cases": [
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "7de748fe0fff2a641e42273a7d8c302751725a4c5665206d8aecd48077ab969b",
+                  "pixels": "8021213fdf59a3b67e9af54992eac0c9f15b37d5ac66d258dda3706969b32705",
+                  "dimensions": [
+                    1905,
+                    2038
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 2",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "1c5d5100818e0a1a93dc5c76fc8046fea4a820d469679429d4b71229b1f9bc23",
+                  "pixels": "659d15ed40988fa96ab221162a1b8de53e0a0f41ceeed8e503f1e8152a00a5a8",
+                  "dimensions": [
+                    1905,
+                    670
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 含下架",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "19b9453e2badfa93897b1f03d61d6c6632665ad6daf101c0364bdc6817201985",
+                  "pixels": "87597b42a08748f304da7cf0f79476c6fe0249ec0438c46ff233e4d03b3da791",
+                  "dimensions": [
+                    1905,
+                    2038
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 2 含下架",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "7b8eab29c804bcdab2894e735f4555fe5d584a81b2e030903d0fc9f2705bd94a",
+                  "pixels": "afc113e44e9fafa7d83622708117ca8aaf148cda734043e76e9a2824e3c6df3c",
+                  "dimensions": [
+                    1905,
+                    814
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数8.5",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "9913bcff73fa99bed8f4b498cf3e4917c1d6f103c54c7074a968c15753a7e7f9",
+                  "pixels": "c03c72c15b10046c9660c639559248159547ea6fd8d584f691b7adcf1788544c",
+                  "dimensions": [
+                    1060,
+                    128
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数8.5 含下架",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "0ecc19810688bde252c154f5aaf92abb40f9a0b79c28d3e211d8521a82ae3994",
+                  "pixels": "f4df7140bc65b40eea9632e18bd8163380d137c27a99d7de69cdf5c73ab872ca",
+                  "dimensions": [
+                    1905,
+                    266
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数9.9",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "f8f68f2d11ff9ae7f2a600aea1b1453b84119ee5dea2e1c517b4430261ac9e88",
+                  "pixels": "586a037c86715f9d2c1a80cff0a45efe625e1b52a559e24b9f8378151640f824",
+                  "dimensions": [
+                    1060,
+                    128
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 99",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "定数 6.6 共 31 首，有效页码 1-2。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 0",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "页码必须是正整数，示例：查定数8.5 2"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 abc",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "参数错误。示例：查定数6.6 / 查定数8.5 2 / 查定数6.6 含下架"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数invalid",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [],
+      "options": {
+        "enabled": false
+      },
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下歌曲：\n【BPM匹配】25 首\n（随机返回10条）\nFixture 12\nFixture 13\nFixture 09\nFixture 19\nFixture 22\nFixture 10\nFixture 20\nFixture 14\nFixture 08\nFixture 16"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置200-180",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下歌曲：\n【BPM匹配】25 首\n（随机返回10条）\nFixture 12\nFixture 13\nFixture 09\nFixture 19\nFixture 22\nFixture 10\nFixture 20\nFixture 14\nFixture 08\nFixture 16"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180 鬼10",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下谱面：\n【BPM+难度匹配】25 条\n（随机返回10条）\nFixture 21 魔王\nFixture 05 魔王\nFixture 23 魔王\nFixture 24 魔王\nFixture 14 魔王\nFixture 00 魔王\nFixture 18 魔王\nFixture 17 魔王\nFixture 20 魔王\nFixture 22 魔王"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置鬼10 180",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下谱面：\n【BPM+难度匹配】25 条\n（随机返回10条）\nFixture 21 魔王\nFixture 05 魔王\nFixture 23 魔王\nFixture 24 魔王\nFixture 14 魔王\nFixture 00 魔王\nFixture 18 魔王\nFixture 17 魔王\nFixture 20 魔王\nFixture 22 魔王"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置ox",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下谱面：\n\n【精确匹配】3 条\nFixture 01 魔王\nFixture 00 魔王\nFixture 02 魔王"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置16 oxoxox",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下谱面：\n\n【精确匹配】15 条\n（随机返回10条）\nFixture 03 魔王\nFixture 04 魔王\nFixture 06 魔王\nFixture 14 魔王\nFixture 13 魔王\nFixture 00 魔王\nFixture 07 魔王\nFixture 01 魔王\nFixture 12 魔王\nFixture 05 魔王\n\n【子串匹配】10 条\nFixture 21 魔王\nFixture 18 魔王\nFixture 20 魔王\nFixture 23 魔王\nFixture 19 魔王\nFixture 17 魔王\nFixture 22 魔王\nFixture 15 魔王\nFixture 16 魔王\nFixture 24 魔王"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置oxoxox 180 鬼10",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "为您找到以下谱面：\n\n【精确匹配】15 条\n（随机返回10条）\nFixture 01 魔王\nFixture 12 魔王\nFixture 03 魔王\nFixture 07 魔王\nFixture 14 魔王\nFixture 08 魔王\nFixture 04 魔王\nFixture 00 魔王\nFixture 11 魔王\nFixture 05 魔王\n\n【子串匹配】10 条\nFixture 21 魔王\nFixture 18 魔王\nFixture 20 魔王\nFixture 23 魔王\nFixture 19 魔王\nFixture 17 魔王\nFixture 22 魔王\nFixture 15 魔王\nFixture 16 魔王\nFixture 24 魔王"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180 梅1",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到满足该 BPM 和难度条件的谱面。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置999",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到满足该 BPM 条件的歌曲。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置xxxxx",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到匹配的谱面"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置ox 999",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "未找到满足该条件的谱面。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置bad",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置16 oxoxox 180 鬼10 extra",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [],
+      "options": {
+        "enabled": false
+      },
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查分",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查分",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "7de748fe0fff2a641e42273a7d8c302751725a4c5665206d8aecd48077ab969b",
+                  "pixels": "8021213fdf59a3b67e9af54992eac0c9f15b37d5ac66d258dda3706969b32705",
+                  "dimensions": [
+                    1905,
+                    2038
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 2",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "1c5d5100818e0a1a93dc5c76fc8046fea4a820d469679429d4b71229b1f9bc23",
+                  "pixels": "659d15ed40988fa96ab221162a1b8de53e0a0f41ceeed8e503f1e8152a00a5a8",
+                  "dimensions": [
+                    1905,
+                    670
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 含下架",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "19b9453e2badfa93897b1f03d61d6c6632665ad6daf101c0364bdc6817201985",
+                  "pixels": "87597b42a08748f304da7cf0f79476c6fe0249ec0438c46ff233e4d03b3da791",
+                  "dimensions": [
+                    1905,
+                    2038
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 2 含下架",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "7b8eab29c804bcdab2894e735f4555fe5d584a81b2e030903d0fc9f2705bd94a",
+                  "pixels": "afc113e44e9fafa7d83622708117ca8aaf148cda734043e76e9a2824e3c6df3c",
+                  "dimensions": [
+                    1905,
+                    814
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数8.5",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "9913bcff73fa99bed8f4b498cf3e4917c1d6f103c54c7074a968c15753a7e7f9",
+                  "pixels": "c03c72c15b10046c9660c639559248159547ea6fd8d584f691b7adcf1788544c",
+                  "dimensions": [
+                    1060,
+                    128
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数8.5 含下架",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "0ecc19810688bde252c154f5aaf92abb40f9a0b79c28d3e211d8521a82ae3994",
+                  "pixels": "f4df7140bc65b40eea9632e18bd8163380d137c27a99d7de69cdf5c73ab872ca",
+                  "dimensions": [
+                    1905,
+                    266
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数9.9",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "f8f68f2d11ff9ae7f2a600aea1b1453b84119ee5dea2e1c517b4430261ac9e88",
+                  "pixels": "586a037c86715f9d2c1a80cff0a45efe625e1b52a559e24b9f8378151640f824",
+                  "dimensions": [
+                    1060,
+                    128
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 99",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "定数 6.6 共 31 首，有效页码 1-2。"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 0",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "页码必须是正整数，示例：查定数8.5 2"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6 abc",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "参数错误。示例：查定数6.6 / 查定数8.5 2 / 查定数6.6 含下架"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数invalid",
+      "platform": "qq",
+      "sent": [],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "qq",
+      "sent": [],
+      "errors": [],
+      "options": {
+        "enabled": false
+      },
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下歌曲：\n【BPM匹配】25 首\n（随机返回10条）\nFixture 12\nFixture 13\nFixture 09\nFixture 19\nFixture 22\nFixture 10\nFixture 20\nFixture 14\nFixture 08\nFixture 16"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置200-180",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下歌曲：\n【BPM匹配】25 首\n（随机返回10条）\nFixture 12\nFixture 13\nFixture 09\nFixture 19\nFixture 22\nFixture 10\nFixture 20\nFixture 14\nFixture 08\nFixture 16"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180 鬼10",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下谱面：\n【BPM+难度匹配】25 条\n（随机返回10条）\nFixture 21 魔王\nFixture 05 魔王\nFixture 23 魔王\nFixture 24 魔王\nFixture 14 魔王\nFixture 00 魔王\nFixture 18 魔王\nFixture 17 魔王\nFixture 20 魔王\nFixture 22 魔王"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置鬼10 180",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下谱面：\n【BPM+难度匹配】25 条\n（随机返回10条）\nFixture 21 魔王\nFixture 05 魔王\nFixture 23 魔王\nFixture 24 魔王\nFixture 14 魔王\nFixture 00 魔王\nFixture 18 魔王\nFixture 17 魔王\nFixture 20 魔王\nFixture 22 魔王"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置ox",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下谱面：\n\n【精确匹配】3 条\nFixture 01 魔王\nFixture 00 魔王\nFixture 02 魔王"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置16 oxoxox",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下谱面：\n\n【精确匹配】15 条\n（随机返回10条）\nFixture 03 魔王\nFixture 04 魔王\nFixture 06 魔王\nFixture 14 魔王\nFixture 13 魔王\nFixture 00 魔王\nFixture 07 魔王\nFixture 01 魔王\nFixture 12 魔王\nFixture 05 魔王\n\n【子串匹配】10 条\nFixture 21 魔王\nFixture 18 魔王\nFixture 20 魔王\nFixture 23 魔王\nFixture 19 魔王\nFixture 17 魔王\nFixture 22 魔王\nFixture 15 魔王\nFixture 16 魔王\nFixture 24 魔王"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置oxoxox 180 鬼10",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "为您找到以下谱面：\n\n【精确匹配】15 条\n（随机返回10条）\nFixture 01 魔王\nFixture 12 魔王\nFixture 03 魔王\nFixture 07 魔王\nFixture 14 魔王\nFixture 08 魔王\nFixture 04 魔王\nFixture 00 魔王\nFixture 11 魔王\nFixture 05 魔王\n\n【子串匹配】10 条\nFixture 21 魔王\nFixture 18 魔王\nFixture 20 魔王\nFixture 23 魔王\nFixture 19 魔王\nFixture 17 魔王\nFixture 22 魔王\nFixture 15 魔王\nFixture 16 魔王\nFixture 24 魔王"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180 梅1",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "未找到满足该 BPM 和难度条件的谱面。"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置999",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "未找到满足该 BPM 条件的歌曲。"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置xxxxx",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "未找到匹配的谱面"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置ox 999",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "未找到满足该条件的谱面。"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置bad",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置16 oxoxox 180 鬼10 extra",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "格式不正确，应为：查配置 [分音符] 配置 [BPM] [难度]；省略分音符时默认按16分，也可仅输入 BPM 或 BPM+难度。"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180",
+      "platform": "qq",
+      "sent": [],
+      "errors": [],
+      "options": {
+        "enabled": false
+      },
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查分",
+      "platform": "qq",
+      "sent": [],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查分",
+      "platform": "qq",
+      "sent": [],
+      "errors": [],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "onebot",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "22db302f2812c93bc1047e19dff15353f0c349942a69af54bc7eb3cdaa61dde5",
+                  "pixels": "062de799681d89a720e299ba71f2abf4248cc5f0e06527eecfe6d92637fa0d90",
+                  "dimensions": [
+                    1905,
+                    2038
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "qq",
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "22db302f2812c93bc1047e19dff15353f0c349942a69af54bc7eb3cdaa61dde5",
+                  "pixels": "062de799681d89a720e299ba71f2abf4248cc5f0e06527eecfe6d92637fa0d90",
+                  "dimensions": [
+                    1905,
+                    2038
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      "errors": [],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [
+        [
+          "FileNotFoundError",
+          "[Errno 2] No such file or directory: 'songs/analyze_result_filtered.json'"
+        ]
+      ],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "patterns",
+      "text": "查配置180",
+      "platform": "qq",
+      "sent": [],
+      "errors": [
+        [
+          "FileNotFoundError",
+          "[Errno 2] No such file or directory: 'songs/analyze_result_filtered.json'"
+        ]
+      ],
+      "options": {},
+      "application_calls": []
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "onebot",
+      "sent": [],
+      "errors": [
+        [
+          "FileNotFoundError",
+          "[Errno 2] No such file or directory: '/var/tmp/taiko-phase2fc-20261013/center-runtime/songs/rating_structured_with_ids.json'"
+        ]
+      ],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "const_query",
+      "text": "查定数6.6",
+      "platform": "qq",
+      "sent": [],
+      "errors": [
+        [
+          "FileNotFoundError",
+          "[Errno 2] No such file or directory: '/var/tmp/taiko-phase2fc-20261013/center-runtime/songs/rating_structured_with_ids.json'"
+        ]
+      ],
+      "options": {},
+      "application_calls": [
+        "execute_constant"
+      ]
+    },
+    {
+      "command": "alias_query",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "30b4948525ef131598c8436fa35bf1f3c29bded68c083565466dcd7657ae71b1",
+                  "pixels": "bbbfd7c5c766b44b9af56e5a7e2c76feedf53e6e6a5f94b7f55a5543bf44e0a0",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n里谱 id1367\n【トロいか2000】\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "note_count",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "song_where",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "what_song",
+      "platform": "onebot",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n【トロいか2000】\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ]
+    },
+    {
+      "command": "alias_query",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "30b4948525ef131598c8436fa35bf1f3c29bded68c083565466dcd7657ae71b1",
+                  "pixels": "bbbfd7c5c766b44b9af56e5a7e2c76feedf53e6e6a5f94b7f55a5543bf44e0a0",
+                  "dimensions": [
+                    980,
+                    180
+                  ],
+                  "mode": "RGB"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    },
+    {
+      "command": "diff_by_id",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n里谱 id1367\n【トロいか2000】"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    },
+    {
+      "command": "note_count",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "以下为对应物量的谱面：(共1条)\nSingle 简单\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    },
+    {
+      "command": "song_pos_by_id",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    },
+    {
+      "command": "song_position_phrase",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    },
+    {
+      "command": "song_where",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "【Toro-Ika 2000】id1367\n分类：-\n位序：第 28 / 31（在架）\n排序号 sort：0"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    },
+    {
+      "command": "what_song",
+      "platform": "qq",
+      "regression": true,
+      "sent": [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture-message",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的是不是：\n魔王 id1367\n【トロいか2000】"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+                  "pixels": "14a1c6327ddcf15742ee8899a8d27dcbeee55b6e8563beefd957e70698d6763f",
+                  "dimensions": [
+                    816,
+                    624
+                  ],
+                  "mode": "RGBA"
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ]
+    }
+  ],
+  "old_matchers": {
+    "const_query": 0,
+    "what_song": 0,
+    "patterns": 0
+  },
+  "new_matchers": {
+    "const_query": 1,
+    "what_song": 1,
+    "patterns": 1
+  },
+  "blocked_score_matcher_retained": true,
+  "other_registrations_unchanged": 65,
+  "plugin_source": "/var/tmp/taiko-phase2fc-20261013/center-env/lib/python3.11/site-packages/nonebot_plugin_taiko_song/__init__.py",
+  "core": "0.1.1",
+  "contract": "0.1.0"
+}

@@ -1,0 +1,29 @@
+{
+  "reference_sha256": "fd4b1c395fbcfc4941e8a14343e3ca9d95d0ddd31c59e2fcfe3fd68b2683e41e",
+  "images": {
+    "b30": {
+      "path": "ordinary-b30_render.png",
+      "sha256": "eea2c6afc1e48aeeaa9e774dc52bf46565305011517a001cfa1b9d8600d755e2"
+    },
+    "score": {
+      "path": "ordinary-drawinfo.png",
+      "sha256": "7657727be29759535914cddf446f380347dfa229afba0ad5eed444af87260b8e"
+    },
+    "song": {
+      "path": "ordinary-b30_single.png",
+      "sha256": "5d3693910b80e5725fcef1f7cf8de4ade3ede2d40f142e54779c4ef907fa01d5"
+    },
+    "constant": {
+      "path": "ordinary-b30_single.png",
+      "sha256": "5d3693910b80e5725fcef1f7cf8de4ade3ede2d40f142e54779c4ef907fa01d5"
+    },
+    "progress": {
+      "path": "ordinary-b30_render.png",
+      "sha256": "eea2c6afc1e48aeeaa9e774dc52bf46565305011517a001cfa1b9d8600d755e2"
+    },
+    "recommendation": {
+      "path": "ordinary-recommend_image.png",
+      "sha256": "17c52a6d2f0bc5e5cc67674216122155b26e4e64530e8f821df1156b85bfdfae"
+    }
+  }
+}

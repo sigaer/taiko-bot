@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "type": "游戏音乐",
+    "sort": 20,
+    "song_name": "SongA",
+    "shelf_status": 0
+  },
+  {
+    "id": 2,
+    "type": "游戏音乐",
+    "sort": 10,
+    "song_name": "SongB",
+    "shelf_status": 0
+  },
+  {
+    "id": 3,
+    "type": "游戏音乐",
+    "sort": 10,
+    "song_name": "SongC",
+    "shelf_status": 0
+  },
+  {
+    "id": 4,
+    "type": "游戏音乐",
+    "sort": 30,
+    "song_name": "SongOff",
+    "shelf_status": 1
+  },
+  {
+    "id": 5,
+    "type": "流行音乐",
+    "sort": 5,
+    "song_name": "PopSong",
+    "shelf_status": 0
+  }
+]
