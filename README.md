@@ -27,7 +27,7 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
 python -m pip install -r requirements-domain.txt
-python -m pip install -e .
+python -m pip install ./packages/taiko-application .
 Copy-Item .env.example .env
 ```
 
@@ -40,11 +40,16 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install -r requirements-domain.txt
-python -m pip install -e .
+python -m pip install ./packages/taiko-application .
 cp .env.example .env
 ```
 
 如果本机还没有 Python 3.11，可先从 `https://www.python.org/downloads/` 安装，或使用系统包管理器安装。
+
+此功能分支包含 `taiko-application==0.5.0`，安装时同时构建独立子项目与 Bot。
+Phase 2E 整体验收仍为 **BLOCKED**，中心宿主安装及部分集成检查尚未通过；
+详见 [双端验证与安装顺序](packages/taiko-application/tests/dual_host/README.md)。
+本分支不代表生产版本，不触发部署。
 
 领域依赖固定为 `sakura-taiko-core==0.1.2` / `sakura-taiko-contract==0.1.0`。
 `requirements-domain.txt` 使用固定 Git revision，安装需要 Git、GitHub SSH 读取权限，

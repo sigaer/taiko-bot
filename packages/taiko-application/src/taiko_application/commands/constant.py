@@ -46,8 +46,10 @@ def execute_constant(
         const_value, include_shelf_status=include_shelf_status
     )
     if not rows:
-        if not include_shelf_status and ports.query_charts_by_const(
-            const_value, include_shelf_status=True
+        if (
+            context.profile == "center"
+            and not include_shelf_status
+            and ports.query_charts_by_const(const_value, include_shelf_status=True)
         ):
             png = ports.render_const_query_notice(
                 f"定数 {const_value:g} 暂无未下架曲目，发送「查定数{const_value:g} 含下架」可查看全部曲目。"

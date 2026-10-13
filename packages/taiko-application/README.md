@@ -1,13 +1,15 @@
-# taiko-application 0.4.0 — Phase 2D
+# taiko-application 0.5.0 — Phase 2E candidate
 
 Independent Python distribution for Dani, score presentation, queries and command usecases. Install this subproject,
-not the taiko-bot root distribution (which has a different Core pin).
+not the taiko-bot root distribution when installing the center host.
+Center keeps Core **0.1.1**; the distributed host keeps Core **0.1.2**.
+The distributed root now depends on this same Application distribution.
 
 ```sh
 python -m pip install ./packages/taiko-application
 ```
 
-Python 3.11+, Core **0.1.1**, Contract **0.1.0**; no new formulas or storage format.
+Python 3.11+, Core **>=0.1.1, <=0.1.2**, Contract **0.1.0**; no new formulas or storage format.
 For exact PNG reproduction use Pillow **11.3.0** and the same font/image inputs.
 Public API: `taiko_application.dani`.
 
@@ -304,3 +306,22 @@ An independent process directly invokes all six usecases from the installed
 wheel without reading Sakura source. It blocks host/SQL/network imports and all
 query-time IO after Pillow plugin initialization. Phase 2D is a candidate feature
 branch only; no production install or restart is part of this delivery.
+
+## Phase 2E dual host candidate — BLOCKED
+
+The distributed six-command adapter now delegates to the same `commands` module.
+`CommandContext.profile` is explicitly `client` there and defaults to `center` for
+the existing Sakura adapter. It preserves B30 grammar/defaults/error handling,
+constant empty-result lookup policy and target-recommendation text. Renderer and
+query providers preserve each host's fuzzy behavior and argument conventions.
+The client Core profiles `progress-client-20261010` and
+`recommend-client-20261010` remain at the original providers. No formulas,
+permissions, cached-read semantics or private data source are shared across hosts.
+
+Clean installed client plugin registration/OneBot dispatch and both Core versions'
+Application fixture replay pass. **The entire Phase 2E is not accepted**: the
+center host cannot currently be built by its declared packaging metadata; clean
+center plugin dispatch and full fresh cross-host renderer integration are not
+proven. See [dual-host validation](tests/dual_host/README.md) for exact boundaries,
+installation order, retained implementations and reproduction. No main merge or
+production rollout is authorized by these candidate artifacts.

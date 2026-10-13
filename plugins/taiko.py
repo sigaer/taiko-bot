@@ -1,3 +1,13 @@
+from types import SimpleNamespace
+from taiko_application.commands import (
+    CommandContext, CommandResult,
+    B30Ports, execute_b30, prepare_b30,
+    ScorePorts, execute_score,
+    SongPorts, execute_song,
+    ConstantPorts, execute_constant,
+    ProgressPorts, execute_progress, prepare_progress,
+    RecommendationPorts, execute_recommendation,
+)
 from .utils.public_score_token import (
     PublicScoreTokenError,
     issue_public_score_token_for_taiko_id,
@@ -5182,21 +5192,52 @@ taikob = on_regex(TAIKOB_COMMAND_RE.pattern, rule=taiko_rule, flags=re.IGNORECAS
 
 @taikob.handle()
 async def taikob_handle(event: MessageEvent):
-    plain_text = extract_plain_text(event).strip()
-    m = TAIKOB_COMMAND_RE.match(plain_text)
-    if not m:
-        await taikob.finish("参数错误。示例：taikob 30 / taikob 30 精度 / taikob30 -r")
+    # Providers preserve the client's authorized current/history acquisition order.
+    current_userdata = None
+    view = None
 
-    N = int(m.group(1))
-    arg_str = (m.group(2) or "").strip()
-    args = arg_str.split() if arg_str else []
-    use_v2 = any(str(arg).lower() == "v2" for arg in args)
+    def calculate(user_id, **_):
+        nonlocal current_userdata, view
+        if not prepared[1]:
+            view = ensure_userdata_view_available(user_id, settings=_SETTINGS)
+            current_userdata = view["userdata"]
+        return compute_all_from_userdata_records(current_userdata.get("songs") or [])
 
-    # 解析 -r
-    dynamic_origin = any(a.lower() == "-r" for a in args)
+    def render_summary(user_id, *, N, **_):
+        return render_b30_image(
+            user_id, N=N, userdata=current_userdata, history_snapshots=view["snapshots"]
+        )
 
-    dim = _resolve_taikob_dim_arg(args)
+    def render_dimension(*args, **kwargs):
+        return generate_dim_top_image(*args, **kwargs, userdata=current_userdata)
 
+    ports = B30Ports(
+        TAIKOB_FONT_PATH=TAIKOB_FONT_PATH,
+        TAIKOB_V2_DIM_USAGE=TAIKOB_V2_DIM_USAGE,
+        V2DataSourceError=Exception,
+        V2_TAIKOB_DIM_ALIASES=V2_TAIKOB_DIM_ALIASES,
+        _extract_rating_version=lambda text: ("v1", text),
+        _load_user_song_records=_load_user_song_records,
+        _parse_taikob_dim_arg=_parse_taikob_dim_arg,
+        _resolve_taikob_dim_arg=_resolve_taikob_dim_arg,
+        _to_jpeg_bytes=_to_jpeg_bytes,
+        compute_all_from_userdata=calculate,
+        generate_dim_top_image=render_dimension,
+        generate_top_N_image=generate_top_N_image,
+        render_b20_v2_dim_image=render_b20_v2_dim_image,
+        render_b20_v2_image=render_b20_v2_image,
+        render_b30_image=render_summary,
+    )
+    context = CommandContext(
+        profile="client",
+        match=TAIKOB_COMMAND_RE.match(extract_plain_text(event).strip()),
+    )
+    prepared = prepare_b30(context, ports)
+    if isinstance(prepared, CommandResult):
+        await _deliver_application_command(taikob, event, prepared)
+        return
+    if prepared is None:
+        return
     bind_target = _resolve_read_bind_target_safe(event)
     if bind_target == 404:
         await _finish_text_reply(taikob, event, _taiko_bind_usage_message(event))
@@ -5215,78 +5256,10 @@ async def taikob_handle(event: MessageEvent):
         return
     taiko_id = str(bind_target["user_id"])
     current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
-
-    if use_v2:
-        extra_args = [arg for arg in args if str(arg).lower() != "v2"]
-        v2_dim, v2_unknown_tokens = _parse_taikob_dim_arg(
-            extra_args, V2_TAIKOB_DIM_ALIASES
-        )
-        if N != 20:
-            await taikob.finish("v2 目前仅支持 taikob20 v2")
-        if dynamic_origin:
-            await taikob.finish("taikob20 v2 暂不支持 -r 参数")
-        if v2_unknown_tokens:
-            await taikob.finish(f"taikob20 v2 仅支持单维度参数：{TAIKOB_V2_DIM_USAGE}")
-        try:
-            if v2_dim is not None and v2_dim != "综合Rating":
-                img_buf = render_b20_v2_dim_image(
-                    taiko_id,
-                    dim=v2_dim,
-                    N=N,
-                    font_path=TAIKOB_FONT_PATH,
-                )
-            else:
-                img_buf = render_b20_v2_image(taiko_id)
-        except FileNotFoundError:
-            await taikob.finish("缺少 taikob20 v2 数据文件，请先同步公共曲库后再试")
-        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-        await _finish_image_reply(taikob, event, img_jpg)
-        return
-
-    try:
-        if not args:
-            view = ensure_userdata_view_available(taiko_id, settings=_SETTINGS)
-            current_userdata = view["userdata"]
-        result = compute_all_from_userdata_records(current_userdata.get("songs") or [])
-    except FileNotFoundError:
-        await taikob.finish("您还未上传数据哦~请先发送“taikoupdate”进行上传")
-    except TypeError as e:
-        await taikob.finish("请更新数据~")
-
-    if not result:
-        await taikob.finish("请游玩鬼难度歌曲后再来使用哦~")
-
-    # 无附加参数：使用 b30 模板汇总图
-    if not args:
-        img_buf = render_b30_image(taiko_id, N=N, userdata=current_userdata, history_snapshots=view["snapshots"])
-        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-        await _finish_image_reply(taikob, event, img_jpg)
-        return
-
-    # 单维列表模式：只画该维度 TopN
-    if dim is not None:
-        img_buf = generate_dim_top_image(
-            result,
-            N=N,
-            dim=dim,
-            user_id=taiko_id,
-            font_path=TAIKOB_FONT_PATH,
-            userdata=current_userdata,
-        )
-        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-        await _finish_image_reply(taikob, event, img_jpg)
-        return
-
-    # 默认模式：总雷达 + rating 列表；-r 控制原点
-    img_buf = generate_top_N_image(
-        result,
-        N,
-        user_id=taiko_id,
-        dynamic_origin=dynamic_origin,
-        font_path=TAIKOB_FONT_PATH,
+    result = execute_b30(
+        CommandContext(profile="client", user_id=taiko_id), ports, prepared
     )
-    img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-    await _finish_image_reply(taikob, event, img_jpg)
+    await _deliver_application_command(taikob, event, result)
 
 
 music_info = on_regex(r"^/?tinfo\s?(.+)$", rule=taiko_rule)
@@ -5309,49 +5282,25 @@ async def music_info_handle(event: MessageEvent):
     ):
         return
     user_id = str(bind_target["user_id"])
-    # 获取去除 at 的纯文本
-    plain_text = extract_plain_text(event)
-
-    # 用纯文本重新匹配参数（而不是直接用 match.group）
-    m = re.match(r"^/?tinfo\s?(.+)$", plain_text)
-    if not m:
-        await music_info.finish("格式不正确，应为：tinfo 歌名")
-    music_name = m.group(1)
-    music_list = queryMusic(music_name)
-    music_id = -1
-    fuzzy_hint = ""
-    msg = ""
-    if len(music_list) == 0:
-        await _finish_text_reply(music_info, event, "未找到任何歌曲？")
-    elif _is_fuzzy_query_result(music_list):
-        fuzzy_hint = _build_fuzzy_query_hint(music_list)
-        music_id = int(music_list[0][0])
-    elif len(music_list) == 1:
-        music_id = int(music_list[0][0])
-    else:
-        msg = "你要找的可能是：\n"
-        for music in music_list:
-            msg += f"id{music[0]} {music[1]}\n"
-        await music_info.finish(msg)
-    if music_id == -1:
-        await music_info.finish("查询失败，怎么回事呢？")
-    else:
-        try:
-            res_img = generate_score_image(song_no=music_id, user_id=user_id)
-        except FileNotFoundError as e:
-            print(e)
-            await _finish_text_reply(
-                music_info, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
-            )
-        except Exception as e:
-            await music_info.finish(f"{e}")
-        img_jpg = _to_jpeg_bytes(res_img, quality=85)
-        if fuzzy_hint:
-            await _finish_image_reply(
-                music_info, event, img_jpg, prefix_text=fuzzy_hint
-            )
-        else:
-            await _finish_image_reply(music_info, event, img_jpg)
+    ports = ScorePorts(
+        _build_fuzzy_query_hint=_build_fuzzy_query_hint,
+        _is_rejected_fuzzy_query_result=_is_fuzzy_query_result,
+        _to_jpeg_bytes=_to_jpeg_bytes,
+        generate_score_image=lambda *, song_no, user_id, **_: generate_score_image(
+            song_no=song_no, user_id=user_id
+        ),
+        print=print,
+        queryMusic=queryMusic,
+    )
+    result = execute_score(
+        CommandContext(
+            profile="client",
+            user_id=user_id,
+            match=re.match(r"^/?tinfo\s?(.+)$", extract_plain_text(event)),
+        ),
+        ports,
+    )
+    await _deliver_application_command(music_info, event, result)
 
 
 # 查配置
@@ -5695,65 +5644,15 @@ const_query = on_regex(
 async def const_query_handle(event: MessageEvent, match=RegexMatched()):
     if not await _ensure_asset_resources_ready(const_query, event, "core-assets"):
         return
-    const_text = match.group(1)
-    extra_text = (match.group(2) or "").strip()
-    try:
-        const_value = float(const_text)
-    except ValueError:
-        await _finish_text_reply(const_query, event, "定数格式错误，示例：查定数6.6")
-        return
-
-    page = 1
-    show_shelf_status = False
-    for token in extra_text.split():
-        if token in ("含下架", "下架"):
-            show_shelf_status = True
-            continue
-        try:
-            page = int(token)
-        except ValueError:
-            await _finish_text_reply(
-                const_query,
-                event,
-                "参数错误。示例：查定数6.6 / 查定数8.5 2 / 查定数6.6 含下架",
-            )
-            return
-        if page < 1:
-            await _finish_text_reply(
-                const_query, event, "页码必须是正整数，示例：查定数8.5 2"
-            )
-            return
-
-    rows = query_charts_by_const(
-        const_value,
-        include_shelf_status=show_shelf_status,
+    ports = ConstantPorts(
+        DEFAULT_PAGE_SIZE=DEFAULT_PAGE_SIZE,
+        paginate_rows=paginate_rows,
+        query_charts_by_const=query_charts_by_const,
+        render_const_query_image=render_const_query_image,
+        render_const_query_notice=render_const_query_notice,
     )
-    if not rows:
-        png = render_const_query_notice(f"未找到定数 {const_value:g} 的曲目。")
-        await _finish_image_reply(const_query, event, png)
-        return
-
-    total_pages = max(1, (len(rows) + DEFAULT_PAGE_SIZE - 1) // DEFAULT_PAGE_SIZE)
-    if extra_text and page > total_pages:
-        await _finish_text_reply(
-            const_query,
-            event,
-            f"定数 {const_value:g} 共 {len(rows)} 首，有效页码 1-{total_pages}。",
-        )
-        return
-
-    page_rows, page, total_pages = paginate_rows(rows, page=page)
-    global_offset = (page - 1) * DEFAULT_PAGE_SIZE
-    png = render_const_query_image(
-        const_value,
-        page_rows,
-        page=page,
-        global_offset=global_offset,
-        total_count=len(rows),
-        total_pages=total_pages,
-        show_shelf_status=show_shelf_status,
-    )
-    await _finish_image_reply(const_query, event, png)
+    result = execute_constant(CommandContext(profile="client", match=match), ports)
+    await _deliver_application_command(const_query, event, result)
 
 
 @note_count.handle()
@@ -5779,14 +5678,40 @@ matcher = on_regex(r"^.+进度(?:\s+\d+)?$", rule=taiko_rule)
 
 @matcher.handle()
 async def _(event: MessageEvent):
-    raw_text = extract_plain_text(event).strip()
-    page_match = PROGRESS_WITH_PAGE_REGEX.fullmatch(raw_text)
-    if not page_match:
+    ports = ProgressPorts(
+        STAR_PROGRESS_REGEX=STAR_PROGRESS_REGEX,
+        _load_decimal_progress_set=_load_decimal_progress_set,
+        _load_pass_progress_set=_load_pass_progress_set,
+        _load_progress_name_set=_load_progress_name_set,
+        _load_star_progress_set=_load_star_progress_set,
+        _parse_star_progress_value=_parse_star_progress_value,
+        parse_dani_progress_request=parse_dani_progress_request,
+        render_dani_progress_image_bytes=lambda **kwargs: render_dani_progress_image_bytes(
+            **kwargs, userdata=current_userdata
+        ),
+        render_pass_progress_image_bytes=lambda **kwargs: render_pass_progress_image_bytes(
+            **kwargs, userdata=current_userdata
+        ),
+        render_progress_image_bytes=lambda **kwargs: render_progress_image_bytes(
+            **kwargs, userdata=current_userdata
+        ),
+        render_progress_image_bytes_by_list=lambda **kwargs: render_progress_image_bytes_by_list(
+            **kwargs, userdata=current_userdata
+        ),
+        render_star_progress_image_bytes=lambda **kwargs: render_star_progress_image_bytes(
+            **kwargs, userdata=current_userdata
+        ),
+    )
+    context = CommandContext(
+        profile="client",
+        match=PROGRESS_WITH_PAGE_REGEX.fullmatch(extract_plain_text(event).strip()),
+    )
+    prepared = prepare_progress(context, ports)
+    if isinstance(prepared, CommandResult):
+        await _deliver_application_command(matcher, event, prepared)
         return
-    text = page_match.group("body").strip()
-    page = int(page_match.group("page") or "1")
-    if page <= 0:
-        await _finish_text_reply(matcher, event, "页码必须是正整数，示例：6星进度 2")
+    if prepared is None:
+        return
     bind_target = _resolve_read_bind_target_safe(event)
     if bind_target == 404:
         await _finish_text_reply(matcher, event, _taiko_bind_usage_message(event))
@@ -5798,105 +5723,12 @@ async def _(event: MessageEvent):
         return
     taiko_id = str(bind_target["user_id"])
     current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
-
-    dani_request = parse_dani_progress_request(text)
-    if dani_request:
-        png = render_dani_progress_image_bytes(
-            user_id=taiko_id,
-            grade_name=dani_request["grade"],
-            version=dani_request["version"],
-            explicit_version=dani_request.get("explicitVersion") == "1",
-            userdata=current_userdata,
-        )
-        await _finish_image_reply(matcher, event, png)
-        return
-
-    m = re.fullmatch(r"^(?P<decimal>\d+\.\d)(?P<mode>综合|过关|定数)?进度$", text)
-    if m:
-        decimal = m.group("decimal")
-        mode = m.group("mode") or ""
-        dynamic_available = decimal in _load_decimal_progress_set()
-        pass_available = decimal in _load_pass_progress_set()
-
-        if mode == "过关":
-            if not pass_available:
-                await _finish_text_reply(
-                    matcher,
-                    event,
-                    f"{decimal} 暂无过关难度进度表，可尝试“{decimal}综合进度”",
-                )
-                return
-            png = render_pass_progress_image_bytes(
-                user_id=taiko_id,
-                decimal=decimal,
-                page=page,
-                userdata=current_userdata,
-            )
-        elif mode in {"综合", "定数"}:
-            if not dynamic_available:
-                await _finish_text_reply(
-                    matcher,
-                    event,
-                    f"{decimal} 暂无综合难度进度表，可尝试“{decimal}过关进度”",
-                )
-                return
-            png = render_progress_image_bytes(
-                user_id=taiko_id,
-                decimal=decimal,
-                page=page,
-                userdata=current_userdata,
-            )
-        else:
-            if pass_available:
-                png = render_pass_progress_image_bytes(
-                    user_id=taiko_id,
-                    decimal=decimal,
-                    page=page,
-                    userdata=current_userdata,
-                )
-            elif dynamic_available:
-                png = render_progress_image_bytes(
-                    user_id=taiko_id,
-                    decimal=decimal,
-                    page=page,
-                    userdata=current_userdata,
-                )
-            else:
-                return
-        await _finish_image_reply(matcher, event, png)
-        return
-
-    m = STAR_PROGRESS_REGEX.fullmatch(text)
-    if m:
-        star_value = _parse_star_progress_value(m.group("star"))
-        if star_value is None:
-            return
-        if star_value not in _load_star_progress_set():
-            return
-        png = render_star_progress_image_bytes(
-            user_id=taiko_id,
-            star_value=star_value,
-            page=page,
-            userdata=current_userdata,
-        )
-        await _finish_image_reply(matcher, event, png)
-        return
-
-    # 否则走进度名逻辑：例如 SS进度、地力S进度
-    text = re.sub(r"个", "個", text)  # 统一“个人差”写法
-    text = re.sub(r"底", "地", text)  # 统一“地力”写法
-    text = text.upper()  # 统一大写
-    progress_name = text[:-2]  # 去掉“进度”
-    if progress_name not in _load_progress_name_set():
-        return
-    png = render_progress_image_bytes_by_list(
-        user_id=taiko_id,
-        progress_name=progress_name,
-        assets_base=str(ASSETS_DIR),
-        page=page,
-        userdata=current_userdata,
+    result = execute_progress(
+        CommandContext(profile="client", user_id=taiko_id, assets_base=str(ASSETS_DIR)),
+        ports,
+        prepared,
     )
-    await _finish_image_reply(matcher, event, png)
+    await _deliver_application_command(matcher, event, result)
 
 
 # ========== NoneBot 命令 ==========
@@ -6139,128 +5971,60 @@ async def taikorec_handle(event: MessageEvent):
         return
     taiko_id = str(bind_target["user_id"])
 
-    # 2) 解析参数（兼容无空格：taikorec体力30 / 推荐歌曲体力30）
-    msg_text = extract_plain_text(event).strip()
-    m = re.match(r"^(?:taikorec|推荐歌曲)\s*(.*)$", msg_text, flags=re.IGNORECASE)
-    tail = (m.group(1) if m else "") or ""
-    tail = tail.strip()
-    if tail:
-        target_key, target_star_filter, target_error = parse_target_recommendation_request(
-            tail
+    def target_provider(*, user_id, target_key, star_filter):
+        current_userdata = ensure_userdata_available(user_id, settings=_SETTINGS)
+        result = compute_target_recommendations_for_user(
+            user_id, target_key, star_filter=star_filter
         )
-        if target_key:
-            if target_error == "too_many_args":
-                await _finish_text_reply(
-                    taikorec,
-                    event,
-                    "目标推荐固定返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星",
-                )
-            if target_error == "invalid_star":
-                await _finish_text_reply(
-                    taikorec,
-                    event,
-                    "难度筛选仅支持 1-10、1星-10星 或 一星-十星。示例：推荐歌曲 紫雅 9星",
-                )
-            try:
-                current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
-                result = compute_target_recommendations_for_user(
-                    taiko_id,
-                    target_key,
-                    star_filter=target_star_filter,
-                )
-            except FileNotFoundError:
-                await _finish_text_reply(
-                    taikorec,
-                    event,
-                    "您还未上传数据哦~请先发送“taikoupdate”进行上传",
-                )
-            except Exception:
-                logger.exception("target recommendation failed: user_id=%s", taiko_id)
-                await _finish_text_reply(
-                    taikorec, event, "目标推荐计算失败，请检查曲库/数据匹配是否正常"
-                )
-
-            if not result.is_enough:
-                await _finish_text_reply(taikorec, event, result.message)
-
-            img_buf = render_target_recommendation_image_bytes(
-                taiko_id,
-                current_userdata,
-                result.target_display,
-                result.rows,
-                assets_base=ASSETS_DIR,
-                font_path=FONT_PATH,
-            )
-            await _finish_image_reply(taikorec, event, img_buf)
-            return
-
-    dim_in = "rating"
-    n_in = "20"
-    if tail:
-        parts = tail.split()
-        if len(parts) >= 2:
-            dim_in = parts[0]
-            n_in = parts[1]
-        else:
-            token = parts[0]
-            if token.isdigit():
-                n_in = token
-            else:
-                m2 = re.match(r"^(.*?)(\d{1,2})$", token)
-                if m2 and m2.group(1):
-                    dim_in = m2.group(1)
-                    n_in = m2.group(2)
-                else:
-                    dim_in = token
-
-    dim_key = DIM_MAP.get(dim_in, None)
-    if not dim_key:
-        await _finish_text_reply(
-            taikorec,
-            event,
-            "维度不支持。可用：rating/综合、大歌力、体力、高速处理、精度力、节奏处理、复合处理；目标推荐可用："
-            + target_recommendation_displays(),
+        return SimpleNamespace(
+            is_enough=result.is_enough,
+            message=result.message,
+            userdata=current_userdata,
+            target_display=result.target_display,
+            rows=result.rows,
         )
 
-    try:
-        limit = int(n_in)
-        if limit < 1:
-            limit = 1
-        if limit > 50:
-            limit = 50
-    except Exception:
-        limit = 20
-
-    # 3) 调用推荐（你已整合好的函数）
-    try:
-        recs = compute_recommendations_for_user(
-            user_id=taiko_id,
-            best_key=dim_key,
-            limit=limit,
-            json_path="./songs/rating_structured_with_ids.json",  # 按你项目实际路径
-        )
-    except FileNotFoundError as e:
-        print(e)
-        await _finish_text_reply(
-            taikorec, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
-        )
-    except Exception as e:
-        print(e)
-        await _finish_text_reply(
-            taikorec, event, "推荐计算失败，请检查曲库/数据匹配是否正常"
+    def target_renderer(*, user_id, userdata, target_display, rows, font_path):
+        return render_target_recommendation_image_bytes(
+            user_id,
+            userdata,
+            target_display,
+            rows,
+            assets_base=ASSETS_DIR,
+            font_path=font_path,
         )
 
-    # 4) 生成推荐图片并返回
-    # subtitle = f"维度：{dim_in}（best_key={dim_key}）  数量：{limit}"
-    subtitle = f"维度：{dim_in}  数量：{limit}"
-    img_buf = generate_recommend_image(
-        recs,
-        title="以下是可供参考的推荐歌曲",
-        subtitle=subtitle,
-        font_path=FONT_PATH,
+    def recommendation_renderer(recs, *, user_id, **kwargs):
+        return generate_recommend_image(recs, **kwargs)
+
+    ports = RecommendationPorts(
+        DIM_MAP=DIM_MAP,
+        FONT_PATH=FONT_PATH,
+        TAIKOREC_COMMAND_EXTRACT_RE=re.compile(
+            r"^(?:taikorec|推荐歌曲)\s*(.*)$", re.IGNORECASE
+        ),
+        compute_recommendations_for_user=compute_recommendations_for_user,
+        compute_target_recommendations_for_user=target_provider,
+        generate_recommend_image=recommendation_renderer,
+        parse_target_recommendation_request=parse_target_recommendation_request,
+        print=print,
+        report_target_error=lambda error: logger.exception(
+            "target recommendation failed: user_id=%s", taiko_id
+        ),
+        render_target_recommendation_image_bytes=target_renderer,
+        target_recommendation_displays=target_recommendation_displays,
     )
-
-    await _finish_image_reply(taikorec, event, img_buf)
+    result = execute_recommendation(
+        CommandContext(
+            profile="client",
+            user_id=taiko_id,
+            text=extract_plain_text(event),
+            missing_userdata_hint=lambda: "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+            rating_path="./songs/rating_structured_with_ids.json",
+        ),
+        ports,
+    )
+    await _deliver_application_command(taikorec, event, result)
 
 
 # ================
@@ -6699,78 +6463,23 @@ what_song = on_regex(
 async def _(matcher: Matcher, event: MessageEvent):
     if _is_external_bot_mentioned(event):
         return
-
     msg_text = extract_plain_text(event)
 
-    # =========================
-    # ② 以 "@菌菌" 开头：提示不能复制粘贴
-    # =========================
-    if msg_text.startswith("@菌菌"):
-        # await matcher.finish("您似乎复制粘贴了'@菌菌'3个字符，这是个无法复制的指令哦~")
-        await matcher.finish()
+    def extract_query(text):
+        match = WHAT_SONG_REGEX.match(text)
+        if match:
+            return match.group("q").strip() or None
+        if is_qq_official_event(event):
+            return _extract_official_what_song_query(text) or None
+        return None
 
-    raw_q = ""
-    m = WHAT_SONG_REGEX.match(msg_text)
-    if m:
-        raw_q = m.group("q").strip()
-    elif is_qq_official_event(event):
-        raw_q = _extract_official_what_song_query(msg_text) or ""
-    if not raw_q:
-        await matcher.finish("格式不正确，应为：xx是什么歌")
-
-    if not raw_q:
-        await matcher.finish("请提供要查询的关键词，例如：千本桜是什么歌")
-
-    diff = "Oni"
-    stripped_q = raw_q
-    # 兼容难度前缀（梅/竹/松/鬼/里/简单/普通/困难/魔王）
-    if raw_q.startswith("简单"):
-        diff = "Kantan"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("普通"):
-        diff = "Futsuu"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("困难"):
-        diff = "Muzukashii"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("魔王"):
-        diff = "Oni"
-        stripped_q = raw_q[2:].strip()
-    elif raw_q.startswith("梅"):
-        diff = "Kantan"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("竹"):
-        diff = "Futsuu"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("松"):
-        diff = "Muzukashii"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("鬼"):
-        diff = "Oni"
-        stripped_q = raw_q[1:].strip()
-    elif raw_q.startswith("里"):
-        diff = "InnerOni"
-        stripped_q = raw_q[1:].strip()
-
-    try:
-        res: Any = _resolve_what_song_query(raw_q, stripped_q)
-    except Exception as e:
-        await matcher.finish(f"queryMusic 调用失败：{e}")
-
-    if len(res) == 0:
-        await _finish_text_reply(matcher, event, "未找到任何歌曲？")
-    elif _is_fuzzy_query_result(res):
-        await _finish_fuzzy_query_with_fumen(matcher, event, res, difficulty=diff)
-    elif len(res) > 1:
-        msg = "你要找的可能是：\n"
-        for music in res:
-            msg += f"id{music[0]} {music[1]}\n"
-        await matcher.finish(msg)
-
-    song_id = str(res[0][0]).strip()
-
-    # 返回 Oni 难度谱面
-    await _send_fumen_or_hint(matcher, event, diff, song_id)
+    ports = SongPorts(
+        _extract_what_song_query=extract_query,
+        _is_rejected_fuzzy_query_result=_is_fuzzy_query_result,
+        _resolve_what_song_query=_resolve_what_song_query,
+    )
+    result = execute_song(CommandContext(profile="client", text=msg_text), ports)
+    await _deliver_application_command(matcher, event, result)
 
 
 # =========================
@@ -7395,3 +7104,32 @@ async def _(matcher: Matcher, event: MessageEvent):
         if seg.type == "json":
             print(seg.data["data"])
             return
+
+
+async def _deliver_application_command(matcher, event, result):
+    """Keep permission-aware reply/media delivery in the host adapter."""
+    if result is None:
+        return
+    if result.kind == "silent":
+        await matcher.finish()
+    elif result.kind == "text":
+        if result.delivery == "direct":
+            await matcher.finish(result.payload)
+        else:
+            await _finish_text_reply(matcher, event, result.payload)
+    elif result.kind == "image":
+        if result.prefix_text:
+            await _finish_image_reply(
+                matcher, event, result.payload, prefix_text=result.prefix_text
+            )
+        else:
+            await _finish_image_reply(matcher, event, result.payload)
+    elif result.kind == "fumen":
+        difficulty, song_id = result.payload
+        await _send_fumen_or_hint(matcher, event, difficulty, song_id)
+    elif result.kind == "fuzzy_fumen":
+        await _finish_fuzzy_query_with_fumen(
+            matcher, event, result.payload, difficulty=result.difficulty
+        )
+    else:
+        raise ValueError("Unsupported command result")

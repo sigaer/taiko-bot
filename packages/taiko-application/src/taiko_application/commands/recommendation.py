@@ -17,6 +17,7 @@ class RecommendationPorts:
     print: Callable[..., Any]
     render_target_recommendation_image_bytes: Callable[..., Any]
     target_recommendation_displays: Callable[..., Any]
+    report_target_error: Callable[[Exception], Any] | None = None
 
 
 def execute_recommendation(
@@ -35,7 +36,11 @@ def execute_recommendation(
             if target_error == "too_many_args":
                 return CommandResult(
                     "text",
-                    "目标推荐最多返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星",
+                    (
+                        "目标推荐固定返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星"
+                        if context.profile == "client"
+                        else "目标推荐最多返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星"
+                    ),
                     delivery="reply",
                 )
             if target_error == "invalid_star":
@@ -55,7 +60,7 @@ def execute_recommendation(
                     "text", context.missing_userdata_hint(), delivery="reply"
                 )
             except Exception as e:
-                ports.print(e)
+                (ports.report_target_error or ports.print)(e)
                 return CommandResult(
                     "text",
                     "目标推荐计算失败，请检查曲库/数据匹配是否正常",

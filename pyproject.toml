@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.2.7"
+version = "0.2.8"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
 license = "GPL-2.0-only"
 dependencies = [
+    "taiko-application==0.5.0",
     "sakura-taiko-core[hiroba]==0.1.2",
     "sakura-taiko-contract==0.1.0",
     "beautifulsoup4>=4.12.0",

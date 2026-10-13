@@ -29,10 +29,14 @@ def execute_b30(
 ) -> CommandResult | None:
     taiko_id = context.user_id
     N, args, use_v2, dynamic_origin, dim = prepared
+    client = context.profile == "client"
     if use_v2:
+        parse_args = [a for a in args if str(a).lower() != "v2"] if client else args
         v2_dim, v2_unknown_tokens = ports._parse_taikob_dim_arg(
-            args, ports.V2_TAIKOB_DIM_ALIASES
+            parse_args, ports.V2_TAIKOB_DIM_ALIASES
         )
+        if client and N != 20:
+            return CommandResult("text", "v2 目前仅支持 taikob20 v2", delivery="direct")
         if dynamic_origin:
             return CommandResult(
                 "text", f"taikob{N} v2 暂不支持 -r 参数", delivery="direct"
@@ -44,14 +48,18 @@ def execute_b30(
                 delivery="direct",
             )
         try:
-            if v2_dim is not None:
+            if v2_dim is not None and (not client or v2_dim != "综合Rating"):
                 img_buf = ports.render_b20_v2_dim_image(
                     taiko_id, dim=v2_dim, N=N, font_path=ports.TAIKOB_FONT_PATH
                 )
             else:
-                img_buf = ports.render_b20_v2_image(taiko_id, N=N)
+                img_buf = (
+                    ports.render_b20_v2_image(taiko_id)
+                    if client
+                    else ports.render_b20_v2_image(taiko_id, N=N)
+                )
         except FileNotFoundError as exc:
-            if "userdata not found" in str(exc):
+            if not client and "userdata not found" in str(exc):
                 return CommandResult(
                     "text",
                     "您还未上传数据哦~请先发送“taikoupdate”进行上传",
@@ -63,12 +71,16 @@ def execute_b30(
                 delivery="direct",
             )
         except ports.V2DataSourceError:
+            if client:
+                raise
             return CommandResult(
                 "text",
                 f"taikob{N} v2 上游定数数据暂时不可用，请稍后再试",
                 delivery="direct",
             )
         except TypeError:
+            if client:
+                raise
             return CommandResult("text", "请更新数据~", delivery="direct")
         img_jpg = ports._to_jpeg_bytes(img_buf, quality=85)
         return CommandResult("image", img_jpg, prefix_text="")
@@ -83,6 +95,10 @@ def execute_b30(
     except TypeError:
         return CommandResult("text", "请更新数据~", delivery="direct")
     if not result:
+        if client:
+            return CommandResult(
+                "text", "请游玩鬼难度歌曲后再来使用哦~", delivery="direct"
+            )
         try:
             has_oni_record = any(
                 (
@@ -124,11 +140,26 @@ def execute_b30(
 
 def prepare_b30(context: CommandContext, ports: B30Ports):
     m = context.match
+    client = context.profile == "client"
     if not m:
         return CommandResult(
             "text",
-            "参数错误。示例：taikob / taikob 30 / taikob 30 精度 / taikob30 -r",
+            (
+                "参数错误。示例：taikob 30 / taikob 30 精度 / taikob30 -r"
+                if client
+                else "参数错误。示例：taikob / taikob 30 / taikob 30 精度 / taikob30 -r"
+            ),
             delivery="direct",
+        )
+    if client:
+        N = int(m.group(1))
+        args = (m.group(2) or "").strip().split()
+        return (
+            N,
+            args,
+            any(str(a).lower() == "v2" for a in args),
+            any(a.lower() == "-r" for a in args),
+            ports._resolve_taikob_dim_arg(args),
         )
     N = int(m.group(1) or 20)
     arg_str = (m.group(2) or "").strip()

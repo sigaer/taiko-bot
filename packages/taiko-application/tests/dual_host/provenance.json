@@ -1,0 +1,10 @@
+{
+  "client_reference_commit": "1be8d67d911861bbd6a6a83f70c4ad973476eeea",
+  "client_reference_path": "plugins/taiko.py",
+  "client_reference_sha256": "a2a519c473f8fcc17272cdd42d36d48eb2404cbca03edd2be23a3f55f8349aa1",
+  "center_adapter_commit": "5b6708405756bfd824c9983369040641f6e6765c",
+  "core_0_1_1": "9fc0731358f6863c1e1efd9f1930a608850786f7",
+  "core_0_1_2": "0b7319d94b041daafb0a0d32e3ccc95e50da8810",
+  "contract_0_1_0": "23f89b4f70e5a64ae76c33ac04c6c2d242808df1",
+  "fixture_images": "../commands/provenance.json"
+}

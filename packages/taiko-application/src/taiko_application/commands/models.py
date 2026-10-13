@@ -12,6 +12,11 @@ class CommandContext:
     missing_userdata_hint: Callable[[], str] | None = None
     assets_base: str = ""
     rating_path: str = ""
+    profile: Literal["center", "client"] = "center"
+
+    def __post_init__(self):
+        if self.profile not in ("center", "client"):
+            raise ValueError("Unknown command profile")
 
 
 @dataclass(frozen=True)
