@@ -1,0 +1,1688 @@
+{
+  "status": "PHASE_2F_D1_TINFO_HOST_PROVIDER_COMPLETE",
+  "scope": "native center tinfo only; client private tinfo unchanged",
+  "authorization_policy": "selected native binding visible authorizes whole u0, per explicit user decision",
+  "baselines": {
+    "application": "a7ddece",
+    "sakura": "e90fafd"
+  },
+  "versions": {
+    "taiko-application": "0.7.0",
+    "nonebot-plugin-taiko-song": "0.3.2",
+    "sakura-taiko-core": "0.1.1",
+    "sakura-taiko-contract": "0.1.0",
+    "Pillow": "11.3.0"
+  },
+  "tests": {
+    "total": 86,
+    "parity": 60,
+    "boundary_and_errors": 26,
+    "status": "PASS",
+    "seconds": "53.164"
+  },
+  "public_resources_sha256": {
+    "dress/common/line/line_290.png": "2489c84e753682ce1d717ed19f8625bfccd13abf917b24873cc31fb1ce1d9b0c",
+    "cover/1384.png": "14dc8dd268d3f02e551f3bd348afdd68d941f46606b30d60185409bb1baa609f",
+    "icons/b30_dims/stamina.png": "699f133d8ba187780c1e711c5a344f36810c3b309edacedbc9ca2707d3124199",
+    "icons/b30_dims/speed.png": "2b47bb1d1bed12dd7b4bae3646f78752c902be2054853630d2b0c6b45e51a982",
+    "icons/b30_dims/big_song.png": "4c7f167583ffb39093881ccf0850a8296d27602b7b584c9d76245ca52f8f1dc0",
+    "icons/b30_dims/accuracy_power.png": "845b680e33129e26c7d50c832e470b19e097107314cc6f9580963a3683ddd619",
+    "icons/b30_dims/complex_proc.png": "6102e57e6e375001b62405f036e669ce97252828364bc714b7d43d39d35099e3",
+    "icons/b30_dims/overall_rating.png": "d26707938202fc4e0b34b7b304b5d1e56e848a4eb3a4d1a86c2596249130e7c3",
+    "icons/b30_dims/rhythm.png": "804f162bb41dcc08e369821e707b5b7cc1fd2d35f89e566841c25cec58224892",
+    "icons/option/hidden.png": "39ae33d3df40615ca5fdf595a8320d75b7ab02c9e70e78bb003e73a6fccfc172",
+    "icons/option/random.png": "b555aefd9f8c185dbad4e48994d8caa01555841f5d94a665fc9d39e0adc796dd",
+    "icons/option/mirror.png": "fb3f1387060dfc01c9070c5cfa83d5dfe567b1e998ed71a61a35e279de337686",
+    "icons/option/super_random.png": "9afe339be4e235499ea170b92cd9facba9d7ede324ca8fb22f82c9301296dd6f",
+    "icons/rank/6.png": "87dd1fb7d8c89e685a02567af0a101395bb56088d395b256a5467db8ffe7619b",
+    "icons/rank/4.png": "8210a378ab59dc6d9ae5a5a37a7a70f1307df41fbf66c4dbda77a5c6bbbc5243",
+    "icons/rank/2.png": "02554de137b92cf811ef395ee61ce4dbb941fc88a4028aec578717ccbf35d314",
+    "icons/rank/5.png": "cc32a9bdb7c33268d7f208520f9d8194cee550eb54d84d8ed557eb67ec9213ad",
+    "icons/rank/8.png": "3583427858993fe48c242d3aa61f620626659f666bfd8716c70fba328e75b725",
+    "icons/rank/7.png": "a7033bb7a319ad7f7f646a845013c06beb851ca09342831aaf7b8aaac22f83e4",
+    "icons/rank/1.png": "dc06d2ad9569ba9a33cf843d445da6655e47c0f4b242744aadaecac5c20ab074",
+    "icons/rank/3.png": "18ec5cc9080d2f161bd69a64264ecdf2e5c4ee18efa149048aaed0763bb7bf9f",
+    "icons/diff/icon_4.png": "009e5d546af178d58172796fd2ac731a7f8e4fdb3e13f9142aad3d85abea7b5e",
+    "icons/diff/icon_3.png": "08e6ca2245da76ffc3b0ffb4c8672833c41c256845af1fad91ef40b0352ecaa6",
+    "icons/diff/4.png": "59aa541319bdede9a412283f56d18721711339ff43ba3e38f4545ae579994655",
+    "icons/diff/2.png": "bed794cba4faa4f0cff3ee75a5b17f6495db66e0fc6977ed854803772b2815b4",
+    "icons/diff/icon_5.png": "72a7c0027614650c8d8aa0a5559b9ca73178ba2beb5ce6788af10a6b727b7876",
+    "icons/diff/5.png": "6cee0cdd94729c62236c808daa6dd8d433e87f32ee07c66504d7bf5cbfc63e0f",
+    "icons/diff/1.png": "6f809ecc6b6baa91ec578a6b4aace0b70d8be407da7993e8fd6842316ff75b59",
+    "icons/diff/3.png": "07edddb8f71ba79097f63c562e58d4148bb5963f11cfff1cbd072708ceb00961",
+    "icons/crown/clear.png": "b6a742a5d9f92b6966ea0ea8f1eb717c11164af3e9052088ddae490e733c370d",
+    "icons/crown/dondaful.png": "42302f184bef8d01893019425ef04ea533d765413490e1cedba30777d9d4f049",
+    "icons/crown/full.png": "3e5c4c3fdccb567bc1caf22e7d880b6e218153c1e720df1fcf314484a10af24a",
+    "icons/other/new.png": "14a88a2d95454454a3162cf6534808b2efa47309dedfd12f07f54ccff7cef0ce",
+    "templates/b30_single.png": "64eb28456a6efc17ff0bf8b8c43061ad793dfc5c065f2f342a29f95b84a2d989",
+    "templates/progress_bg.png": "eecfbb10165ef32cc81bd592a50b97d7bd88e0e1f297cad571a3a50a4d89cd88",
+    "templates/b30_template.png": "4d9d7d7687475be3b72c7a229840de0d671ae24cd6bca71e518e0f541cfcc28b",
+    "templates/original-info-bg.png": "f0f07036d001af887f4daf86807e8d8d88f346ff5cc2b2f29e5d4385eb71a850",
+    "templates/original-bg.png": "fbe7907f0d87e40ea5d63fe9cf47ac1c4e9a7acce947b0128964d1100277118b",
+    "templates/b30_single_original.png": "4efcff3b67ab680a7ba8d3f822b09624da8c4416c9bc0d23be96a1dc5c93a475",
+    "templates/info-bg-final-fix.png": "eac7ea20eff8b2b9269239cf8d5b4134a4cdf725bf62449286066098f7242a35",
+    "fonts/DDFont.ttf": "1512c9e1393ab99fc46d8667c11ad2b22928c6eeb67769540431b05870199efa",
+    "fonts/FZPW_GBK.ttf": "4479df9011e519b5d260aac29a18c0c1fa960201ed2c097366f756cb63ac8354"
+  },
+  "public_commands": {
+    "center": {
+      "cases": 78,
+      "status": "PASS",
+      "evidence_sha256": "c5029a4f2c93287ad49bbd3cd24b63b7432ab0031d082d49731148db9912c14d"
+    },
+    "client": {
+      "cases": 80,
+      "status": "PASS",
+      "evidence_sha256": "8d707e9b5ca603424d798711b320eaf046f6a205f3e1ab5a7f04de08becf5dcb"
+    }
+  },
+  "wheel_sha256": {
+    "nonebot_plugin_taiko_song-0.3.2-py3-none-any.whl": "c7f7817ccfba48c5056c35726899c7c19036a5b033c9b62cad543ead63b00872",
+    "taiko_application-0.7.0-py3-none-any.whl": "a603b07d0417ee4af021f75bb0c0b03a78067b949a5c83151369cc43efc1cd13",
+    "taiko_bot-0.2.14-py3-none-any.whl": "77ea69fc1ff769dfc6817967091522b7d8be1bf28d5ce4fae87cf36575bf747d"
+  },
+  "scope_audit": {
+    "graph": {
+      "modules": [
+        "taiko_application",
+        "taiko_application.commands",
+        "taiko_application.commands.b30",
+        "taiko_application.commands.constant",
+        "taiko_application.commands.models",
+        "taiko_application.commands.prepared_score",
+        "taiko_application.commands.progress",
+        "taiko_application.commands.recommendation",
+        "taiko_application.commands.score",
+        "taiko_application.commands.song",
+        "taiko_application.private_input",
+        "taiko_application.score",
+        "taiko_application.score.b30_render",
+        "taiko_application.score.b30_single",
+        "taiko_application.score.context",
+        "taiko_application.score.drawinfo",
+        "taiko_application.score.recommend_image",
+        "taiko_application.score.resources"
+      ],
+      "edges": [
+        [
+          "taiko_application.private_input",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.private_input",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.private_input",
+          "collections.abc"
+        ],
+        [
+          "taiko_application.private_input",
+          "collections.abc.Mapping"
+        ],
+        [
+          "taiko_application.private_input",
+          "types"
+        ],
+        [
+          "taiko_application.private_input",
+          "types.MappingProxyType"
+        ],
+        [
+          "taiko_application.private_input",
+          "math"
+        ],
+        [
+          "taiko_application.commands.score",
+          "__future__"
+        ],
+        [
+          "taiko_application.commands.score",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.commands.score",
+          "re"
+        ],
+        [
+          "taiko_application.commands.score",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.score",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.score",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands.score",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.score",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.score",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.score",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands.score",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands.score",
+          "taiko_application.commands.prepared_score"
+        ],
+        [
+          "taiko_application.commands.score",
+          "taiko_application.commands.prepared_score.PreparedScoreCommand"
+        ],
+        [
+          "taiko_application.commands.score",
+          "taiko_application.commands.prepared_score.execute_prepared_score"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "io"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "io.BytesIO"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "PIL"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.private_input"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.private_input.PreparedPrivateInput"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.private_input.ReadFailure"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.score.context"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.score.context.ScorePresentationContext"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.score.drawinfo"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.score.drawinfo.ScoreInfoRenderer"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.prepared_score",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands.models",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.models",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.models",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.models",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.models",
+          "typing.Literal"
+        ],
+        [
+          "taiko_application.commands.models",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.b30"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.b30.B30Ports"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.b30.execute_b30"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.b30.prepare_b30"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.score"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.score.ScorePorts"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.score.execute_score"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.song"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.song.SongPorts"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.song.execute_song"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.constant"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.constant.ConstantPorts"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.constant.execute_constant"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.progress"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.progress.ProgressPorts"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.progress.execute_progress"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.progress.prepare_progress"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.recommendation"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.recommendation.RecommendationPorts"
+        ],
+        [
+          "taiko_application.commands",
+          "taiko_application.commands.recommendation.execute_recommendation"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "__future__"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "re"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands.recommendation",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "__future__"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "re"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands.progress",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "__future__"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "re"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands.constant",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands.song",
+          "__future__"
+        ],
+        [
+          "taiko_application.commands.song",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.commands.song",
+          "re"
+        ],
+        [
+          "taiko_application.commands.song",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.song",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.song",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands.song",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.song",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.song",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.song",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands.song",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "__future__"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "re"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "typing"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "typing.Callable"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "taiko_application.commands.models"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "taiko_application.commands.models.CommandContext"
+        ],
+        [
+          "taiko_application.commands.b30",
+          "taiko_application.commands.models.CommandResult"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "__future__"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "taiko_application.score.resources"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "taiko_application.score.resources.RenderResources"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "os"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "math"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "io"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "io.BytesIO"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "pathlib"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "pathlib.Path"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "typing"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "typing.Optional"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "PIL"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "PIL.ImageDraw"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "PIL.ImageFont"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "taiko_application.score.context"
+        ],
+        [
+          "taiko_application.score.drawinfo",
+          "taiko_application.score.context.ScorePresentationContext"
+        ],
+        [
+          "taiko_application.score.context",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.score.context",
+          "dataclasses.dataclass"
+        ],
+        [
+          "taiko_application.score.context",
+          "dataclasses.field"
+        ],
+        [
+          "taiko_application.score.context",
+          "pathlib"
+        ],
+        [
+          "taiko_application.score.context",
+          "pathlib.Path"
+        ],
+        [
+          "taiko_application.score.context",
+          "PIL"
+        ],
+        [
+          "taiko_application.score.context",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.context"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.context.ScorePresentationContext"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.b30_single"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.b30_single.B30SingleRenderer"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.b30_render"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.b30_render.B30Renderer"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.drawinfo"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.drawinfo.ScoreInfoRenderer"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.recommend_image"
+        ],
+        [
+          "taiko_application.score",
+          "taiko_application.score.recommend_image.RecommendationRenderer"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "__future__"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "taiko_application.score.resources"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "taiko_application.score.resources.RenderResources"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "io"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "os"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "pathlib"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "pathlib.Path"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "typing"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "typing.List"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "typing.Optional"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "typing.Tuple"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "PIL"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "PIL.ImageDraw"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "PIL.ImageFont"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "taiko_application.score.context"
+        ],
+        [
+          "taiko_application.score.recommend_image",
+          "taiko_application.score.context.ScorePresentationContext"
+        ],
+        [
+          "taiko_application.score.resources",
+          "PIL"
+        ],
+        [
+          "taiko_application.score.resources",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "__future__"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "taiko_application.score.resources"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "taiko_application.score.resources.RenderResources"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "math"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "io"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "io.BytesIO"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "dataclasses"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "dataclasses.replace"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "pathlib"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "pathlib.Path"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "typing"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "typing.Dict"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "typing.List"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "typing.Optional"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "typing.Tuple"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "PIL"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "PIL.ImageDraw"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "PIL.ImageFont"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "taiko_application.score.context"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "taiko_application.score.context.ScorePresentationContext"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "taiko_application.score.b30_single"
+        ],
+        [
+          "taiko_application.score.b30_render",
+          "taiko_application.score.b30_single.B30SingleRenderer"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "__future__"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "__future__.annotations"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "taiko_application.score.resources"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "taiko_application.score.resources.RenderResources"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "io"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "io.BytesIO"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "pathlib"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "pathlib.Path"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "typing"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "typing.Any"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "typing.Dict"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "typing.Iterable"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "typing.Optional"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "typing.Tuple"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "PIL"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "PIL.Image"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "PIL.ImageDraw"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "PIL.ImageFont"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "taiko_application.score.context"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "taiko_application.score.context.ScorePresentationContext"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "io"
+        ],
+        [
+          "taiko_application.score.b30_single",
+          "io.BytesIO"
+        ]
+      ],
+      "negative_control": "PASS",
+      "sha256": {
+        "taiko_application": "955edbec0185dac55f3388053240eb9b4fe06cc3e35b35e069968b8348a04a0b",
+        "taiko_application.commands": "88b573193dedb442318dafbcdf03c649161afed1650ebc1e3f66d2651deae63f",
+        "taiko_application.commands.b30": "d18b71bd09bdeba06e3987642ab9225f20c007936b68ad3c4b674979ea6d7e05",
+        "taiko_application.commands.constant": "42d0290db86747da8fb2e9cb71eea11d20097ec89e71e7e1744b95fb35e2d0c0",
+        "taiko_application.commands.models": "b65f262c54c9e3ee1879fc4b629d163dd6d73db09bdab6fbace22caf0384fb28",
+        "taiko_application.commands.prepared_score": "1b1a83b2bc1866556339fbeae08f0595251640de25d1490a2ab219a2132b0da2",
+        "taiko_application.commands.progress": "c4a1f1c3fe7be64377cad708261da9f721b54752c21c009a048f6a8fb53fd699",
+        "taiko_application.commands.recommendation": "5cfd973da8e29656c591b9e01a07144ff63f4a83a1061e20699159b6985e9430",
+        "taiko_application.commands.score": "9af216f9efce18b486105557cd5b275c16e7077f59b14ee801c113cf5a4581a6",
+        "taiko_application.commands.song": "3fdaceedf6a5711deb560930aa37b61d96aec946b234bc30e5c7bd555b2652e3",
+        "taiko_application.private_input": "4eaf529e267417db1e3048063dd3c90d9acb82820ee29a7e380e9775d28640d6",
+        "taiko_application.score": "037e7ec07eb00980077ef5416b798b320425e830dcd4acba5f99ce81d7be9e8c",
+        "taiko_application.score.b30_render": "f311d26f46761507d8c210fc0eeff6ecb9c75ac9587bf2b280479e03b4b96682",
+        "taiko_application.score.b30_single": "75c0e7677f08aeef162bd7ae1c792318ec48966fce84600f36806a0ae5450f8a",
+        "taiko_application.score.context": "fe5815b88d436114aaa1c265a26658f19e59258c7d53879ce15d6fad9e1dfcaf",
+        "taiko_application.score.drawinfo": "f197cff7585ea26c43e4a432a4b7b07767bb600efaf820b4148f249060ad61ca",
+        "taiko_application.score.recommend_image": "95865347fa35ad54f0b58fe2d0a8696620884b87bbf25b414c02fb2cc0642fa3",
+        "taiko_application.score.resources": "4d6170ee3d054fc61955e991872b180b811b24fe7b551616985f707311678475"
+      }
+    },
+    "untouched": {
+      "taiko/plugins/utils/bot_binding_authority.py": "5d6dd9dda36a066103082d0addf88e4e0b78ee35146dfe912ae37879643a4850",
+      "taiko/plugins/utils/bot_binding_mutation.py": "d6ddb482eb12eaa747b3dbe1cb9b16982afe266103b23dacdf440c738ecd6d8e",
+      "taiko/taiko_runtime/platform_adapter.py": "5bd9321dd6d58817f9ed879b90dd0953c0292fe695f518108baf24743f0480f0",
+      "taiko/taiko_store/README.md": "0e6923ef9cae02ee358c8454881901f6e278013a34996df07eaeeb5c876df477",
+      "taiko/taiko_store/__init__.py": "879eed5405e22be6f2fac878df47597f37aaf281bc71628e74647fa2b890bdda",
+      "taiko/taiko_store/backup.py": "c3788c2182bba553c39d367bce616aad80abb9f5ca671e8e5cf8a11b4d88028f",
+      "taiko/taiko_store/bridge.py": "91096c7c7d192e64c5f1a951a63100dc8da08adc17457719a8712797252c76f9",
+      "taiko/taiko_store/daily.py": "9409a2b508ff1c5823b09ffc02e16b0003e6445e878c782bdc8204389ab97f2a",
+      "taiko/taiko_store/merge_reference.py": "f60b0666214fe9c01eed7dc3fe81893aff05c193da85163c40fe0187e5ace378",
+      "taiko/taiko_store/merged_materialization.py": "0ce39ff24698c000fce896e779c3c72ac6faca05bce0d98cc2bd1b97374f3a4d",
+      "taiko/taiko_store/merged_read.py": "392fa6b1c9c5bf93c4df10f6eb46faed6f02b2dc8a90c0b1fc78c52553922cbb",
+      "taiko/taiko_store/publication.py": "bd402a38fbc9916e52a2e274180406dcfc2ff0c0a0155b828391b4921d775f3f",
+      "taiko/taiko_store/reader.py": "eed520e0616a3cd590abf46349d117182220fd318f89596e6ca2931ea698ed9a",
+      "client/plugins/taiko.py": "8d9db1bb4fa24882e2026f196db5d7d7cddde4e383aad44716a21517b741b417",
+      "client/taiko_runtime/send_authority.py": "8f815fcdf1ebaed6043a471a642048b21bb9f2a4cf68f80abaa09cb9648fac15"
+    },
+    "unchanged_ast_counts": {
+      "taiko/plugins/taiko.py": 276,
+      "taiko/plugins/utils/drawinfo.py": 10,
+      "application_legacy_score_branch": "unchanged",
+      "application_and_public_unchanged_files": 44
+    }
+  },
+  "parity": [
+    {
+      "scenario": "normal",
+      "query": "single",
+      "result": {
+        "kind": "image",
+        "sha256": "f664d69e318e97243728cbf2d8655a940a90af564e848c905c48dc593cbed5ef",
+        "pixels": "e8162a7d7dc629c2c511ed104fde34faab66efe59062f02f9285b900e626b9f8",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "single",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "single",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "single",
+      "result": {
+        "kind": "image",
+        "sha256": "5f3a0996a4a6f9789b51f09843e34e6a947824328693c99380b9f72edf8d1887",
+        "pixels": "4bd51a4c2ae6dc2baa17221490ff42709150928abc1f751ff0da917fea4cc873",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "single",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "single",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "many",
+      "result": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid278 花漾\nid7 Other\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "many",
+      "result": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid278 花漾\nid7 Other\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "many",
+      "result": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid278 花漾\nid7 Other\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "many",
+      "result": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid278 花漾\nid7 Other\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "many",
+      "result": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid278 花漾\nid7 Other\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "many",
+      "result": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid278 花漾\nid7 Other\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "none",
+      "result": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "none",
+      "result": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "none",
+      "result": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "none",
+      "result": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "none",
+      "result": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "none",
+      "result": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "fuzzy-low",
+      "result": {
+        "kind": "image",
+        "sha256": "f664d69e318e97243728cbf2d8655a940a90af564e848c905c48dc593cbed5ef",
+        "pixels": "e8162a7d7dc629c2c511ed104fde34faab66efe59062f02f9285b900e626b9f8",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：花漾\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "fuzzy-low",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：花漾\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "fuzzy-low",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：花漾\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "fuzzy-low",
+      "result": {
+        "kind": "image",
+        "sha256": "5f3a0996a4a6f9789b51f09843e34e6a947824328693c99380b9f72edf8d1887",
+        "pixels": "4bd51a4c2ae6dc2baa17221490ff42709150928abc1f751ff0da917fea4cc873",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：花漾\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "fuzzy-low",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：花漾\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "fuzzy-low",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：花漾\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "fuzzy-high",
+      "result": {
+        "kind": "image",
+        "sha256": "f664d69e318e97243728cbf2d8655a940a90af564e848c905c48dc593cbed5ef",
+        "pixels": "e8162a7d7dc629c2c511ed104fde34faab66efe59062f02f9285b900e626b9f8",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "fuzzy-high",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "fuzzy-high",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "fuzzy-high",
+      "result": {
+        "kind": "image",
+        "sha256": "5f3a0996a4a6f9789b51f09843e34e6a947824328693c99380b9f72edf8d1887",
+        "pixels": "4bd51a4c2ae6dc2baa17221490ff42709150928abc1f751ff0da917fea4cc873",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "fuzzy-high",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "fuzzy-high",
+      "result": {
+        "kind": "image",
+        "sha256": "e32bb7ac463898c1ce5b4430b4571fb963f31082cf1238384b7d4cc2816eb60f",
+        "pixels": "d61fb7d892ebccae70ff47eafb18996cd99fb96c3f70cd38bafd1348b626ef64",
+        "size": [
+          1060,
+          1850
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "bad-id",
+      "result": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "bad-id",
+      "result": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "bad-id",
+      "result": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "bad-id",
+      "result": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "bad-id",
+      "result": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "bad-id",
+      "result": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "missing-song",
+      "result": {
+        "kind": "text",
+        "text": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "missing-song",
+      "result": {
+        "kind": "text",
+        "text": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "missing-song",
+      "result": {
+        "kind": "text",
+        "text": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "missing-song",
+      "result": {
+        "kind": "text",
+        "text": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "missing-song",
+      "result": {
+        "kind": "text",
+        "text": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "missing-song",
+      "result": {
+        "kind": "text",
+        "text": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "bad-row",
+      "result": {
+        "error": "ValueError",
+        "message": "invalid literal for int() with base 10: 'oops'"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "bad-row",
+      "result": {
+        "error": "ValueError",
+        "message": "invalid literal for int() with base 10: 'oops'"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "bad-row",
+      "result": {
+        "error": "ValueError",
+        "message": "invalid literal for int() with base 10: 'oops'"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "bad-row",
+      "result": {
+        "error": "ValueError",
+        "message": "invalid literal for int() with base 10: 'oops'"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "bad-row",
+      "result": {
+        "error": "ValueError",
+        "message": "invalid literal for int() with base 10: 'oops'"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "bad-row",
+      "result": {
+        "error": "ValueError",
+        "message": "invalid literal for int() with base 10: 'oops'"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "invalid-return",
+      "result": {
+        "error": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "invalid-return",
+      "result": {
+        "error": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "invalid-return",
+      "result": {
+        "error": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "invalid-return",
+      "result": {
+        "error": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "invalid-return",
+      "result": {
+        "error": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "invalid-return",
+      "result": {
+        "error": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "normal",
+      "query": "format",
+      "result": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-first",
+      "query": "format",
+      "result": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0-existing",
+      "query": "format",
+      "result": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "member-change",
+      "query": "format",
+      "result": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "profile-change",
+      "query": "format",
+      "result": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "no-history",
+      "query": "format",
+      "result": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    }
+  ],
+  "limits": [
+    "synthetic SQL rows; no database connection",
+    "actual handler bodies without Bot registration side effects",
+    "current only; tinfo does not need history",
+    "not a client private-tinfo migration",
+    "not a Writer migration",
+    "no production userdata read or writes; no merge/deploy/restart"
+  ]
+}
