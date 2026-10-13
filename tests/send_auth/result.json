@@ -1,5 +1,5 @@
 {
-  "status": "CLIENT_SEND_AUTH_HOTFIX_READY",
+  "status": "VALIDATED_PR_PENDING",
   "base": "fa0983dcc56ca109555a33d90aac0fecca6bdf0d",
   "client_version": "0.2.8",
   "core": "0.1.2",
@@ -54,5 +54,6 @@
     "renderers",
     "taiko_bot providers/cache/storage",
     "Writer/SQL/sync/Core formulas"
-  ]
+  ],
+  "pr_blocker": "GitHub create_pull_request: 403 Resource not accessible by integration"
 }

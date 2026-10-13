@@ -1,6 +1,6 @@
 # Client send authorization hotfix
 
-状态：**CLIENT_SEND_AUTH_HOTFIX_READY**。基于 main `fa0983dcc56ca109555a33d90aac0fecca6bdf0d`（0.2.7），独立候选版本 **0.2.8**；参考 Phase 2E-R `44aaf656` 的授权复核，不合入 Application 抽取或资源根修复。
+状态：**代码与测试已通过，PR 创建受权限阻断**。暂不授予最终 `CLIENT_SEND_AUTH_HOTFIX_READY` 标记。基于 main `fa0983dcc56ca109555a33d90aac0fecca6bdf0d`（0.2.7），独立候选版本 **0.2.8**；参考 Phase 2E-R `44aaf656` 的授权复核，不合入 Application 抽取或资源根修复。
 
 B30、tinfo、私有进度、私有推荐取到账号后的 35 个终止发送出口，均在调用原发送函数前重新执行既有 `_resolve_read_bind_target_safe`。复核身份绑定、账号、来源、虚拟账号属性；失败、撤销、超时、身份变化或异常均返回“授权已失效，请重新查询。”，不发送旧结果。覆盖图片、推荐私人文字结果以及错误出口。原命令计算、文字、PNG/JPEG、前缀和发送方式均保留，公开歌曲/定数查询不增加授权检查。
 
@@ -45,3 +45,9 @@ python tests/send_auth/audit.py --repo "$CHECKOUT" --evidence "$EVIDENCE"
 ```
 
 代码与报告仅作为独立热修补 PR，等待审阅。完成后停止。
+
+## PR 创建阻断
+
+功能分支 `fix/client-send-auth` 已推送，代码提交 `ff07102`。GitHub connector 创建 PR 返回 **403 Resource not accessible by integration**；本机没有备用 GitHub CLI/API 登录。尚无实际 PR 编号，不能将比较页称为已创建 PR。
+
+[审阅完整差异 / 手动创建 PR](https://github.com/sigaer/taiko-bot/compare/main...fix/client-send-auth?expand=1)。建议标题：`0.2.8 修复客户端撤权后仍发送私人结果`。本报告开头至验证部分可直接作为 PR 描述。需具备 PR 写权限的账号完成创建；不需要重跑业务测试。未合并或部署。

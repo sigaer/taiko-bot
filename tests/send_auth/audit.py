@@ -43,5 +43,5 @@ with zipfile.ZipFile(wheel) as z:
     for path in ('plugins/taiko.py','taiko_runtime/send_authority.py'):
         assert z.read(path)==(r/path).read_bytes()
         assert z.read(path)==(e/'env/lib/python3.11/site-packages'/path).read_bytes()
-result={'status':'CLIENT_SEND_AUTH_HOTFIX_READY','base':base,'client_version':'0.2.8','core':'0.1.2','contract':'0.1.0','application_dependency':False,'guarded_exits':t.removed,'normal_and_existing_error_parity':24,'candidate_dispatch_cases':54,'revocation_real_renderer_cases':10,'payload_parity':parity,'wheel_sha256':hashlib.sha256(wheel.read_bytes()).hexdigest(),'unchanged':['all command AST except send guards','all dependencies','renderers','taiko_bot providers/cache/storage','Writer/SQL/sync/Core formulas']}
+result={'status':'VALIDATED_PR_PENDING','base':base,'client_version':'0.2.8','core':'0.1.2','contract':'0.1.0','application_dependency':False,'guarded_exits':t.removed,'normal_and_existing_error_parity':24,'candidate_dispatch_cases':54,'revocation_real_renderer_cases':10,'payload_parity':parity,'wheel_sha256':hashlib.sha256(wheel.read_bytes()).hexdigest(),'unchanged':['all command AST except send guards','all dependencies','renderers','taiko_bot providers/cache/storage','Writer/SQL/sync/Core formulas']}
 (e/'result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2));print(result['status'])
