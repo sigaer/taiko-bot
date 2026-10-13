@@ -37,7 +37,7 @@ multidict==7.1.0
 nb-cli==1.7.4
 nonebot-adapter-onebot==2.4.6
 nonebot-adapter-qq==1.7.3
-nonebot-plugin-taiko-song @ file:///var/tmp/taiko-phase2fa-20261013/wheels/nonebot_plugin_taiko_song-0.1.0-py3-none-any.whl#sha256=ee51ffe92155a43fa0ecd4ef0ec4e90a5acc53bbff0a46ddfe4c16a588dd0fa9
+nonebot-plugin-taiko-song==0.2.0
 nonebot2==2.5.0
 noneprompt==0.1.11
 nonestorage==0.1.0
@@ -46,6 +46,7 @@ opentelemetry-api==1.45.1
 packaging==26.3
 pandas==3.0.6
 pillow==11.3.0
+pip==26.2.1
 platformdirs==4.13.0
 prompt_toolkit==3.0.53
 propcache==0.5.4
@@ -65,16 +66,17 @@ requests==2.34.2
 rich==15.0.0
 sakura-taiko-contract==0.1.0
 sakura-taiko-core==0.1.2
+setuptools==65.5.0
 six==1.17.0
 soupsieve==2.10
 starlette==1.7.0
 taiko-application==0.5.0
-taiko-bot==0.2.10
+taiko-bot==0.2.11
 text-unidecode==1.3
 textual==8.2.8
 tomlkit==0.14.0
-typing-inspection==0.4.4
 typing_extensions==4.16.0
+typing-inspection==0.4.4
 tzdata==2026.5
 ujson==6.0.0
 urllib3==2.8.0

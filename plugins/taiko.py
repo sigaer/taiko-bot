@@ -8,7 +8,6 @@ from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
 from .utils import (
     render_pass_progress_image_bytes,
     render_progress_image_bytes_by_list,
-    find_by_volume,
     compute_score,
     render_progress_image_bytes,
     render_star_progress_image_bytes,
@@ -48,7 +47,6 @@ from .utils.taikob_v2 import (
     render_b20_v2_image,
 )
 from .utils.twso import find_player
-from .utils.song_position import format_position_reply, get_song_position_by_id
 from .utils.song_visibility import (
     is_song_id_publicly_visible,
     is_song_publicly_visible,
@@ -263,25 +261,6 @@ TREND_USAGE_MESSAGE = (
 PLAYTREND_USAGE_MESSAGE = (
     "参数错误。示例：taikoplaytrend 20 80 / taikoplaytrend 体力 / "
     "taikoplaytrend --dim 精度 20 / taikoplaytrend -a / taikoplaytrend -b"
-)
-DIFF_MAP = {
-    "里": "InnerOni",
-    "鬼": "Oni",
-    "表": "Oni",
-    "魔王": "Oni",
-    "松": "Muzukashii",
-    "困难": "Muzukashii",
-    "竹": "Futsuu",
-    "一般": "Futsuu",
-    "梅": "Kantan",
-    "简单": "Kantan",
-}
-ALIAS_QUERY_REGEX = re.compile(r"^(?P<q>.+?)有什么别名[？?]?$")
-SONG_WHERE_REGEX = re.compile(r"^(?P<q>.+?)歌在哪[？?]?$")
-SONG_POSITION_REGEX = re.compile(r"^(?P<q>.+?)在什么位置[？?]?$")
-SONG_POS_BY_ID_REGEX = re.compile(r"^位置\s*(?:id)?\s*(?P<id>\d+)\s*[？?]?$")
-DIFF_BY_ID_REGEX = re.compile(
-    r"^(?P<diff>里|鬼|表|松|竹|梅|简单|一般|困难|魔王)\s*(?:id)?\s*(?P<id>\d+)\s*[？?]?$"
 )
 CITY_ARCADE_QUERY_REGEX = re.compile(r"^(?P<city>.+?)(?:哪有鼓|哪里有鼓)\s*[？?]?$")
 PROGRESS_WITH_PAGE_REGEX = re.compile(r"^(?P<body>.+进度)(?:\s+(?P<page>\d+))?$")
@@ -565,13 +544,6 @@ def _parse_taikob_dim_arg(
     return selected_dim, unknown_tokens
 
 
-DIFF_MAP_REVERSE = {
-    "InnerOni": "里谱",
-    "Oni": "魔王",
-    "Muzukashii": "困难",
-    "Futsuu": "普通",
-    "Kantan": "简单",
-}
 RANK_DIFF_INPUT_MAP = {
     "简单": 1,
     "梅": 1,
@@ -1555,56 +1527,6 @@ def _truncate_text(
     return text[: right - 1] + ell if right > 0 else ell
 
 
-def render_alias_image(
-    song_title: str,
-    song_id: str,
-    aliases: List[str],
-    width: int = 980,
-    padding: int = 28,
-    font_size: int = 26,
-    line_gap: int = 8,
-    bg_color: Tuple[int, int, int] = (245, 247, 250),
-    fg_color: Tuple[int, int, int] = (28, 32, 36),
-) -> bytes:
-    font = _load_alias_font(FONT_PATH, font_size)
-    title_font = _load_alias_font(FONT_PATH, font_size + 4)
-    tmp = Image.new("RGBA", (width, 10), (*bg_color, 255))
-    draw = ImageDraw.Draw(tmp)
-
-    lines: List[str] = []
-    title_line = f"歌曲：{song_title} (id{song_id})"
-    lines.extend(_wrap_text(draw, title_line, title_font, width - padding * 2))
-    if not aliases:
-        lines.append("别名：暂无记录")
-    else:
-        lines.append(f"别名（{len(aliases)}）：")
-        max_w = width - padding * 2
-        for idx, alias in enumerate(aliases, start=1):
-            prefix = f"{idx}. "
-            prefix_w = int(draw.textlength(prefix, font=font))
-            chunks = _wrap_text(draw, alias, font, max(20, max_w - prefix_w))
-            if chunks:
-                lines.append(prefix + chunks[0])
-                indent = " " * len(prefix)
-                for chunk in chunks[1:]:
-                    lines.append(indent + chunk)
-
-    line_height = int(font_size * 1.4)
-    title_height = int((font_size + 4) * 1.4)
-    height = padding * 2 + (len(lines) * line_height) + (line_gap * (len(lines) - 1))
-    height = max(height, padding * 2 + title_height + line_gap)
-    img = Image.new("RGBA", (width, height), (*bg_color, 255))
-    draw = ImageDraw.Draw(img)
-
-    y = padding
-    for i, line in enumerate(lines):
-        use_font = title_font if i == 0 else font
-        draw.text((padding, y), line, fill=fg_color, font=use_font)
-        y += line_height + line_gap
-
-    buf = BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
-    return buf.getvalue()
 
 
 def render_draw_guess_list_image(
@@ -1876,16 +1798,6 @@ def song_id_exists(target_id: str) -> bool:
     return False
 
 
-def find_aliases_by_song_id(song_id: str) -> Tuple[str, List[str]]:
-    if not is_song_id_publicly_visible(song_id):
-        return "", []
-    data = load_alias_data()
-    for entry in data:
-        if str(entry.get("id")) == str(song_id):
-            title = entry.get("song_name_jp") or ""
-            aliases = entry.get("aliases") or []
-            return title, aliases
-    return "", []
 
 
 def _normalize_identity_key(identity_key: str) -> str:
@@ -2886,30 +2798,6 @@ def queryMusic(
     return results
 
 
-def _resolve_what_song_query(raw_q: str, stripped_q: str) -> List[List[Any]]:
-    if not stripped_q or stripped_q == raw_q:
-        return queryMusic(raw_q)
-
-    # 先保留真正存在的“里xxx/鬼xxx”精确别名或曲名，再优先解析去前缀后的关键词。
-    raw_exact_results, _ = _query_music_with_mode(
-        raw_q, allow_partial=False, allow_fuzzy=False
-    )
-    if raw_exact_results:
-        return raw_exact_results
-
-    stripped_non_fuzzy_results = queryMusic(stripped_q, allow_fuzzy=False)
-    if stripped_non_fuzzy_results:
-        return stripped_non_fuzzy_results
-
-    raw_non_fuzzy_results = queryMusic(raw_q, allow_fuzzy=False)
-    if raw_non_fuzzy_results:
-        return raw_non_fuzzy_results
-
-    stripped_results = queryMusic(stripped_q)
-    if stripped_results:
-        return stripped_results
-
-    return queryMusic(raw_q)
 
 
 def _is_fuzzy_query_result(results: List[List[Any]]) -> bool:
@@ -2927,27 +2815,6 @@ def _build_fuzzy_query_hint(results: List[List[Any]]) -> str:
     return f"你要找的可能是：{title}\n匹配度：{ratio:.2f}"
 
 
-async def _finish_fuzzy_query_with_fumen(
-    matcher: Matcher,
-    event: MessageEvent,
-    results: List[List[Any]],
-    difficulty: str = "Oni",
-) -> None:
-    hint = _build_fuzzy_query_hint(results)
-    song_id = str(results[0][0]).strip()
-    if not await _ensure_asset_resources_ready(matcher, event, "fumens-assets"):
-        await _finish_text_reply(matcher, event, hint)
-    path = _get_fumen_path(difficulty, song_id)
-    if path.exists():
-        bio = file_to_bytesio(path)
-        await _finish_with_image_fallback(
-            matcher,
-            event,
-            hint,
-            bio,
-            fallback_note="（谱面图片发送失败，请稍后重试）",
-        )
-    await _finish_text_reply(matcher, event, hint)
 
 
 def _now_ts() -> int:
@@ -5682,7 +5549,6 @@ async def twso_handle(event: MessageEvent):
     await _finish_text_reply(twso, event, res)
 
 
-note_count = on_regex(r"^太鼓查物量\s?(\d+)\s*", rule=taiko_rule)
 
 const_query = on_regex(
     r"^/?查定数\s*(\d+\.\d)(?:\s+(.+))?\s*$",
@@ -5756,22 +5622,6 @@ async def const_query_handle(event: MessageEvent, match=RegexMatched()):
     await _finish_image_reply(const_query, event, png)
 
 
-@note_count.handle()
-async def note_count_handle(event: MessageEvent, match=RegexMatched()):
-    number = match.group(1)
-    print(type(number))
-    nc_data = json.loads((SONGS_DIR / "tja_note_counts.json").read_text(encoding="utf-8"))
-    res = find_by_volume(nc_data, int(number), "total")
-    if len(res) != 0:
-        msg = f"以下为对应物量的谱面：(共{len(res)}条)\n"
-        if len(res) > 20:
-            msg += f"仅显示前20条：\n"
-            res = res[:20]
-    else:
-        msg = "没有找到对应物量的谱面。"
-    for title, course in res:
-        msg += f"{title} {course}\n"
-    await _finish_text_reply(note_count, event, msg)
 
 
 matcher = on_regex(r"^.+进度(?:\s+\d+)?$", rule=taiko_rule)
@@ -6282,10 +6132,6 @@ async def taikorec_handle(event: MessageEvent):
 # ================
 # 工具函数
 # ================
-def _get_fumen_path(difficulty: str, song_id: str) -> Path:
-    # 统一只允许数字 id（更稳健）
-    song_id = str(song_id).strip()
-    return FUMENS_DIR / difficulty / f"{song_id}.png"
 
 
 def file_to_bytesio(path: Path) -> BytesIO:
@@ -6299,40 +6145,8 @@ def file_to_bytesio(path: Path) -> BytesIO:
     return bio
 
 
-async def _finish_with_image_fallback(
-    matcher: Matcher,
-    event: MessageEvent,
-    text: str,
-    image: BytesIO,
-    fallback_note: str = "（图片发送失败，请稍后重试）",
-) -> None:
-    try:
-        await _finish_image_reply(matcher, event, image, prefix_text=text)
-    except MatcherException:
-        raise
-    except Exception as e:
-        logger.warning("send_image_failed text=%s error=%s", text.splitlines()[0], e)
-        await _finish_text_reply(matcher, event, f"{text}\n{fallback_note}")
 
 
-async def _send_fumen_or_hint(
-    matcher: Matcher, event: MessageEvent, difficulty: str, song_id: str
-) -> None:
-    if not await _ensure_asset_resources_ready(matcher, event, "fumens-assets"):
-        return
-    path = _get_fumen_path(difficulty, song_id)
-    if not path.exists():
-        await matcher.finish(
-            f"未找到谱面文件：{difficulty}/{song_id}.png（路径：{path}）"
-        )
-    bio = file_to_bytesio(path)
-    await _finish_with_image_fallback(
-        matcher,
-        event,
-        f"你要找的是不是：\n{DIFF_MAP_REVERSE[difficulty]} id{song_id}",
-        bio,
-        fallback_note="（谱面图片发送失败，请稍后重试）",
-    )
 
 
 # =========================
@@ -6373,62 +6187,8 @@ async def _(matcher: Matcher, event: MessageEvent):
 # =========================
 # 指令：xx有什么别名
 # =========================
-alias_query = on_regex(
-    ALIAS_QUERY_REGEX.pattern, priority=10, rule=taiko_rule & tsearch_rule, block=True
-)
 
 
-@alias_query.handle()
-async def _(matcher: Matcher, event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-    msg_text = extract_plain_text(event)
-    m = ALIAS_QUERY_REGEX.match(msg_text)
-    if not m:
-        await matcher.finish("格式不正确，应为：xx有什么别名")
-
-    q = m.group("q").strip()
-    if not q:
-        await matcher.finish("请提供歌曲名或别名")
-
-    try:
-        results = queryMusic(q)
-    except Exception as e:
-        await matcher.finish(f"查询歌曲失败：{e}")
-
-    fuzzy_hint = ""
-    if not results:
-        await matcher.finish("未找到匹配的歌曲。")
-    if _is_fuzzy_query_result(results):
-        fuzzy_hint = _build_fuzzy_query_hint(results)
-    if len(results) > 1:
-        msg = "你要找的可能是：\n"
-        for music in results:
-            msg += f"id{music[0]} {music[1]}\n"
-        await matcher.finish(msg.strip())
-
-    song_id = str(results[0][0])
-    song_title = results[0][1]
-    alias_title, aliases = find_aliases_by_song_id(song_id)
-    show_title = alias_title or song_title
-
-    cleaned: List[str] = []
-    seen = set()
-    for a in aliases:
-        if not a:
-            continue
-        if a in seen:
-            continue
-        seen.add(a)
-        cleaned.append(a)
-
-    if not await _ensure_asset_resources_ready(matcher, event, "core-assets"):
-        return
-    img_buf = render_alias_image(show_title, song_id, cleaned)
-    if fuzzy_hint:
-        await _finish_image_reply(matcher, event, img_buf, prefix_text=fuzzy_hint)
-    else:
-        await _finish_image_reply(matcher, event, img_buf)
 
 
 # =========================
@@ -6534,104 +6294,21 @@ async def _(matcher: Matcher, event: MessageEvent):
     await matcher.finish(f"已添加别名：{alias_to_add} -> {song_title} (id{song_id})")
 
 
-def _strip_song_query_diff_prefix(raw_q: str) -> str:
-    if raw_q.startswith("简单"):
-        return raw_q[2:].strip()
-    if raw_q.startswith("普通"):
-        return raw_q[2:].strip()
-    if raw_q.startswith("困难"):
-        return raw_q[2:].strip()
-    if raw_q.startswith("魔王"):
-        return raw_q[2:].strip()
-    if raw_q.startswith(("梅", "竹", "松", "鬼", "里")):
-        return raw_q[1:].strip()
-    return raw_q
 
 
-async def _finish_song_position_by_id(
-    matcher: Matcher, event: MessageEvent, song_id: int
-) -> None:
-    result = get_song_position_by_id(song_id)
-    if not result:
-        await matcher.finish(f"未找到 id{song_id} 的歌曲信息。")
-    await _finish_text_reply(matcher, event, format_position_reply(result))
 
 
-async def _finish_song_position_by_name(
-    matcher: Matcher, event: MessageEvent, raw_q: str
-) -> None:
-    stripped_q = _strip_song_query_diff_prefix(raw_q)
-    try:
-        results = _resolve_what_song_query(raw_q, stripped_q)
-    except Exception as e:
-        await matcher.finish(f"查询歌曲失败：{e}")
-
-    if not results:
-        await matcher.finish("未找到匹配的歌曲。")
-    if _is_fuzzy_query_result(results):
-        await matcher.finish(_build_fuzzy_query_hint(results))
-    if len(results) > 1:
-        msg = "你要找的可能是：\n"
-        for music in results:
-            msg += f"id{music[0]} {music[1]}\n"
-        await matcher.finish(msg.strip())
-
-    song_id = int(results[0][0])
-    await _finish_song_position_by_id(matcher, event, song_id)
 
 
 # =========================
 # 指令：歌曲分类位序
 # =========================
-song_where = on_regex(
-    SONG_WHERE_REGEX.pattern, priority=10, rule=taiko_rule, block=True
-)
-song_position_phrase = on_regex(
-    SONG_POSITION_REGEX.pattern, priority=10, rule=taiko_rule, block=True
-)
-song_pos_by_id = on_regex(
-    SONG_POS_BY_ID_REGEX.pattern, priority=10, rule=taiko_rule, block=True
-)
 
 
-@song_where.handle()
-async def song_where_handle(matcher: Matcher, event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-    msg_text = extract_plain_text(event)
-    m = SONG_WHERE_REGEX.match(msg_text)
-    if not m:
-        await matcher.finish("格式不正确，应为：xx在哪")
-    raw_q = (m.group("q") or "").strip()
-    if not raw_q:
-        await matcher.finish("请提供歌曲名或别名，例如：千本桜在哪")
-    await _finish_song_position_by_name(matcher, event, raw_q)
 
 
-@song_position_phrase.handle()
-async def song_position_phrase_handle(matcher: Matcher, event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-    msg_text = extract_plain_text(event)
-    m = SONG_POSITION_REGEX.match(msg_text)
-    if not m:
-        await matcher.finish("格式不正确，应为：xx在什么位置")
-    raw_q = (m.group("q") or "").strip()
-    if not raw_q:
-        await matcher.finish("请提供歌曲名或别名，例如：千本桜在什么位置")
-    await _finish_song_position_by_name(matcher, event, raw_q)
 
 
-@song_pos_by_id.handle()
-async def song_pos_by_id_handle(matcher: Matcher, event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-    msg_text = extract_plain_text(event)
-    m = SONG_POS_BY_ID_REGEX.match(msg_text)
-    if not m:
-        await matcher.finish("格式不正确，应为：位置 id1156")
-    song_id = int(m.group("id"))
-    await _finish_song_position_by_id(matcher, event, song_id)
 
 
 # =========================
@@ -6712,31 +6389,8 @@ async def city_arcade_query_handle(bot: Bot, event: MessageEvent):
 # =========================
 # 允许：里id1234 / 里 id1234 / 里 1234 / 里  id1234
 # 也允许：鬼id0001、表 999、松 id12
-diff_by_id = on_regex(
-    DIFF_BY_ID_REGEX.pattern,
-    priority=10,
-    block=True,
-    rule=taiko_rule & tsearch_rule,
-)
 
 
-@diff_by_id.handle()
-async def _(matcher: Matcher, event: MessageEvent):
-    msg = extract_plain_text(event)
-    m = DIFF_BY_ID_REGEX.match(msg)
-    if not m:
-        await matcher.finish(
-            "格式不正确，应为：里/鬼/表/松/竹/梅/简单/一般/困难/魔王 idxxxx（例如：里 id1234）"
-        )
-
-    diff_alias = m.group("diff")
-    song_id = m.group("id")
-
-    difficulty = DIFF_MAP.get(diff_alias)
-    if not difficulty:
-        await matcher.finish(f"未知难度标记：{diff_alias}")
-
-    await _send_fumen_or_hint(matcher, event, difficulty, song_id)
 
 
 # =========================

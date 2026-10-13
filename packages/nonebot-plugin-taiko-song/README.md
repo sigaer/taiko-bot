@@ -1,86 +1,104 @@
-# Taiko song plugin (Phase 2F-A candidate)
+# nonebot-plugin-taiko-song 0.2.0
 
-`nonebot-plugin-taiko-song==0.1.0` owns only `xx是什么歌`. Its matcher uses priority 10,
-block true, and `taiko_application.commands.execute_song` from unchanged Application
-0.5.0. Application remains independent of NoneBot.
+Taiko owns seven public command entries: `what_song`, `alias_query`, `song_where`,
+`song_position_phrase`, `song_pos_by_id`, `diff_by_id`, and `note_count`. Both hosts
+load this single distribution through their existing NoneBot plugin configuration.
+Application 0.5.0 remains platform independent and unchanged.
 
-## Installation and host configuration
+## Installation and ownership
 
-Build Application and this distribution in the Taiko repository, alongside the
-existing Core/Contract wheels. Install using the complete dependency resolver:
+Build Application 0.5.0 and this plugin's wheels before installing either host.
+The center retains its source runtime layout and exact Core 0.1.1 / Contract 0.1.0
+pins. The client package 0.2.11 pins Core 0.1.2 / Contract 0.1.0 and this plugin
+0.2.0. Install with the full dependency resolver; no `--no-deps` installation.
+The exact verified environment locks are under `tests/acceptance/`.
+
+Register `nonebot_plugin_taiko_song` once in `tool.nonebot.plugins`. The generic
+host `feature_handler` plugin must be available; its switches and whitelist remain
+host responsibilities. Center config uses `taiko_song_profile="center"` and an
+explicit `taiko_song_public_root` (default cwd). Client uses profile `client` and
+its existing settings/public resource manager. No Sakura utility import or
+absolute checkout path is required by this package.
+
+Install the new wheel before using the matching center source revision or client
+wheel. Do not combine the expanded plugin with a host that still registers these
+six entries. Review/integrate the Taiko dependency artifacts first, then the Sakura
+removal revision. This branch has not been merged or deployed.
+
+## Modules and retained semantics
+
+- `__init__.py`: existing Application `execute_song` entry plus one registration
+  import. The new handlers live in `public_commands.py`.
+- `provider.py`: public catalog, aliases, note counts and Core position profile;
+  no userdata, SQL, credentials, Writer or private authorization.
+- `public_queries.py`: note ordering/text helpers and position presentation.
+- `alias_renderer.py`: original alias layout/PNG encoding with an explicit font.
+- Existing `delivery.py`, `center_messages.py`, `client_messages.py`: unchanged
+  and reused, with no second platform sending framework.
+
+Center retains duplicate-group aliases, fuzzy threshold, center position ranking
+and down-shelf notices. Client retains its own alias selection, fuzzy notices,
+visibility filtering, `position-client-20261010`, resource readiness and missing
+chart messages. Difficulty-ID commands reuse the existing fumen delivery path.
+`note_count` keeps its original priority/block defaults, ordering, first-20 limit
+and text; the other five entries retain priority 10 and block true. Only alias
+and difficulty-ID additionally require `tsearch`. Existing mention behavior is
+preserved, including regex rejection before handlers run.
+
+The two hosts no longer define the six matchers or handlers. Orphan alias drawing,
+lookup, note and position implementations were removed, as were five newly unused
+client resolution/fumen helpers. Generic font/wrapping/fuzzy-hint helpers still
+needed by unrelated host commands remain; this small presentation-helper overlap
+is explicit, not a second active command implementation. Shared query, tset Writer,
+private commands and unrelated renderers remain host-owned. No new duplicate
+matcher, Application usecase, Core formula or platform sender was introduced.
+
+## Finite acceptance
+
+`tests/public_dispatch.py` replaces the Phase 2F-A test entry. It loads the actual
+installed external plugin before loading the complete host plugin, verifies seven
+external registrations and zero corresponding host registrations, then runs real
+NoneBot rules/handlers with synthetic OneBot and QQ events. It compares each new
+entry with the frozen, unchanged old entry and removed helper bodies. Only outer
+feature storage, resource readiness and sends are substituted; catalog reading,
+Core profiles, matching, alias drawing and fumen selection run normally.
+
+Center: 156 cases. Client: 160 cases (four extra resource-admission refusals).
+Both compare full message payloads, sending options, PNG bytes hash, pixel hash,
+dimensions and mode. Cases cover normal/ID/alias/fuzzy/duplicate, difficulty
+selection and missing fumen, empty/malformed catalogs, invalid input, note sorting
+and truncation, switches, mentions, real down-shelf/hidden/double-chart inputs,
+and the former position sort/tie/off-shelf vectors. Two deliberately malformed
+note-provider cases per host compare captured exceptions; they are not counted
+as successful business responses. Every ordinary first case must actually send.
+The original `what_song` executes Application once in representative events on
+both platforms; unchanged Phase 2F-A parity evidence remains in Git history.
+
+`tests/scope_audit.py --workspace <task-root>` verifies the unchanged remaining
+functions/classes, remaining matcher declarations (center 67, client 63), unchanged
+62 Application files, unchanged send-authority helper and all 35 private guard
+calls. None of the private handlers changed. The old Sakura-only position tests
+moved into this installed-plugin acceptance; unrelated tests remain intact.
+
+References: Taiko `c5ef227`, Sakura `241a237`. `tests/acceptance/summary.json`
+records source/resource/fixture hashes, precise versions and installed-source
+comparison. `center-dispatch.json` and `client-dispatch.json` contain every output.
+No private userdata or live network/SQL/QQ is involved. The center is explicitly
+`CENTER_SOURCE_RUNTIME_PASS` / `CENTER_WHEEL_NOT_REQUIRED`.
+
+Full frozen references, public resources, isolated environments, installation logs,
+preparation/build/finalization scripts and QA artifacts are retained under
+`/var/tmp/taiko-phase2fb-20261013`. Reproduce via the existing bounded QA wrapper:
 
 ```sh
-python -m pip wheel ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -w /path/to/wheels
-# Center source runtime (do not install taiko-bot root):
-python -m pip install --find-links /path/to/wheels 'sakura-taiko-core[hiroba]==0.1.1' 'sakura-taiko-contract==0.1.0' 'nonebot-plugin-taiko-song==0.1.0'
-# Client: its root distribution pins Core 0.1.2 and Contract 0.1.0.
-python -m pip install --find-links /path/to/wheels .
+bash scripts/memory/run_qa.sh /bin/bash /var/tmp/taiko-phase2fb-20261013/test.sh
+bash scripts/memory/run_qa.sh /bin/bash /var/tmp/taiko-phase2fb-20261013/final-check.sh
 ```
 
-Core/Contract wheels retain their existing provenance; they are not published or
-upgraded by this change. Do not assume Application/plugin wheels are on PyPI.
-The two host changes must be coordinated: make wheels available, install them,
-then adopt the corresponding source candidate. Do not remove the old matcher
-without installing and enabling the replacement. This task does not perform a
-production installation, merge or restart.
+For another workspace, supply the explicit paths from
+`tests/public_dispatch.py --help`; materialize frozen references with `git show`
+from the revisions above and verify their manifest hashes. Public font/image
+resources remain external. Generic runtime support provenance is recorded in the
+prior Phase 2E-R evidence. Never point these tests at a production runtime root.
 
-The existing generic NoneBot TOML loader loads `nonebot_plugin_taiko_song` via
-`tool.nonebot.plugins`; it is **not** a builtin plugin. `feature_handler` remains
-the host's generic feature-switch API, loaded with `nonebot.require`. Its existing
-`feature_on('taiko')` and `feature_on('tsearch')` rules remain authoritative. The
-plugin does not own or replace feature storage, SQL, whitelist or permissions.
-
-Center defaults to profile `center`; `TAIKO_SONG_PUBLIC_ROOT` optionally sets the
-public catalog/assets root (default runtime cwd). Its source runtime is retained;
-no Sakura wheel is required. Client `bot.py` explicitly selects profile `client`,
-using existing `taiko_bot.settings` and resource-readiness manager. Neither profile
-imports `plugins.taiko`, Sakura utilities, private score Providers or an absolute
-Sakura checkout. The generic host feature plugin is a required runtime capability,
-not bundled into this distribution.
-
-## Preserved host differences
-
-- Center: duplicate song grouping through fixed Core, fuzzy acceptance threshold,
-  song/category/BPM brief, missing-chart hint, existing QQ keyboard and passive-send
-  fallback. Public catalog location is explicit rather than a Sakura source path.
-- Client: original visibility filtering and query matching, fuzzy hint behavior,
-  resource readiness, existing missing-chart text and QQ keyboard.
-- Official QQ input restrictions, OneBot external Bot mention exclusion, difficulty
-  prefixes, exact-alias precedence, and chart selection retain each host's behavior.
-- The public query does not perform private authorization checks. Client private
-  commands retain the main security patch unchanged (35 existing guarded exits).
-
-Shared helpers still used by other commands remain in the hosts. The old
-`what_song` matcher, handler, command-only extractor/rule and two regex constants
-are removed from both hosts. No second active song-command usecase is retained.
-Other command handlers are not integrated from Phase 2E-R in this limited cutover.
-
-## Verification
-
-`tests/dispatch.py` loads the installed external plugin **before** the host plugin,
-checks one external matcher and no host matcher, and dispatches real OneBot/QQ
-synthetic events through real NoneBot rules/handlers. Only feature storage,
-resource-admission input and outer message transport are replaced. Matching,
-Core grouping, Application execution, chart lookup, image bytes and message
-construction run normally. Framework exceptions are captured and fail the test.
-
-The old entry is executed from frozen source in a separate reference namespace;
-its unchanged shared functions come from the loaded host. A scope audit compares
-all remaining host functions/classes to the frozen baseline. References:
-Sakura `c8ed8c1`, client main `5f8465f`, Application `44aaf656`.
-
-34 cases per host cover query, ID, alias, duplicate, fuzzy, difficulty, invalid,
-missing/empty, Provider errors, both platforms, feature denial and external mention.
-Messages compare full structured payloads; chart PNG compares bytes, pixel hash,
-size and mode. Public Phase 2E-R catalog vectors are supplemented with an explicitly
-synthetic duplicate and aliases. A fixed tracked `1007.png` chart is mapped to the
-fixture ID for path-selection tests; this is not a new real-world chart mapping.
-No production data or network is used.
-
-Evidence/locks and the scope audit are in `tests/acceptance/`. Full execution
-artifacts and frozen references are retained at
-`/var/tmp/taiko-phase2fa-20261013`. Run using the repository's bounded QA wrapper;
-`tests/dispatch.py --help` describes runtime/source/support paths. The center uses
-isolated source layout and explicitly sourced generic `runtime_memory`/
-`qq_official_runtime` support from the preceding recovery fixture. No existing
-private virtual environment is used as installation evidence.
+Status: **PHASE_2F_B_COMPLETE**. No main merge, deployment or production restart.

@@ -60,3 +60,46 @@ def asset_ready():
         from taiko_bot.settings import get_settings
         return ensure_asset_resource_available(('fumens-assets',), get_settings())
     return True, ''
+
+
+def aliases(song_id):
+    if profile() == 'client':
+        from .client_provider import is_song_id_publicly_visible
+        if not is_song_id_publicly_visible(song_id):
+            return '', []
+    payload = json.loads((root()/'songs/song_alias.json').read_text(encoding='utf-8'))
+    if profile() == 'client':
+        for entry in payload:
+            if str(entry.get('id')) == str(song_id):
+                return entry.get('song_name_jp') or '', entry.get('aliases') or []
+        return '', []
+    from taiko_application.query import query_aliases
+    by_id, by_title = {}, {}
+    if isinstance(payload, list):
+        songs = json.loads((root()/'songs/song_data.json').read_text(encoding='utf-8'))
+        _, by_id, by_title = identity.build_group_maps(songs)
+    title, values, _ = query_aliases(SongQueryContext(songs=(), aliases=payload,
+        groups_by_id=by_id, groups_by_title=by_title, similarity=lambda a,b:0,
+        song_id=song_id, explicit_alias_id=False))
+    return title, values
+
+
+def position(song_id):
+    from sakura_taiko_core.chart import position as core
+    rows = json.loads((root()/'songs/song_data.json').read_text(encoding='utf-8'))
+    options = {'profile': 'position-client-20261010'} if profile() == 'client' else {}
+    catalog = core.build_song_catalog(rows, **options)
+    return core.get_song_position_by_id(song_id, catalog=catalog, **options)
+
+
+def note_counts():
+    with (root()/'songs/tja_note_counts.json').open('r') as handle:
+        return json.load(handle)
+
+
+def alias_assets_ready():
+    if profile() == 'client':
+        from taiko_bot.public_data import ensure_asset_resource_available
+        from taiko_bot.settings import get_settings
+        return ensure_asset_resource_available(('core-assets',), get_settings())
+    return True, ''
