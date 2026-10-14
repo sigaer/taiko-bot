@@ -5141,77 +5141,8 @@ async def taikob_handle(event: MessageEvent):
     await _finish_image_reply(taikob, event, img_jpg)
 
 
-music_info = on_regex(r"^/?tinfo\s?(.+)$", rule=taiko_rule)
 
 
-@music_info.handle()
-async def music_info_handle(event: MessageEvent):
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(music_info, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await music_info.finish("查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(music_info, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(
-        music_info,
-        event,
-        "core-assets",
-        "cover-assets",
-    ):
-        return
-    user_id = str(bind_target["user_id"])
-    # 获取去除 at 的纯文本
-    plain_text = extract_plain_text(event)
-
-    # 用纯文本重新匹配参数（而不是直接用 match.group）
-    m = re.match(r"^/?tinfo\s?(.+)$", plain_text)
-    if not m:
-        await _require_private_send_authority(music_info, event, bind_target)
-        await music_info.finish("格式不正确，应为：tinfo 歌名")
-    music_name = m.group(1)
-    music_list = queryMusic(music_name)
-    music_id = -1
-    fuzzy_hint = ""
-    msg = ""
-    if len(music_list) == 0:
-        await _require_private_send_authority(music_info, event, bind_target)
-        await _finish_text_reply(music_info, event, "未找到任何歌曲？")
-    elif _is_fuzzy_query_result(music_list):
-        fuzzy_hint = _build_fuzzy_query_hint(music_list)
-        music_id = int(music_list[0][0])
-    elif len(music_list) == 1:
-        music_id = int(music_list[0][0])
-    else:
-        msg = "你要找的可能是：\n"
-        for music in music_list:
-            msg += f"id{music[0]} {music[1]}\n"
-        await _require_private_send_authority(music_info, event, bind_target)
-        await music_info.finish(msg)
-    if music_id == -1:
-        await _require_private_send_authority(music_info, event, bind_target)
-        await music_info.finish("查询失败，怎么回事呢？")
-    else:
-        try:
-            res_img = generate_score_image(song_no=music_id, user_id=user_id)
-        except FileNotFoundError as e:
-            print(e)
-            await _require_private_send_authority(music_info, event, bind_target)
-            await _finish_text_reply(
-                music_info, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
-            )
-        except Exception as e:
-            await _require_private_send_authority(music_info, event, bind_target)
-            await music_info.finish(f"{e}")
-        img_jpg = _to_jpeg_bytes(res_img, quality=85)
-        if fuzzy_hint:
-            await _require_private_send_authority(music_info, event, bind_target)
-            await _finish_image_reply(
-                music_info, event, img_jpg, prefix_text=fuzzy_hint
-            )
-        else:
-            await _require_private_send_authority(music_info, event, bind_target)
-            await _finish_image_reply(music_info, event, img_jpg)
 
 
 # 查配置

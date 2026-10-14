@@ -26,8 +26,8 @@ Set-Location .\taiko-bot
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
-python -m pip install -r requirements-domain.txt
-python -m pip install ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -e .
+python -m pip uninstall -y nonebot-plugin-taiko-song
+python -m pip install -r requirements-domain.txt ./packages/taiko-application -e ".[client]"
 Copy-Item .env.example .env
 ```
 
@@ -39,8 +39,8 @@ cd taiko-bot
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install -r requirements-domain.txt
-python -m pip install ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -e .
+python -m pip uninstall -y nonebot-plugin-taiko-song
+python -m pip install -r requirements-domain.txt ./packages/taiko-application -e ".[client]"
 cp .env.example .env
 ```
 
@@ -267,9 +267,14 @@ source .venv/bin/activate
 
 网页成绩 token 仅在私聊中为发送者的中心当前实账号签发，服务需显式 `score_token_issue` scope、principal 及全部绑定 Source 授权。隐藏的自有账号可用，u0/手动/他人绑定拒绝。签发 POST 不自动重试；再次发送命令会生成新 token 并使旧 token 失效。旧本地 bearer helper 已停用。客户端 0.2.6 需与 Viewer 0.82.0 中心协议一起激活。
 
-### 公共曲目插件归属切换候选（Phase 2F-B）
+### Taiko Runtime 归属切换候选（Phase 2F-E）
 
-本功能分支由同一外部插件统一注册 `xx是什么歌`、别名、三类位置、难度 ID 与物量查询；安装客户端前须先准备
-Application 0.5.0 与 `nonebot-plugin-taiko-song` 0.2.0 的 wheel。
-[安装顺序、宿主配置和验收边界](packages/nonebot-plugin-taiko-song/README.md)。
-客户端仍固定 Core 0.1.2 / Contract 0.1.0，其他私人命令保持 main 已合并的授权热修补。
+公开九命令与双端 tinfo 由本仓 `taiko_bot.runtime.public` / `taiko_bot.runtime.player`
+维护，在宿主原有 NoneBot 进程内加载。旧 `nonebot-plugin-taiko-song` 已退役；
+不得同时装载旧插件和内部入口，也没有新的插件发行包。
+
+候选版本 taiko-bot 0.3.0 / Application 0.7.1。客户端使用 `[client]` 精确固定
+Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0。
+中心接入使用 Sakura 候选的现有 driver，不启动第二个连接消费者。
+
+[完整边界、验证与未上线说明](docs/taiko-runtime-ownership-cutover.md)。

@@ -49,10 +49,10 @@ Sakura：主插件删除 **284 行**（两个 matcher、两个 handler、六个 
 
 ## 证据、安装顺序和剩余命令
 
-- [汇总、精确版本、wheel/fixture/resource/reference hash](../packages/nonebot-plugin-taiko-song/tests/catalog-acceptance/summary.json)
-- [中心结果](../packages/nonebot-plugin-taiko-song/tests/catalog-acceptance/center-dispatch.json)、[客户端结果](../packages/nonebot-plugin-taiko-song/tests/catalog-acceptance/client-dispatch.json)
-- [中心依赖锁](../packages/nonebot-plugin-taiko-song/tests/catalog-acceptance/center-lock.txt)、[客户端依赖锁](../packages/nonebot-plugin-taiko-song/tests/catalog-acceptance/client-lock.txt)
-- [移除及剩余 matcher 完整清单、授权核对](../packages/nonebot-plugin-taiko-song/tests/catalog-acceptance/scope.json)
+- [汇总、精确版本、wheel/fixture/resource/reference hash](../tests/archive/public-song-plugin/tests/catalog-acceptance/summary.json)
+- [中心结果](../tests/archive/public-song-plugin/tests/catalog-acceptance/center-dispatch.json)、[客户端结果](../tests/archive/public-song-plugin/tests/catalog-acceptance/client-dispatch.json)
+- [中心依赖锁](../tests/archive/public-song-plugin/tests/catalog-acceptance/center-lock.txt)、[客户端依赖锁](../tests/archive/public-song-plugin/tests/catalog-acceptance/client-lock.txt)
+- [移除及剩余 matcher 完整清单、授权核对](../tests/archive/public-song-plugin/tests/catalog-acceptance/scope.json)
 - 测试入口：`tests/catalog_dispatch.py`、`tests/catalog_scope.py`；完整独立运行目录、冻结旧源、制品和安装日志：`/var/tmp/taiko-phase2fc-20261013`。所有 QA 经既有 `scripts/memory/run_qa.sh` 隔离执行，不重复 2A–2E 历史矩阵。
 
 候选安装顺序：先提供 Application 0.5.0 和歌曲插件 0.3.0 wheel，再使用匹配的客户端 0.2.12 或 Sakura 移除提交。新插件不能与仍注册这两个 matcher 的旧宿主混用。两宿主各自精确锁 Core；没有 PyPI 发布或生产安装。

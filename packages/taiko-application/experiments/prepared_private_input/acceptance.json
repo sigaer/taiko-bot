@@ -1,0 +1,1209 @@
+{
+  "status": "PHASE_2F_D0_6_PREPARED_INPUT_VALIDATED",
+  "application": "0.6.0",
+  "pillow": "11.3.0",
+  "parity_cases": [
+    {
+      "scenario": "normal",
+      "text": "tinfo Neon",
+      "output": {
+        "kind": "image",
+        "sha256": "323d89f05534d6d6253894ebdabd411f2058a3d999ea669563bb6a3759696990",
+        "pixels": "c9ea255a3c2dd67450b6eb537b25f1c05a7afeea66991c4fb323a02ac67d0cc4",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo Neon",
+      "output": {
+        "kind": "image",
+        "sha256": "bd7b2009bea2b1ca102338a60cb7f68dc6163ae37388dedbd8accc0ac3367271",
+        "pixels": "d67ba79d0e578a70a7079d081db7667b4d6d94badf21f938b7e6dde901513326",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo Neon",
+      "output": {
+        "kind": "image",
+        "sha256": "bd7b2009bea2b1ca102338a60cb7f68dc6163ae37388dedbd8accc0ac3367271",
+        "pixels": "d67ba79d0e578a70a7079d081db7667b4d6d94badf21f938b7e6dde901513326",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo Neon",
+      "output": {
+        "kind": "image",
+        "sha256": "1e5fa585cbf042d1ef174e11540aa0de798ed8d48f1dc8fabb0a0398ad734f5e",
+        "pixels": "d66ac4fbd85449c9897635b03e226846a4c92ab4d9c88341730bbb83c43e53f4",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo Neon",
+      "output": {
+        "kind": "image",
+        "sha256": "7c1f16d0253b035d8ba69aa50fa83013efed3695c629d9191bc1944e162b7b6b",
+        "pixels": "2481471b0f8e73778663a736ede45222e9af0c942d76574b70f684ba3f9da207",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo none",
+      "output": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo none",
+      "output": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo none",
+      "output": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo none",
+      "output": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo none",
+      "output": {
+        "kind": "text",
+        "text": "未找到任何歌曲？",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo many",
+      "output": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid7 Neon\nid8 Echo\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo many",
+      "output": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid7 Neon\nid8 Echo\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo many",
+      "output": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid7 Neon\nid8 Echo\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo many",
+      "output": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid7 Neon\nid8 Echo\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo many",
+      "output": {
+        "kind": "text",
+        "text": "你要找的可能是：\nid7 Neon\nid8 Echo\n",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo fuzzy",
+      "output": {
+        "kind": "image",
+        "sha256": "323d89f05534d6d6253894ebdabd411f2058a3d999ea669563bb6a3759696990",
+        "pixels": "c9ea255a3c2dd67450b6eb537b25f1c05a7afeea66991c4fb323a02ac67d0cc4",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：Neon\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo fuzzy",
+      "output": {
+        "kind": "image",
+        "sha256": "bd7b2009bea2b1ca102338a60cb7f68dc6163ae37388dedbd8accc0ac3367271",
+        "pixels": "d67ba79d0e578a70a7079d081db7667b4d6d94badf21f938b7e6dde901513326",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：Neon\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo fuzzy",
+      "output": {
+        "kind": "image",
+        "sha256": "bd7b2009bea2b1ca102338a60cb7f68dc6163ae37388dedbd8accc0ac3367271",
+        "pixels": "d67ba79d0e578a70a7079d081db7667b4d6d94badf21f938b7e6dde901513326",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：Neon\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo fuzzy",
+      "output": {
+        "kind": "image",
+        "sha256": "1e5fa585cbf042d1ef174e11540aa0de798ed8d48f1dc8fabb0a0398ad734f5e",
+        "pixels": "d66ac4fbd85449c9897635b03e226846a4c92ab4d9c88341730bbb83c43e53f4",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：Neon\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo fuzzy",
+      "output": {
+        "kind": "image",
+        "sha256": "7c1f16d0253b035d8ba69aa50fa83013efed3695c629d9191bc1944e162b7b6b",
+        "pixels": "2481471b0f8e73778663a736ede45222e9af0c942d76574b70f684ba3f9da207",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": "你要找的可能是：Neon\n匹配度：0.50"
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo accepted",
+      "output": {
+        "kind": "image",
+        "sha256": "323d89f05534d6d6253894ebdabd411f2058a3d999ea669563bb6a3759696990",
+        "pixels": "c9ea255a3c2dd67450b6eb537b25f1c05a7afeea66991c4fb323a02ac67d0cc4",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo accepted",
+      "output": {
+        "kind": "image",
+        "sha256": "bd7b2009bea2b1ca102338a60cb7f68dc6163ae37388dedbd8accc0ac3367271",
+        "pixels": "d67ba79d0e578a70a7079d081db7667b4d6d94badf21f938b7e6dde901513326",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo accepted",
+      "output": {
+        "kind": "image",
+        "sha256": "bd7b2009bea2b1ca102338a60cb7f68dc6163ae37388dedbd8accc0ac3367271",
+        "pixels": "d67ba79d0e578a70a7079d081db7667b4d6d94badf21f938b7e6dde901513326",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo accepted",
+      "output": {
+        "kind": "image",
+        "sha256": "1e5fa585cbf042d1ef174e11540aa0de798ed8d48f1dc8fabb0a0398ad734f5e",
+        "pixels": "d66ac4fbd85449c9897635b03e226846a4c92ab4d9c88341730bbb83c43e53f4",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo accepted",
+      "output": {
+        "kind": "image",
+        "sha256": "7c1f16d0253b035d8ba69aa50fa83013efed3695c629d9191bc1944e162b7b6b",
+        "pixels": "2481471b0f8e73778663a736ede45222e9af0c942d76574b70f684ba3f9da207",
+        "size": [
+          160,
+          96
+        ],
+        "mode": "RGB",
+        "prefix": ""
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo invalid-id",
+      "output": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo invalid-id",
+      "output": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo invalid-id",
+      "output": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo invalid-id",
+      "output": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo invalid-id",
+      "output": {
+        "kind": "text",
+        "text": "查询失败，怎么回事呢？",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo absent-record",
+      "output": {
+        "kind": "text",
+        "text": "fixture song record absent",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo absent-record",
+      "output": {
+        "kind": "text",
+        "text": "fixture song record absent",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo absent-record",
+      "output": {
+        "kind": "text",
+        "text": "fixture song record absent",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo absent-record",
+      "output": {
+        "kind": "text",
+        "text": "fixture song record absent",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo absent-record",
+      "output": {
+        "kind": "text",
+        "text": "fixture song record absent",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "bad",
+      "output": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "bad",
+      "output": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "bad",
+      "output": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "bad",
+      "output": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "bad",
+      "output": {
+        "kind": "text",
+        "text": "格式不正确，应为：tinfo 歌名",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "text": "tinfo query-error",
+      "output": {
+        "raised": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "u0",
+      "text": "tinfo query-error",
+      "output": {
+        "raised": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "text": "tinfo query-error",
+      "output": {
+        "raised": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "text": "tinfo query-error",
+      "output": {
+        "raised": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "text": "tinfo query-error",
+      "output": {
+        "raised": "TypeError",
+        "message": "object of type 'NoneType' has no len()"
+      }
+    },
+    {
+      "scenario": "normal",
+      "failure": "missing",
+      "output": {
+        "kind": "text",
+        "text": "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "u0",
+      "failure": "missing",
+      "output": {
+        "kind": "text",
+        "text": "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "failure": "missing",
+      "output": {
+        "kind": "text",
+        "text": "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "failure": "missing",
+      "output": {
+        "kind": "text",
+        "text": "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "failure": "missing",
+      "output": {
+        "kind": "text",
+        "text": "您还未上传数据哦~请先发送“taikoupdate”进行上传",
+        "delivery": "reply"
+      }
+    },
+    {
+      "scenario": "normal",
+      "failure": "error",
+      "output": {
+        "kind": "text",
+        "text": "fixture renderer error",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0",
+      "failure": "error",
+      "output": {
+        "kind": "text",
+        "text": "fixture renderer error",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "failure": "error",
+      "output": {
+        "kind": "text",
+        "text": "fixture renderer error",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "failure": "error",
+      "output": {
+        "kind": "text",
+        "text": "fixture renderer error",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "failure": "error",
+      "output": {
+        "kind": "text",
+        "text": "fixture renderer error",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "failure": "type",
+      "output": {
+        "kind": "text",
+        "text": "fixture bad score",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "u0",
+      "failure": "type",
+      "output": {
+        "kind": "text",
+        "text": "fixture bad score",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "failure": "type",
+      "output": {
+        "kind": "text",
+        "text": "fixture bad score",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "failure": "type",
+      "output": {
+        "kind": "text",
+        "text": "fixture bad score",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "failure": "type",
+      "output": {
+        "kind": "text",
+        "text": "fixture bad score",
+        "delivery": "direct"
+      }
+    },
+    {
+      "scenario": "normal",
+      "failure": "jpeg",
+      "output": {
+        "raised": "UnidentifiedImageError",
+        "message": "cannot identify image file <_io.BytesIO object at <address>>"
+      }
+    },
+    {
+      "scenario": "u0",
+      "failure": "jpeg",
+      "output": {
+        "raised": "UnidentifiedImageError",
+        "message": "cannot identify image file <_io.BytesIO object at <address>>"
+      }
+    },
+    {
+      "scenario": "missing-history",
+      "failure": "jpeg",
+      "output": {
+        "raised": "UnidentifiedImageError",
+        "message": "cannot identify image file <_io.BytesIO object at <address>>"
+      }
+    },
+    {
+      "scenario": "changed-members",
+      "failure": "jpeg",
+      "output": {
+        "raised": "UnidentifiedImageError",
+        "message": "cannot identify image file <_io.BytesIO object at <address>>"
+      }
+    },
+    {
+      "scenario": "changed-profile",
+      "failure": "jpeg",
+      "output": {
+        "raised": "UnidentifiedImageError",
+        "message": "cannot identify image file <_io.BytesIO object at <address>>"
+      }
+    }
+  ],
+  "import_graph": {
+    "modules": [
+      "prepared_private_input",
+      "prepared_private_input.application_adapter",
+      "prepared_private_input.dto",
+      "prepared_private_input.render_fixture",
+      "taiko_application",
+      "taiko_application.commands",
+      "taiko_application.commands.b30",
+      "taiko_application.commands.constant",
+      "taiko_application.commands.models",
+      "taiko_application.commands.progress",
+      "taiko_application.commands.recommendation",
+      "taiko_application.commands.score",
+      "taiko_application.commands.song"
+    ],
+    "edges": [
+      [
+        "taiko_application.commands.score",
+        "__future__"
+      ],
+      [
+        "taiko_application.commands.score",
+        "__future__.annotations"
+      ],
+      [
+        "taiko_application.commands.score",
+        "re"
+      ],
+      [
+        "taiko_application.commands.score",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.score",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.score",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands.score",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.score",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.score",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands.score",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands.score",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "taiko_application.commands.models",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.models",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.models",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.models",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.models",
+        "typing.Literal"
+      ],
+      [
+        "taiko_application.commands.models",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.b30"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.b30.B30Ports"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.b30.execute_b30"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.b30.prepare_b30"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.score"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.score.ScorePorts"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.score.execute_score"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.song"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.song.SongPorts"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.song.execute_song"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.constant"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.constant.ConstantPorts"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.constant.execute_constant"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.progress"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.progress.ProgressPorts"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.progress.execute_progress"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.progress.prepare_progress"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.recommendation"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.recommendation.RecommendationPorts"
+      ],
+      [
+        "taiko_application.commands",
+        "taiko_application.commands.recommendation.execute_recommendation"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "__future__"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "__future__.annotations"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "re"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands.recommendation",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "__future__"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "__future__.annotations"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "re"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands.progress",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "__future__"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "__future__.annotations"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "re"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands.constant",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "taiko_application.commands.song",
+        "__future__"
+      ],
+      [
+        "taiko_application.commands.song",
+        "__future__.annotations"
+      ],
+      [
+        "taiko_application.commands.song",
+        "re"
+      ],
+      [
+        "taiko_application.commands.song",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.song",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.song",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands.song",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.song",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.song",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands.song",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands.song",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "__future__"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "__future__.annotations"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "re"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "typing"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "typing.Any"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "typing.Callable"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "dataclasses"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "dataclasses.dataclass"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "taiko_application.commands.models"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "taiko_application.commands.b30",
+        "taiko_application.commands.models.CommandResult"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "re"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "taiko_application.commands.score"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "taiko_application.commands.score.ScorePorts"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "taiko_application.commands.score.execute_score"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "taiko_application.commands.models"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "taiko_application.commands.models.CommandContext"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.dto"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.dto.PreparedPrivateInput"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.render_fixture"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.render_fixture.render"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.render_fixture.jpeg"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.render_fixture.query"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.render_fixture.rejected"
+      ],
+      [
+        "prepared_private_input.application_adapter",
+        "prepared_private_input.render_fixture.hint"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "hashlib"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "hashlib.sha256"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "io"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "io.BytesIO"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "PIL"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "PIL.Image"
+      ],
+      [
+        "prepared_private_input.render_fixture",
+        "PIL.ImageDraw"
+      ],
+      [
+        "prepared_private_input.dto",
+        "dataclasses"
+      ],
+      [
+        "prepared_private_input.dto",
+        "dataclasses.dataclass"
+      ],
+      [
+        "prepared_private_input.dto",
+        "collections.abc"
+      ],
+      [
+        "prepared_private_input.dto",
+        "collections.abc.Mapping"
+      ],
+      [
+        "prepared_private_input.dto",
+        "types"
+      ],
+      [
+        "prepared_private_input.dto",
+        "types.MappingProxyType"
+      ],
+      [
+        "prepared_private_input.dto",
+        "math"
+      ]
+    ],
+    "negative_control": "PASS",
+    "sha256": {
+      "prepared_private_input": "3b81b128f11bcde9bd659cfa12338ca810cc13c123d52add017daac2c5742502",
+      "prepared_private_input.application_adapter": "96d348d66f3c9c44942a1da9026eb6fe94fb13ba250a43a90010d62e39e5d9c6",
+      "prepared_private_input.dto": "c4c748dc3ce644913b7a6fad19b5617e1f25875fb81e974bdac27a308cce5728",
+      "prepared_private_input.render_fixture": "aca30330a563be0e8e0f8323ac9b6b8f20cdaf528b569691ac585605e7c1b8e5",
+      "taiko_application": "2d7ce0447f1ef68b059f1179d7dcddedd9b0ea3dd8737f72ff3f6faf3f102ecb",
+      "taiko_application.commands": "88b573193dedb442318dafbcdf03c649161afed1650ebc1e3f66d2651deae63f",
+      "taiko_application.commands.b30": "d18b71bd09bdeba06e3987642ab9225f20c007936b68ad3c4b674979ea6d7e05",
+      "taiko_application.commands.constant": "42d0290db86747da8fb2e9cb71eea11d20097ec89e71e7e1744b95fb35e2d0c0",
+      "taiko_application.commands.models": "b65f262c54c9e3ee1879fc4b629d163dd6d73db09bdab6fbace22caf0384fb28",
+      "taiko_application.commands.progress": "c4a1f1c3fe7be64377cad708261da9f721b54752c21c009a048f6a8fb53fd699",
+      "taiko_application.commands.recommendation": "5cfd973da8e29656c591b9e01a07144ff63f4a83a1061e20699159b6985e9430",
+      "taiko_application.commands.score": "7154fa49745ae73b045018b6dbdbdd63360369c4cc8377970beaa8293436480d",
+      "taiko_application.commands.song": "3fdaceedf6a5711deb560930aa37b61d96aec946b234bc30e5c7bd555b2652e3"
+    },
+    "scope": "Reachable Application 0.6.0 + experiment adapter/DTO/fixture renderer, including parent __init__. Third-party imports are runtime-guarded."
+  },
+  "runtime_audit": {
+    "status": "PASS",
+    "forbidden_import_attempts": [],
+    "execution_IO_attempts": 0,
+    "prepared_executions": 8,
+    "application": "0.6.0"
+  },
+  "execute_score_sha256": "7154fa49745ae73b045018b6dbdbdd63360369c4cc8377970beaa8293436480d",
+  "tracked_baseline_source_unchanged": true
+}

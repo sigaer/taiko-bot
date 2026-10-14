@@ -1,4 +1,4 @@
-# taiko-application 0.5.0 — Phase 2E candidate
+# taiko-application 0.6.0 — Phase 2F-D0 candidate
 
 Independent Python distribution for Dani, score presentation, queries and command usecases. Install this subproject,
 not the taiko-bot root distribution when installing the center host.
@@ -336,3 +336,20 @@ locks](tests/recovery/README.md) for actual NoneBot event dispatch, real B30/tin
 renderer chains, source provenance and send-time authorization revocation tests.
 The client now revalidates authority before sending private command results and
 locates B30/tinfo resources through its existing root setting. Production is unchanged.
+
+## u0 merge kernel (0.6.0)
+
+`taiko_application.merged_bind` owns the existing u0 models, exceptions, identity
+validation, record selection, achievement and payload/history merge policy.
+Call `merge_song_records(..., combo_map=...)` or
+`_merge_payloads(..., combo_map=..., clock=...)`. The clock is called at the
+legacy timestamp point, after record calculation; pass `datetime.now` to retain
+host local-time semantics. Combo input is a read-only Mapping of (song, level)
+to note count. Inputs are caller-owned and must remain stable for the call.
+No catalog loading, cache, userdata IO, SQL, storage lock or Writer lives here.
+Member order deliberately controls exact-tie precedence. This does not migrate
+u0 persistence or unblock private command ownership by itself.
+
+Frozen 38826aa merge source and synthetic parity cases: `tests/merged/`.
+Run with an installed candidate wheel: `python -m pytest tests/merged/test_parity.py`.
+On the shared host, invoke through the existing memory/run_qa.sh wrapper.

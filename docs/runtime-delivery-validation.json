@@ -1,0 +1,1565 @@
+{
+  "status": "PRE_MERGE_DELIVERY_CHECKS_PASS",
+  "baselines": {
+    "taiko": "70d14dfb3a8510ad23eeefcdf99184a68dbe8f54",
+    "sakura": "cebe86d3e4824f5163022ead554c00ca3b9b06bc"
+  },
+  "fresh_full_dependency_resolution": {
+    "center": {
+      "nonebot-adapter-qq": "1.7.2",
+      "sakura-taiko-contract": "0.1.0",
+      "taiko-application": "0.7.1",
+      "beautifulsoup4": "4.15.0",
+      "cryptography": "48.0.1",
+      "fastapi": "0.143.0",
+      "fuzzywuzzy": "0.18.0",
+      "httpx": "0.28.1",
+      "httpcore": "1.0.9",
+      "matplotlib": "3.11.2",
+      "nb-cli": "1.7.4",
+      "nonebot-adapter-onebot": "2.4.6",
+      "nonebot2": "2.5.0",
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "pillow": "12.3.0",
+      "pydantic": "2.14.1",
+      "pydantic_core": "2.50.1",
+      "PyMySQL": "1.2.3",
+      "python-dotenv": "1.2.4",
+      "redis": "8.1.0",
+      "requests": "2.34.2",
+      "typing_extensions": "4.16.0",
+      "ujson": "6.0.0",
+      "uvicorn": "0.54.0",
+      "websockets": "17.2",
+      "wordcloud": "1.9.6",
+      "yarl": "1.25.1",
+      "taiko-bot": "0.3.0",
+      "annotated-doc": "0.0.5",
+      "annotated-types": "0.8.0",
+      "anyio": "4.15.1",
+      "cashews": "7.6.0",
+      "certifi": "2026.7.22",
+      "cffi": "2.1.1",
+      "charset-normalizer": "3.5.2",
+      "click": "8.5.0",
+      "contourpy": "1.3.3",
+      "cookiecutter": "2.7.1",
+      "cycler": "0.12.1",
+      "exceptiongroup": "1.3.1",
+      "fonttools": "4.66.1",
+      "h11": "0.16.0",
+      "idna": "3.20",
+      "Jinja2": "3.1.6",
+      "kiwisolver": "1.5.1",
+      "loguru": "0.7.3",
+      "msgpack": "1.2.3",
+      "multidict": "7.1.0",
+      "noneprompt": "0.1.11",
+      "nonestorage": "0.1.0",
+      "opentelemetry-api": "1.45.1",
+      "packaging": "26.3",
+      "pip": "26.2.1",
+      "propcache": "0.5.4",
+      "pygtrie": "2.6.2",
+      "pyparsing": "3.3.3",
+      "python-dateutil": "2.9.0.post0",
+      "rich": "15.0.0",
+      "sakura-taiko-core": "0.1.1",
+      "soupsieve": "2.10",
+      "starlette": "1.8.0",
+      "textual": "8.2.8",
+      "tomlkit": "0.14.0",
+      "typing-inspection": "0.4.4",
+      "urllib3": "2.8.0",
+      "virtualenv": "21.14.7",
+      "watchfiles": "1.3.0",
+      "wcwidth": "0.9.2",
+      "binaryornot": "0.6.0",
+      "distlib": "0.4.3",
+      "filelock": "4.1.1",
+      "markdown-it-py": "4.2.0",
+      "MarkupSafe": "3.0.4",
+      "platformdirs": "4.13.0",
+      "prompt_toolkit": "3.0.53",
+      "Pygments": "2.21.0",
+      "python-discovery": "1.6.2",
+      "python-slugify": "9.1.3",
+      "PyYAML": "6.0.3",
+      "six": "1.17.0",
+      "arrow": "1.4.0",
+      "mdit-py-plugins": "0.6.1",
+      "pycparser": "3.11",
+      "linkify-it-py": "2.2.0",
+      "mdurl": "0.1.2",
+      "text-unidecode": "1.3",
+      "tzdata": "2026.5"
+    },
+    "client": {
+      "sakura-taiko-contract": "0.1.0",
+      "taiko-application": "0.7.1",
+      "beautifulsoup4": "4.15.0",
+      "fastapi": "0.143.0",
+      "fuzzywuzzy": "0.18.0",
+      "httpx": "0.28.1",
+      "httpcore": "1.0.9",
+      "matplotlib": "3.11.2",
+      "nb-cli": "1.7.4",
+      "nonebot-adapter-onebot": "2.4.6",
+      "nonebot-adapter-qq": "1.7.3",
+      "cryptography": "48.0.1",
+      "nonebot2": "2.5.0",
+      "numpy": "2.4.6",
+      "pandas": "3.0.6",
+      "pillow": "12.3.0",
+      "python-dotenv": "1.2.4",
+      "redis": "8.1.0",
+      "requests": "2.34.2",
+      "ujson": "6.0.0",
+      "uvicorn": "0.54.0",
+      "websockets": "17.2",
+      "wordcloud": "1.9.6",
+      "taiko-bot": "0.3.0",
+      "annotated-doc": "0.0.5",
+      "anyio": "4.15.1",
+      "cashews": "7.6.0",
+      "certifi": "2026.7.22",
+      "cffi": "2.1.1",
+      "charset-normalizer": "3.5.2",
+      "click": "8.5.0",
+      "contourpy": "1.3.3",
+      "cookiecutter": "2.7.1",
+      "cycler": "0.12.1",
+      "exceptiongroup": "1.3.1",
+      "fonttools": "4.66.1",
+      "h11": "0.16.0",
+      "idna": "3.20",
+      "Jinja2": "3.1.6",
+      "kiwisolver": "1.5.1",
+      "loguru": "0.7.3",
+      "msgpack": "1.2.3",
+      "noneprompt": "0.1.11",
+      "nonestorage": "0.1.0",
+      "opentelemetry-api": "1.45.1",
+      "packaging": "26.3",
+      "pip": "26.2.1",
+      "pydantic": "2.14.1",
+      "pydantic_core": "2.50.1",
+      "pygtrie": "2.6.2",
+      "pyparsing": "3.3.3",
+      "python-dateutil": "2.9.0.post0",
+      "rich": "15.0.0",
+      "sakura-taiko-core": "0.1.2",
+      "soupsieve": "2.10",
+      "starlette": "1.8.0",
+      "textual": "8.2.8",
+      "tomlkit": "0.14.0",
+      "typing_extensions": "4.16.0",
+      "typing-inspection": "0.4.4",
+      "urllib3": "2.8.0",
+      "virtualenv": "21.14.7",
+      "watchfiles": "1.3.0",
+      "wcwidth": "0.9.2",
+      "yarl": "1.25.1",
+      "annotated-types": "0.8.0",
+      "binaryornot": "0.6.0",
+      "distlib": "0.4.3",
+      "filelock": "4.1.1",
+      "markdown-it-py": "4.2.0",
+      "MarkupSafe": "3.0.4",
+      "multidict": "7.1.0",
+      "platformdirs": "4.13.0",
+      "prompt_toolkit": "3.0.53",
+      "propcache": "0.5.4",
+      "Pygments": "2.21.0",
+      "python-discovery": "1.6.2",
+      "python-slugify": "9.1.3",
+      "PyYAML": "6.0.3",
+      "six": "1.17.0",
+      "arrow": "1.4.0",
+      "mdit-py-plugins": "0.6.1",
+      "pycparser": "3.11",
+      "linkify-it-py": "2.2.0",
+      "mdurl": "0.1.2",
+      "text-unidecode": "1.3",
+      "tzdata": "2026.5"
+    }
+  },
+  "mixed_profiles": "ResolutionImpossible: Core 0.1.1 versus 0.1.2",
+  "wheel_sha256": {
+    "sakura_taiko_contract-0.1.0-py3-none-any.whl": "8a7c1ab20aa9c10b4282d95d1fe9e2cec478f00bbad91002e24e739847975e68",
+    "sakura_taiko_core-0.1.1-py3-none-any.whl": "48143bae997d4d7d319609f0cc2da9d87b1aac7ef6f7fde47e21c366a7f3c8f1",
+    "sakura_taiko_core-0.1.2-py3-none-any.whl": "c05088c0a5159f27abfb9529d78fd8e31565070807b68aacc091bfd0bdc44f4a",
+    "taiko_application-0.7.1-py3-none-any.whl": "98724d3e6118a0551e8bc004898e3bd664c2ea5ec50fac6051f98e6806d26ed9",
+    "taiko_bot-0.3.0-py3-none-any.whl": "c1cce37a29f3c8b58cd789f313573cd88cb5a73bc48a65c19ed34112cfe8a365"
+  },
+  "archived_files_unchanged": {
+    "tests/archive/public-song-plugin/tests/acceptance/center-dispatch.json": "a4c34bd31a8f3a3a779829093b614b25545574bc1bcbc3318676b10e9b984d36",
+    "tests/archive/public-song-plugin/tests/acceptance/center-lock.txt": "e5b289ae065e05d027a1748c73e4f357112676148ad808e246ef3a401fc6ae18",
+    "tests/archive/public-song-plugin/tests/acceptance/client-dispatch.json": "bb154eef1cfa242a3511851ca55879505adcd4cf5ea628d907916cc61e43e8c7",
+    "tests/archive/public-song-plugin/tests/acceptance/client-lock.txt": "9e41a3a2582fc0f550e3d2c6290cbf9dabac39c0a5d78182cc201c695fe0e6e1",
+    "tests/archive/public-song-plugin/tests/acceptance/scope-audit.json": "149577b560ab3bb79f35260932a97cff676898f9b0d533581f85ed9bda7f2511",
+    "tests/archive/public-song-plugin/tests/acceptance/summary.json": "7e2c2343012383d2cecf073b84768abe4b1141074c72fb475cbaf8b599c33634",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/center-dispatch.json": "449be40ec9aa969db89130b257da17d747ea3ce42a5be1a3a8df37cfb56891ef",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/center-lock.txt": "9adb71021e6a09c0bdfa25043c4784ae6c118d90e6f5da3fbc3ff2f451421404",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/client-dispatch.json": "a88e2420efdd869cf86ba477c23132769abec6788f81d92ea605c99d8c1d5b21",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/client-lock.txt": "0d25ec0e07ac80dcf91cb0bcb2e97ab560c8fc4624cf84469b6fac7fc75fa757",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/scope.json": "350e4a111fe9845b94b5e1f6f3705ce6396a2686be8808c21a20f6f92f882b34",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/score-side-effect-audit.json": "38cf9e5b3e923c3e9553562892b8b0503c6c446a42dd14b92097a5dad119f145",
+    "tests/archive/public-song-plugin/tests/catalog-acceptance/summary.json": "c35eb3bbc1df5df4e1e6406605690de94c08740a4045ada839cef58d1145c65e",
+    "tests/archive/public-song-plugin/tests/catalog-fixtures/analyze_result_filtered.json": "ac379502cb175e94d04007fd620ad1402e9e9996a4073ca1ce28583433b3fda4",
+    "tests/archive/public-song-plugin/tests/catalog-fixtures/rating_structured_with_ids.json": "3dcff4d68446975dfc8ea8e271f4ffc16e85e6ede3be1e26f78215f1bcabae7d",
+    "tests/archive/public-song-plugin/tests/catalog-fixtures/song_data.json": "0568277ca845a1ae47697b8fd82c134b875061c5bd25739909e23ac79b0caf06",
+    "tests/archive/public-song-plugin/tests/catalog_dispatch.py": "012ae68ebd33a10251a6145dff62817a56fd9d4a845d45d343b854add95e2367",
+    "tests/archive/public-song-plugin/tests/catalog_scope.py": "e2a639dd282249deac8cf0294d38bb604fd1f65e1e532abd2b658bdad27463b2",
+    "tests/archive/public-song-plugin/tests/fixtures/position.json": "3e8fd17a3124c1edab82394a3c0de452631e8b836da0b4c2d3aef3efdfcab944",
+    "tests/archive/public-song-plugin/tests/fixtures/song_alias.json": "1fe3d5a077adb8be5536adb0c42669122fffa88b27f0524bd0ff4e276b1e350d",
+    "tests/archive/public-song-plugin/tests/fixtures/song_data.json": "4ba31415061eb45fb28c27bf738a2155af858c75a01d8310062e2514279d4327",
+    "tests/archive/public-song-plugin/tests/fixtures/tja_note_counts.json": "31dc62141d4579daa0a66f5241a34bbc7ff722913340ac933ee1ff078db2f635",
+    "tests/archive/public-song-plugin/tests/public_dispatch.py": "d8cf422f771b530edc5a1d962a7957f108bd22bff3b40efa166b5fe9cea5628d",
+    "tests/archive/public-song-plugin/tests/scope_audit.py": "8a1b779674b16d296547bda728c115b3fb62b29ddd580966c1dc1af46400fa05"
+  },
+  "runtime_and_storage_sources": "unchanged from delivery baselines; wheel and installed Python sources match",
+  "scope": {
+    "storage/publication": "bd402a38fbc9916e52a2e274180406dcfc2ff0c0a0155b828391b4921d775f3f",
+    "storage/reader": "eed520e0616a3cd590abf46349d117182220fd318f89596e6ca2931ea698ed9a",
+    "storage/merged_materialization": "0ce39ff24698c000fce896e779c3c72ac6faca05bce0d98cc2bd1b97374f3a4d",
+    "storage/backup": "c3788c2182bba553c39d367bce616aad80abb9f5ca671e8e5cf8a11b4d88028f",
+    "storage/bridge": "91096c7c7d192e64c5f1a951a63100dc8da08adc17457719a8712797252c76f9",
+    "storage/daily": "9409a2b508ff1c5823b09ffc02e16b0003e6445e878c782bdc8204389ab97f2a",
+    "storage/__init__": "879eed5405e22be6f2fac878df47597f37aaf281bc71628e74647fa2b890bdda",
+    "storage/merged_read": "functions/classes unchanged; imports/reference root only",
+    "storage/merge_reference": "functions/classes unchanged; imports/reference root only",
+    "client/non-target": 333,
+    "center/non-target": 417,
+    "native_provider_and_sql_read_ast": "unchanged",
+    "public_modules": "all byte-identical moves",
+    "reverse_sakura_imports": 0
+  },
+  "load_order_pass": 6,
+  "limited_checks": {
+    "center": {
+      "public": {
+        "host": "center",
+        "cases": [
+          {
+            "entry": "what_song",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "6a7b51a06a6cf28601e43bf856c0c572d49f2b661a20d489423d22e3d674ae42"
+          },
+          {
+            "entry": "alias_query",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "7ebc42d9049d380c0ff8b2f4dc45caa34f8e4e2987e01d625582a02af1701853"
+          },
+          {
+            "entry": "song_where",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "cec540ccecacbad54caa0588ca178a60a888ec57c5cea7292aa7ecb996f90cbd"
+          },
+          {
+            "entry": "song_position_phrase",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "cec540ccecacbad54caa0588ca178a60a888ec57c5cea7292aa7ecb996f90cbd"
+          },
+          {
+            "entry": "song_pos_by_id",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "cec540ccecacbad54caa0588ca178a60a888ec57c5cea7292aa7ecb996f90cbd"
+          },
+          {
+            "entry": "diff_by_id",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "6a7b51a06a6cf28601e43bf856c0c572d49f2b661a20d489423d22e3d674ae42"
+          },
+          {
+            "entry": "note_count",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "982273acf91b22ea4f1cfa2cd82e35e7dd711baffb2d58c3f7bf32fe92cd2536"
+          },
+          {
+            "entry": "const_query",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "eb1fe0cd40095262d6687285b150c581ae29a00f9fa404212c72d8689a6a2fc0"
+          },
+          {
+            "entry": "patterns",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "b9f209121629ea578082e505d708823208f8eac9a5da626619a518cc965b1f2c"
+          },
+          {
+            "entry": "what_song",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "f3cbf0d0ef96533ce1bc7d06cabd9fe2043538c0d5a2ae1fd26487b8e3737d9c"
+          },
+          {
+            "entry": "alias_query",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a2e8e741496d436a67480a974dea7dfa86f49b0acb5629ffa0a4ff1cfc3fe464"
+          },
+          {
+            "entry": "song_where",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a9e0288c12adf28fc1c46287862a36941b37b4b479ee00977b3dfaee05744ee3"
+          },
+          {
+            "entry": "song_position_phrase",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a9e0288c12adf28fc1c46287862a36941b37b4b479ee00977b3dfaee05744ee3"
+          },
+          {
+            "entry": "song_pos_by_id",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a9e0288c12adf28fc1c46287862a36941b37b4b479ee00977b3dfaee05744ee3"
+          },
+          {
+            "entry": "diff_by_id",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "f3cbf0d0ef96533ce1bc7d06cabd9fe2043538c0d5a2ae1fd26487b8e3737d9c"
+          },
+          {
+            "entry": "note_count",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "8b443125de5702b6d0cf8c2b5c25ce316690ecbc97944d16588b2dd0dec2de0c"
+          },
+          {
+            "entry": "const_query",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a2e8e741496d436a67480a974dea7dfa86f49b0acb5629ffa0a4ff1cfc3fe464"
+          },
+          {
+            "entry": "patterns",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "050d92dd39264066f15726199e4c165072ac3b29921fde8fb71cba5bd5c1779b"
+          }
+        ],
+        "violations": []
+      },
+      "tinfo": {
+        "host": "center",
+        "cases": 15,
+        "results": [
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "single",
+            "output": [
+              [
+                {
+                  "message": {
+                    "type": "image",
+                    "data": {
+                      "file": {
+                        "sha256": "a490a81099b037eddf3a2b76ff8d5b2bf0462ee6eb1f74d8eafcf879e88b80e2"
+                      },
+                      "type": null,
+                      "cache": "true",
+                      "proxy": "true",
+                      "timeout": null
+                    }
+                  },
+                  "options": {
+                    "reply_message": true
+                  }
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "none",
+            "output": [
+              [
+                {
+                  "message": "未找到任何歌曲？",
+                  "options": {
+                    "reply_message": true
+                  }
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "fuzzy-low",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "text",
+                      "data": {
+                        "text": "你要找的可能是：花漾\n匹配度：0.50\n"
+                      }
+                    },
+                    {
+                      "type": "image",
+                      "data": {
+                        "file": {
+                          "sha256": "a490a81099b037eddf3a2b76ff8d5b2bf0462ee6eb1f74d8eafcf879e88b80e2"
+                        },
+                        "type": null,
+                        "cache": "true",
+                        "proxy": "true",
+                        "timeout": null
+                      }
+                    }
+                  ],
+                  "options": {
+                    "reply_message": true
+                  }
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "missing-song",
+            "output": [
+              [
+                {
+                  "message": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "single",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "reference",
+                      "data": {
+                        "reference": {
+                          "message_id": "fixture",
+                          "ignore_get_message_error": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "file_image",
+                      "data": {
+                        "content": {
+                          "sha256": "a490a81099b037eddf3a2b76ff8d5b2bf0462ee6eb1f74d8eafcf879e88b80e2"
+                        },
+                        "file_name": null
+                      }
+                    }
+                  ],
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "none",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "markdown",
+                      "data": {
+                        "markdown": {
+                          "template_id": null,
+                          "custom_template_id": null,
+                          "params": null,
+                          "content": "未找到任何歌曲？"
+                        }
+                      }
+                    },
+                    {
+                      "type": "keyboard",
+                      "data": {
+                        "keyboard": {
+                          "id": null,
+                          "content": {
+                            "rows": [
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "bind",
+                                    "render_data": {
+                                      "label": "绑定",
+                                      "visited_label": "绑定",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "绑定 你的鼓众广场id",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "bind_qq",
+                                    "render_data": {
+                                      "label": "旧绑定迁移",
+                                      "visited_label": "旧绑定迁移",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "绑定QQ",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "update",
+                                    "render_data": {
+                                      "label": "更新广场",
+                                      "visited_label": "更新广场",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikoupdate",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "update_all",
+                                    "render_data": {
+                                      "label": "更新广场(全部)",
+                                      "visited_label": "更新广场(全部)",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikoupdate all",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "my_don",
+                                    "render_data": {
+                                      "label": "个人信息",
+                                      "visited_label": "个人信息",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "我的小咚",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "tcloud",
+                                    "render_data": {
+                                      "label": "词云",
+                                      "visited_label": "词云",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "太鼓词云",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "trend",
+                                    "render_data": {
+                                      "label": "查询我的近期走势",
+                                      "visited_label": "查询我的近期走势",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikotrend",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "playtrend",
+                                    "render_data": {
+                                      "label": "查询曲数Rating曲线",
+                                      "visited_label": "查询曲数Rating曲线",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikoplaytrend",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "taikob",
+                                    "render_data": {
+                                      "label": "查看rt",
+                                      "visited_label": "查看rt",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikob20",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "taikob_v1",
+                                    "render_data": {
+                                      "label": "查看rtv1",
+                                      "visited_label": "查看rtv1",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikob20 v1",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "fuzzy-low",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "reference",
+                      "data": {
+                        "reference": {
+                          "message_id": "fixture",
+                          "ignore_get_message_error": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "data": {
+                        "text": "你要找的可能是：花漾\n匹配度：0.50"
+                      }
+                    },
+                    {
+                      "type": "file_image",
+                      "data": {
+                        "content": {
+                          "sha256": "a490a81099b037eddf3a2b76ff8d5b2bf0462ee6eb1f74d8eafcf879e88b80e2"
+                        },
+                        "file_name": null
+                      }
+                    }
+                  ],
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "missing-song",
+            "output": [
+              [
+                {
+                  "message": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "before",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "prepared",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "rendered",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "send",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "stale_target": "members",
+            "rejected": true
+          },
+          {
+            "stale_target": "order",
+            "rejected": true
+          },
+          {
+            "stale_target": "profile",
+            "rejected": true
+          }
+        ],
+        "io_violations": [],
+        "application_guard": true
+      },
+      "pip_check": "PASS"
+    },
+    "client": {
+      "public": {
+        "host": "client",
+        "cases": [
+          {
+            "entry": "what_song",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "ce25d2be1012eef3eae71331940c6ac8a6b35dac0dd30af77f19191a41b88724"
+          },
+          {
+            "entry": "alias_query",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "7ebc42d9049d380c0ff8b2f4dc45caa34f8e4e2987e01d625582a02af1701853"
+          },
+          {
+            "entry": "song_where",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "cec540ccecacbad54caa0588ca178a60a888ec57c5cea7292aa7ecb996f90cbd"
+          },
+          {
+            "entry": "song_position_phrase",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "cec540ccecacbad54caa0588ca178a60a888ec57c5cea7292aa7ecb996f90cbd"
+          },
+          {
+            "entry": "song_pos_by_id",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "cec540ccecacbad54caa0588ca178a60a888ec57c5cea7292aa7ecb996f90cbd"
+          },
+          {
+            "entry": "diff_by_id",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "ce25d2be1012eef3eae71331940c6ac8a6b35dac0dd30af77f19191a41b88724"
+          },
+          {
+            "entry": "note_count",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "982273acf91b22ea4f1cfa2cd82e35e7dd711baffb2d58c3f7bf32fe92cd2536"
+          },
+          {
+            "entry": "const_query",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "d35f8a2836320ac234726942d75b2dff85a5f09a0eb1db6e51ddb86452bc8272"
+          },
+          {
+            "entry": "patterns",
+            "platform": "onebot",
+            "sends": 1,
+            "output_sha256": "136d8a85d4e02d17d7ae5b45cb84b9d8f7933742aae707af28938c58485d4900"
+          },
+          {
+            "entry": "what_song",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "feebb5e72a96c3df53756504b24c256e1e982a594628d236999454a719ced012"
+          },
+          {
+            "entry": "alias_query",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a2e8e741496d436a67480a974dea7dfa86f49b0acb5629ffa0a4ff1cfc3fe464"
+          },
+          {
+            "entry": "song_where",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a9e0288c12adf28fc1c46287862a36941b37b4b479ee00977b3dfaee05744ee3"
+          },
+          {
+            "entry": "song_position_phrase",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a9e0288c12adf28fc1c46287862a36941b37b4b479ee00977b3dfaee05744ee3"
+          },
+          {
+            "entry": "song_pos_by_id",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a9e0288c12adf28fc1c46287862a36941b37b4b479ee00977b3dfaee05744ee3"
+          },
+          {
+            "entry": "diff_by_id",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "658fe3e5139b8dd54ba7483dc923933700ab91fc48a2179816082ef14b930d78"
+          },
+          {
+            "entry": "note_count",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "8b443125de5702b6d0cf8c2b5c25ce316690ecbc97944d16588b2dd0dec2de0c"
+          },
+          {
+            "entry": "const_query",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "a2e8e741496d436a67480a974dea7dfa86f49b0acb5629ffa0a4ff1cfc3fe464"
+          },
+          {
+            "entry": "patterns",
+            "platform": "qq",
+            "sends": 1,
+            "output_sha256": "d94e2c8f69d9e266d62404b53b828b3b500e0bca6495672d9c598f0553c25544"
+          }
+        ],
+        "violations": []
+      },
+      "tinfo": {
+        "host": "client",
+        "cases": 15,
+        "results": [
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "single",
+            "output": [
+              [
+                {
+                  "message": {
+                    "type": "image",
+                    "data": {
+                      "file": {
+                        "sha256": "a3500ec7db4e653e6d16223d0366bc1b6e3e6132259774e47c110cfb281db530"
+                      },
+                      "type": null,
+                      "cache": "true",
+                      "proxy": "true",
+                      "timeout": null
+                    }
+                  },
+                  "options": {
+                    "reply_message": true
+                  }
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "none",
+            "output": [
+              [
+                {
+                  "message": "未找到任何歌曲？",
+                  "options": {
+                    "reply_message": true
+                  }
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "fuzzy-low",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "text",
+                      "data": {
+                        "text": "你要找的可能是：花漾\n匹配度：0.50\n"
+                      }
+                    },
+                    {
+                      "type": "image",
+                      "data": {
+                        "file": {
+                          "sha256": "a3500ec7db4e653e6d16223d0366bc1b6e3e6132259774e47c110cfb281db530"
+                        },
+                        "type": null,
+                        "cache": "true",
+                        "proxy": "true",
+                        "timeout": null
+                      }
+                    }
+                  ],
+                  "options": {
+                    "reply_message": true
+                  }
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "onebot",
+            "query": "missing-song",
+            "output": [
+              [
+                {
+                  "message": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "single",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "reference",
+                      "data": {
+                        "reference": {
+                          "message_id": "fixture",
+                          "ignore_get_message_error": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "file_image",
+                      "data": {
+                        "content": {
+                          "sha256": "a3500ec7db4e653e6d16223d0366bc1b6e3e6132259774e47c110cfb281db530"
+                        },
+                        "file_name": null
+                      }
+                    }
+                  ],
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "none",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "reference",
+                      "data": {
+                        "reference": {
+                          "message_id": "fixture",
+                          "ignore_get_message_error": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "data": {
+                        "text": "Markdown消息"
+                      }
+                    },
+                    {
+                      "type": "markdown",
+                      "data": {
+                        "markdown": {
+                          "template_id": null,
+                          "custom_template_id": null,
+                          "params": null,
+                          "content": "未找到任何歌曲？"
+                        }
+                      }
+                    },
+                    {
+                      "type": "keyboard",
+                      "data": {
+                        "keyboard": {
+                          "id": null,
+                          "content": {
+                            "rows": [
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "bind",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "绑定",
+                                      "visited_label": "绑定",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "绑定",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "bind_qq",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "旧绑定迁移",
+                                      "visited_label": "旧绑定迁移",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "绑定QQ",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "update",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "更新广场",
+                                      "visited_label": "更新广场",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikoupdate",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "update_all",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "更新广场(全部)",
+                                      "visited_label": "更新广场(全部)",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikoupdate all",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "my_don",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "个人信息",
+                                      "visited_label": "个人信息",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "我的小咚",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "tcloud",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "词云",
+                                      "visited_label": "词云",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "太鼓词云",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "trend",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "查询我的近期走势",
+                                      "visited_label": "查询我的近期走势",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikotrend",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  },
+                                  {
+                                    "id": "playtrend",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "查询曲数Rating曲线",
+                                      "visited_label": "查询曲数Rating曲线",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikoplaytrend",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "buttons": [
+                                  {
+                                    "id": "taikob",
+                                    "group_id": null,
+                                    "render_data": {
+                                      "label": "查看rt",
+                                      "visited_label": "查看rt",
+                                      "style": 1
+                                    },
+                                    "action": {
+                                      "type": 2,
+                                      "permission": {
+                                        "type": 2,
+                                        "specify_role_ids": null,
+                                        "specify_user_ids": null
+                                      },
+                                      "data": "taikob20",
+                                      "reply": null,
+                                      "enter": null,
+                                      "anchor": null,
+                                      "modal": null,
+                                      "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                                      "click_limit": null,
+                                      "at_bot_show_channel_list": null
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "fuzzy-low",
+            "output": [
+              [
+                {
+                  "message": [
+                    {
+                      "type": "reference",
+                      "data": {
+                        "reference": {
+                          "message_id": "fixture",
+                          "ignore_get_message_error": true
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "data": {
+                        "text": "你要找的可能是：花漾\n匹配度：0.50"
+                      }
+                    },
+                    {
+                      "type": "file_image",
+                      "data": {
+                        "content": {
+                          "sha256": "a3500ec7db4e653e6d16223d0366bc1b6e3e6132259774e47c110cfb281db530"
+                        },
+                        "file_name": null
+                      }
+                    }
+                  ],
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "scenario": "normal",
+            "platform": "qq",
+            "query": "missing-song",
+            "output": [
+              [
+                {
+                  "message": "发生错误：曲库中找不到 id=999 的曲目信息（songs/song_data.json）",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "before",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "prepared",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "rendered",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "revocation": "send",
+            "output": [
+              [
+                {
+                  "message": "查不到呢，可能不给看哦~",
+                  "options": {}
+                }
+              ],
+              []
+            ]
+          },
+          {
+            "stale_target": "members",
+            "rejected": true
+          },
+          {
+            "stale_target": "order",
+            "rejected": true
+          },
+          {
+            "stale_target": "profile",
+            "rejected": true
+          }
+        ],
+        "io_violations": [],
+        "application_guard": true
+      },
+      "pip_check": "PASS"
+    }
+  },
+  "raw_resolver_sha256": {
+    "center": "66db2c9714cc3d3c784f81a8d5dae9b9957df342807c6c1f23bf4766d1c888d6",
+    "client": "f8517e20db872ad816decf14b0dbc45dc54b7da29ab78f0c8d77a8ec8126fad4"
+  },
+  "limits": [
+    "Public smoke verifies responses, not frozen image parity.",
+    "Tinfo guard-smoke retains frozen text/image/error comparison and four revocation checkpoints plus three stale-target tests.",
+    "No full business/storage matrix rerun.",
+    "No live services, production userdata, deployments or restarts.",
+    "Public cover 359 was reused as synthetic cover 278 for both renderers; no historical image hashes are claimed."
+  ]
+}

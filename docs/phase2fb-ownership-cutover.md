@@ -22,7 +22,7 @@ Sakura 的 `plugins/taiko.py` 移除六个 matcher、六个 handler、五个专�
 - 两个全新 venv 真实安装和完整解析，pip check PASS。中心 Core **0.1.1**、客户端 Core **0.1.2**、Contract **0.1.0**、Application **0.5.0**。客户端包 **0.2.11**。安装来源与工作源码逐字节核对；不读取生产 /opt、Sakura 工作树或私人数据。
 - 中心仍按隔离源码布局运行：`CENTER_SOURCE_RUNTIME_PASS` / `CENTER_WHEEL_NOT_REQUIRED`。外部插件与 Application 都是真实 wheel 安装。
 
-完整结果、冻结源/资源 hash、精确环境锁与剩余 matcher 名单见 [acceptance](../packages/nonebot-plugin-taiko-song/tests/acceptance/summary.json)、[scope audit](../packages/nonebot-plugin-taiko-song/tests/acceptance/scope-audit.json)。复现入口见[插件说明](../packages/nonebot-plugin-taiko-song/README.md)。所有 QA 均经既有 memory run_qa 包装执行；没有重跑未改变的 2A–2E 矩阵。
+完整结果、冻结源/资源 hash、精确环境锁与剩余 matcher 名单见 [acceptance](../tests/archive/public-song-plugin/tests/acceptance/summary.json)、[scope audit](../tests/archive/public-song-plugin/tests/acceptance/scope-audit.json)。复现入口见[插件说明](../tests/archive/public-song-plugin/README.md)。所有 QA 均经既有 memory run_qa 包装执行；没有重跑未改变的 2A–2E 矩阵。
 
 ## 安装顺序及剩余范围
 

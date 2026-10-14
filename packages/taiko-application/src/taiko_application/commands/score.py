@@ -15,7 +15,13 @@ class ScorePorts:
     queryMusic: Callable[..., Any]
 
 
-def execute_score(context: CommandContext, ports: ScorePorts) -> CommandResult | None:
+def execute_score(context: CommandContext, ports: ScorePorts | None = None) -> CommandResult | None:
+    """Execute legacy ports or a data-only PreparedScoreCommand for native tinfo."""
+    if ports is None:
+        from .prepared_score import PreparedScoreCommand, execute_prepared_score
+        if type(context) is not PreparedScoreCommand:
+            raise TypeError("Data-only score execution requires PreparedScoreCommand")
+        return execute_prepared_score(context)
     m = context.match
     user_id = context.user_id
     if not m:

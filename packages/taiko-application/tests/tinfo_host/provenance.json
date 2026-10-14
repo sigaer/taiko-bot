@@ -1,0 +1,12 @@
+{
+  "sakura": "e90fafdb5b3e7030dca8116a5accdd1a8147c431",
+  "source_sha256": "7db2ba60722cb61c23e5e7689881751fc2a595893d0f3e8c4821f010b902e3a6",
+  "resolver_sha256": "cc9eb0a0145c2c9e0b5699fbbbb23e30878cdec0a270717945d53c2bc79e3481",
+  "functions": [
+    "_get_bind_ids",
+    "_get_current_bind_taiko_id",
+    "_get_selected_bind_slot_number",
+    "_resolve_read_bind_target",
+    "_resolve_read_bind_target_safe"
+  ]
+}

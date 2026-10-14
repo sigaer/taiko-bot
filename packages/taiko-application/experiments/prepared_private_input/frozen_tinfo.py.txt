@@ -1,0 +1,93 @@
+def _to_jpeg_bytes(img_buf: bytes | BytesIO, quality: int = 85) -> bytes:
+    if isinstance(img_buf, BytesIO):
+        data = img_buf.getvalue()
+    else:
+        data = img_buf
+    img = Image.open(BytesIO(data))
+    if img.mode in ("RGBA", "LA"):
+        base = Image.new("RGB", img.size, (255, 255, 255))
+        base.paste(img, mask=img.split()[-1])
+        img = base
+    else:
+        img = img.convert("RGB")
+    out = BytesIO()
+    img.save(out, format="JPEG", quality=quality, optimize=True)
+    return out.getvalue()
+
+def _is_fuzzy_query_result(results: List[List[Any]]) -> bool:
+    return (
+        bool(results)
+        and len(results) == 1
+        and len(results[0]) >= 3
+        and isinstance(results[0][2], (int, float))
+    )
+
+def _is_accepted_fuzzy_query_result(results: List[List[Any]]) -> bool:
+    return _is_fuzzy_query_result(results) and is_accepted_similarity(
+        results[0][2],
+        FUZZY_ACCEPT_THRESHOLD,
+    )
+
+def _is_rejected_fuzzy_query_result(results: List[List[Any]]) -> bool:
+    return _is_fuzzy_query_result(results) and not _is_accepted_fuzzy_query_result(
+        results
+    )
+
+def _build_fuzzy_query_hint(results: List[List[Any]]) -> str:
+    title = results[0][1]
+    ratio = float(results[0][2]) / 100.0
+    return f"你要找的可能是：{title}\n匹配度：{ratio:.2f}"
+
+async def music_info_handle(event: MessageEvent):
+    bind_target = _resolve_read_bind_target_safe(event)
+    if bind_target == 404:
+        await _finish_text_reply(music_info, event, _taiko_bind_usage_message(event))
+    if bind_target == 403:
+        await music_info.finish("查不到呢，可能不给看哦~")
+    if isinstance(bind_target, dict) and bind_target.get("error"):
+        await _finish_text_reply(music_info, event, str(bind_target["error"]))
+    user_id = str(bind_target["user_id"])
+    # 用纯文本重新匹配参数（而不是直接用 match.group）
+    m = _extract_music_info_command_match(event)
+    if not m:
+        await music_info.finish("格式不正确，应为：tinfo 歌名")
+    music_name = m.group(1)
+    music_list = queryMusic(music_name)
+    music_id = -1
+    fuzzy_hint = ""
+    msg = ""
+    if len(music_list) == 0:
+        await _finish_text_reply(music_info, event, "未找到任何歌曲？")
+    elif _is_rejected_fuzzy_query_result(music_list):
+        fuzzy_hint = _build_fuzzy_query_hint(music_list)
+        music_id = int(music_list[0][0])
+    elif len(music_list) == 1:
+        music_id = int(music_list[0][0])
+    else:
+        msg = "你要找的可能是：\n"
+        for music in music_list:
+            msg += f"id{music[0]} {music[1]}\n"
+        await music_info.finish(msg)
+    if music_id == -1:
+        await music_info.finish("查询失败，怎么回事呢？")
+    else:
+        try:
+            res_img = generate_score_image(
+                song_no=music_id,
+                user_id=user_id,
+                prefer_best_in_group=True,
+            )
+        except FileNotFoundError as e:
+            print(e)
+            await _finish_text_reply(
+                music_info, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
+            )
+        except Exception as e:
+            await music_info.finish(f"{e}")
+        img_jpg = _to_jpeg_bytes(res_img, quality=85)
+        if fuzzy_hint:
+            await _finish_image_reply(
+                music_info, event, img_jpg, prefix_text=fuzzy_hint
+            )
+        else:
+            await _finish_image_reply(music_info, event, img_jpg)

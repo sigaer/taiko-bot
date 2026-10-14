@@ -1,0 +1,92 @@
+def _get_bind_ids(entry: Optional[Dict[str, Any]]) -> List[str]:
+    if not entry:
+        return []
+    return [
+        str(raw or "").strip()
+        for raw in (entry.get("ids") or [])
+        if str(raw or "").strip()
+    ]
+
+
+def _get_selected_bind_slot_number(entry: Optional[Dict[str, Any]]) -> int:
+    ids = _get_bind_ids(entry)
+    if not ids:
+        return 0
+    if len(ids) < 2:
+        return 1
+    try:
+        current_slot = int(
+            entry.get("current_slot", int(entry.get("current_index", 0) or 0) + 1) or 0
+        )
+    except Exception:
+        current_slot = int(entry.get("current_index", 0) or 0) + 1
+    return max(0, min(current_slot, len(ids)))
+
+
+def _get_current_bind_taiko_id(entry: Optional[Dict[str, Any]]) -> Optional[str]:
+    ids = _get_bind_ids(entry)
+    if not ids:
+        return None
+    selected_slot = _get_selected_bind_slot_number(entry)
+    if selected_slot <= 0:
+        return None
+    selected_index = max(0, min(selected_slot - 1, len(ids) - 1))
+    return str(ids[selected_index])
+
+
+def _resolve_read_bind_target(event: MessageEvent):
+    identity_key, is_self_query = _resolve_requested_identity_key(event)
+    info = _get_taiko_bind_info(identity_key)
+    if info is None:
+        return 404
+    visible = info["visible"]
+    if visible == 0 and not is_self_query:
+        return 403
+
+    entry = _get_current_bind_entry(identity_key)
+    if entry is None:
+        return {
+            "identity_key": identity_key,
+            "entry": None,
+            "is_virtual": False,
+            "user_id": str(info["id"] or "").strip(),
+        }
+
+    if _get_selected_bind_slot_number(entry) == 0:
+        sources = dict(entry.get("sources") or {})
+        merge_ids = _get_bind_ids(entry)
+        official_entry = {
+            **entry,
+            "ids": merge_ids,
+            "current_index": min(
+                int(entry.get("current_index", 0) or 0),
+                max(0, len(merge_ids) - 1),
+            ),
+            "sources": {
+                taiko_id: sources.get(taiko_id, "wahlap")
+                for taiko_id in merge_ids
+            },
+        }
+        materialized = materialize_merged_bind_userdata(identity_key, official_entry)
+        return {
+            "identity_key": identity_key,
+            "entry": entry,
+            "is_virtual": True,
+            "user_id": materialized.virtual_user_id,
+            "materialized": materialized,
+        }
+
+    selected_id = _get_current_bind_taiko_id(entry) or str(info["id"] or "").strip()
+    return {
+        "identity_key": identity_key,
+        "entry": entry,
+        "is_virtual": False,
+        "user_id": selected_id,
+    }
+
+
+def _resolve_read_bind_target_safe(event: MessageEvent):
+    try:
+        return _resolve_read_bind_target(event)
+    except (MergedBindMissingUserdataError, MergedBindError) as error:
+        return {"error": str(error)}

@@ -1,0 +1,14 @@
+{
+  "reference_full_sha256": "fd4b1c395fbcfc4941e8a14343e3ca9d95d0ddd31c59e2fcfe3fd68b2683e41e",
+  "reference": "Phase 2D frozen taiko.py, same oracle as tests/commands/provenance.json",
+  "selected_sha256": "7430522efaff7199fc263d5a2a36edc046a273af0c7619dd3966d8258d3a6b87",
+  "selection": "Complete unmodified function source segments; registration decorator omitted. No body rewrite.",
+  "functions": [
+    "_to_jpeg_bytes",
+    "_is_fuzzy_query_result",
+    "_is_accepted_fuzzy_query_result",
+    "_is_rejected_fuzzy_query_result",
+    "_build_fuzzy_query_hint",
+    "music_info_handle"
+  ]
+}

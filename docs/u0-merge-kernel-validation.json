@@ -1,0 +1,54 @@
+{
+  "status": "PHASE_2F_D0_MERGE_KERNEL_DECOUPLED",
+  "baselines": {
+    "taiko": "14fc23a",
+    "sakura": "38826aa"
+  },
+  "client_authorization_checks_unchanged": 35,
+  "public_command_source_unchanged": 9,
+  "publication_and_reader_byte_identical": true,
+  "store_call_path_AST_equal_after_only_import_and_kernel_input_normalization": true,
+  "snapshot_history_byte_identical": true,
+  "store_reverse_merged_bind_imports": 0,
+  "application_kernel_host_imports": 0,
+  "production_writes": 0,
+  "userdata": "synthetic isolated fixtures only",
+  "pytest": {
+    "passed": 119,
+    "subtests": 5,
+    "seconds": 14.25,
+    "pure_kernel_cases": 59,
+    "existing_u0_cases": 34,
+    "publication_store_cases": 21,
+    "new_full_chain_cases": 5
+  },
+  "public_commands": {
+    "center": {
+      "status": "PASS",
+      "cases": 78,
+      "sha256": "f8bfcedbe95729e9ce81587135971d1afa7950825ae6211c251294f875260335"
+    },
+    "client": {
+      "status": "PASS",
+      "cases": 80,
+      "sha256": "db5689d64e701d3baaaeae8c3dc92270118c5899dd1fa041e7d65478d2d51ab2"
+    }
+  },
+  "standalone": {
+    "status": "PASS",
+    "blocked_host_imports": true,
+    "all_execution_file_network_sql_IO_forbidden": true
+  },
+  "artifacts": {
+    "nonebot_plugin_taiko_song-0.3.1-py3-none-any.whl": "874edcd1f322154a917bf45fb685932c1a36f08b7125dea4d2c2c679d536fe4e",
+    "taiko_application-0.6.0-py3-none-any.whl": "270ffa0e2d343fd05ff4f1b875ae0fec65af5fe047a085e98130a5f3bfee6dcb"
+  },
+  "versions": {
+    "application": "0.6.0",
+    "public_plugin": "0.3.1",
+    "client_package": "0.2.13",
+    "center_core": "0.1.1",
+    "client_core": "0.1.2",
+    "contract": "0.1.0"
+  }
+}
