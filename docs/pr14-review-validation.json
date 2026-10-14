@@ -1,0 +1,155 @@
+{
+  "baselines": {
+    "taiko": "c563acd",
+    "sakura": "e764a50"
+  },
+  "before": {
+    "failed": 6,
+    "passed": 31,
+    "failures": [
+      "removed generate_score_image",
+      "removed _load_font: three layout assertions",
+      "removed _extract_music_info_command_match",
+      "removed legacy music_info matcher"
+    ]
+  },
+  "after": {
+    "host_tests": 38,
+    "host_subtests": 86,
+    "taiko_owner_tests": 5,
+    "public_events_and_classified_records": 18,
+    "tinfo_guard_smoke": 15,
+    "load_orders": 3
+  },
+  "public_records": [
+    {
+      "method_name": "cmd::是什么歌",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "是什么歌"
+    },
+    {
+      "method_name": "cmd::有什么别名",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "有什么别名"
+    },
+    {
+      "method_name": "cmd::在哪",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "位置"
+    },
+    {
+      "method_name": "cmd::在什么位置",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "位置"
+    },
+    {
+      "method_name": "cmd::位置",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "位置"
+    },
+    {
+      "method_name": "cmd::查谱",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "查谱"
+    },
+    {
+      "method_name": "cmd::太鼓查物量",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "太鼓查物量"
+    },
+    {
+      "method_name": "cmd::查定数",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "查定数"
+    },
+    {
+      "method_name": "cmd::查配置",
+      "group_id": "123",
+      "platform": "onebot_v11",
+      "normalized_command": "查配置"
+    },
+    {
+      "method_name": "cmd::是什么歌",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "是什么歌"
+    },
+    {
+      "method_name": "cmd::有什么别名",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "有什么别名"
+    },
+    {
+      "method_name": "cmd::在哪",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "位置"
+    },
+    {
+      "method_name": "cmd::在什么位置",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "位置"
+    },
+    {
+      "method_name": "cmd::位置",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "位置"
+    },
+    {
+      "method_name": "cmd::查谱",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "查谱"
+    },
+    {
+      "method_name": "cmd::太鼓查物量",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "太鼓查物量"
+    },
+    {
+      "method_name": "cmd::查定数",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "查定数"
+    },
+    {
+      "method_name": "cmd::查配置",
+      "group_id": "fixture-group",
+      "platform": "qq_official",
+      "normalized_command": "查配置"
+    }
+  ],
+  "no_changes": [
+    "runtime algorithms",
+    "Writer",
+    "storage",
+    "SQL schema/store.py",
+    "Core/Contract",
+    "production"
+  ],
+  "log_sha256": {
+    "after.log": "7eeb8f798fc12d4c8ca1cbfd61e326a68b3edb78b8cec885d9e4f48c83daa6af",
+    "before-fixture.log": "787250e94542188eef5cf470bffe81ec7095759f2dc18a58ccc56dc9c89aab74",
+    "before-supported.log": "e30b817140c248399c454fbb3adeef48f8001a81047eddfa1c439b2088bd2d78",
+    "before.log": "3952170483319f171951f10c62f208d9cc74c414723e26837b0dfa4fb8bb8055",
+    "host-after.log": "65086071a29e033b7e07d54d8ebbb58306efa3a6918b83800a54338d64fb666c",
+    "load-order.log": "37ebdcbf272d95941cb9d4ffdc4293a6457aa046c921b3ce55cfdc9837d159ba",
+    "owner-after.log": "e5e733fc4371f331365466809010a2b583bee71230844a06846780d9aa9d4c79",
+    "public-stats.log": "a9522ed4c9d0345dd9cca1ecadcd72506af74069ad4bb9548dfef1c29669ae98",
+    "tinfo-smoke.log": "8e76c44ccce55857f2dcfaf97377ec591efbffc6127873ec3145f0e8be881a53"
+  },
+  "evidence_directory": "/var/tmp/taiko-pr14-review",
+  "status": "PR14_P2_FIXES_VALIDATED"
+}
