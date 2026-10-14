@@ -7,6 +7,7 @@ import runpy, sys, types, shutil, re
 p=argparse.ArgumentParser()
 p.add_argument('--host',choices=['center','client'],required=True)
 p.add_argument('--guard-smoke',action='store_true')
+p.add_argument('--representative',action='store_true')
 p.add_argument('--mode',choices=['parity','security'],default='parity')
 p.add_argument('--baseline',type=Path,required=True)
 p.add_argument('--work',type=Path,required=True)
@@ -33,7 +34,7 @@ Image.init()
 import nonebot
 nonebot.init(driver='~fastapi+~httpx',log_level='CRITICAL',taiko_song_profile=a.host,taiko_song_public_root=str(a.work))
 public=nonebot.load_plugin('taiko_bot.runtime.public');player=nonebot.load_plugin('taiko_bot.runtime.player.entry')
-assert public and player and len(public.matcher)==9 and len(player.matcher)==2
+assert public and player and len(public.matcher)==9 and len(player.matcher)==3
 assert nonebot.require('taiko_bot.runtime.player.entry') is player.module
 entry=player.module
 import builtins
@@ -236,6 +237,7 @@ commands=['taikorec',*[f'推荐歌曲 {dim} 3' for dim in ('大歌力','体力',
  '推荐歌曲 全连','推荐歌曲 全良','推荐歌曲 紫雅','推荐歌曲 紫雅 9星','推荐歌曲 粉雅','推荐歌曲 金雅','推荐歌曲 极',
  '推荐歌曲 紫雅 1星']
 if a.host=='center':commands+=['歌曲推荐 体力 3']
+if a.representative:commands=['taikorec','推荐歌曲体力30','推荐歌曲 全连','推荐歌曲 紫雅 9星']
 async def run():
  for virtual in (False, True):
   state['virtual']=virtual

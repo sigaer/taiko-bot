@@ -80,7 +80,7 @@ class TinfoHostProvider:
             options["max_file_bytes"] = MAX_BYTES
         return PublicationStore(self._root, identity, **options)
 
-    def prepare(self, actor, principal):
+    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None):
         rows, entry, observation = self._snapshot(actor, principal)
         self._initial = (actor, principal, observation)
         virtual = entry["current_slot"] == 0
@@ -129,12 +129,38 @@ class TinfoHostProvider:
                     # returning text does not start failing because current is absent.
                     current = None
                     failure = ReadFailure(isinstance(error, FileNotFoundError), "" if isinstance(error, FileNotFoundError) else str(error))
+                history = None
+                if include_history:
+                    from .progress_support.dojo_score import build_dojo_score_map
+                    history = []
+                    # Dani needs only the newest matching dojo payload. Do not
+                    # retain entire song-history datasets or scan when current wins.
+                    current_dojo = (current or {}).get('dojo') or {}
+                    needs_fallback = current is not None and history_dan_id and history_dan_id not in build_dojo_score_map(current_dojo)
+                    if needs_fallback:
+                        for name in sorted(view.history_names(), reverse=True):
+                            self._remaining()
+                            try:
+                                payload = json.loads(view.history_raw(name).decode('utf-8'))
+                            except (FileNotFoundError, UnicodeError, ValueError):
+                                continue  # Frozen Dani skips unreadable JSON snapshots.
+                            if not isinstance(payload, dict) or 'dojo' not in payload:
+                                continue
+                            dojo = payload.get('dojo') or {}
+                            if history_dan_id in build_dojo_score_map(dojo):
+                                history.append({'fileName': name, 'payload': {'dojo': dojo}})
+                                break
+                    history = tuple(history)
                 publication = view.publication
                 provenance = Provenance(
                     "native-publication" if publication else "native-legacy",
                     _digest(publication) if publication else sha256(raw).hexdigest(),
                     None, expected, ids, profile)
-                prepared = PreparedPrivateInput(target, current, None, provenance, failure)
+                if include_history:
+                    from dataclasses import replace
+                    observation_id = _digest({'current': provenance.current_view, 'history': history})
+                    provenance = replace(provenance, current_view=observation_id, history_view=observation_id)
+                prepared = PreparedPrivateInput(target, current, history, provenance, failure)
             self.verify(prepared)
             return prepared
         raise TinfoUnavailable()

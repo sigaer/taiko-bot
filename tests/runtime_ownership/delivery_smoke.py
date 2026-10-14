@@ -33,7 +33,7 @@ nonebot.init(driver='~fastapi+~httpx', log_level='CRITICAL', taiko_song_profile=
              taiko_song_public_root=str(a.work))
 public = nonebot.load_plugin('taiko_bot.runtime.public')
 player = nonebot.load_plugin('taiko_bot.runtime.player.entry')
-assert public and player and len(public.matcher) == 9 and len(player.matcher) == 2
+assert public and player and len(public.matcher) == 9 and len(player.matcher) == 3
 from nonebot.adapters.onebot.v11 import Adapter, Bot, Message, GroupMessageEvent
 from nonebot.adapters.qq import Adapter as QQAdapter, Bot as QQBot
 from nonebot.adapters.qq.config import BotInfo

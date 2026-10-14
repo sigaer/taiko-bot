@@ -138,7 +138,7 @@ def test_native_b30_preparation_replaces_unpaired_current_and_passes_same_histor
 
 
 def test_native_current_dani_preparation_and_dojo_fallback_use_one_pair(cfg, monkeypatch):
-    from plugins.utils import dani_progress as renderer
+    from taiko_bot.runtime.player.client.progress_support import dani_progress as renderer
     current, raw, calls = pair_transport(cfg, monkeypatch)
     observed = {}
     class ReachedDojo(Exception): pass
@@ -158,9 +158,9 @@ def test_native_current_dani_preparation_and_dojo_fallback_use_one_pair(cfg, mon
         raise ReachedDojo()
     monkeypatch.setattr(renderer, "_build_dojo_runtime", dojo)
     with pytest.raises(ReachedDojo):
-        renderer.render_dani_progress_image_bytes(1001, "三段", userdata={"songs": [{"private": "stale"}]})
+        renderer.render_dani_progress_image_bytes(1001, "三段", userdata=current, history_snapshots=provider._private_history({"historyFormat":"raw-v1", "snapshots":raw}))
     assert observed == {"entries": current["songs"], "dojo": {"tag": "previous"}}
-    assert len(calls) == 2 and not cfg.userdata_dir.exists()
+    assert len(calls) == 0 and not cfg.userdata_dir.exists()
 
 
 @pytest.mark.parametrize("module,name,args", [

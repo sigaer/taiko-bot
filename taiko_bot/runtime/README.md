@@ -1,7 +1,7 @@
 # Taiko runtime ownership
 
 This is maintained source inside the existing `taiko-bot` distribution.
-`public` owns the nine public song commands; `player.entry` owns tinfo and taikorec
+`public` owns the nine public song commands; `player.entry` owns tinfo, taikorec and progress
 matchers and dispatch. `player.center` owns native preparation, public
 presentation inputs and delivery. `player.client` owns remote preparation
 and the existing client score card. `player.authority` checks each private

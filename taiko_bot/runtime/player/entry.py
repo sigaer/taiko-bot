@@ -107,3 +107,5 @@ async def music_info_handle(matcher: Matcher, event: Event):
 
 # Register additional player commands in this same plugin/driver.
 from . import recommendation
+
+from . import progress

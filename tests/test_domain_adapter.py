@@ -4,7 +4,8 @@ from dataclasses import asdict
 from datetime import datetime as RealDatetime
 import pytest
 from taiko_bot import domain
-from plugins.utils import progress_catalog, dojo_score, taikob_v2, score_calculator
+from plugins.utils import dojo_score, taikob_v2, score_calculator
+from taiko_bot.runtime.player.client.progress_support import progress_catalog
 from plugins.utils.hiroba import parser, normalize
 
 def unavailable(*args, **kwargs):

@@ -71,13 +71,15 @@ assert external_first is not None and len(external_first.matcher) == 9
 assert "plugins.taiko" not in sys.modules
 assert not any(name.startswith("plugins.utils") for name in sys.modules)
 player = nonebot.load_plugin("taiko_bot.runtime.player.entry")
-assert player is not None and len(player.matcher) == 2
+assert player is not None and len(player.matcher) == 3
 plugin = nonebot.load_plugin("plugins.taiko")
 assert plugin is not None, "Installed plugin failed to load"
 assert not hasattr(plugin.module, 'taikorec')
+assert not hasattr(plugin.module, 'matcher')
+assert player.module.progress.matcher in player.matcher
 assert player.module.recommendation.taikorec in player.matcher
 if a.load_only:
-    print(a.host, 'full host load PASS; one owned taikorec, zero legacy entries')
+    print(a.host, 'full host load PASS; one owned taikorec and progress matcher, zero legacy entries')
     raise SystemExit(0)
 module = plugin.module
 from importlib.metadata import version
@@ -119,6 +121,7 @@ for name in names:
  assert not hasattr(module,name)
 r.pop('music_info')
 r.pop('taikorec')
+r.pop('matcher')
 assert r==registrations(new_tree)
 assert len(external.matcher)==9
 ns=dict(module.__dict__)

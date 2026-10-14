@@ -101,7 +101,7 @@ def test_native_trend_and_previous_loaders_match_frozen_disk_order_and_delta_pro
 
 def test_dani_preserves_reverse_filename_order_instead_of_trend_time(history, cfg, monkeypatch):
     root, directory, raw = history
-    from plugins.utils import dani_progress
+    from taiko_bot.runtime.player.client.progress_support import dani_progress
     # Dojo normalization is unchanged; isolate selection with a real 2025 dan.
     for row, name, stamp in [(raw[1], "data_z.json", 1), (raw[2], "data_a.json", 2)]:
         row["fileName"], row["fileMtime"] = name, stamp
@@ -117,8 +117,8 @@ def test_dani_preserves_reverse_filename_order_instead_of_trend_time(history, cf
     monkeypatch.setattr(dani_progress, "normalize_dojo_scores", normalize)
     monkeypatch.setattr(dani_progress, "build_dojo_score_map", map_dojo)
     calls = answer_history(monkeypatch, cfg, raw)
-    assert dani_progress._load_history_dojo_payload_for_dan(1001, 3) == old["_load_history_dojo_payload_for_dan"](1001, 3) == {"tag": "data_z.json"}
-    assert len(calls) == 1
+    assert dani_progress._load_history_dojo_payload_for_dan(1001, 3, provider._private_history({"historyFormat":"raw-v1", "snapshots":raw})) == old["_load_history_dojo_payload_for_dan"](1001, 3) == {"tag": "data_z.json"}
+    assert len(calls) == 0
 
 
 @pytest.mark.parametrize("change", ["missing-name", "unsafe-name", "bad-mtime", "bad-payload"])

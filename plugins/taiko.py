@@ -5,17 +5,8 @@ from .utils.public_score_token import (
 from .utils.taiko_db import get_taiko_db_connection
 from taiko_bot.merged_source_id import build_center_virtual_user_id
 from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
-from .utils import render_pass_progress_image_bytes, render_progress_image_bytes_by_list, compute_score, render_progress_image_bytes, render_star_progress_image_bytes, generate_dim_top_image, render_my_don_image, render_b30_image, render_tcloud_image
+from .utils import compute_score, generate_dim_top_image, render_my_don_image, render_b30_image, render_tcloud_image
 from .utils.draw_summary import render_taiko_2025_summary
-from .utils.progress_catalog import (
-    available_const_progress_keys,
-    available_pass_progress_keys,
-    available_star_progress_values,
-)
-from .utils.dani_progress import (
-    parse_dani_progress_request,
-    render_dani_progress_image_bytes,
-)
 from .utils.score_line import (
     available_levels_for_song,
     compute_scoreline_result,
@@ -214,23 +205,6 @@ PLAYTREND_USAGE_MESSAGE = (
     "taikoplaytrend --dim 精度 20 / taikoplaytrend -a / taikoplaytrend -b"
 )
 CITY_ARCADE_QUERY_REGEX = re.compile(r"^(?P<city>.+?)(?:哪有鼓|哪里有鼓)\s*[？?]?$")
-PROGRESS_WITH_PAGE_REGEX = re.compile(r"^(?P<body>.+进度)(?:\s+(?P<page>\d+))?$")
-STAR_PROGRESS_VALUE_MAP = {
-    "一": 1,
-    "二": 2,
-    "两": 2,
-    "三": 3,
-    "四": 4,
-    "五": 5,
-    "六": 6,
-    "七": 7,
-    "八": 8,
-    "九": 9,
-    "十": 10,
-}
-STAR_PROGRESS_REGEX = re.compile(
-    r"^(?P<star>10|[1-9]|一|二|两|三|四|五|六|七|八|九|十)(?:星|★|☆)进度$"
-)
 UPDATE_COMMAND_PATTERN = re.compile(
     r"^(?:taikoupdate|更新广场)(?:(?:\s+|)(?P<show_all>all|全部|全量|-a|--all))?\s*$",
     flags=re.IGNORECASE,
@@ -291,14 +265,6 @@ def _normalize_slash_command_text(text: str) -> str:
     return normalized[1:].lstrip() if normalized.startswith("/") else normalized
 
 
-def _parse_star_progress_value(raw: str) -> Optional[int]:
-    token = str(raw or "").strip()
-    if token.isdigit():
-        try:
-            return int(token)
-        except ValueError:
-            return None
-    return STAR_PROGRESS_VALUE_MAP.get(token)
 
 
 def _should_trigger_tcloud_command(text: str) -> bool:
@@ -805,34 +771,12 @@ def load_song_data(*, include_hidden: bool = False):
     ]
 
 
-@lru_cache(maxsize=1)
-def _load_progress_name_set() -> Set[str]:
-    path = SONGS_DIR / "music_donda_list.json"
-    if not path.exists():
-        return set()
-    try:
-        with path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception:
-        return set()
-    if not isinstance(data, dict):
-        return set()
-    return {str(k) for k in data.keys()}
 
 
-@lru_cache(maxsize=1)
-def _load_decimal_progress_set() -> Set[str]:
-    return available_const_progress_keys()
 
 
-@lru_cache(maxsize=1)
-def _load_pass_progress_set() -> Set[str]:
-    return available_pass_progress_keys()
 
 
-@lru_cache(maxsize=1)
-def _load_star_progress_set() -> Set[int]:
-    return available_star_progress_values()
 
 
 def _to_int(value: Any, default: int = 0) -> int:
@@ -5177,135 +5121,8 @@ async def twso_handle(event: MessageEvent):
 
 
 
-matcher = on_regex(r"^.+进度(?:\s+\d+)?$", rule=taiko_rule)
 
 
-@matcher.handle()
-async def _(event: MessageEvent):
-    raw_text = extract_plain_text(event).strip()
-    page_match = PROGRESS_WITH_PAGE_REGEX.fullmatch(raw_text)
-    if not page_match:
-        return
-    text = page_match.group("body").strip()
-    page = int(page_match.group("page") or "1")
-    if page <= 0:
-        await _finish_text_reply(matcher, event, "页码必须是正整数，示例：6星进度 2")
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(matcher, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(matcher, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(matcher, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(matcher, event, "core-assets"):
-        return
-    taiko_id = str(bind_target["user_id"])
-    current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
-
-    dani_request = parse_dani_progress_request(text)
-    if dani_request:
-        png = render_dani_progress_image_bytes(
-            user_id=taiko_id,
-            grade_name=dani_request["grade"],
-            version=dani_request["version"],
-            explicit_version=dani_request.get("explicitVersion") == "1",
-            userdata=current_userdata,
-        )
-        await _require_private_send_authority(matcher, event, bind_target)
-        await _finish_image_reply(matcher, event, png)
-        return
-
-    m = re.fullmatch(r"^(?P<decimal>\d+\.\d)(?P<mode>综合|过关|定数)?进度$", text)
-    if m:
-        decimal = m.group("decimal")
-        mode = m.group("mode") or ""
-        dynamic_available = decimal in _load_decimal_progress_set()
-        pass_available = decimal in _load_pass_progress_set()
-
-        if mode == "过关":
-            if not pass_available:
-                await _require_private_send_authority(matcher, event, bind_target)
-                await _finish_text_reply(
-                    matcher,
-                    event,
-                    f"{decimal} 暂无过关难度进度表，可尝试“{decimal}综合进度”",
-                )
-                return
-            png = render_pass_progress_image_bytes(
-                user_id=taiko_id,
-                decimal=decimal,
-                page=page,
-                userdata=current_userdata,
-            )
-        elif mode in {"综合", "定数"}:
-            if not dynamic_available:
-                await _require_private_send_authority(matcher, event, bind_target)
-                await _finish_text_reply(
-                    matcher,
-                    event,
-                    f"{decimal} 暂无综合难度进度表，可尝试“{decimal}过关进度”",
-                )
-                return
-            png = render_progress_image_bytes(
-                user_id=taiko_id,
-                decimal=decimal,
-                page=page,
-                userdata=current_userdata,
-            )
-        else:
-            if pass_available:
-                png = render_pass_progress_image_bytes(
-                    user_id=taiko_id,
-                    decimal=decimal,
-                    page=page,
-                    userdata=current_userdata,
-                )
-            elif dynamic_available:
-                png = render_progress_image_bytes(
-                    user_id=taiko_id,
-                    decimal=decimal,
-                    page=page,
-                    userdata=current_userdata,
-                )
-            else:
-                return
-        await _require_private_send_authority(matcher, event, bind_target)
-        await _finish_image_reply(matcher, event, png)
-        return
-
-    m = STAR_PROGRESS_REGEX.fullmatch(text)
-    if m:
-        star_value = _parse_star_progress_value(m.group("star"))
-        if star_value is None:
-            return
-        if star_value not in _load_star_progress_set():
-            return
-        png = render_star_progress_image_bytes(
-            user_id=taiko_id,
-            star_value=star_value,
-            page=page,
-            userdata=current_userdata,
-        )
-        await _require_private_send_authority(matcher, event, bind_target)
-        await _finish_image_reply(matcher, event, png)
-        return
-
-    # 否则走进度名逻辑：例如 SS进度、地力S进度
-    text = re.sub(r"个", "個", text)  # 统一“个人差”写法
-    text = re.sub(r"底", "地", text)  # 统一“地力”写法
-    text = text.upper()  # 统一大写
-    progress_name = text[:-2]  # 去掉“进度”
-    if progress_name not in _load_progress_name_set():
-        return
-    png = render_progress_image_bytes_by_list(
-        user_id=taiko_id,
-        progress_name=progress_name,
-        assets_base=str(ASSETS_DIR),
-        page=page,
-        userdata=current_userdata,
-    )
-    await _require_private_send_authority(matcher, event, bind_target)
-    await _finish_image_reply(matcher, event, png)
 
 
 # ========== NoneBot 命令 ==========

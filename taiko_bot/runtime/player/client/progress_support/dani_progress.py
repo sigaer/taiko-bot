@@ -1,51 +1,77 @@
 from __future__ import annotations
 
+
 import io
+
 import json
+
 import math
+
 import os
+
 import re
+
 from functools import lru_cache
+
 from pathlib import Path
+
 from typing import Any, Dict, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
+
 from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import get_cached_userdata, ensure_userdata_history_available, ensure_userdata_view_available
+
+
 from taiko_bot.history_adapter import ordered_raw_history
 
-from .dojo_score import (
-    build_dojo_score_map,
-    get_dan_id_by_grade_name,
-    level_mark_to_icon,
-    normalize_dojo_scores,
-)
+from .dojo_score import build_dojo_score_map, get_dan_id_by_grade_name, level_mark_to_icon, normalize_dojo_scores
 
 BASE = get_settings().root_dir
+
 CURRENT_CONFIG_PATH = BASE / "songs" / "grade_dojo_nijiiro_2025_simple.json"
+
 HISTORY_CONFIG_PATH = BASE / "songs" / "grade_dojo_nijiiro_history_simple.json"
+
 UP_TEMPLATE_PATH = BASE / "assets" / "templates" / "dani_up.png"
+
 DOWN_TEMPLATE_PATH = BASE / "assets" / "templates" / "dani_down.png"
+
 DIFF_DIR = BASE / "assets" / "icons" / "diff"
+
 DANI_DIR = BASE / "assets" / "icons" / "dani"
+
 FONT_PATH = BASE / "assets" / "fonts" / "FZPW_GBK.ttf"
+
 DDFONT_PATH = BASE / "assets" / "fonts" / "DDFont.ttf"
 
 WHITE = (255, 255, 255)
+
 BLACK = (0, 0, 0)
+
 TEXT_MAIN = (60, 36, 19)
+
 TEXT_SUB = (118, 87, 58)
+
 CARD_FILL = (255, 250, 244, 242)
+
 CARD_STROKE = (98, 63, 37, 235)
+
 FOOTER_FILL = (28, 18, 18, 190)
+
 FOOTER_STROKE = (255, 230, 190, 182)
+
 BAR_FAIL = (110, 118, 130)
+
 BAR_PASS = (255, 164, 96)
+
 BAR_GOLD = (255, 126, 216)
+
 BAR_NEUTRAL = (188, 156, 126)
+
 RATE_BAR_BG = (52, 44, 44, 166)
 
 FORMULA_GOOD = "good_over_total"
+
 FORMULA_OK = "total_minus_ok_minus_1_over_total"
 
 GRADE_ALIASES = [
@@ -55,7 +81,6 @@ GRADE_ALIASES = [
     ("达人", "達人"),
 ]
 
-FOOTER_OK_COUNT_GRADES = {"十段", "玄人", "名人", "超人", "達人"}
 _NUMERIC_DAN_ALIASES = {
     1: "初段",
     2: "二段",
@@ -68,6 +93,7 @@ _NUMERIC_DAN_ALIASES = {
     9: "九段",
     10: "十段",
 }
+
 _NUMERIC_KYU_ALIASES = {
     1: "一級",
     2: "二級",
@@ -75,17 +101,18 @@ _NUMERIC_KYU_ALIASES = {
     4: "四級",
     5: "五級",
 }
-CURRENT_DANI_VERSION = "2025"
-SUPPORTED_DANI_VERSIONS = {"2020", "2021", "2022", "2023", "2024", "2025"}
-DANI_VERSION_PREFIXES = ("虹", "虹版", "ニジイロ")
 
+CURRENT_DANI_VERSION = "2025"
+
+SUPPORTED_DANI_VERSIONS = {"2020", "2021", "2022", "2023", "2024", "2025"}
+
+DANI_VERSION_PREFIXES = ("虹", "虹版", "ニジイロ")
 
 def _safe_int(value: Any, default: int = 0) -> int:
     try:
         return int(value)
     except Exception:
         return default
-
 
 def _safe_optional_int(value: Any) -> Optional[int]:
     try:
@@ -95,13 +122,11 @@ def _safe_optional_int(value: Any) -> Optional[int]:
     except Exception:
         return None
 
-
 def _difficulty_level(value: Any) -> int:
     raw = str(value).strip()
     if raw.startswith("level"):
         raw = raw[5:]
     return max(1, _safe_int(raw, 4))
-
 
 def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     try:
@@ -109,13 +134,11 @@ def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     except Exception:
         return ImageFont.load_default()
 
-
 def _load_ddfont(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     try:
         return ImageFont.truetype(str(DDFONT_PATH), size)
     except Exception:
         return _load_font(size)
-
 
 def _font_y_offset(font: ImageFont.ImageFont, ratio: float = 0.1) -> int:
     font_path = str(getattr(font, "path", "") or "")
@@ -123,7 +146,6 @@ def _font_y_offset(font: ImageFont.ImageFont, ratio: float = 0.1) -> int:
     if "DDFont" not in font_path or size <= 0:
         return 0
     return int(round(size * ratio))
-
 
 def _draw_text_with_stroke(
     draw: ImageDraw.ImageDraw,
@@ -157,7 +179,6 @@ def _draw_text_with_stroke(
                 )
         draw.text((x, y), text, font=font, fill=fill, anchor=anchor)
 
-
 def _truncate_text(
     draw: ImageDraw.ImageDraw,
     text: str,
@@ -180,7 +201,6 @@ def _truncate_text(
             right = mid - 1
     return text[:left] + ellipsis
 
-
 def _grade_alias_variants(canonical: str) -> set[str]:
     variants = {canonical}
     changed = True
@@ -194,7 +214,6 @@ def _grade_alias_variants(canonical: str) -> set[str]:
                         variants.add(nxt)
                         changed = True
     return variants
-
 
 def _normalize_numeric_grade_input(text: str) -> str:
     raw = str(text).strip()
@@ -213,7 +232,6 @@ def _normalize_numeric_grade_input(text: str) -> str:
 
     return raw
 
-
 @lru_cache(maxsize=8)
 def _load_grade_payload(version: str) -> Dict[str, Any]:
     version = str(version or CURRENT_DANI_VERSION)
@@ -228,7 +246,6 @@ def _load_grade_payload(version: str) -> Dict[str, Any]:
         raise KeyError(version)
     return version_payload
 
-
 @lru_cache(maxsize=8)
 def _load_grade_index(version: str = CURRENT_DANI_VERSION) -> Dict[str, Dict[str, Any]]:
     payload = _load_grade_payload(version)
@@ -238,7 +255,6 @@ def _load_grade_index(version: str = CURRENT_DANI_VERSION) -> Dict[str, Dict[str
         for item in _grade_alias_variants(canonical):
             index[item] = grade
     return index
-
 
 def parse_dani_progress_request(text: str) -> Optional[Dict[str, str]]:
     raw = str(text).strip()
@@ -275,18 +291,12 @@ def parse_dani_progress_request(text: str) -> Optional[Dict[str, str]]:
         "explicitVersion": "1" if explicit_version else "0",
     }
 
-
-def normalize_dani_grade_name(text: str) -> Optional[str]:
-    request = parse_dani_progress_request(text)
-    return request["grade"] if request else None
-
-
 def _load_history_dojo_payload_for_dan(
     user_id: int, dan_id: int, history_snapshots=None,
 ) -> Optional[Dict[str, Any]]:
     if dan_id <= 0:
         return None
-    snapshots = history_snapshots if history_snapshots is not None else ensure_userdata_history_available(str(user_id))
+    snapshots = history_snapshots or ()
     for stamp, name, payload in reversed(ordered_raw_history(snapshots, filename_order=True)):
         if "dojo" not in payload:
             continue
@@ -296,11 +306,9 @@ def _load_history_dojo_payload_for_dan(
             return dojo_payload
     return None
 
-
 def _footer_uses_ok_count(grade: Dict[str, Any]) -> bool:
     pass_cond = (grade or {}).get("conditions", {}).get("pass", {})
     return pass_cond.get("okCountLessThan") is not None
-
 
 def _render_notice(text: str) -> bytes:
     base = Image.open(UP_TEMPLATE_PATH).convert("RGBA")
@@ -317,7 +325,6 @@ def _render_notice(text: str) -> bytes:
     buf = io.BytesIO()
     base.convert("RGB").save(buf, format="PNG", optimize=True)
     return buf.getvalue()
-
 
 @lru_cache(maxsize=1)
 def _load_song_note_map() -> Dict[Tuple[int, int], int]:
@@ -339,7 +346,6 @@ def _load_song_note_map() -> Dict[Tuple[int, int], int]:
                 continue
     return mapping
 
-
 def _note_count(song: Dict[str, Any]) -> int:
     note_count = _safe_int(song.get("noteCount"), 0)
     if note_count > 0:
@@ -348,13 +354,11 @@ def _note_count(song: Dict[str, Any]) -> int:
         (_safe_int(song.get("id")), _difficulty_level(song.get("difficulty"))), 0
     )
 
-
 def _accuracy_formula(song: Dict[str, Any]) -> str:
     formula = str(song.get("accuracyFormula") or "").strip()
     if formula in {FORMULA_GOOD, FORMULA_OK}:
         return formula
     return FORMULA_GOOD
-
 
 def _build_best_entry_map(
     user_scores: List[Dict[str, Any]],
@@ -369,7 +373,6 @@ def _build_best_entry_map(
         if key not in best or score > int(best[key].get("high_score", 0) or 0):
             best[key] = row
     return best
-
 
 def _entry_counts(entry: Optional[Dict[str, Any]]) -> Dict[str, int]:
     if not entry:
@@ -390,7 +393,6 @@ def _entry_counts(entry: Optional[Dict[str, Any]]) -> Dict[str, int]:
         "hit": hit_value,
     }
 
-
 def _accuracy_percent(counts: Dict[str, int], note_count: int, formula: str) -> float:
     if note_count <= 0:
         return 0.0
@@ -405,14 +407,11 @@ def _accuracy_percent(counts: Dict[str, int], note_count: int, formula: str) -> 
     value = (counts["good"] + counts["ok"] * 0.5) / float(note_count)
     return max(0.0, min(100.0, value * 100.0))
 
-
 def _all_good(counts: Dict[str, int], note_count: int) -> bool:
     return counts["ok"] == 0 and counts["bad"] == 0
 
-
 def _full_combo(counts: Dict[str, int]) -> bool:
     return counts["bad"] == 0
-
 
 def _rate_from_good_target(note_count: int, good_target: int) -> float:
     if note_count <= 0:
@@ -423,14 +422,12 @@ def _rate_from_good_target(note_count: int, good_target: int) -> float:
     )
     return max(0.0, min(100.0, value))
 
-
 def _rate_from_ok_limit(note_count: int, ok_limit: int) -> float:
     if note_count <= 0:
         return 0.0
     max_ok = max(0, ok_limit - 1)
     value = (note_count - 0.5 * max_ok) / float(note_count) * 100.0
     return max(0.0, min(100.0, value))
-
 
 def _rate_target_list(note_counts: List[int], cond: Dict[str, Any]) -> List[float]:
     if cond.get("goodCountAtLeast") is not None:
@@ -447,7 +444,6 @@ def _rate_target_list(note_counts: List[int], cond: Dict[str, Any]) -> List[floa
         ]
     gauge = float(_safe_int(cond.get("soulGaugePercent"), 0))
     return [gauge for _ in note_counts]
-
 
 def _rate_target_total(
     note_count: int, cond: Dict[str, Any], song_notes: List[int]
@@ -480,7 +476,6 @@ def _rate_target_total(
         return max(0.0, min(100.0, value))
     return float(_safe_int(cond.get("soulGaugePercent"), 0))
 
-
 def _allocate_proportional(total: int, weights: List[int]) -> List[int]:
     if total <= 0 or not weights or sum(weights) <= 0:
         return [0 for _ in weights]
@@ -494,7 +489,6 @@ def _allocate_proportional(total: int, weights: List[int]) -> List[int]:
         ints[idx] += 1
     return ints
 
-
 def _scalar_or_list(value: Any, weights: List[int]) -> List[int]:
     if isinstance(value, list):
         numbers = [_safe_int(item, 0) for item in value]
@@ -502,7 +496,6 @@ def _scalar_or_list(value: Any, weights: List[int]) -> List[int]:
             numbers.extend([0] * (len(weights) - len(numbers)))
         return numbers[: len(weights)]
     return _allocate_proportional(_safe_int(value, 0), weights)
-
 
 def _derive_song_targets(grade: Dict[str, Any]) -> Dict[str, Any]:
     songs = grade["songs"]
@@ -547,7 +540,6 @@ def _derive_song_targets(grade: Dict[str, Any]) -> Dict[str, Any]:
         "gold_hit": _scalar_or_list(gold_hit_raw, notes),
     }
 
-
 def _best_tier(pass_ok: bool, gold_ok: bool, full_combo: bool, all_good: bool) -> int:
     if gold_ok:
         if all_good:
@@ -563,14 +555,11 @@ def _best_tier(pass_ok: bool, gold_ok: bool, full_combo: bool, all_good: bool) -
         return 2
     return 1
 
-
 def _metric_pass(value: float, target: float) -> bool:
     return target > 0 and value >= target
 
-
 def _metric_pass_bad(current: int, target_raw: int) -> bool:
     return target_raw > 0 and current < target_raw
-
 
 def _status_color(icon_index: int) -> Tuple[int, int, int]:
     if icon_index in {3, 5, 7}:
@@ -580,7 +569,6 @@ def _status_color(icon_index: int) -> Tuple[int, int, int]:
     if icon_index <= 0:
         return BAR_NEUTRAL
     return BAR_FAIL
-
 
 def _metric_ratio(kind: str, current: float | int, target: float | int) -> float:
     target_value = float(target)
@@ -594,7 +582,6 @@ def _metric_ratio(kind: str, current: float | int, target: float | int) -> float
             return 1.0
         return max(0.0, min(1.0, target_value / current_value))
     return max(0.0, min(1.0, current_value / target_value))
-
 
 def _metric_icon_index(
     kind: str,
@@ -611,7 +598,6 @@ def _metric_icon_index(
         pass_ok = _metric_pass(float(current), float(pass_target))
         gold_ok = _metric_pass(float(current), float(gold_target))
     return _best_tier(pass_ok, gold_ok, full_combo, all_good)
-
 
 def _metric_display_text(
     kind: str,
@@ -659,7 +645,6 @@ def _metric_display_text(
     if not has_entry:
         return f"{label} --"
     return f"{label} {int(current)}"
-
 
 def _build_primary_metric(
     grade: Dict[str, Any],
@@ -711,7 +696,6 @@ def _build_primary_metric(
         "comparable": True,
     }
 
-
 @lru_cache(maxsize=64)
 def _load_rgba(path: str) -> Optional[Image.Image]:
     if not path or not os.path.exists(path):
@@ -720,7 +704,6 @@ def _load_rgba(path: str) -> Optional[Image.Image]:
         return Image.open(path).convert("RGBA")
     except Exception:
         return None
-
 
 def _paste_fit(
     base: Image.Image, image: Optional[Image.Image], box: Tuple[int, int, int, int]
@@ -739,7 +722,6 @@ def _paste_fit(
     pos = (x1 + (width - resized.width) // 2, y1 + (height - resized.height) // 2)
     base.alpha_composite(resized, pos)
 
-
 def _paste_stretch(
     base: Image.Image, image: Optional[Image.Image], box: Tuple[int, int, int, int]
 ) -> None:
@@ -751,14 +733,11 @@ def _paste_stretch(
     resized = image.resize((width, height), Image.LANCZOS)
     base.alpha_composite(resized, (x1, y1))
 
-
 def _icon_path(index: int) -> str:
     return str(DANI_DIR / f"{index}.png")
 
-
 def _diff_icon_path(level: Any) -> str:
     return str(DIFF_DIR / f"{_difficulty_level(level)}.png")
-
 
 def _render_progress_fill(
     width: int, height: int, color: Tuple[int, int, int]
@@ -771,7 +750,6 @@ def _render_progress_fill(
         fill=(*color, 255),
     )
     return image
-
 
 def _render_metric_bar(
     base: Image.Image,
@@ -794,7 +772,6 @@ def _render_metric_bar(
         draw, ((x1 + x2) / 2, (y1 + y2) / 2 - 1), text, font, WHITE, 2, BLACK, "mm"
     )
 
-
 def _overlay_fill(
     base: Image.Image,
     fill_src: Optional[Image.Image],
@@ -811,7 +788,6 @@ def _overlay_fill(
         (0, 0, fill_w, height)
     )
     base.alpha_composite(resized.convert("RGBA"), (x1, y1))
-
 
 def _render_single_bar(
     base: Image.Image,
@@ -841,7 +817,6 @@ def _render_single_bar(
         BLACK,
         "mm",
     )
-
 
 def _render_segmented_bar(
     base: Image.Image,
@@ -905,7 +880,6 @@ def _render_segmented_bar(
             draw, ((x1 + x2) / 2, (y1 + y2) / 2 - 1), text, font, WHITE, 3, BLACK, "mm"
         )
 
-
 def _card_row_centers(box: Tuple[int, int, int, int]) -> List[float]:
     x1, y1, x2, y2 = box
     padding_top = 18
@@ -914,13 +888,11 @@ def _card_row_centers(box: Tuple[int, int, int, int]) -> List[float]:
     step = usable / 7.0
     return [y1 + padding_top + step * idx + step / 2 for idx in range(7)]
 
-
 def _song_order_label(index: int) -> str:
     numerals = "一二三四五六七八九十"
     if 1 <= index <= len(numerals):
         return f"曲{numerals[index - 1]}"
     return f"曲{index}"
-
 
 def _draw_card(
     base: Image.Image,
@@ -1084,7 +1056,6 @@ def _draw_card(
             _load_rgba(_icon_path(song_runtime["drumrollIcon"])),
             (inner_x2 - 72, int(centers[6] - 28), inner_x2 - 8, int(centers[6] + 28)),
         )
-
 
 def _build_song_runtime(
     grade: Dict[str, Any], best_map: Dict[Tuple[int, int], Dict[str, Any]]
@@ -1267,7 +1238,6 @@ def _build_song_runtime(
         totals["formula"] = FORMULA_GOOD
     totals["derived"] = derived
     return songs_runtime, totals
-
 
 def _footer_rows(
     grade: Dict[str, Any], songs_runtime: List[Dict[str, Any]], totals: Dict[str, Any]
@@ -1583,7 +1553,6 @@ def _footer_rows(
 
     return rows
 
-
 def _footer_value_text(row: Dict[str, Any]) -> str:
     if row["kind"] == "rate":
         return f"{row['current']:.2f}% / {row['pass']:.2f}%"
@@ -1592,7 +1561,6 @@ def _footer_value_text(row: Dict[str, Any]) -> str:
     if row["kind"] in {"bad", "ok"}:
         return f"{row['current']} / {row['pass']}"
     return f"{int(row['current'])} / {int(row['pass'])}"
-
 
 def _build_dojo_counts(
     note_count: int,
@@ -1622,7 +1590,6 @@ def _build_dojo_counts(
         "hit": _safe_int(hit, 0),
         "combo": _safe_int(combo, 0),
     }
-
 
 def _build_dojo_runtime(
     grade: Dict[str, Any],
@@ -1861,7 +1828,6 @@ def _build_dojo_runtime(
     totals["derived"] = derived
     return songs_runtime, totals
 
-
 def _section_height(
     footer_rows: List[Dict[str, Any]],
     *,
@@ -1871,7 +1837,6 @@ def _section_height(
     if large_title_icon:
         return base_height + 104
     return base_height
-
 
 def _draw_progress_section(
     canvas: Image.Image,
@@ -2011,10 +1976,8 @@ def _draw_progress_section(
             _render_single_bar(canvas, bar_box, bar_text, row["ratio"], row["icon"])
         row_top += 64
 
-
 def _render_section_background(path: Path, height: int) -> Image.Image:
     return Image.open(path).convert("RGBA").resize((1280, height), Image.LANCZOS)
-
 
 def render_dani_progress_image_bytes(
     user_id: int,
@@ -2034,11 +1997,6 @@ def render_dani_progress_image_bytes(
         return _render_notice("未找到对应段位。")
 
     canonical = str(grade["grade"])
-    if version == CURRENT_DANI_VERSION and history_snapshots is None:
-        view = ensure_userdata_view_available(str(user_id))
-        userdata, history_snapshots = view["userdata"], view["snapshots"]
-    else:
-        userdata = userdata if isinstance(userdata, dict) else get_cached_userdata(str(user_id))
     if userdata is None:
         return _render_notice(f"未找到用户 {user_id} 的成绩数据。")
     best_map = _build_best_entry_map(userdata.get("songs", []))

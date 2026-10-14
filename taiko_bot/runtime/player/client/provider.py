@@ -6,7 +6,7 @@ import time
 from taiko_application.private_input import AuthorizedTarget, PreparedPrivateInput, Provenance
 from taiko_bot.settings import get_settings
 from taiko_bot.viewer_client import fetch_center_bind_info, ViewerClientError
-from taiko_bot.userdata_provider import _read, _normalize_payload, UserdataProviderError
+from taiko_bot.userdata_provider import _read, _normalize_payload, _private_history, UserdataProviderError
 from taiko_bot.merged_source_id import build_center_virtual_user_id
 from ..authority import TinfoDenied, TinfoUnavailable, AuthorizedDelivery
 
@@ -46,15 +46,28 @@ class TinfoHostProvider:
             members, profile = (identity,), identity
         return AuthorizedTarget(actor, principal, identity, members, profile, observation)
 
-    def prepare(self, actor, principal):
+    def prepare(self, actor, principal, *, include_history=False):
         target = self.snapshot(actor, principal)
         self._initial = target
-        payload, view = _read('current', target.user_id, force_refresh=False,
-                              settings=self.settings, with_view=True, deadline=self.deadline)
-        if self.snapshot(actor, principal) != target:
-            raise TinfoDenied()
-        return PreparedPrivateInput(target, _normalize_payload(payload), None,
-            Provenance('remote-source-view', digest(view), None, None, target.members, target.profile_source))
+        for attempt in range(2):
+            if self.snapshot(actor, principal) != target:
+                raise TinfoDenied()
+            payload, view = _read('current', target.user_id, force_refresh=bool(attempt),
+                                  settings=self.settings, with_view=True, deadline=self.deadline)
+            history = None
+            if include_history:
+                history_payload, history_view = _read('history', target.user_id, force_refresh=bool(attempt),
+                    settings=self.settings, with_view=True, deadline=self.deadline)
+                if history_view != view:
+                    continue
+                history = tuple(_private_history(history_payload))
+            if self.snapshot(actor, principal) != target:
+                raise TinfoDenied()
+            observation = digest(view)
+            return PreparedPrivateInput(target, _normalize_payload(payload), history,
+                Provenance('remote-source-view', observation, observation if include_history else None,
+                    None, target.members, target.profile_source))
+        raise TinfoUnavailable()
 
     def verify(self, prepared):
         target = prepared.authorized_target
