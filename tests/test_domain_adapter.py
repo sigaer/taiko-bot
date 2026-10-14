@@ -4,7 +4,8 @@ from dataclasses import asdict
 from datetime import datetime as RealDatetime
 import pytest
 from taiko_bot import domain
-from plugins.utils import dojo_score, taikob_v2, score_calculator
+from plugins.utils import dojo_score, score_calculator
+from sakura_taiko_core.models import calculation as taikob_models
 from taiko_bot.runtime.player.client.progress_support import progress_catalog
 from plugins.utils.hiroba import parser, normalize
 
@@ -14,7 +15,7 @@ def unavailable(*args, **kwargs):
 def test_domain_client_versions_and_public_models_are_core_owned(monkeypatch):
     domain.assert_domain_versions()
     for model in (parser.HirobaProfile, parser.HirobaSongRef, parser.HirobaScoreDetail,
-                  taikob_v2.V2SongData, taikob_v2.V2RatingResult, score_calculator.SongStats):
+                  taikob_models.V2SongData, taikob_models.V2RatingResult, score_calculator.SongStats):
         assert model.__module__.startswith('sakura_taiko_core.')
     assert asdict(parser.HirobaProfile('synthetic')) == {'taiko_no':'synthetic','nickname':'','title':''}
     assert asdict(parser.HirobaSongRef('2','Title')) == {'song_no':'2','title':'Title','levels':set()}

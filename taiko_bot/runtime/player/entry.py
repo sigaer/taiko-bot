@@ -109,3 +109,5 @@ async def music_info_handle(matcher: Matcher, event: Event):
 from . import recommendation
 
 from . import progress
+
+from . import b30

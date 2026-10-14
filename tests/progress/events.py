@@ -8,6 +8,7 @@ p=argparse.ArgumentParser()
 p.add_argument('--host',choices=['center','client'],required=True)
 p.add_argument('--guard-smoke',action='store_true')
 p.add_argument('--history-only',action='store_true')
+p.add_argument('--representative',action='store_true')
 p.add_argument('--mode',choices=['parity','security'],default='parity')
 p.add_argument('--baseline',type=Path,required=True)
 p.add_argument('--work',type=Path,required=True)
@@ -34,7 +35,7 @@ Image.init()
 import nonebot
 nonebot.init(driver='~fastapi+~httpx',log_level='CRITICAL',taiko_song_profile=a.host,taiko_song_public_root=str(a.work))
 public=nonebot.load_plugin('taiko_bot.runtime.public');player=nonebot.load_plugin('taiko_bot.runtime.player.entry')
-assert public and player and len(public.matcher)==9 and len(player.matcher)==3
+assert public and player and len(public.matcher)==9 and len(player.matcher)==4
 assert nonebot.require('taiko_bot.runtime.player.entry') is player.module
 entry=player.module
 import builtins
@@ -309,6 +310,7 @@ if a.mode=='security':
 commands=['9星进度','九☆进度 2','9星进度 999','9.0进度','9.0综合进度 2','9.0定数进度','9.0过关进度',
  '8.0综合进度','8.0过关进度','SS进度','ss进度 2','9星进度 0','未知进度','六段进度','虹2025六段进度','虹2024六段进度','虹2026六段进度']
 if a.history_only:commands=[]
+if a.representative:commands=['9星进度','9.0过关进度','SS进度 2','六段进度']
 results=[]
 async def main():
  for virtual in (False,True):
@@ -324,7 +326,7 @@ async def main():
     if len(results)%20==0:print(a.host,len(results),'cases checked',flush=True)
  # Historical fallback: lexical file order, irrelevant dojo rows, current precedence,
  # and explicit version boundaries, with exact old/new images and timestamps.
- for virtual in (False,True):
+ for virtual in (() if a.representative else (False,True)):
   state['virtual']=virtual
   history_dojo=copy.deepcopy(cfg['userdata']['dojo'])
   history_dojo['scores'][0]['highscore_datetime']='2025-09-01 12:34:56'

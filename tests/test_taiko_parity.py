@@ -472,13 +472,13 @@ def test_build_update_command_hint_for_u0_readonly(monkeypatch):
 def test_resolve_taikob_dim_arg_supports_wrapped_and_flag_forms():
     taiko = _load_taiko_module()
 
-    assert taiko._resolve_taikob_dim_arg(["精度"]) == "accuracy_power"
-    assert taiko._resolve_taikob_dim_arg(["[精度]"]) == "accuracy_power"
-    assert taiko._resolve_taikob_dim_arg(["【体力】"]) == "stamina"
-    assert taiko._resolve_taikob_dim_arg(["--dim=精度"]) == "accuracy_power"
-    assert taiko._resolve_taikob_dim_arg(["-d", "精度"]) == "accuracy_power"
-    assert taiko._resolve_taikob_dim_arg(["维度", "体力"]) == "stamina"
-    assert taiko._resolve_taikob_dim_arg(["-r"]) is None
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["精度"]) == "accuracy_power"
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["[精度]"]) == "accuracy_power"
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["【体力】"]) == "stamina"
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["--dim=精度"]) == "accuracy_power"
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["-d", "精度"]) == "accuracy_power"
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["维度", "体力"]) == "stamina"
+    assert __import__("taiko_bot.runtime.player.client.b30_support.parsing",fromlist=["_resolve_taikob_dim_arg"])._resolve_taikob_dim_arg(["-r"]) is None
 
 
 def test_qq_official_what_song_trigger_variants():

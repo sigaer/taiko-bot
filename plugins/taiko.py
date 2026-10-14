@@ -5,7 +5,7 @@ from .utils.public_score_token import (
 from .utils.taiko_db import get_taiko_db_connection
 from taiko_bot.merged_source_id import build_center_virtual_user_id
 from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
-from .utils import compute_score, generate_dim_top_image, render_my_don_image, render_b30_image, render_tcloud_image
+from .utils import compute_score, render_my_don_image, render_tcloud_image
 from .utils.draw_summary import render_taiko_2025_summary
 from .utils.score_line import (
     available_levels_for_song,
@@ -13,11 +13,6 @@ from .utils.score_line import (
     format_scoreline_message,
     get_scoreline_entry,
     parse_scoreline_request,
-)
-from .utils.taikob_v2 import (
-    V2_TAIKOB_DIM_ALIASES,
-    render_b20_v2_dim_image,
-    render_b20_v2_image,
 )
 from .utils.twso import find_player
 from .utils.song_visibility import (
@@ -40,13 +35,7 @@ from .utils.arcade_map import (
     format_taiko_city_shop_summary,
     query_taiko_shops_by_city,
 )
-from .utils.score_calculator import (
-    compute_all_from_userdata_records,
-    generate_top_N_image,
-    getUtime,
-    generate_rating_trend_image,
-    generate_rating_playcount_image,
-)
+from .utils.score_calculator import compute_all_from_userdata_records, getUtime, generate_rating_trend_image, generate_rating_playcount_image
 import random
 import re
 import shlex
@@ -138,7 +127,6 @@ OSS_COVER_PREFIX = "oss://sigaer/cover"
 FONT_PATH = "assets/fonts/DDFont.ttf"
 SONG_RANK_FONT_PATH = "/usr/share/fonts/NotoSansCJKSC-Black.ttf"
 SONG_METRIC_FONT_PATH = "/usr/share/fonts/NotoSansCJKSC-Black.ttf"
-TAIKOB_FONT_PATH = FONT_PATH
 FUMENS_DIR = Path("assets") / "fumens"
 ALIAS_LOG_PATH = ROOT_DIR / "logs" / "alias_action_log.json"
 REGION_MAP_PATH = SONGS_DIR / "region_map.json"
@@ -153,20 +141,6 @@ BIND_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_SCORE_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
-DIM_ALIASES = {
-    "大歌": "big_song",
-    "大歌力": "big_song",
-    "节奏": "rhythm",
-    "节奏处理": "rhythm",
-    "复合": "complex_proc",
-    "复合处理": "complex_proc",
-    "精度": "accuracy_power",
-    "精度力": "accuracy_power",
-    "体力": "stamina",
-    "高速": "speed",
-    "高速处理": "speed",
-}
-TAIKOB_V2_DIM_USAGE = "体力、手速、爆发、精度、节奏、复合"
 TREND_DIM_ALIASES = {
     "rating": "综合Rating",
     "综合": "综合Rating",
@@ -215,7 +189,6 @@ TCLOUD_COMMAND_PATTERN = re.compile(
 )
 UPDATE_TYPO_TARGET = "taikoupdate"
 UPDATE_TYPO_ALPHABET = "abcdefghijklmnopqrstuvwxyz"
-_TAIKOB_DIM_WRAPPER_CHARS = "[]【】()（）<>《》「」『』"
 
 
 def _build_single_edit_variants(target: str) -> Set[str]:
@@ -423,42 +396,8 @@ def _parse_playtrend_args(arg_text: str) -> Dict[str, Any]:
     }
 
 
-def _resolve_taikob_dim_arg(args: Sequence[str]) -> Optional[str]:
-    selected_dim, _ = _parse_taikob_dim_arg(args, DIM_ALIASES)
-    return selected_dim
 
 
-def _parse_taikob_dim_arg(
-    args: Sequence[str], alias_map: Dict[str, str]
-) -> Tuple[Optional[str], List[str]]:
-    pending_dim_flag = False
-    selected_dim: Optional[str] = None
-    unknown_tokens: List[str] = []
-    for raw_token in args:
-        token = str(raw_token or "").strip()
-        if not token or token.lower() == "-r":
-            continue
-        if pending_dim_flag:
-            normalized = token.strip(_TAIKOB_DIM_WRAPPER_CHARS).strip()
-            resolved = alias_map.get(normalized)
-            if resolved is None:
-                unknown_tokens.append(token)
-            elif selected_dim is None:
-                selected_dim = resolved
-            pending_dim_flag = False
-            continue
-        if re.fullmatch(r"(?:-d|--dim|维度)", token, flags=re.IGNORECASE):
-            pending_dim_flag = True
-            continue
-        if token.startswith(("--dim=", "-d=", "维度=")):
-            token = token.split("=", 1)[1]
-        normalized = token.strip(_TAIKOB_DIM_WRAPPER_CHARS).strip()
-        if normalized in alias_map:
-            if selected_dim is None:
-                selected_dim = alias_map[normalized]
-        else:
-            unknown_tokens.append(token)
-    return selected_dim, unknown_tokens
 
 
 RANK_DIFF_INPUT_MAP = {
@@ -4915,132 +4854,10 @@ async def tcloud_handle(event: MessageEvent):
     )
 
 
-TAIKOB_COMMAND_RE = re.compile(
-    r"^/?taikob\s*(50|[1-4]\d|[1-9])(?:\s*(.*))?$", flags=re.IGNORECASE
-)
 
 
-taikob = on_regex(TAIKOB_COMMAND_RE.pattern, rule=taiko_rule, flags=re.IGNORECASE)
 
 
-@taikob.handle()
-async def taikob_handle(event: MessageEvent):
-    plain_text = extract_plain_text(event).strip()
-    m = TAIKOB_COMMAND_RE.match(plain_text)
-    if not m:
-        await taikob.finish("参数错误。示例：taikob 30 / taikob 30 精度 / taikob30 -r")
-
-    N = int(m.group(1))
-    arg_str = (m.group(2) or "").strip()
-    args = arg_str.split() if arg_str else []
-    use_v2 = any(str(arg).lower() == "v2" for arg in args)
-
-    # 解析 -r
-    dynamic_origin = any(a.lower() == "-r" for a in args)
-
-    dim = _resolve_taikob_dim_arg(args)
-
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(taikob, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(taikob, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(taikob, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(
-        taikob,
-        event,
-        "core-assets",
-        "cover-assets",
-        "dress-assets",
-        "nameplate-assets",
-    ):
-        return
-    taiko_id = str(bind_target["user_id"])
-    current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
-
-    if use_v2:
-        extra_args = [arg for arg in args if str(arg).lower() != "v2"]
-        v2_dim, v2_unknown_tokens = _parse_taikob_dim_arg(
-            extra_args, V2_TAIKOB_DIM_ALIASES
-        )
-        if N != 20:
-            await _require_private_send_authority(taikob, event, bind_target)
-            await taikob.finish("v2 目前仅支持 taikob20 v2")
-        if dynamic_origin:
-            await _require_private_send_authority(taikob, event, bind_target)
-            await taikob.finish("taikob20 v2 暂不支持 -r 参数")
-        if v2_unknown_tokens:
-            await _require_private_send_authority(taikob, event, bind_target)
-            await taikob.finish(f"taikob20 v2 仅支持单维度参数：{TAIKOB_V2_DIM_USAGE}")
-        try:
-            if v2_dim is not None and v2_dim != "综合Rating":
-                img_buf = render_b20_v2_dim_image(
-                    taiko_id,
-                    dim=v2_dim,
-                    N=N,
-                    font_path=TAIKOB_FONT_PATH,
-                )
-            else:
-                img_buf = render_b20_v2_image(taiko_id)
-        except FileNotFoundError:
-            await _require_private_send_authority(taikob, event, bind_target)
-            await taikob.finish("缺少 taikob20 v2 数据文件，请先同步公共曲库后再试")
-        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-        await _require_private_send_authority(taikob, event, bind_target)
-        await _finish_image_reply(taikob, event, img_jpg)
-        return
-
-    try:
-        if not args:
-            view = ensure_userdata_view_available(taiko_id, settings=_SETTINGS)
-            current_userdata = view["userdata"]
-        result = compute_all_from_userdata_records(current_userdata.get("songs") or [])
-    except FileNotFoundError:
-        await _require_private_send_authority(taikob, event, bind_target)
-        await taikob.finish("您还未上传数据哦~请先发送“taikoupdate”进行上传")
-    except TypeError as e:
-        await _require_private_send_authority(taikob, event, bind_target)
-        await taikob.finish("请更新数据~")
-
-    if not result:
-        await _require_private_send_authority(taikob, event, bind_target)
-        await taikob.finish("请游玩鬼难度歌曲后再来使用哦~")
-
-    # 无附加参数：使用 b30 模板汇总图
-    if not args:
-        img_buf = render_b30_image(taiko_id, N=N, userdata=current_userdata, history_snapshots=view["snapshots"])
-        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-        await _require_private_send_authority(taikob, event, bind_target)
-        await _finish_image_reply(taikob, event, img_jpg)
-        return
-
-    # 单维列表模式：只画该维度 TopN
-    if dim is not None:
-        img_buf = generate_dim_top_image(
-            result,
-            N=N,
-            dim=dim,
-            user_id=taiko_id,
-            font_path=TAIKOB_FONT_PATH,
-            userdata=current_userdata,
-        )
-        img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-        await _require_private_send_authority(taikob, event, bind_target)
-        await _finish_image_reply(taikob, event, img_jpg)
-        return
-
-    # 默认模式：总雷达 + rating 列表；-r 控制原点
-    img_buf = generate_top_N_image(
-        result,
-        N,
-        user_id=taiko_id,
-        dynamic_origin=dynamic_origin,
-        font_path=TAIKOB_FONT_PATH,
-    )
-    img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-    await _require_private_send_authority(taikob, event, bind_target)
-    await _finish_image_reply(taikob, event, img_jpg)
 
 
 

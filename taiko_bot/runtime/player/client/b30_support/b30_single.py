@@ -1,39 +1,24 @@
-# -*- coding: utf-8 -*-
-"""
-B30 single-song card renderer.
-
-Template size: 595x384
-"""
-
 from __future__ import annotations
 
+
 from sakura_taiko_core.score import single as _single_score
-import json
-from functools import lru_cache
+
 from pathlib import Path
+
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 
-from .score_calculator import (
-    PAIR_ID_GROUPS,
-    PAIR_ID_MAP,
-    _calc_accuracy_for_record,
-    build_const_table,
-    calc_y,
-    compute_AD_AE_AF_AG,
-    compute_AI,
-    compute_P,
-    compute_Q,
-    load_rating_config,
-    lookup_const_score,
-)
+from .score_calculator import PAIR_ID_GROUPS, build_const_table, load_rating_config
+
 from .song_visibility import is_song_id_publicly_visible
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+ROOT_DIR = __import__("taiko_bot.runtime.public.config", fromlist=["root"]).root()
+
 ASSETS_DIR = ROOT_DIR / "assets"
+
 TEMPLATE_DEFAULT = ASSETS_DIR / "templates" / "b30_single.png"
-SONG_DB_DEFAULT = ROOT_DIR / "songs" / "song_data.json"
+
 RATING_JSON_DEFAULT = ROOT_DIR / "songs" / "rating_structured_with_ids.json"
 
 TYPE_MAP = {
@@ -48,8 +33,11 @@ TYPE_MAP = {
 }
 
 FONT_TITLE_PATH = ASSETS_DIR / "fonts" / "FZPW_GBK.ttf"
+
 FONT_SCORE_PATH = ASSETS_DIR / "fonts" / "FZPW_GBK.ttf"
+
 FONT_STATS_PATH = ASSETS_DIR / "fonts" / "FZPW_GBK.ttf"
+
 FONT_TITLE_FALLBACK_PATHS = [
     Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"),
     Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
@@ -59,18 +47,25 @@ FONT_TITLE_FALLBACK_PATHS = [
 ]
 
 WHITE = (255, 255, 255)
+
 BLACK = (0, 0, 0)
 
-# Layout tuned for assets/templates/b30_single.png (595x384)
 DIFF_ICON_POS = (35, 0)
+
 DIFF_ICON_SIZE_DEFAULT = (168, 71)
+
 DIFF_TEXT_Y_OFFSET = 13
+
 OPTION_ROW_POS = (262, 76)
 
 COVER_OUTER_SIZE = 200
+
 COVER_ART_SIZE = 190
+
 COVER_BORDER_WIDTH = 5
+
 COVER_ART_POS = (58, 109)
+
 COVER_POS = (
     COVER_ART_POS[0] - COVER_BORDER_WIDTH,
     COVER_ART_POS[1] - COVER_BORDER_WIDTH,
@@ -79,45 +74,50 @@ COVER_POS = (
 TITLE_BOX = (254, 116, 545, 161)
 
 SCORE_BOX = (265, 178, 537, 229)
+
 SCORE_RIGHT_MARGIN = 8
-SCORE_ARROW_GAP = 6
 
 RANK_ICON_SIZE = (60, 60)
+
 CROWN_ICON_SIZE = (60, 60)
+
 RANK_POS = (268, 233)
+
 CROWN_POS = (358, 233)
 
 STATS_RIGHT_X = 531
+
 STATS_TOP_Y = 238
+
 STATS_LINE_GAP = 30
+
 STATS_Y_OFFSET = -6
 
 OPTION_ICON_SIZE = (30, 30)
+
 OPTION_ICON_GAP = 13
 
 NEW_ICON_PATH = ASSETS_DIR / "icons" / "other" / "new.png"
+
 NEW_ICON_MAX_SIZE = (88, 66)
+
 NEW_ICON_COVER_OFFSET = (2, 4)
 
 TITLE_FONT_SIZE = 28
+
 SCORE_FONT_SIZE = 26
+
 STATS_FONT_SIZE = 22
+
 DIFF_FONT_SIZE = 22
 
 ARROW = "→"
-
-
-def _load_json(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
 
 def _load_font(path: Path, size: int) -> ImageFont.FreeTypeFont:
     try:
         return ImageFont.truetype(str(path), size)
     except Exception:
         return ImageFont.load_default()
-
 
 def _load_font_candidates(paths: Iterable[Path], size: int) -> ImageFont.ImageFont:
     for path in paths:
@@ -129,14 +129,12 @@ def _load_font_candidates(paths: Iterable[Path], size: int) -> ImageFont.ImageFo
             continue
     return ImageFont.load_default()
 
-
 def _ddfont_y_offset(font: ImageFont.ImageFont, ratio: float = 0.1) -> int:
     font_path = str(getattr(font, "path", "") or "")
     size = int(getattr(font, "size", 0) or 0)
     if "DDFont" not in font_path or size <= 0:
         return 0
     return int(round(size * ratio))
-
 
 def _draw_text(
     draw: ImageDraw.ImageDraw,
@@ -147,7 +145,6 @@ def _draw_text(
 ) -> None:
     x, y = xy
     draw.text((x, y + _ddfont_y_offset(font)), text, font=font, fill=fill)
-
 
 def _draw_text_with_stroke(
     draw: ImageDraw.ImageDraw,
@@ -183,14 +180,12 @@ def _draw_text_with_stroke(
             draw.text((x + dx, y + dy), text, font=font, fill=stroke_fill)
         draw.text((x, y), text, font=font, fill=fill)
 
-
 def _center_crop_to_square(im: Image.Image) -> Image.Image:
     w, h = im.size
     side = min(w, h)
     left = (w - side) // 2
     top = (h - side) // 2
     return im.crop((left, top, left + side, top + side))
-
 
 def _load_icon(
     path: Path, size: Optional[Tuple[int, int]] = None
@@ -202,7 +197,6 @@ def _load_icon(
         im = im.resize(size, Image.LANCZOS)
     return im
 
-
 def _load_icon_fit(
     path: Path, max_size: Tuple[int, int]
 ) -> Optional[Image.Image]:
@@ -212,7 +206,6 @@ def _load_icon_fit(
     im.thumbnail(max_size, Image.LANCZOS)
     return im
 
-
 def _resolve_template_path(template_path: Path, assets_base: Path) -> Path:
     if template_path.exists():
         return template_path
@@ -220,7 +213,6 @@ def _resolve_template_path(template_path: Path, assets_base: Path) -> Path:
     if fallback.exists():
         return fallback
     raise FileNotFoundError(f"Template not found: {template_path}")
-
 
 def _pick_b30_template(
     template_path: Path, assets_base: Path, song_type: str
@@ -231,7 +223,6 @@ def _pick_b30_template(
         if typed.exists():
             return typed
     return _resolve_template_path(template_path, assets_base)
-
 
 def _truncate_text(
     draw: ImageDraw.ImageDraw,
@@ -251,7 +242,6 @@ def _truncate_text(
         if draw.textlength(candidate, font=font) + 16 <= max_width:
             return candidate
     return ellipsis
-
 
 def _draw_text_centered_in_box(
     draw: ImageDraw.ImageDraw,
@@ -281,7 +271,6 @@ def _draw_text_centered_in_box(
     else:
         _draw_text(draw, (x, y), text, font, fill)
 
-
 def _center_y_text_in_box(
     draw: ImageDraw.ImageDraw,
     box: Tuple[int, int, int, int],
@@ -299,20 +288,6 @@ def _center_y_text_in_box(
     text_h = bbox[3] - bbox[1]
     box_h = y2 - y1
     return y1 + max(0, (box_h - text_h) // 2) - bbox[1] + y_offset
-
-
-def _center_y_in_box(box: Tuple[int, int, int, int], height: int) -> int:
-    _, y1, _, y2 = box
-    return y1 + max(0, (y2 - y1 - height) // 2)
-
-
-def _center_y_with_font_offset(
-    box: Tuple[int, int, int, int], text_height: int, font: ImageFont.ImageFont
-) -> int:
-    y = _center_y_in_box(box, text_height)
-    font_size = getattr(font, "size", 0) or 0
-    return y - font_size // 2
-
 
 def _draw_right_aligned(
     draw: ImageDraw.ImageDraw,
@@ -333,7 +308,6 @@ def _draw_right_aligned(
         )
     else:
         _draw_text(draw, (x, y), text, font, fill)
-
 
 def _paste_cover(
     canvas: Image.Image, cover_path: Path, fallback_path: Path, pos: Tuple[int, int]
@@ -357,7 +331,6 @@ def _paste_cover(
         width=COVER_BORDER_WIDTH,
     )
 
-
 def _pick_crown_path(assets_base: Path, entry: Dict[str, Any]) -> Optional[Path]:
     if entry.get("dondaful_combo_cnt", 0) > 0:
         return assets_base / "icons" / "crown" / "dondaful.png"
@@ -367,10 +340,8 @@ def _pick_crown_path(assets_base: Path, entry: Dict[str, Any]) -> Optional[Path]
         return assets_base / "icons" / "crown" / "clear.png"
     return None
 
-
 def _rank_icon_path(assets_base: Path, rank_value: int) -> Path:
     return assets_base / "icons" / "rank" / f"{rank_value}.png"
-
 
 def _format_level_value(value: Any) -> str:
     if value in (None, "", "-"):
@@ -383,11 +354,9 @@ def _format_level_value(value: Any) -> str:
         return str(int(num))
     return f"{num:.1f}".rstrip("0").rstrip(".")
 
-
 _RATING_RESOURCE_CACHE: Dict[
     str, Tuple[int, Tuple[Dict[str, Any], Dict[Tuple[int, int], dict], List[tuple]]]
 ] = {}
-
 
 def _load_rating_resources(
     path_str: str,
@@ -412,7 +381,6 @@ def _load_rating_resources(
     _RATING_RESOURCE_CACHE[str(path)] = (mtime_ns, result)
     return result
 
-
 def _compute_rating_for_entry(entry, rating_index, const_table):
     try: song_no = int(entry.get("song_no", 0))
     except Exception: return None
@@ -420,7 +388,6 @@ def _compute_rating_for_entry(entry, rating_index, const_table):
         return None
     return _single_score._compute_rating_for_entry(entry, rating_index, const_table,
         duplicate_groups=PAIR_ID_GROUPS)
-
 
 def build_song_index(song_db: Iterable[Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
     index: Dict[int, Dict[str, Any]] = {}
@@ -431,7 +398,6 @@ def build_song_index(song_db: Iterable[Dict[str, Any]]) -> Dict[int, Dict[str, A
             continue
         index[song_id] = song
     return index
-
 
 def _paste_new_badge(canvas: Image.Image, assets_base: Path) -> None:
     icon_path = assets_base / "icons" / "other" / "new.png"
@@ -448,7 +414,6 @@ def _paste_new_badge(canvas: Image.Image, assets_base: Path) -> None:
     x = max(COVER_POS[0], x)
     y = max(0, y)
     canvas.alpha_composite(icon, (x, y))
-
 
 def render_b30_single_card(
     entry: Dict[str, Any],
@@ -650,41 +615,3 @@ def render_b30_single_card(
         canvas.save(bio, format="PNG")
         return bio.getvalue()
     return canvas
-
-
-def render_b30_single_cards_from_user_data(
-    user_data_path: str | Path,
-    *,
-    song_db_path: str | Path = SONG_DB_DEFAULT,
-    template_path: str | Path = TEMPLATE_DEFAULT,
-    assets_base: str | Path = ASSETS_DIR,
-    rating_json_path: str | Path = RATING_JSON_DEFAULT,
-    limit: Optional[int] = None,
-) -> List[bytes]:
-    user_data = _load_json(Path(user_data_path))
-    songs = user_data.get("songs", []) if isinstance(user_data, dict) else user_data
-    song_db = _load_json(Path(song_db_path))
-    song_index = build_song_index(song_db)
-    _, rating_index, const_table = _load_rating_resources(str(rating_json_path))
-
-    output: List[bytes] = []
-    for entry in songs:
-        song_no = int(entry.get("song_no", 0) or 0)
-        if not is_song_id_publicly_visible(song_no):
-            continue
-        song_info = song_index.get(song_no)
-        if not song_info:
-            continue
-        img_bytes = render_b30_single_card(
-            entry,
-            song_info,
-            template_path=template_path,
-            assets_base=assets_base,
-            rating_index=rating_index,
-            const_table=const_table,
-            as_png_bytes=True,
-        )
-        output.append(img_bytes)
-        if limit and len(output) >= limit:
-            break
-    return output

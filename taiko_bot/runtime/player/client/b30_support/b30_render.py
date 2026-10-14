@@ -1,110 +1,111 @@
-# -*- coding: utf-8 -*-
-"""
-B30 summary image renderer based on assets/templates/b30_template.png.
-"""
-
 from __future__ import annotations
 
+
 import datetime
+
 import json
+
 import math
+
 from io import BytesIO
+
 from pathlib import Path
+
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
-from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import ensure_userdata_view_available
 
-from .b30_single import (
-    _compute_rating_for_entry,
-    _load_rating_resources,
-    build_song_index,
-    render_b30_single_card,
-)
-from .draw_dress import (
-    TITLE_FONT_PATH,
-    draw_player_info,
-    _crop_with_pad,
-    _get_font,
-    _get_font_by_path,
-    _load_previous_song_map,
-    render_user_dress,
-)
-from .score_calculator import (
-    TREND_COLORS,
-    TREND_DIM_COLUMNS,
-    TREND_SHORT_LABELS,
-    _compute_results_from_userdata_records,
-    aggregate_topN_value,
-    build_daily_rating_points,
-    compute_all_from_userdata_records,
-    compute_dim_topN_means,
-    get_song_chart_identity_key,
-    load_rating_config,
-    getUtime,
-)
+from .b30_single import _compute_rating_for_entry, _load_rating_resources, build_song_index, render_b30_single_card
+
+from .draw_dress import TITLE_FONT_PATH, draw_player_info, _crop_with_pad, _get_font, _get_font_by_path, _load_previous_song_map, build_dress_image
+
+from .score_calculator import TREND_COLORS, TREND_DIM_COLUMNS, TREND_SHORT_LABELS, _compute_results_from_userdata_records, aggregate_topN_value, compute_all_from_userdata_records, compute_dim_topN_means, get_song_chart_identity_key, load_rating_config
+
 from .song_visibility import is_song_id_publicly_visible
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
+ROOT_DIR = __import__("taiko_bot.runtime.public.config", fromlist=["root"]).root()
+
 ASSETS_DIR = ROOT_DIR / "assets"
+
 TEMPLATE_DEFAULT = ASSETS_DIR / "templates" / "b30_template.png"
+
 SONG_DB_DEFAULT = ROOT_DIR / "songs" / "song_data.json"
+
 RATING_JSON_DEFAULT = ROOT_DIR / "songs" / "rating_structured_with_ids.json"
 
 FONT_TITLE_PATH = ASSETS_DIR / "fonts" / "FZPW_GBK.ttf"
+
 FONT_DD_PATH = ASSETS_DIR / "fonts" / "DDFont.ttf"
 
 B30_DELTA_EPSILON = 0.001
 
 WHITE = (255, 255, 255)
+
 BLACK = (0, 0, 0)
 
-# Template layout (1080x2982)
 TOP_WHITE_BOX = (70, 332, 1010, 702)
+
 TOP_ORANGE_BOX = (70, 238, 1010, 331)
+
 MID_ORANGE_BOX = (70, 703, 1010, 760)
 
 GRID_BOX = (70, 780, 1010, 2760)
+
 FOOTER_START_Y = 2750
+
 BODY_REPEAT_SLICE_Y = 2480
+
 BODY_REPEAT_SLICE_H = 80
 
 GRID_GAP_X = 30
+
 GRID_GAP_Y = 18
+
 CARD_PAD_X = 35
+
 CARD_PAD_Y = 25
+
 GRID_PAD_SIDE = 18
+
 GRID_PAD_TOP = 32
+
 GRID_PAD_BOTTOM = 24
 
 TOP_PAD_X = 24
+
 TOP_PAD_Y = 24
+
 TOP_GAP_X = 18
+
 TOP_CENTER_GAP_Y = 12
 
 RATING_FONT_SIZE = 48
-UPDATE_FONT_SIZE = 28
-MAX_CARD_SCALE = 1.0
-MAX_GRID_COLS = 4
-MIN_CARD_SCALE = 0.38
-SOFT_MAX_CANVAS_HEIGHT = 3600
-HEIGHT_OVERFLOW_WEIGHT = 1.2
-SMALL_CARD_PENALTY = 4000
-LARGE_CARD_PENALTY = 600
 
+UPDATE_FONT_SIZE = 28
+
+MAX_CARD_SCALE = 1.0
+
+MAX_GRID_COLS = 4
+
+MIN_CARD_SCALE = 0.38
+
+SOFT_MAX_CANVAS_HEIGHT = 3600
+
+HEIGHT_OVERFLOW_WEIGHT = 1.2
+
+SMALL_CARD_PENALTY = 4000
+
+LARGE_CARD_PENALTY = 600
 
 def _load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
-
 
 def _load_font(path: Path, size: int) -> ImageFont.FreeTypeFont:
     try:
         return ImageFont.truetype(str(path), size)
     except Exception:
         return ImageFont.load_default()
-
 
 def _hex_to_rgba(hex_color: str, alpha: int = 255) -> Tuple[int, int, int, int]:
     text = str(hex_color or "").strip().lstrip("#")
@@ -120,14 +121,12 @@ def _hex_to_rgba(hex_color: str, alpha: int = 255) -> Tuple[int, int, int, int]:
     except Exception:
         return (78, 121, 167, alpha)
 
-
 def _ddfont_y_offset(font: ImageFont.ImageFont, ratio: float = 0.1) -> int:
     font_path = str(getattr(font, "path", "") or "")
     size = int(getattr(font, "size", 0) or 0)
     if "DDFont" not in font_path or size <= 0:
         return 0
     return int(round(size * ratio))
-
 
 def _draw_text_with_stroke(
     draw: ImageDraw.ImageDraw,
@@ -163,7 +162,6 @@ def _draw_text_with_stroke(
             draw.text((x + dx, y + dy), text, font=font, fill=stroke_fill)
         draw.text((x, y), text, font=font, fill=fill)
 
-
 def _draw_centered_text(
     draw: ImageDraw.ImageDraw,
     center: Tuple[float, float],
@@ -178,7 +176,6 @@ def _draw_centered_text(
     y = int(round(center[1] - th / 2 - bbox[1]))
     y += _ddfont_y_offset(font)
     draw.text((x, y), text, font=font, fill=fill)
-
 
 def _draw_multiline_centered(
     draw: ImageDraw.ImageDraw,
@@ -211,7 +208,6 @@ def _draw_multiline_centered(
             )
             y += h + gap
 
-
 def _center_box(
     box: Tuple[int, int, int, int], size: Tuple[int, int]
 ) -> Tuple[int, int]:
@@ -220,7 +216,6 @@ def _center_box(
     x = x1 + max(0, (x2 - x1 - w) // 2)
     y = y1 + max(0, (y2 - y1 - h) // 2)
     return x, y
-
 
 def _paste_scaled_center(
     base: Image.Image, overlay: Image.Image, box: Tuple[int, int, int, int]
@@ -235,7 +230,6 @@ def _paste_scaled_center(
     resized = overlay.resize((nw, nh), Image.LANCZOS)
     px, py = _center_box(box, resized.size)
     base.alpha_composite(resized, (px, py))
-
 
 def _paste_scaled_center_zoom(
     base: Image.Image,
@@ -257,17 +251,12 @@ def _paste_scaled_center_zoom(
     py = cy - nh // 2
     base.alpha_composite(resized, (px, py))
 
-
 def _trend_series_value(point: Tuple[datetime.datetime, Dict[str, float], float], name: str) -> float:
     if name == "综合Rating":
         return float(point[2])
     return float(point[1].get(name, 0.0))
 
-
-def _load_trend_ranges(user_id: int, N: int, max_days: int = 30) -> List[Dict[str, Any]]:
-    daily_points = build_daily_rating_points(
-        user_id, N=N, json_path=RATING_JSON_DEFAULT, max_days=max_days
-    )
+def _load_trend_ranges(daily_points, N: int, max_days: int = 30) -> List[Dict[str, Any]]:
     if not daily_points:
         return []
 
@@ -288,11 +277,10 @@ def _load_trend_ranges(user_id: int, N: int, max_days: int = 30) -> List[Dict[st
         )
     return rows
 
-
 def _render_trend_image(
-    user_id: int, N: int, size: Tuple[int, int]
+    daily_points, N: int, size: Tuple[int, int]
 ) -> Optional[Image.Image]:
-    rows = _load_trend_ranges(user_id, N, max_days=30)
+    rows = _load_trend_ranges(daily_points, N, max_days=30)
     if not rows:
         return None
 
@@ -359,7 +347,6 @@ def _render_trend_image(
 
     return img
 
-
 def _topn_entry_identity_keys(
     top_entries: List[Tuple[float, Dict[str, Any]]],
 ) -> Set[Tuple[str, int, int]]:
@@ -372,7 +359,6 @@ def _topn_entry_identity_keys(
             continue
         keys.add(get_song_chart_identity_key(song_no, level))
     return keys
-
 
 def compute_b30_update_diff(
     user_id: int,
@@ -410,7 +396,6 @@ def compute_b30_update_diff(
         if abs(delta) > B30_DELTA_EPSILON:
             dim_deltas[category] = delta
     return new_keys, dim_deltas
-
 
 def _render_radar_image(
     results: List[Any],
@@ -509,9 +494,8 @@ def _render_radar_image(
 
     return img
 
-
 def _format_update_date(user_id: int, observed_at=None) -> str:
-    ts = observed_at or getUtime(user_id)
+    ts = observed_at
     if not ts:
         return "更新于未知"
     try:
@@ -519,7 +503,6 @@ def _format_update_date(user_id: int, observed_at=None) -> str:
     except Exception:
         return f"更新于{ts[:10]}"
     return f"更新于{dt.strftime('%Y-%m-%d')}"
-
 
 def _build_best_entry_map(
     entries: List[Dict[str, Any]],
@@ -550,7 +533,6 @@ def _build_best_entry_map(
             best[key] = (float(rating), entry)
     return best
 
-
 def _pick_top_entries(
     entries: List[Dict[str, Any]],
     rating_index: Dict[Tuple[int, int], dict],
@@ -562,12 +544,10 @@ def _pick_top_entries(
     rated.sort(key=lambda x: x[0], reverse=True)
     return rated[:N]
 
-
 def _grid_gaps_for_cols(cols: int) -> Tuple[int, int]:
     if cols >= 4:
         return 24, 16
     return GRID_GAP_X, GRID_GAP_Y
-
 
 def _compute_body_height(rows: int, card_h_vis: int, gap_y: int) -> int:
     if rows <= 0:
@@ -578,7 +558,6 @@ def _compute_body_height(rows: int, card_h_vis: int, gap_y: int) -> int:
         + rows * card_h_vis
         + (rows - 1) * gap_y
     )
-
 
 def _choose_grid_layout(
     total_count: int,
@@ -662,7 +641,6 @@ def _choose_grid_layout(
         raise ValueError("failed to choose grid layout")
     return best_layout
 
-
 def _compose_resizable_template(
     template: Image.Image,
     *,
@@ -706,7 +684,6 @@ def _compose_resizable_template(
     canvas.alpha_composite(footer_part, (0, body_top + body_height))
     return canvas
 
-
 def render_b30_image(
     user_id: int,
     N: int = 30,
@@ -716,14 +693,10 @@ def render_b30_image(
     assets_base: str | Path = ASSETS_DIR,
     rating_json_path: str | Path = RATING_JSON_DEFAULT,
     userdata: Optional[Dict[str, Any]] = None,
-    history_snapshots=None,
+    history_snapshots, daily_points, observed_at,
 ) -> bytes:
     assets_base = Path(assets_base)
     template_path = Path(template_path)
-    if not isinstance(userdata, dict) or history_snapshots is None:
-        view = ensure_userdata_view_available(str(user_id))
-        userdata, history_snapshots = view["userdata"], view["snapshots"]
-    observed_at = str(datetime.datetime.now().replace(microsecond=0))
     template = Image.open(template_path).convert("RGBA")
     entries = userdata.get("songs", []) if isinstance(userdata, dict) else []
 
@@ -820,13 +793,12 @@ def render_b30_image(
     )
 
     trend_img = _render_trend_image(
-        user_id, N, (left_box[2] - left_box[0], left_box[3] - left_box[1])
+        daily_points, N, (left_box[2] - left_box[0], left_box[3] - left_box[1])
     )
     if trend_img is not None:
         _paste_scaled_center(canvas, trend_img, left_box)
 
-    dress_path = render_user_dress(user_id)
-    dress_img = Image.open(dress_path).convert("RGBA")
+    dress_img = build_dress_image(userdata)
 
     info_canvas = Image.new("RGBA", (499, 1600), (0, 0, 0, 0))
     info_draw = ImageDraw.Draw(info_canvas)

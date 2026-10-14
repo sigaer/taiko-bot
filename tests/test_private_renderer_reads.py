@@ -14,7 +14,6 @@ from test_private_read_cache import cfg, transport
 
 @pytest.mark.parametrize("module,name", [
     ("target_recommend", "_load_userdata_payload"),
-    ("taikob_v2", "_load_userdata_payload"),
     ("draw_summary", "load_userdata"),
 ])
 def test_native_current_loaders_return_full_center_payload_without_disk(cfg, monkeypatch, module, name):
@@ -36,7 +35,6 @@ def test_native_current_loaders_return_full_center_payload_without_disk(cfg, mon
     ("draw_dress", "build_dress_image", (1001,)),
     ("draw_dress", "render_my_don_image", (1001,)),
     ("draw_dress", "render_update_changes_image", (1001,)),
-    ("b30_render", "render_b30_image", (1001,)),
 ])
 def test_native_implicit_products_reject_revoked_access_before_private_disk_or_assets(cfg, monkeypatch, module, name, args):
     monkeypatch.setattr(provider, "get_settings", lambda: cfg)
@@ -110,9 +108,9 @@ def test_native_update_renderer_uses_one_pair_for_previous_scores_dojo_and_curre
     assert not cfg.userdata_dir.exists()
 
 
-def test_native_b30_preparation_replaces_unpaired_current_and_passes_same_history_to_diff(cfg, monkeypatch):
+def test_owned_b30_renderer_uses_explicit_current_and_history_without_reads(cfg, monkeypatch):
     from PIL import Image
-    from plugins.utils import b30_render as renderer
+    from taiko_bot.runtime.player.client.b30_support import b30_render as renderer
     current, raw, calls = pair_transport(cfg, monkeypatch)
     observed = {}
     class ReachedDiff(Exception): pass
@@ -131,10 +129,10 @@ def test_native_b30_preparation_replaces_unpaired_current_and_passes_same_histor
         raise ReachedDiff()
     monkeypatch.setattr(renderer, "compute_b30_update_diff", diff)
     with pytest.raises(ReachedDiff):
-        renderer.render_b30_image(1001, userdata={"songs": [{"private": "stale"}]})
+        renderer.render_b30_image(1001, userdata=current, history_snapshots=provider._private_history({"historyFormat":"raw-v1","snapshots":raw}), daily_points=[], observed_at="2025-01-02 00:00:00")
     assert observed["entries"] == current["songs"] == observed["current_top_entries"]
     assert [row["payload"] for row in observed["history_snapshots"]] == [row["payload"] for row in raw]
-    assert len(calls) == 2 and not cfg.userdata_dir.exists()
+    assert len(calls) == 0 and not cfg.userdata_dir.exists()
 
 
 def test_native_current_dani_preparation_and_dojo_fallback_use_one_pair(cfg, monkeypatch):

@@ -87,3 +87,17 @@ class TinfoHostProvider:
         target = self._initial
         if self.snapshot(target.actor, target.principal) != target:
             raise TinfoDenied()
+
+    def prepare_b30(self, actor, principal, command):
+        from .b30_history import observed_time
+        from taiko_application.private_input import thaw
+        N,args,use_v2,_,_=command
+        include_history=not use_v2 and not args
+        private=self.prepare(actor,principal,include_history=include_history)
+        self.b30_observed_at=observed_time()
+        self.b30_inputs=dict(observed_at=self.b30_observed_at,history_snapshots=thaw(private.history) or (),daily_points=[])
+        if include_history:
+            from .b30_history import build_daily_rating_points
+            self.b30_inputs['daily_points']=build_daily_rating_points(private.authorized_target.user_id,N,
+                json_path=self.settings.root_dir/'songs/rating_structured_with_ids.json',history_snapshots=thaw(private.history) or ())
+        return private

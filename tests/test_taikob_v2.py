@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from plugins.utils import taikob_v2
+from taiko_bot.runtime.player.client.b30_support import taikob_v2
+from sakura_taiko_core.models.calculation import V2SongData
+from sakura_taiko_core.rating import v1 as core_v1, v2 as core_v2
 
 
 @pytest.fixture(autouse=True)
@@ -99,7 +101,7 @@ def test_v2_constants_loader_filters_independent_double_play_song_ids(
     ],
 )
 def test_v2_rating_matches_upstream_interpolation_reference_points(accuracy, constant_attr):
-    chart = taikob_v2.V2SongData(
+    chart = V2SongData(
         song_id=102,
         level=4,
         title="Anchor Song",
@@ -114,14 +116,15 @@ def test_v2_rating_matches_upstream_interpolation_reference_points(accuracy, con
         rhythm=7.0,
     )
 
-    result = taikob_v2._calculate_v2_from_chart(
+    result = core_v2._calculate_v2_from_chart(
         chart,
         accuracy_per=accuracy,
         bad_per=0.0,
+        profile="v2-client-20261010",
     )
-    expected = taikob_v2._calc_single_rating(
+    expected = core_v2._calc_single_rating(
         getattr(chart, constant_attr),
-        taikob_v2.calc_y(accuracy, 15.5, "comprehensive"),
+        core_v1.calc_y(accuracy, 15.5, "comprehensive"),
     )
 
     assert result.AI_rating == pytest.approx(expected)
