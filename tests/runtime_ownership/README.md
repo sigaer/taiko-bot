@@ -38,3 +38,11 @@ for exact retained paths. No test starts a live Bot connection or production DB.
 
 `load_order.py center|client reverse|forward|all` validates dependency ownership
 and idempotent require in a new process (nine public + one player matcher).
+
+Pre-merge delivery checks: `delivery_smoke.py --host center|client --work EMPTY_DIR
+--assets PUBLIC_FIXTURE_ASSETS` sends one representative event for each of the
+nine public entries on OneBot and QQ through the installed modules. It uses
+`tests/archive/public-song-plugin/tests/{fixtures,catalog-fixtures}` and does
+not need the retired distribution path. This smoke is not frozen-output parity;
+retain the original parity evidence and use `events.py --guard-smoke` for the
+limited tinfo image/text comparison and revocation checks.

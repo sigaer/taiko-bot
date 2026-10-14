@@ -26,9 +26,8 @@ Set-Location .\taiko-bot
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
-python -m pip install -r requirements-domain.txt
 python -m pip uninstall -y nonebot-plugin-taiko-song
-python -m pip install ./packages/taiko-application -e ".[client]"
+python -m pip install -r requirements-domain.txt ./packages/taiko-application -e ".[client]"
 Copy-Item .env.example .env
 ```
 
@@ -40,9 +39,8 @@ cd taiko-bot
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install -r requirements-domain.txt
 python -m pip uninstall -y nonebot-plugin-taiko-song
-python -m pip install ./packages/taiko-application -e ".[client]"
+python -m pip install -r requirements-domain.txt ./packages/taiko-application -e ".[client]"
 cp .env.example .env
 ```
 

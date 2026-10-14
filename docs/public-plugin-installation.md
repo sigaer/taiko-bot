@@ -1,49 +1,45 @@
-# 公共插件源码安装与制品交付
+# Taiko runtime 安装与旧公共插件退役
 
-适用：Application 0.5.0、nonebot-plugin-taiko-song 0.3.0、客户端 0.2.12。
-九个入口为 what_song、alias_query、song_where、song_position_phrase、song_pos_by_id、diff_by_id、note_count、const_query、patterns。
+当前候选：`taiko-bot==0.3.0`、Application **0.7.1**、Contract **0.1.0**。
+九个公开入口与双端 tinfo 由 Taiko 内部模块维护；不再安装 `nonebot-plugin-taiko-song`。
+本页替代旧 F-A/F-L 公共插件部署步骤。源码安装不表示授权部署或重启。
 
-使用 Python 3.11 和独立虚拟环境。Application 与歌曲插件直接从本仓两个子项目安装，不需要维护者的临时目录，也不假设这两个包在 PyPI 已发布。
+## 两个互斥 profile
 
-## 客户端
+中心和客户端必须使用不同的 Python 3.11 虚拟环境。中心选择 `[center]`（Core **0.1.1**），
+客户端选择 `[client]`（Core **0.1.2**）。不得使用 `[center,client]`，也不得在同一环境轮流安装。
+不要用历史测试锁、`--no-deps` 或强制覆盖掩盖依赖冲突。
 
-在本仓根目录执行（先创建并激活虚拟环境）：
+从可读取的、固定提交的 Taiko checkout 根目录执行；配套 Sakura checkout 假设为同级 `Sakura_bot`：
 
 ```sh
-python -m pip install -r requirements-domain.txt
-python -m pip install ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -e .
+# 中心专用环境
+python -m pip install -r ../Sakura_bot/taiko/requirements-domain.txt ./packages/taiko-application '.[center]' -r ../Sakura_bot/taiko/requirements-application.txt 'nonebot-adapter-qq==1.7.2'
 python -m pip check
 ```
 
-领域依赖通过 requirements-domain.txt 的精确 Git revision 获取，需要已有私有仓库读取权限；没有权限时由维护者提供 Core 0.1.2、Contract 0.1.0 wheel，先安装这两个本地 wheel，再执行第二、三行。禁止改用其他版本或跳过依赖解析。
-
-## 中心源码宿主
-
-中心只安装两个子项目，不安装客户端根包。中心 Core 必须为 0.1.1、Contract 为 0.1.0。
-将锁定 revision 的 Taiko 与 Sakura 源码放在普通部署者选定的目录，例如互为同级的 `taiko-bot/` 与 `Sakura_bot/`；在 Taiko 仓根目录执行：
-
 ```sh
-python -m pip install -r ../Sakura_bot/taiko/requirements-domain.txt
-python -m pip install ./packages/taiko-application ./packages/nonebot-plugin-taiko-song -r ../Sakura_bot/taiko/requirements-application.txt
+# 另一个客户端专用环境
+python -m pip install -r requirements-domain.txt ./packages/taiko-application '.[client]'
 python -m pip check
 ```
 
-这保留中心原有源码运行布局、其余宿主依赖与通用 feature_handler/runtime_memory/QQ 支持；不是把整个中心转换成 wheel，也不是完整服务器初始化说明。外部插件通过既有 NoneBot 插件列表加载一次，profile 为 center，公共资料根按宿主配置提供。客户端保留 client profile 和自己的公共资源获取。
+使用新环境可避免已退役插件残留。若在未来经授权升级既有环境，先卸载旧插件，
+确认 NoneBot 只加载 `taiko_bot.runtime.public`、`taiko_bot.runtime.player.entry` 各一次。
+其余通用宿主插件、资源与配置沿用原宿主；不新建进程共享 QQ/OneBot 连接。
 
-## 本地 wheel 方式
+## 包获取与构建
 
-制品维护者可在本仓根目录生成三个自有发行单元：
+Taiko 源码仓为 https://github.com/sigaer/taiko-bot 。候选分支 `feature/taiko-runtime-ownership`；
+审阅时应 checkout PR 的完整 commit SHA，不能把可变分支当成发行锁。
+Application 子目录和根项目在同一仓库中，以上一次 pip 调用同时提供两个本地候选，
+因此不假设这两个版本已发布到 PyPI。Core/Contract 使用 requirements-domain.txt 内既有不可变 Git revision，
+需要对应仓库权限；无权限时必须先取得同版本授权 wheel，不能替换领域版本。
 
-```sh
-python -m pip wheel --no-deps ./packages/taiko-application ./packages/nonebot-plugin-taiko-song . --wheel-dir dist
-```
+若交付 wheel，从固定提交构建 `packages/taiko-application` 和根项目两个 wheel，记录 SHA256，
+接收方使用显式 `--find-links` 与上述同一 profile 完整解析；构建的 `--no-deps` 不等于安装验证。
+旧插件发行目录已删除；历史证据在 [测试归档](../tests/archive/public-song-plugin/README.md)，
+当前有限验收在 `tests/runtime_ownership/`。
 
-此处 `--no-deps` 仅用于构建制品，不用于安装证明。将 wheel、SHA256 和所用源码 revision 一起交付到稳定制品目录；不提交运行数据或私有资源。接收者使用 `python -m pip install --find-links <制品目录> ...` 和相应精确版本/锁文件完整解析依赖。中心安装 Application 与插件，客户端再安装 taiko-bot；Core/Contract 未发布时也通过授权 wheel 或上述固定 Git revision 提供。
-
-F-C 已验证的锁位于插件 `tests/catalog-acceptance/center-lock.txt` 与 `client-lock.txt`。使用这些锁时，自有三个包及 Core/Contract 必须先在显式制品源可用，不能假设 PyPI 存在它们。第三方依赖可来自正常索引；仅三个 wheel 不构成全离线镜像。
-
-## 合并及上线边界
-
-先审阅 Taiko PR 并确保依赖源码/制品可获取，再审阅配套 Sakura PR。新插件不得与仍注册原九入口的旧宿主同时活动。score_cmd 仍归原宿主，其自动刷新链未迁移。
-
-源码合并不等于部署。Sakura 候选与生产 P0 的 Growth/score_calculator/daily_ability 存在差异，候选缺少生产 history_time_policy；未来发布须单独协调并保留 P0 修复，禁止整目录覆盖生产。此 PR 不带部署工作流、不执行重启，私有命令和基础设施不在本轮迁出范围。
+先审阅 Taiko PR、确认固定源码与依赖可取得，再审阅 Sakura PR。Sakura 删除的源码依赖已安装的
+Taiko 运行包，不能先单独采用。保留生产 P0；不整目录覆盖生产，本轮不合并、部署或重启。

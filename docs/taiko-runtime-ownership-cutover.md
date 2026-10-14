@@ -37,7 +37,8 @@ player 显式 require public，双端分别验证 public 优先、player 优先�
 共 **6/6 PASS**。这消除了先导入 player 时公开 matcher 错归属的加载顺序问题。
 
 `nonebot-plugin-taiko-song` 的源代码移到内部 `public`，独立 `pyproject.toml` 已删除。
-旧目录只保留历史测试/provenance 与退役说明，不再发行或扩展独立产品，不新增
+历史测试/provenance 已归档到 `tests/archive/public-song-plugin/`，旧发行目录已删除。
+不再发行或扩展独立产品，不新增
 `nonebot-plugin-taiko-*` 包。候选环境卸载旧插件后加载两个内部入口；不支持新旧同时装载。
 两端完整宿主加载验收确认九个公开 matcher、一个 tinfo matcher，无旧 tinfo 注册。
 
