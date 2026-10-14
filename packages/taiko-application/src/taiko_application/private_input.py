@@ -55,7 +55,7 @@ class Provenance:
     profile_source: str
 
     def __post_init__(self):
-        if self.representation not in ("native-publication", "native-legacy", "unavailable"):
+        if self.representation not in ("native-publication", "native-legacy", "remote-source-view", "unavailable"):
             raise ValueError("Unknown private input representation")
         for value in (self.current_view, self.profile_source, *self.members):
             if type(value) is not str or not value or "/" in value or "\\" in value:

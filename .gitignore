@@ -21,3 +21,8 @@ logs
 output
 secrets
 config.json
+
+# Maintained Python runtime modules, not generated runtime state.
+!taiko_bot/runtime/
+!taiko_bot/runtime/**
+taiko_bot/runtime/**/__pycache__/

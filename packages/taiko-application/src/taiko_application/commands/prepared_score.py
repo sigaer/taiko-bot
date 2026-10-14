@@ -34,6 +34,7 @@ class PreparedScoreCommand:
     selection: ScoreSelection | CommandResult
     presentation: ScorePresentationContext | None = None
     presentation_failure: ReadFailure | None = None
+    rendered_png: bytes | None = None
 
 
 def execute_prepared_score(command):
@@ -46,9 +47,14 @@ def execute_prepared_score(command):
         return CommandResult("text", "您还未上传数据哦~请先发送“taikoupdate”进行上传" if failure.missing else failure.message,
                              delivery="reply" if failure.missing else "direct")
     try:
-        if command.presentation is None or command.presentation.song_no != command.selection.song_no:
-            raise ValueError("Score presentation does not match selection")
-        raw = ScoreInfoRenderer(command.presentation).render()
+        if command.rendered_png is not None:
+            if type(command.rendered_png) is not bytes or command.presentation is not None:
+                raise TypeError("Rendered score must be bytes without a second presentation")
+            raw = command.rendered_png
+        else:
+            if command.presentation is None or command.presentation.song_no != command.selection.song_no:
+                raise ValueError("Score presentation does not match selection")
+            raw = ScoreInfoRenderer(command.presentation).render()
     except FileNotFoundError:
         return CommandResult("text", "您还未上传数据哦~请先发送“taikoupdate”进行上传", delivery="reply")
     except Exception as error:

@@ -1,0 +1,121 @@
+{
+  "status": "PHASE_2F_E_RUNTIME_OWNERSHIP_COMPLETE",
+  "baselines": {
+    "taiko": "1e7d0f9",
+    "sakura": "86a308c"
+  },
+  "scope": {
+    "storage/publication": "bd402a38fbc9916e52a2e274180406dcfc2ff0c0a0155b828391b4921d775f3f",
+    "storage/reader": "eed520e0616a3cd590abf46349d117182220fd318f89596e6ca2931ea698ed9a",
+    "storage/merged_materialization": "0ce39ff24698c000fce896e779c3c72ac6faca05bce0d98cc2bd1b97374f3a4d",
+    "storage/backup": "c3788c2182bba553c39d367bce616aad80abb9f5ca671e8e5cf8a11b4d88028f",
+    "storage/bridge": "91096c7c7d192e64c5f1a951a63100dc8da08adc17457719a8712797252c76f9",
+    "storage/daily": "9409a2b508ff1c5823b09ffc02e16b0003e6445e878c782bdc8204389ab97f2a",
+    "storage/__init__": "879eed5405e22be6f2fac878df47597f37aaf281bc71628e74647fa2b890bdda",
+    "storage/merged_read": "functions/classes unchanged; imports/reference root only",
+    "storage/merge_reference": "functions/classes unchanged; imports/reference root only",
+    "client/non-target": 333,
+    "center/non-target": 417,
+    "native_provider_and_sql_read_ast": "unchanged",
+    "public_modules": "all byte-identical moves",
+    "reverse_sakura_imports": 0
+  },
+  "tests": {
+    "center": {
+      "tinfo_cases": 115,
+      "tinfo_report_sha256": "68ae15af70fdfd6d6ef3b00890f82732d8eda31f02d9bb59eedf27ebbdf57a0a",
+      "public_cases": 78,
+      "public_report_sha256": "1b29a95f4b18527260750da1561deee9fcf0d1aa56ad88d9205afc32b4b61bba"
+    },
+    "client": {
+      "tinfo_cases": 115,
+      "tinfo_report_sha256": "7727225252bb8022f5865d0c589b34993e709e7a261675ba8b6388f652d16223",
+      "public_cases": 80,
+      "public_report_sha256": "20ff7c9bce675b310e34c7bed22c46899954e399b92d478584ae3dbc201b7a30"
+    },
+    "application_guard": {
+      "center_smoke": 15,
+      "client_smoke": 15,
+      "client_full": 115
+    },
+    "load_orders": 6,
+    "storage": {
+      "tests": 60,
+      "subtests": 5,
+      "log_sha256": "a24e89991a914350f0c4d1d0143c1cb568bbdbb13ec765dcf5725dd8bfc4a29a"
+    }
+  },
+  "wheels": {
+    "taiko_application-0.7.1-py3-none-any.whl": "df94e17fbe2cd0d30aaeea3088600598d3184faa614feeb7f885beec4dcfbf26",
+    "taiko_bot-0.3.0-py3-none-any.whl": "29d51c949a2c7455658b4330b6803f6b03cca91127880503cac3ae68477e7646"
+  },
+  "source_hashes": {
+    "taiko_bot/runtime/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "taiko_bot/runtime/player/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "taiko_bot/runtime/player/authority.py": "769072dcd00f916498636b3f29f7ff5d03397a7fd4aac21d4c96d9af68d1f7bf",
+    "taiko_bot/runtime/player/center/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "taiko_bot/runtime/player/center/bot_binding_authority.py": "5d6dd9dda36a066103082d0addf88e4e0b78ee35146dfe912ae37879643a4850",
+    "taiko_bot/runtime/player/center/bot_binding_mutation.py": "95f08694f5f03fa1716b09fb89f79b4bba3bdbccf4dd2e1b0ddc92ad8f462198",
+    "taiko_bot/runtime/player/center/duplicate_versions.py": "d781cf9135603d4c10dacedd44143f3da5e277f87500e3beaa3490f15892a8de",
+    "taiko_bot/runtime/player/center/helpers.py": "2f49aaf52dc61c44701fec564fcf7b07e1ed6b9c988fca2ec06d02ee12b3413e",
+    "taiko_bot/runtime/player/center/materialization.py": "ce970416efd1f7e00ed27f3d34c4f45f692f26c4f2e9a19123ab2107aa328f07",
+    "taiko_bot/runtime/player/center/messages.py": "e47a3bf94539315bf22167b3888d478e55766d042c56c5c3e686b7cbb1082fe0",
+    "taiko_bot/runtime/player/center/metrics.py": "02158e5b8d956c45f1335ab5eb8086425355d79d48a4b09c2c9270ea729e2cfe",
+    "taiko_bot/runtime/player/center/presentation.py": "a69539a35b0b6c8a305ba5ffff225866eed0446cfc93cb44d2f9a51bdb5536b0",
+    "taiko_bot/runtime/player/center/qq_markdown_media.py": "66af3c13e7e4c512c5cef330bbb806d427d6c11347eaababbc1ead7c6921f748",
+    "taiko_bot/runtime/player/center/runtime_env.py": "f269053e10812a2f8ec162c589dfcaad81bd156338fb489d78b8254af000b652",
+    "taiko_bot/runtime/player/center/taiko_db.py": "9c0ffc10fff70172dfa58dc84d06b02be8dc01de6dae5d2efba3d162fe3fc06e",
+    "taiko_bot/runtime/player/center/taikob_v2_data.py": "5f6afdc40356bcc8776059e22aefa719d1d06a7f895ef259e3c35fdef83f95b5",
+    "taiko_bot/runtime/player/center/tinfo_provider.py": "e98e0c79ffba7c5abbc2bc13484de5a7516ab242a87be3451818cdabbc9cc9f0",
+    "taiko_bot/runtime/player/client/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "taiko_bot/runtime/player/client/helpers.py": "5fd15c2c5f30f2979ba6d1996b3e7a7264b8bc2c7702660ba7ecfabd756d7afd",
+    "taiko_bot/runtime/player/client/messages.py": "f53d28db0c92f533194cc97644baf921e57ae437a9daeb3c137393c24fd00d9f",
+    "taiko_bot/runtime/player/client/metrics.py": "02158e5b8d956c45f1335ab5eb8086425355d79d48a4b09c2c9270ea729e2cfe",
+    "taiko_bot/runtime/player/client/presentation.py": "b701e6db14c4931b954c34918264a7b6363c13df75e0b98f451649e5244504c3",
+    "taiko_bot/runtime/player/client/provider.py": "9c9a3368c8ecfff4e614d1c7d2719371ad61df18d4b21c6193318bc1a4fdbedb",
+    "taiko_bot/runtime/player/client/qq_markdown_media.py": "36998bba6d21a13b10a27bda015215f06e18679aa658c7febecb11397c0fa3ac",
+    "taiko_bot/runtime/player/entry.py": "b27f5d542decd56aa3294a363089f41d2b52dfb453430c844314a513d04aa344",
+    "taiko_bot/runtime/public/__init__.py": "c29263313ef0d2503e9fe1a6bfedfac34d918577c0c84509760c5e9e35d011a2",
+    "taiko_bot/runtime/public/alias_renderer.py": "68ec896133b21864319576c45d23ac389532007f970606b370cd058d4926acf7",
+    "taiko_bot/runtime/public/catalog_commands.py": "66c3666e1aec8cdc3bab442d225bdd73126d36d3a7d84128bf4441cb17d2c91d",
+    "taiko_bot/runtime/public/catalog_provider.py": "0c6ac1d1bbf50b0d2b19af2e0f53cbd525f08a34e413ad400d0ba5831cc0c734",
+    "taiko_bot/runtime/public/center_messages.py": "255a5095b66a1cad59c5ef52362abed501ba2fdde46a4aaa0b50bc478172e28f",
+    "taiko_bot/runtime/public/client_messages.py": "dab71286b967f29414a7b00a9076305d012a52b4feb6053b3712b01284b95405",
+    "taiko_bot/runtime/public/client_provider.py": "76a3512558890e4af01704975d221ecdbeb0060e5061fb23235b9490b230fcf9",
+    "taiko_bot/runtime/public/config.py": "9986c0b6799150940de6fb4fac7d7e3c7dff5804054e5f9da5bec1cf84763547",
+    "taiko_bot/runtime/public/constant_center_renderer.py": "e648a09162fd5e2dd784537875cb8f087956345d125a21316944a77330af9d16",
+    "taiko_bot/runtime/public/constant_client_renderer.py": "232b74a650f462bfa2f9ec6368723504e98e51d4e722a861c8e3cbf98949788d",
+    "taiko_bot/runtime/public/delivery.py": "bec25d656928d8593fd1000f45e4adde35911eb91d786647eadee461c5c2ec07",
+    "taiko_bot/runtime/public/pattern_query.py": "3790b0bc5211a0eabd95edf523bd2f086ab968d170cc4886802f7e6f88cd8aec",
+    "taiko_bot/runtime/public/provider.py": "57fa62dcde7ec6996e5b689dbda4b2e00ee8514f1d0711ad4c055fdb45949a89",
+    "taiko_bot/runtime/public/public_commands.py": "24ddf95d7187da37addeba00e3320264cf38ca751bb96dde71433461995c970d",
+    "taiko_bot/runtime/public/public_queries.py": "4dcb838bd7a5619aae6b0f0509994a5522f7f07445bac4fd5406002b07a902ac",
+    "taiko_bot/runtime/public/resolve.py": "25cfd3a1f2d3c2340f7189f25e5882a2ad3080f405caf1d9cbd3e7fc921a59e5",
+    "taiko_store/__init__.py": "879eed5405e22be6f2fac878df47597f37aaf281bc71628e74647fa2b890bdda",
+    "taiko_store/backup.py": "c3788c2182bba553c39d367bce616aad80abb9f5ca671e8e5cf8a11b4d88028f",
+    "taiko_store/bridge.py": "91096c7c7d192e64c5f1a951a63100dc8da08adc17457719a8712797252c76f9",
+    "taiko_store/daily.py": "9409a2b508ff1c5823b09ffc02e16b0003e6445e878c782bdc8204389ab97f2a",
+    "taiko_store/merge_reference.py": "f80383b0018256d4ec6feb88361a3dec6f0cbd04eae1f7bd3c9d331f6bc27135",
+    "taiko_store/merged_materialization.py": "0ce39ff24698c000fce896e779c3c72ac6faca05bce0d98cc2bd1b97374f3a4d",
+    "taiko_store/merged_read.py": "75813a35b2cd0a0adc18f29ac9ac6036b1e6c654befb80d2edfbd8b9b3aa6422",
+    "taiko_store/publication.py": "bd402a38fbc9916e52a2e274180406dcfc2ff0c0a0155b828391b4921d775f3f",
+    "taiko_store/reader.py": "eed520e0616a3cd590abf46349d117182220fd318f89596e6ca2931ea698ed9a",
+    "taiko_store/snapshot_history.py": "741535379c92b6d5a992e64ac501a906fc75a48df17121fcefc67ec90515e278",
+    "tests/runtime_ownership/events.py": "1f1f24ecfadf53dc74466b93ddc57626bd58f43b9444904be61c64f7d32e0f47",
+    "tests/runtime_ownership/load_order.py": "b5f407aadde7d18f4abf22fb2e4ae4efa245c1a26f7975678bcdf55324430c68",
+    "tests/runtime_ownership/public_dispatch.py": "066156220ddb4ecb3bd58f4152cd52916cb1910c2e45070e059ba03c04191a47",
+    "tests/runtime_ownership/scope.py": "015ee6209b4eb7ff8133f2055278533238292e8e65792f4cb6ea85b36ef57098",
+    "tests/runtime_ownership/storage.py": "45e1ecf2a035d9ee25453adeda74275182b0b7d9d260d4dab85d765ccfc81626"
+  },
+  "frozen_sources": {
+    "center/plugins/taiko.py": "a57ce7b0795d80d739abf2b8815997a4de86b9caa41281b68e7208540dc36b70",
+    "center/plugins/utils/drawinfo.py": "0c11046a5b54a80ff678f6299332099e06642584725feffff7a25cf5e075b798",
+    "client/plugins/taiko.py": "8d9db1bb4fa24882e2026f196db5d7d7cddde4e383aad44716a21517b741b417",
+    "client/plugins/utils/drawinfo.py": "27fc700ae95ba9b762c9d889ca4276238415bd76ae52e823279d73fcb5a93881",
+    "center/selected_tinfo": "7430522efaff7199fc263d5a2a36edc046a273af0c7619dd3966d8258d3a6b87"
+  },
+  "installed": {
+    "env": "pip check PASS",
+    "client-env": "pip check PASS"
+  }
+}
