@@ -9,6 +9,7 @@ for name in ("sandbox", "installed", "images", "output"):
 p.add_argument('--host', choices=['center','client'], required=True)
 p.add_argument('--source', type=Path)
 p.add_argument('--support', type=Path)
+p.add_argument('--load-only', action='store_true')
 a = p.parse_args()
 if a.host == 'center':
     sys.path[:0] = [str(a.source), str(a.support)]
@@ -70,9 +71,14 @@ assert external_first is not None and len(external_first.matcher) == 9
 assert "plugins.taiko" not in sys.modules
 assert not any(name.startswith("plugins.utils") for name in sys.modules)
 player = nonebot.load_plugin("taiko_bot.runtime.player.entry")
-assert player is not None and len(player.matcher) == 1
+assert player is not None and len(player.matcher) == 2
 plugin = nonebot.load_plugin("plugins.taiko")
 assert plugin is not None, "Installed plugin failed to load"
+assert not hasattr(plugin.module, 'taikorec')
+assert player.module.recommendation.taikorec in player.matcher
+if a.load_only:
+    print(a.host, 'full host load PASS; one owned taikorec, zero legacy entries')
+    raise SystemExit(0)
 module = plugin.module
 from importlib.metadata import version
 from nonebot.adapters.onebot.v11 import Adapter, Bot, PrivateMessageEvent, Message
@@ -112,6 +118,7 @@ for name in names:
  assert r.pop(name)
  assert not hasattr(module,name)
 r.pop('music_info')
+r.pop('taikorec')
 assert r==registrations(new_tree)
 assert len(external.matcher)==9
 ns=dict(module.__dict__)

@@ -269,12 +269,14 @@ source .venv/bin/activate
 
 ### Taiko Runtime 归属切换候选（Phase 2F-E）
 
-公开九命令与双端 tinfo 由本仓 `taiko_bot.runtime.public` / `taiko_bot.runtime.player`
+公开九命令、双端 tinfo 与 taikorec 由本仓 `taiko_bot.runtime.public` / `taiko_bot.runtime.player`
 维护，在宿主原有 NoneBot 进程内加载。旧 `nonebot-plugin-taiko-song` 已退役；
 不得同时装载旧插件和内部入口，也没有新的插件发行包。
 
-候选版本 taiko-bot 0.3.0 / Application 0.7.1。客户端使用 `[client]` 精确固定
+候选版本 taiko-bot 0.4.0 / Application 0.8.0。客户端使用 `[client]` 精确固定
 Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0。
 中心接入使用 Sakura 候选的现有 driver，不启动第二个连接消费者。
 
 [完整边界、验证与未上线说明](docs/taiko-runtime-ownership-cutover.md)。
+
+推荐命令迁移与有限验收见 [taikorec 归属交付](docs/taikorec-ownership.md)。

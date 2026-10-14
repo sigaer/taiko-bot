@@ -1,6 +1,9 @@
 import os, sys
 from pathlib import Path
-os.environ.update(TAIKO_RUNTIME_ENV_FILE='/var/tmp/taiko-phase2fe-20261014/no.env',TAIKO_BOT_ROOT='/var/tmp/taiko-phase2fd1-host-20261013/center-runtime',TAIKO_CENTER_ROOT='/var/tmp/taiko-phase2fd1-host-20261013/center-runtime')
+fixture = Path(sys.argv[3]).resolve() if len(sys.argv) > 3 else Path.cwd()
+os.environ.update(TAIKO_RUNTIME_ENV_FILE=str(fixture/'absent.env'),
+                  TAIKO_BOT_ROOT=str(fixture), TAIKO_CENTER_ROOT=str(fixture))
+
 def guard(event,args):
  if event in ('socket.connect','socket.getaddrinfo','sqlite3.connect'):raise AssertionError(event)
  if event=='open' and isinstance(args[0],str) and args[0].startswith(('/home/sigaer','/etc/taiko','/opt/')):raise AssertionError('production read')
@@ -16,8 +19,8 @@ elif mode=='forward':
 else:
  b=nonebot.load_plugin('taiko_bot.runtime.player.entry');a=nonebot.get_plugin('public')
 assert a and b
-assert len(a.matcher)==9 and len(b.matcher)==1
+assert len(a.matcher)==9 and len(b.matcher)==2
 print('PASS',sys.argv[1],mode, len(a.matcher),len(b.matcher))
 assert nonebot.require('taiko_bot.runtime.public') is a.module
 assert nonebot.require('taiko_bot.runtime.player.entry') is b.module
-assert len(a.matcher)==9 and len(b.matcher)==1
+assert len(a.matcher)==9 and len(b.matcher)==2

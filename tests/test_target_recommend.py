@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from plugins.utils import target_recommend
+from taiko_bot.runtime.player.client.recommendation_support import target_recommend
 
 
 def test_parse_target_recommendation_request_supports_star_filter():
     assert target_recommend.parse_target_recommendation_request("紫雅 9星") == ("ziya", "9", None)
     assert target_recommend.parse_target_recommendation_request("全连") == (
-        target_recommend.FULL_COMBO_TARGET,
+        target_recommend._target.FULL_COMBO_TARGET,
         None,
         None,
     )
@@ -14,36 +14,7 @@ def test_parse_target_recommendation_request_supports_star_filter():
 
 
 def test_compute_target_recommendations_filters_achieved_and_sorts_candidates(monkeypatch):
-    monkeypatch.setattr(
-        target_recommend,
-        "_load_userdata_payload",
-        lambda _user_id: {
-            "songs": [
-                {
-                    "song_no": 1,
-                    "level": 4,
-                    "high_score": 960000,
-                    "good_cnt": 900,
-                    "ok_cnt": 50,
-                    "ng_cnt": 10,
-                    "combo_cnt": 800,
-                    "full_combo_cnt": 0,
-                    "dondaful_combo_cnt": 0,
-                },
-                {
-                    "song_no": 2,
-                    "level": 4,
-                    "high_score": 910000,
-                    "good_cnt": 850,
-                    "ok_cnt": 80,
-                    "ng_cnt": 20,
-                    "combo_cnt": 780,
-                    "full_combo_cnt": 0,
-                    "dondaful_combo_cnt": 0,
-                },
-            ]
-        },
-    )
+    userdata = {'songs': [{'song_no': 1, 'level': 4, 'high_score': 960000, 'good_cnt': 900, 'ok_cnt': 50, 'ng_cnt': 10, 'combo_cnt': 800, 'full_combo_cnt': 0, 'dondaful_combo_cnt': 0}, {'song_no': 2, 'level': 4, 'high_score': 910000, 'good_cnt': 850, 'ok_cnt': 80, 'ng_cnt': 20, 'combo_cnt': 780, 'full_combo_cnt': 0, 'dondaful_combo_cnt': 0}]}
     monkeypatch.setattr(
         target_recommend,
         "_build_user_profile",
@@ -115,7 +86,7 @@ def test_compute_target_recommendations_filters_achieved_and_sorts_candidates(mo
         ),
     )
 
-    result = target_recommend.compute_target_recommendations_for_user("123", "ziya", star_filter="9")
+    result = target_recommend.compute_target_recommendations_from_userdata(userdata, "ziya", star_filter="9")
 
     assert result.is_enough is True
     assert [row["song_id"] for row in result.rows] == [2, 3]

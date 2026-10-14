@@ -86,6 +86,9 @@ class TinfoHostProvider:
         virtual = entry["current_slot"] == 0
         ids = tuple(entry["ids"]) if virtual else (entry["ids"][entry["current_index"]],)
         profile = entry["ids"][entry["current_index"]]
+        source = entry["sources"].get(profile) if not virtual else "wahlap"
+        update = "更新hiroba" if source == "hiroba" else "taikoupdate"
+        self.recommendation_missing_hint = f"您还未上传数据哦~请先发送“{update}”进行上传"
         # The two attempts cover materialize -> captured publication races.
         for attempt in range(2):
             if self._snapshot(actor, principal)[2] != observation:

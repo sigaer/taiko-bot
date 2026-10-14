@@ -5,19 +5,7 @@ from .utils.public_score_token import (
 from .utils.taiko_db import get_taiko_db_connection
 from taiko_bot.merged_source_id import build_center_virtual_user_id
 from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
-from .utils import (
-    render_pass_progress_image_bytes,
-    render_progress_image_bytes_by_list,
-    compute_score,
-    render_progress_image_bytes,
-    render_star_progress_image_bytes,
-    compute_recommendations_for_user,
-    generate_recommend_image,
-    generate_dim_top_image,
-    render_my_don_image,
-    render_b30_image,
-    render_tcloud_image,
-)
+from .utils import render_pass_progress_image_bytes, render_progress_image_bytes_by_list, compute_score, render_progress_image_bytes, render_star_progress_image_bytes, generate_dim_top_image, render_my_don_image, render_b30_image, render_tcloud_image
 from .utils.draw_summary import render_taiko_2025_summary
 from .utils.progress_catalog import (
     available_const_progress_keys,
@@ -35,12 +23,6 @@ from .utils.score_line import (
     get_scoreline_entry,
     parse_scoreline_request,
 )
-from .utils.target_recommend import (
-    compute_target_recommendations_for_user,
-    parse_target_recommendation_request,
-    target_recommendation_displays,
-)
-from .utils.target_recommend_render import render_target_recommendation_image_bytes
 from .utils.taikob_v2 import (
     V2_TAIKOB_DIM_ALIASES,
     render_b20_v2_dim_image,
@@ -180,30 +162,6 @@ BIND_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_SCORE_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
-DIM_MAP = {
-    "rating": "rating",
-    "综合": "rating",
-    "总合": "rating",
-    "daigouryoku": "daigouryoku",
-    "大歌力": "daigouryoku",
-    "大歌": "daigouryoku",
-    "stamina": "stamina",
-    "体力": "stamina",
-    "speed": "speed",
-    "高速": "speed",
-    "高速处理": "speed",
-    "accuracy_power": "accuracy_power",
-    "精度": "accuracy_power",
-    "准度": "accuracy_power",
-    "良率": "accuracy_power",
-    "精度力": "accuracy_power",
-    "rhythm": "rhythm",
-    "节奏": "rhythm",
-    "节奏处理": "rhythm",
-    "complex": "complex",
-    "复合": "complex",
-    "复合处理": "complex",
-}
 DIM_ALIASES = {
     "大歌": "big_song",
     "大歌力": "big_song",
@@ -5574,154 +5532,8 @@ async def handle_cover(bot: Bot, event: Event, reg_group=RegexGroup()):
 # taikorec 体力
 # taikorec 体力 30
 # taikorec stamina 15
-taikorec = on_regex(r"^(?:taikorec|推荐歌曲).*$", flags=re.IGNORECASE, rule=taiko_rule)
 
 
-@taikorec.handle()
-async def taikorec_handle(event: MessageEvent):
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(taikorec, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(taikorec, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(taikorec, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(taikorec, event, "core-assets"):
-        return
-    taiko_id = str(bind_target["user_id"])
-
-    # 2) 解析参数（兼容无空格：taikorec体力30 / 推荐歌曲体力30）
-    msg_text = extract_plain_text(event).strip()
-    m = re.match(r"^(?:taikorec|推荐歌曲)\s*(.*)$", msg_text, flags=re.IGNORECASE)
-    tail = (m.group(1) if m else "") or ""
-    tail = tail.strip()
-    if tail:
-        target_key, target_star_filter, target_error = parse_target_recommendation_request(
-            tail
-        )
-        if target_key:
-            if target_error == "too_many_args":
-                await _require_private_send_authority(taikorec, event, bind_target)
-                await _finish_text_reply(
-                    taikorec,
-                    event,
-                    "目标推荐固定返回20首，仅支持附加一个难度筛选。示例：推荐歌曲 紫雅 9星",
-                )
-            if target_error == "invalid_star":
-                await _require_private_send_authority(taikorec, event, bind_target)
-                await _finish_text_reply(
-                    taikorec,
-                    event,
-                    "难度筛选仅支持 1-10、1星-10星 或 一星-十星。示例：推荐歌曲 紫雅 9星",
-                )
-            try:
-                current_userdata = ensure_userdata_available(taiko_id, settings=_SETTINGS)
-                result = compute_target_recommendations_for_user(
-                    taiko_id,
-                    target_key,
-                    star_filter=target_star_filter,
-                )
-            except FileNotFoundError:
-                await _require_private_send_authority(taikorec, event, bind_target)
-                await _finish_text_reply(
-                    taikorec,
-                    event,
-                    "您还未上传数据哦~请先发送“taikoupdate”进行上传",
-                )
-            except Exception:
-                logger.exception("target recommendation failed: user_id=%s", taiko_id)
-                await _require_private_send_authority(taikorec, event, bind_target)
-                await _finish_text_reply(
-                    taikorec, event, "目标推荐计算失败，请检查曲库/数据匹配是否正常"
-                )
-
-            if not result.is_enough:
-                await _require_private_send_authority(taikorec, event, bind_target)
-                await _finish_text_reply(taikorec, event, result.message)
-
-            img_buf = render_target_recommendation_image_bytes(
-                taiko_id,
-                current_userdata,
-                result.target_display,
-                result.rows,
-                assets_base=ASSETS_DIR,
-                font_path=FONT_PATH,
-            )
-            await _require_private_send_authority(taikorec, event, bind_target)
-            await _finish_image_reply(taikorec, event, img_buf)
-            return
-
-    dim_in = "rating"
-    n_in = "20"
-    if tail:
-        parts = tail.split()
-        if len(parts) >= 2:
-            dim_in = parts[0]
-            n_in = parts[1]
-        else:
-            token = parts[0]
-            if token.isdigit():
-                n_in = token
-            else:
-                m2 = re.match(r"^(.*?)(\d{1,2})$", token)
-                if m2 and m2.group(1):
-                    dim_in = m2.group(1)
-                    n_in = m2.group(2)
-                else:
-                    dim_in = token
-
-    dim_key = DIM_MAP.get(dim_in, None)
-    if not dim_key:
-        await _require_private_send_authority(taikorec, event, bind_target)
-        await _finish_text_reply(
-            taikorec,
-            event,
-            "维度不支持。可用：rating/综合、大歌力、体力、高速处理、精度力、节奏处理、复合处理；目标推荐可用："
-            + target_recommendation_displays(),
-        )
-
-    try:
-        limit = int(n_in)
-        if limit < 1:
-            limit = 1
-        if limit > 50:
-            limit = 50
-    except Exception:
-        limit = 20
-
-    # 3) 调用推荐（你已整合好的函数）
-    try:
-        recs = compute_recommendations_for_user(
-            user_id=taiko_id,
-            best_key=dim_key,
-            limit=limit,
-            json_path="./songs/rating_structured_with_ids.json",  # 按你项目实际路径
-        )
-    except FileNotFoundError as e:
-        print(e)
-        await _require_private_send_authority(taikorec, event, bind_target)
-        await _finish_text_reply(
-            taikorec, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
-        )
-    except Exception as e:
-        print(e)
-        await _require_private_send_authority(taikorec, event, bind_target)
-        await _finish_text_reply(
-            taikorec, event, "推荐计算失败，请检查曲库/数据匹配是否正常"
-        )
-
-    # 4) 生成推荐图片并返回
-    # subtitle = f"维度：{dim_in}（best_key={dim_key}）  数量：{limit}"
-    subtitle = f"维度：{dim_in}  数量：{limit}"
-    img_buf = generate_recommend_image(
-        recs,
-        title="以下是可供参考的推荐歌曲",
-        subtitle=subtitle,
-        font_path=FONT_PATH,
-    )
-
-    await _require_private_send_authority(taikorec, event, bind_target)
-    await _finish_image_reply(taikorec, event, img_buf)
 
 
 # ================

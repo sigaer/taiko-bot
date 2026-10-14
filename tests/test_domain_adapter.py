@@ -1,9 +1,10 @@
+from taiko_bot.runtime.player.client.recommendation_support import target_recommend
 """Host regression checks: dependency versions, lazy inputs and legacy shapes."""
 from dataclasses import asdict
 from datetime import datetime as RealDatetime
 import pytest
 from taiko_bot import domain
-from plugins.utils import progress_catalog, target_recommend, dojo_score, taikob_v2, score_calculator
+from plugins.utils import progress_catalog, dojo_score, taikob_v2, score_calculator
 from plugins.utils.hiroba import parser, normalize
 
 def unavailable(*args, **kwargs):
@@ -28,11 +29,10 @@ def test_star_queries_do_not_require_rating_or_static_dataset(monkeypatch):
     assert [asdict(item) for item in progress_catalog.query_progress_items_by_star(9)] == [{'song_id':2,'level':4,'title':'Sample'}]
 
 def test_empty_recommendations_do_not_load_chart_or_rating_data(monkeypatch):
-    monkeypatch.setattr(target_recommend, '_load_userdata_payload', lambda user:{'songs':[]})
     monkeypatch.setattr(domain, 'identity_inputs', unavailable)
     monkeypatch.setattr(target_recommend, '_build_user_profile', unavailable)
     monkeypatch.setattr(target_recommend, '_load_scoreline_rows', unavailable)
-    result=target_recommend.compute_target_recommendations_for_user('synthetic','ziya')
+    result=target_recommend.compute_target_recommendations_from_userdata({'songs':[]},'ziya')
     assert result.rows == [] and result.candidate_count == 0
     assert result.message == '暂无可用成绩数据，请先更新后再试。'
 

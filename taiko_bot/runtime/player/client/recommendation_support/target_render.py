@@ -1,24 +1,28 @@
 from __future__ import annotations
 
+
 import io
-import json
+
 import os
+
 from functools import lru_cache
+
 from pathlib import Path
+
 from typing import Any, Dict, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 
 from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import get_cached_userdata
+
 
 from .draw_dress import draw_player_info
 
 BASE = get_settings().root_dir
-PATH_SONG_DATA = BASE / "songs" / "song_data.json"
-PROGRESS_BG_PATH = BASE / "assets" / "templates" / "progress_bg.png"
-DEFAULT_PROGRESS_FONT_PATH = str(BASE / "assets" / "fonts" / "DDFont.ttf")
 
+PROGRESS_BG_PATH = BASE / "assets" / "templates" / "progress_bg.png"
+
+DEFAULT_PROGRESS_FONT_PATH = str(BASE / "assets" / "fonts" / "DDFont.ttf")
 
 def _load_font(
     font_path: str | None, size: int
@@ -29,7 +33,6 @@ def _load_font(
         except Exception:
             pass
     return ImageFont.load_default()
-
 
 def _draw_text_with_font_drop(
     draw: ImageDraw.ImageDraw,
@@ -42,7 +45,6 @@ def _draw_text_with_font_drop(
 ) -> None:
     x, y = pos
     draw.text((x, y), text, font=font, fill=fill, **kwargs)
-
 
 def _truncate_to_width(
     draw: ImageDraw.ImageDraw, text: str, font: ImageFont.ImageFont, max_w: int
@@ -62,7 +64,6 @@ def _truncate_to_width(
             right = mid
     return text[: right - 1] + ellipsis if right > 0 else ellipsis
 
-
 @lru_cache(maxsize=128)
 def _load_icon_cached(path: str, size: int) -> Optional[Image.Image]:
     if not path or not os.path.exists(path):
@@ -78,7 +79,6 @@ def _load_icon_cached(path: str, size: int) -> Optional[Image.Image]:
     except Exception:
         return None
 
-
 def _crop_box_with_pad(
     image: Image.Image, box: Tuple[int, int, int, int], pad: int = 4
 ) -> Image.Image:
@@ -88,7 +88,6 @@ def _crop_box_with_pad(
     x2 = min(image.width, x2 + pad)
     y2 = min(image.height, y2 + pad)
     return image.crop((x1, y1, x2, y2))
-
 
 def _draw_vertical_gradient(
     img: Image.Image,
@@ -114,7 +113,6 @@ def _draw_vertical_gradient(
             )
         for x in range(width):
             pixels[x, y] = (*color, 255)
-
 
 def _render_progress_profile_panel(
     userdata: Dict[str, Any],
@@ -144,7 +142,6 @@ def _render_progress_profile_panel(
     scale = target_width / panel.width
     target_h = max(1, int(round(panel.height * scale)))
     return panel.resize((target_width, target_h), Image.LANCZOS)
-
 
 def _draw_target_recommend_arrow(
     draw: ImageDraw.ImageDraw,
@@ -180,7 +177,6 @@ def _draw_target_recommend_arrow(
         joint="curve",
     )
 
-
 def render_target_recommendation_image_bytes(
     user_id: int | str,
     userdata: Dict[str, Any],
@@ -189,9 +185,6 @@ def render_target_recommendation_image_bytes(
     assets_base: str | Path = BASE / "assets",
     font_path: str | None = DEFAULT_PROGRESS_FONT_PATH,
 ) -> bytes:
-    if userdata is None:
-        cached = get_cached_userdata(str(user_id))
-        userdata = cached if isinstance(cached, dict) else {}
 
     table_w = 1602
     pad = 24

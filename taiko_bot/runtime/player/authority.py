@@ -11,7 +11,7 @@ class TinfoUnavailable(Exception):
 
 
 class AuthorizedDelivery:
-    """Tinfo-only transport facade; recheck every send and passive-failure fallback."""
+    """Private player transport facade; recheck every send and passive-failure fallback."""
     def __init__(self, matcher, provider, prepared):
         self._matcher, self._provider, self._prepared = matcher, provider, prepared
 

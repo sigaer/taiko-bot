@@ -1,4 +1,4 @@
-"""Taiko-owned tinfo matcher, loaded once in the host's existing NoneBot driver."""
+"""Taiko-owned player matchers in the host's existing NoneBot driver."""
 import os
 import re
 from pathlib import Path
@@ -104,3 +104,6 @@ async def music_info_handle(matcher: Matcher, event: Event):
         await deliver(AuthorizedDelivery(matcher, provider, prepared), event, result)
     except (TinfoDenied, TinfoUnavailable):
         await matcher.finish('查不到呢，可能不给看哦~')
+
+# Register additional player commands in this same plugin/driver.
+from . import recommendation
