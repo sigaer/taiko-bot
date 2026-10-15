@@ -71,7 +71,7 @@ assert external_first is not None and len(external_first.matcher) == 9
 assert "plugins.taiko" not in sys.modules
 assert not any(name.startswith("plugins.utils") for name in sys.modules)
 player = nonebot.load_plugin("taiko_bot.runtime.player.entry")
-assert player is not None and len(player.matcher) == (21 if a.host=="center" else 18)
+assert player is not None and len(player.matcher) == (49 if a.host=="center" else 45)
 plugin = nonebot.load_plugin("plugins.taiko")
 assert plugin is not None, "Installed plugin failed to load"
 assert not hasattr(plugin.module, 'taikorec')
@@ -96,6 +96,11 @@ for cluster,names in [(player.module.query_cluster,('quick_actions_panel','song_
  for name in names:
   assert not hasattr(plugin.module,name),name
   if name in ('song_title_query','custom_title_add') and a.host=='client':assert not hasattr(cluster,name)
+  else:assert sum(m is getattr(cluster,name) for m in player.matcher)==1,name
+for cluster,names in [(player.module.identity_cluster,'qq_migration_code bind_qq bind_qq_prompt bind bind_confirm bind_switch bind_hiroba hiroba_update bind_remove bind_remove_confirm show_bind unshow_bind'),(player.module.manual_cluster,'manual_create manual_rename manual_claim_code manual_claim manual_detach manual_delete manual_delete_confirm manual_score_upsert manual_score_get manual_score_delete manual_score_delete_confirm'),(player.module.update_cluster,'update update_typo public_score_token developer_userdata game_login_qr')]:
+ for name in names.split():
+  assert not hasattr(plugin.module,name),name
+  if name=='game_login_qr' and a.host=='client':assert not hasattr(cluster,name)
   else:assert sum(m is getattr(cluster,name) for m in player.matcher)==1,name
 if a.load_only:
     print(a.host, 'full host load PASS; owned player matchers, zero migrated legacy entries')

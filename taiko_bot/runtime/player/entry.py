@@ -120,3 +120,7 @@ from . import scoring
 from importlib import import_module
 query_cluster = import_module(f'.{profile()}.query_cluster', __package__)
 management_cluster = import_module(f'.{profile()}.management_cluster', __package__)
+
+identity_cluster = import_module(f".{profile()}.identity_cluster", __package__)
+manual_cluster = import_module(f".{profile()}.manual_cluster", __package__)
+update_cluster = import_module(f".{profile()}.update_cluster", __package__)

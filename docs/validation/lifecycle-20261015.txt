@@ -1,0 +1,284 @@
+Lifecycle migration validation — 2026-10-15
+Baseline Taiko e37e07e / Sakura 3b08986; taiko-bot 0.11.0
+Offline synthetic inputs; memory admission wrapper; no production data/DB/network.
+MySQL named locks modeled in SQLite, not real MySQL integration.
+Manual service API is a synthetic transaction boundary; existing Viewer internals unchanged.
+
+parity-center.log  sha256=d1d04a22a36e74bd0daeec5ea770707c1fb0a7c43681ecc06306d530c6b9a47b
+center 1 manual_create PASS
+center 2 manual_rename PASS
+center 3 manual_claim_code PASS
+center 4 manual_claim PASS
+center 5 manual_score_upsert PASS
+center 6 manual_score_get PASS
+center 7 manual_delete PASS
+center 8 manual_delete_confirm PASS
+center 9 manual_score_delete PASS
+center 10 manual_score_delete_confirm PASS
+center 11 manual_detach PASS
+center 12 manual_score_upsert PASS
+center 13 bind_switch PASS
+center 14 bind_switch PASS
+center 15 show_bind PASS
+center 16 unshow_bind PASS
+center 17 bind_qq_prompt PASS
+center 18 bind_remove PASS
+center 19 bind_confirm PASS
+center 20 bind_remove_confirm PASS
+center 21 update_typo PASS
+center 22 public_score_token PASS
+center 23 qq_migration_code PASS
+center 24 manual_create PASS
+center 25 manual_rename PASS
+center 26 manual_claim_code PASS
+center 27 manual_claim PASS
+center 28 manual_score_upsert PASS
+center 29 manual_score_get PASS
+center 30 manual_delete PASS
+center 31 manual_delete_confirm PASS
+center 32 manual_score_delete PASS
+center 33 manual_score_delete_confirm PASS
+center 34 manual_detach PASS
+center 35 manual_score_upsert PASS
+center 36 bind_switch PASS
+center 37 bind_switch PASS
+center 38 show_bind PASS
+center 39 unshow_bind PASS
+center 40 bind_qq_prompt PASS
+center 41 bind_remove PASS
+center 42 bind_confirm PASS
+center 43 bind_remove_confirm PASS
+center 44 update_typo PASS
+center 45 public_score_token PASS
+center 46 qq_migration_code PASS
+center 46 lifecycle parity PASS
+
+parity-client.log  sha256=f162f9f986cd4fe16a53cb4dae081c53fde431ef83a19e2ad2d5d724ebfd7c10
+client 1 manual_create PASS
+client 2 manual_rename PASS
+client 3 manual_claim_code PASS
+client 4 manual_claim PASS
+client 5 manual_score_upsert PASS
+client 6 manual_score_get PASS
+client 7 manual_delete PASS
+client 8 manual_delete_confirm PASS
+client 9 manual_score_delete PASS
+client 10 manual_score_delete_confirm PASS
+client 11 manual_detach PASS
+client 12 manual_score_upsert PASS
+client 13 bind_switch PASS
+client 14 bind_switch PASS
+client 15 show_bind PASS
+client 16 unshow_bind PASS
+client 17 bind_qq_prompt PASS
+client 18 bind_remove PASS
+client 19 bind_confirm PASS
+client 20 bind_remove_confirm PASS
+client 21 update_typo PASS
+client 22 public_score_token PASS
+client 23 qq_migration_code PASS
+client 24 manual_create PASS
+client 25 manual_rename PASS
+client 26 manual_claim_code PASS
+client 27 manual_claim PASS
+client 28 manual_score_upsert PASS
+client 29 manual_score_get PASS
+client 30 manual_delete PASS
+client 31 manual_delete_confirm PASS
+client 32 manual_score_delete PASS
+client 33 manual_score_delete_confirm PASS
+client 34 manual_detach PASS
+client 35 manual_score_upsert PASS
+client 36 bind_switch PASS
+client 37 bind_switch PASS
+client 38 show_bind PASS
+client 39 unshow_bind PASS
+client 40 bind_qq_prompt PASS
+client 41 bind_remove PASS
+client 42 bind_confirm PASS
+client 43 bind_remove_confirm PASS
+client 44 update_typo PASS
+client 45 public_score_token PASS
+client 46 qq_migration_code PASS
+client 46 lifecycle parity PASS
+
+security-center.log  sha256=ad15f1d6e38f0d9b979a3829976ddb3bd226b3ab302d83197468f0ac2faf0e53
+center 50 manual security/retry/rollback PASS
+
+security-client.log  sha256=0cf9cc4928b8fc5db4c9ba21e7289e454560829137f3692ae6a75434caeefdf6
+client 50 manual security/retry/rollback PASS
+
+identity-center.log  sha256=040f33d694bdbf672478180df3c378eeda44dcee3c1d8064b540e29ffe821352
+center 16 identity event PASS
+
+identity-client.log  sha256=a6ff22c95c0c495090c91ff67ab570920baea650ad7ed13b92a3362b3435891c
+client 16 identity event PASS
+
+data-center.log  sha256=3d8ca4934e76b412a5dd9df79a21ac3669b025978664d09bebe6cd3b26e9da85
+center 1 public_score_token PASS
+center 5 public_score_token PASS
+center 8 data event PASS
+
+data-client.log  sha256=366de7fb75a370950601231835b647d2725ee85c088f27cbd79e7f2969eeda65
+client 1 public_score_token PASS
+client 4 public_score_token PASS
+client 6 data event PASS
+
+updates-center.log  sha256=945f97c387209d73c2048189f302fadea467372d8c2c3a13249a413cbec85ffb
+center 3 update events PASS
+
+updates-client.log  sha256=05ace27fd8b5c5e1d11a67387745b946ddf7d0a1d5e39a8af78a8ac568446de6
+client 2 update events PASS
+
+registration-center.log  sha256=e54c36838340fb8dad550714177f115cccf9e775c45033e16959cfca9084f595
+center 44 registration events PASS
+
+registration-client.log  sha256=26310169babb9190d7f2ac002fcdff7536ef1c565cbbd920ecbdaae59264776a
+client 44 registration events PASS
+
+hiroba-center.log  sha256=241e355d4853ddeb72d649be0cbd8a709111e8f2e7c58233a60bcb8a1bd055a6
+center 2 Hiroba event PASS
+
+hiroba-client.log  sha256=f3a5aaffb8b50b6b54820191cd4623e8dcd1eb2c0a02d94fb6d09987a7db34d2
+client 2 Hiroba event PASS
+
+migration-center.log  sha256=715f0509844b99e13fc7298b2d432a73f1594f2c68e2a48bfb21483376fed9a8
+center private code / migration / replay SQL parity PASS
+
+migration-client.log  sha256=7e90f3609d796e91d4647fc71055648d033b69573647bbd71309866a24d6faf8
+client private code / migration / replay SQL parity PASS
+
+units-center.log  sha256=0f20adf7661c6057b50bbe1632566492654ade4d6142c179ce6846739db8f141
+center full host load PASS; owned player matchers, zero migrated legacy entries
+253 passed, 6152 warnings, 406 subtests passed in 2.25s
+
+units-client.log  sha256=7584b6ebbe6108240c2838bb7bebe80ad156277e4f93aaf411c2391a6161bec9
+client full host load PASS; owned player matchers, zero migrated legacy entries
+24 passed, 1 warning in 1.60s
+
+host-center.log  sha256=5053c0bfc53eba7cff575629f15a64d92e288fcdade56d8e2a6b83331545a442
+center full host load PASS; owned player matchers, zero migrated legacy entries
+
+host-client.log  sha256=3bd7be182a38d91b588e0303bc428f4ab57e52bc65cb6fbd9fe348dd5fd60d8f
+client full host load PASS; owned player matchers, zero migrated legacy entries
+
+public-center.log  sha256=a149b9bb96277416ad75dd31f5121553a33539f0f5619b6120a69bc080d1b434
+center 18 PASS; public and player matcher ownership
+
+public-client.log  sha256=9f37ee9800cb6915a7b009e9dff94d7cef67be903092286c6e456abc00915a21
+client 18 PASS; public and player matcher ownership
+
+tinfo-center.log  sha256=fb2c6dea39c8fd76c555a55ee7cdd84c00f6baccf9c053f68f1154e5195dc56c
+{"host": "center", "cases": 15, "status": "PASS"}
+
+tinfo-client.log  sha256=a58f8fdc19d5e12b4e46433b1b1500b9f80d27e2dcf593d89babe2aeec40c184
+{"host": "client", "cases": 15, "status": "PASS"}
+
+rec-center.log  sha256=40d09466cf011b6e160473f2af43317ead80872ffe00644ea95120a0c6c950c5
+center 16 parity cases PASS
+
+rec-client.log  sha256=ffdab02ebb7a5bc6d83bfa4d781a94a0147aa2bff9383d7cc727e7cb28cfab51
+client 16 parity cases PASS
+
+progress-center.log  sha256=6843e2e15423c94e6cc3a9a882d330eeee4eb9ef1cdf251b7e37d15cfa98abfd
+center 16 progress parity PASS
+
+progress-client.log  sha256=bef1fbc57d9911c53d8b064d78c3c7eccf542a420db2a1aca0162d62a23984b1
+client 16 progress parity PASS
+
+b30-center.log  sha256=dd4cc17cbe72635f874ed5b3301440f66ac9987418d8048b7814d5c961a84542
+center 1 taikob PASS
+center 2 taikob20 v1 -r PASS
+center 3 taikob20 v1 精度 PASS
+center 4 taikob PASS
+center 5 taikob20 v1 -r PASS
+center 6 taikob20 v1 精度 PASS
+center 7 taikob PASS
+center 8 taikob20 v1 -r PASS
+center 9 taikob20 v1 精度 PASS
+center 10 taikob PASS
+center 11 taikob20 v1 -r PASS
+center 12 taikob20 v1 精度 PASS
+
+b30-client.log  sha256=b4d85b24576779e7817961a6e5318c35a40913e6fa81b6bd86bb3ea8912d57ac
+client 1 taikob20 PASS
+client 2 taikob20 -r PASS
+client 3 taikob20 v2 体力 PASS
+client 4 taikob20 PASS
+client 5 taikob20 -r PASS
+client 6 taikob20 v2 体力 PASS
+client 7 taikob20 PASS
+client 8 taikob20 -r PASS
+client 9 taikob20 v2 体力 PASS
+client 10 taikob20 PASS
+client 11 taikob20 -r PASS
+client 12 taikob20 v2 体力 PASS
+
+trend-center.log  sha256=561a3c57005946283f3bd43240ff630b173ccc56cea033cd921e15995611a1d5
+center 1 taikotrend PASS
+center 2 taikoplaytrend PASS
+center 3 taikotrend PASS
+center 4 taikoplaytrend PASS
+center 5 taikotrend PASS
+center 6 taikoplaytrend PASS
+center 7 taikotrend PASS
+center 8 taikoplaytrend PASS
+
+trend-client.log  sha256=4e60df6764ed3b50b448972ffa6c6a9ef4010d5dc00c5f593a84dbdafe4a5c9f
+client 1 taikotrend PASS
+client 2 taikoplaytrend PASS
+client 3 taikotrend PASS
+client 4 taikoplaytrend PASS
+client 5 taikotrend PASS
+client 6 taikoplaytrend PASS
+client 7 taikotrend PASS
+client 8 taikoplaytrend PASS
+
+personal-center.log  sha256=e78e01e15a4ee5ded40a8d0af36c3972e29d616dac2bf9d875b54af3ffa5f4bb
+center 1 我的小咚 PASS
+center 2 我的单可正序 PASS
+center 3 tcloud PASS
+center 4 我的小咚 PASS
+center 5 我的单可正序 PASS
+center 6 tcloud PASS
+center 7 我的小咚 PASS
+center 8 我的单可正序 PASS
+center 9 tcloud PASS
+center 10 我的小咚 PASS
+center 11 我的单可正序 PASS
+center 12 tcloud PASS
+
+personal-client.log  sha256=be90568a0f7093195c7d4b04f2e64d84341d682121f3e7595fc9ed48497c737b
+client 1 我的小咚 PASS
+client 2 我的单可正序 PASS
+client 3 tcloud PASS
+client 4 我的小咚 PASS
+client 5 我的单可正序 PASS
+client 6 tcloud PASS
+client 7 我的小咚 PASS
+client 8 我的单可正序 PASS
+client 9 tcloud PASS
+client 10 我的小咚 PASS
+client 11 我的单可正序 PASS
+client 12 tcloud PASS
+
+resolver-center.log  sha256=c9e93fcaf8b78418ba4d0cf24bea112469c870f6ed3ca680e5c7281f522541cb
+No broken requirements found.
+
+resolver-client.log  sha256=ff427b9df960b1401e34e37e78531be85d3bc4bf4d8360a135e3e2909dd652aa
+No broken requirements found.
+
+load-order.log  sha256=61e60300f939222a90f11f285c4abdc8dc3671ff17af8226dbf62ba3f7d38e13
+PASS center reverse 9 49
+PASS center forward 9 49
+PASS center all 9 49
+PASS client reverse 9 45
+PASS client forward 9 45
+PASS client all 9 45
+
+provenance.log  sha256=013a4998fa7dfbaf6f559f61c7d9dd2a1692856f219d5851b3ea01c785abef71
+56 transferred protocol definitions unchanged PASS
+
+concurrency.log  sha256=a98123ad16020a1dc91840c53f3aee72080cd0d1c35a33f77a615c27f4e7fb67
+center full host load PASS; owned player matchers, zero migrated legacy entries
+7 passed, 1 warning in 0.11s

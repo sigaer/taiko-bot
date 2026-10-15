@@ -19,8 +19,8 @@ elif mode=='forward':
 else:
  b=nonebot.load_plugin('taiko_bot.runtime.player.entry');a=nonebot.get_plugin('public')
 assert a and b
-assert len(a.matcher)==9 and len(b.matcher)==(21 if sys.argv[1]=="center" else 18)
+assert len(a.matcher)==9 and len(b.matcher)==(49 if sys.argv[1]=="center" else 45)
 print('PASS',sys.argv[1],mode, len(a.matcher),len(b.matcher))
 assert nonebot.require('taiko_bot.runtime.public') is a.module
 assert nonebot.require('taiko_bot.runtime.player.entry') is b.module
-assert len(a.matcher)==9 and len(b.matcher)==(21 if sys.argv[1]=="center" else 18)
+assert len(a.matcher)==9 and len(b.matcher)==(49 if sys.argv[1]=="center" else 45)

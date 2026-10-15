@@ -25,3 +25,11 @@ def parse_snapshot_time(path: Path, *, fallback_mtime: Optional[Callable[[], flo
         return dt.datetime.fromtimestamp(fallback_mtime() if fallback_mtime else path.stat().st_mtime)
     except OSError:
         return dt.datetime.min
+
+from typing import Callable, List, Optional
+
+def list_snapshot_files(history_dir: Path) -> List[Path]:
+    return sorted(
+        history_dir.glob("data_*.json"),
+        key=lambda path: (parse_snapshot_time(path), path.name),
+    )
