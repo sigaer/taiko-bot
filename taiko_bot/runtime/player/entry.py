@@ -115,3 +115,8 @@ from . import trend  # noqa: E402,F401
 from . import personal  # noqa: E402,F401
 
 from . import scoring
+
+# Batch query/display and catalog/group-setting ownership.
+from importlib import import_module
+query_cluster = import_module(f'.{profile()}.query_cluster', __package__)
+management_cluster = import_module(f'.{profile()}.management_cluster', __package__)

@@ -71,7 +71,7 @@ assert external_first is not None and len(external_first.matcher) == 9
 assert "plugins.taiko" not in sys.modules
 assert not any(name.startswith("plugins.utils") for name in sys.modules)
 player = nonebot.load_plugin("taiko_bot.runtime.player.entry")
-assert player is not None and len(player.matcher) == (12 if a.host=="center" else 11)
+assert player is not None and len(player.matcher) == (21 if a.host=="center" else 18)
 plugin = nonebot.load_plugin("plugins.taiko")
 assert plugin is not None, "Installed plugin failed to load"
 assert not hasattr(plugin.module, 'taikorec')
@@ -92,6 +92,11 @@ for name in ('score_line_cmd','score_cmd','score_estimate_cmd'):
  if name!='score_estimate_cmd' or a.host=='center':
   assert getattr(player.module.scoring,name) in player.matcher
  else:assert not hasattr(player.module.scoring,name)
+for cluster,names in [(player.module.query_cluster,('quick_actions_panel','song_rank','summary','twso','city_arcade_query')),(player.module.management_cluster,('tsearch_switch','song_title_query','custom_title_add','tset_alias'))]:
+ for name in names:
+  assert not hasattr(plugin.module,name),name
+  if name in ('song_title_query','custom_title_add') and a.host=='client':assert not hasattr(cluster,name)
+  else:assert sum(m is getattr(cluster,name) for m in player.matcher)==1,name
 if a.load_only:
     print(a.host, 'full host load PASS; owned player matchers, zero migrated legacy entries')
     raise SystemExit(0)

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from ...public.config import root
 
 import json
 import re

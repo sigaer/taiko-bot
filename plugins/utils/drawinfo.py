@@ -751,16 +751,6 @@ def _compose_with_side_radar(
     return out
 
 
-def get_score_by_id_and_level(song_no, user_id, level):
-    user_data = get_cached_userdata(str(user_id)).get("songs", [])
-
-    # 聚合该曲成绩
-    entries = _collect_entries_for_song(user_data, song_no)
-    target_level_data = entries.get(level)
-    if not target_level_data:
-        return None
-    else:
-        return target_level_data
 
 
 # ---------- 对外函数 ----------

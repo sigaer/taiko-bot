@@ -9,14 +9,13 @@
 要求：
   - 字体：assets/fonts/DDFont.ttf
   - 模板：assets/templates/ 下的4种模板
-  - 用户数据：userdata/{user_id}data.json
+  - 用户数据：显式 userdata 参数（禁止按 user_id 重读）
   - 歌曲库：songs/song_data.json
   - 刷分库：songs/twso_cn_data.json
   - score_calculator.py：用于雷达图与best10文本（路径可改）
 """
 
 from __future__ import annotations
-from taiko_bot.userdata_provider import get_cached_userdata
 import os
 import json
 import math
@@ -31,7 +30,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 from taiko_bot.settings import get_settings
-from .draw_dress import draw_achievement_overview, draw_player_info
+from .display_support.draw_dress import draw_achievement_overview, draw_player_info
 
 
 # =========================
@@ -62,7 +61,7 @@ SCORE_CALC_PATH = Path("./plugins/utils/score_calculator.py")
 RATING_STRUCT_PATH = Path("./songs/rating_structured_with_ids.json")
 
 OUTPUT_DIR = Path("./output")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
 
 # 四种模板： (has_twso, has_random_or_speed) -> template_path
 TEMPLATE_MAP = {
@@ -427,8 +426,6 @@ def paste_contain(
 # =========================
 
 
-def load_userdata(user_id: int) -> Dict[str, Any]:
-    return get_cached_userdata(str(user_id))
 
 
 def load_song_db() -> Dict[int, Dict[str, Any]]:
@@ -578,10 +575,6 @@ def choose_template(has_twso: bool, has_random_or_speed: bool) -> Path:
 # =========================
 
 
-def import_score_calculator():
-    from . import score_calculator as module
-
-    return module
 
 
 def generate_radar_only(
@@ -641,64 +634,14 @@ def build_best10_text(score_calc, results) -> str:
 # =========================
 
 
-def render_player_and_achievement(user_id: int) -> bytes:
-    userdata = load_userdata(user_id)
-    sx = 1.0
-    sy = 1.0
-
-    # 字体与描边（按缩放比例）
-    font_size_16 = max(10, int(round(16 * (sx + sy) / 2)))
-    font_size_20 = max(10, int(round(20 * (sx + sy) / 2)))
-    stroke2 = max(1, int(round(2 * (sx + sy) / 2)))
-
-    font16 = get_font(font_size_16)
-    font20 = get_font(font_size_20)
-
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-
-    min_x, min_y, max_x, max_y = compute_player_achievement_bounds(userdata, sx, sy)
-    pad = max(2, stroke2 * 2)
-    base_w = max_x - min_x + pad * 2
-    base_h = max_y - min_y + pad * 2
-    base = Image.new("RGBA", (base_w, base_h), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(base)
-    offset_xy = (-min_x + pad, -min_y + pad)
-
-    draw_player_and_achievement(
-        base=base,
-        draw=draw,
-        userdata=userdata,
-        sx=sx,
-        sy=sy,
-        font16=font16,
-        font20=font20,
-        stroke2=stroke2,
-        WHITE=WHITE,
-        BLACK=BLACK,
-        offset_xy=offset_xy,
-    )
-
-    bio = BytesIO()
-    base.save(bio, format="PNG")
-    # 测试
-    # base.save("./output/test.png", format="PNG")
-    return bio.getvalue()
 
 
-def render_taiko_2025_summary(user_id: int) -> bytes:
-    out_path = OUTPUT_DIR / f"{user_id}_taiko_2025_summary.png"
-    if os.path.exists(out_path):
-        img = Image.open(out_path)
-        imgBytes = BytesIO()
-        img.save(imgBytes, format="png")
-        return imgBytes.getvalue()
-    userdata = load_userdata(user_id)
+def render_taiko_2025_summary(user_id, *, userdata, song_db, twso_rec, results, score_calc):
     songs: List[Dict[str, Any]] = userdata.get("songs", []) or []
-    song_db = load_song_db()
+
 
     # 分歧点：刷分赛/随机倍速
-    twso_rec = find_twso_record(user_id)
+
     has_twso = twso_rec is not None
 
     random_cnt, speed_cnt = count_random_speed(songs)
@@ -949,10 +892,6 @@ def render_taiko_2025_summary(user_id: int) -> bytes:
     # =========================
     # 8) 年度关键词：雷达图 + 最大维度名 + best10 文本
     # =========================
-    score_calc = import_score_calculator()
-    results = score_calc.compute_all_from_userdata_records(
-        userdata_records=songs, json_path=RATING_STRUCT_PATH
-    )
     if results:
         radar_img, max_dim = generate_radar_only(score_calc, results, bg_hex="#fde2bb")
         best10_text = build_best10_text(score_calc, results)
@@ -1018,7 +957,7 @@ def render_taiko_2025_summary(user_id: int) -> bytes:
             valign="top",
         )
 
-    base.save(out_path)
+
     bio = BytesIO()
     base.save(bio, format="PNG")
     return bio.getvalue()

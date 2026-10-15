@@ -1,0 +1,90 @@
+[
+  {
+    "scenario": "create",
+    "result": {
+      "title": "合成事务称号",
+      "id": 1
+    },
+    "titles": 1,
+    "audit": 1,
+    "rollbacks": 0,
+    "sql_sha256": "3e556ff8dc86d198a2b80bfd765848c4f9ca2636059e435b76c65b3e224bf8f0"
+  },
+  {
+    "scenario": "duplicate",
+    "result": {
+      "error": "CustomTitleConflictError",
+      "message": "该自定义称号已存在，无需重复添加。"
+    },
+    "titles": 1,
+    "audit": 1,
+    "rollbacks": 1,
+    "sql_sha256": "84f2da526dc228df395c3712e21b7a2bb38d313b31b3d4ceed7f355fb5d31d03"
+  },
+  {
+    "scenario": "cooldown",
+    "result": {
+      "error": "CustomTitleCooldownError",
+      "message": "操作太快啦，请在 30 秒后再添加称号。"
+    },
+    "titles": 1,
+    "audit": 1,
+    "rollbacks": 1,
+    "sql_sha256": "0f4b1c4c37dc5f38ca96ef59bdb839bcbe037789d7f2bc4b3fceac90c24b667a"
+  },
+  {
+    "scenario": "cooldown-expired",
+    "result": {
+      "title": "合成第二称号",
+      "id": 2
+    },
+    "titles": 2,
+    "audit": 2,
+    "rollbacks": 0,
+    "sql_sha256": "343575507b1d23a8252962b366fbbb9e0d24b9a16bc86991a20b028dba03d885"
+  },
+  {
+    "scenario": "audit-failure",
+    "result": {
+      "error": "RuntimeError",
+      "message": "synthetic audit insert failure"
+    },
+    "titles": 0,
+    "audit": 0,
+    "rollbacks": 1,
+    "sql_sha256": "3e556ff8dc86d198a2b80bfd765848c4f9ca2636059e435b76c65b3e224bf8f0"
+  },
+  {
+    "scenario": "invalid-title",
+    "result": {
+      "error": "CustomTitleValidationError",
+      "message": "称号名不能为空。"
+    },
+    "titles": 0,
+    "audit": 0,
+    "rollbacks": 0,
+    "sql_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "scenario": "invalid-level",
+    "result": {
+      "error": "CustomTitleValidationError",
+      "message": "难度必须是 level 1–5。"
+    },
+    "titles": 0,
+    "audit": 0,
+    "rollbacks": 0,
+    "sql_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "scenario": "invalid-achievement",
+    "result": {
+      "error": "CustomTitleValidationError",
+      "message": "成就必须是过关、全连或全良。"
+    },
+    "titles": 0,
+    "audit": 0,
+    "rollbacks": 0,
+    "sql_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  }
+]

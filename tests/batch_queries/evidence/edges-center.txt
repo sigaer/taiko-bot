@@ -1,0 +1,46 @@
+10-15 11:12:24 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/center-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+center 1 tset_alias tset wrong PASS
+center 2 tset_alias tset 测试别名 to id10000 PASS
+center 3 tset_alias tset 另一个 to Fixture PASS
+center 4 tset_alias tset 另一个 to 不存在歌曲 PASS
+center 5 tsearch_switch tsearch on PASS
+center 6 quick_actions_panel taiko帮助 PASS
+center 7 song_rank 歌曲排名 id10000 难度=4 地区=广东 PASS
+center 8 song_rank 排行歌曲 id10000 鬼 44 PASS
+center 9 song_rank 歌曲排行 id10000 广东 表 PASS
+center 10 song_rank 歌曲排行 id10000 松 PASS
+center 11 song_rank 歌曲排行 id10000 PASS
+center 12 city_arcade_query 鞍山哪有鼓 PASS
+center 13 custom_title_add 加称号 PASS
+center 14 custom_title_add 加称号 测试 to 里id10000 PASS
+center 15 custom_title_add 添加称号 测试 to id10000 PASS
+center 16 song_title_query 查称号 PASS
+center 17 song_title_query 查称号 不存在称号 PASS
+center 18 song_title_query 查称号 Fixture PASS
+center 19 tset_alias tset 失败别名 to id10000 PASS
+center 20 tset_alias tset 失败别名 to id10000 PASS
+center 21 tset_alias tset 审计失败别名 to id10000 PASS
+center 22 tset_alias tset wrong PASS
+center 23 tset_alias tset 测试别名 to id10000 PASS
+center 24 tset_alias tset 另一个 to Fixture PASS
+center 25 tset_alias tset 另一个 to 不存在歌曲 PASS
+center 26 tsearch_switch tsearch on PASS
+center 27 quick_actions_panel taiko帮助 PASS
+center 28 song_rank 歌曲排名 id10000 难度=4 地区=广东 PASS
+center 29 song_rank 排行歌曲 id10000 鬼 44 PASS
+center 30 song_rank 歌曲排行 id10000 广东 表 PASS
+center 31 song_rank 歌曲排行 id10000 松 PASS
+center 32 song_rank 歌曲排行 id10000 PASS
+center 33 city_arcade_query 鞍山哪有鼓 PASS
+center 34 custom_title_add 加称号 PASS
+center 35 custom_title_add 加称号 测试 to 里id10000 PASS
+center 36 custom_title_add 添加称号 测试 to id10000 PASS
+center 37 song_title_query 查称号 PASS
+center 38 song_title_query 查称号 不存在称号 PASS
+center 39 song_title_query 查称号 Fixture PASS
+center 40 tset_alias tset 失败别名 to id10000 PASS
+center 41 tset_alias tset 失败别名 to id10000 PASS
+center 42 tset_alias tset 审计失败别名 to id10000 PASS
+center 43 parameter/API/write/cache edges PASS

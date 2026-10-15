@@ -1,0 +1,650 @@
+{
+  "cases": [
+    {
+      "case": "statistics",
+      "name": "quick_actions_panel",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "quick_actions_panel",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "song_rank",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "song_rank",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "summary",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "summary",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "twso",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "twso",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "city_arcade_query",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "city_arcade_query",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "tsearch_switch",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "tsearch_switch",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "tset_alias",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "tset_alias",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "song_title_query",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "song_title_query",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "custom_title_add",
+      "platform": "onebot",
+      "count": 1
+    },
+    {
+      "case": "statistics",
+      "name": "custom_title_add",
+      "platform": "qq",
+      "count": 1
+    },
+    {
+      "case": "score-boundary",
+      "command": "查分",
+      "platform": "onebot"
+    },
+    {
+      "case": "score-boundary",
+      "command": "/查分",
+      "platform": "onebot"
+    },
+    {
+      "case": "score-boundary",
+      "command": "查分 id10000 500 100",
+      "platform": "onebot"
+    },
+    {
+      "case": "score-boundary",
+      "command": "/查分 里id10000 500 100",
+      "platform": "onebot"
+    },
+    {
+      "case": "score-boundary",
+      "command": "查分",
+      "platform": "qq"
+    },
+    {
+      "case": "score-boundary",
+      "command": "/查分",
+      "platform": "qq"
+    },
+    {
+      "case": "score-boundary",
+      "command": "查分 id10000 500 100",
+      "platform": "qq"
+    },
+    {
+      "case": "score-boundary",
+      "command": "/查分 里id10000 500 100",
+      "platform": "qq"
+    },
+    {
+      "case": "authorized",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "unbound",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "hidden",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "prepared",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "calculated",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "member",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "order",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "profile",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "send",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "failed-send",
+      "name": "twso",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "authorized",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "unbound",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "hidden",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "prepared",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "calculated",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "member",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "order",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "profile",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "send",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "failed-send",
+      "name": "twso",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "authorized",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "unbound",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "hidden",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "prepared",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "calculated",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "member",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "order",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "profile",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "send",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "failed-send",
+      "name": "twso",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "authorized",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "unbound",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "hidden",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "prepared",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "calculated",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "member",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "order",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "profile",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "send",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "failed-send",
+      "name": "twso",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "authorized",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "unbound",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "hidden",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "prepared",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "calculated",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "member",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "order",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "profile",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "send",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "failed-send",
+      "name": "summary",
+      "virtual": false,
+      "platform": "onebot"
+    },
+    {
+      "case": "authorized",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "unbound",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "hidden",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "prepared",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "calculated",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "member",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "order",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "profile",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "send",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "failed-send",
+      "name": "summary",
+      "virtual": false,
+      "platform": "qq"
+    },
+    {
+      "case": "authorized",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "unbound",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "hidden",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "prepared",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "calculated",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "member",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "order",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "profile",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "send",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "failed-send",
+      "name": "summary",
+      "virtual": true,
+      "platform": "onebot"
+    },
+    {
+      "case": "authorized",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "unbound",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "hidden",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "prepared",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "calculated",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "member",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "order",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "profile",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "send",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "failed-send",
+      "name": "summary",
+      "virtual": true,
+      "platform": "qq"
+    },
+    {
+      "case": "nickname-revoked",
+      "platform": "onebot"
+    },
+    {
+      "case": "nickname-revoked",
+      "platform": "qq"
+    },
+    {
+      "case": "group-permission",
+      "platform": "onebot"
+    },
+    {
+      "case": "group-permission",
+      "platform": "qq"
+    }
+  ],
+  "records": 106,
+  "io_violations": []
+}

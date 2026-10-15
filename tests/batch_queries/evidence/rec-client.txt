@@ -1,0 +1,6 @@
+10-15 11:07:06 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/client-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+client 5 modules 1110 lines missing []
+['draw_dress', 'score_calculator', 'song_visibility', 'target_recommend', 'target_recommend_render']
+client 16 parity cases PASS

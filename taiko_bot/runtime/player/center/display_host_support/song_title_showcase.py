@@ -1108,3 +1108,58 @@ def infer_song_title_showcase(
     )
     result.sort(key=_showcase_sort_key)
     return result[:resolved_limit]
+
+def list_official_titles_for_song(song_id: int) -> List[ShowcaseTitle]:
+    """Return every official song-title catalog entry related to one song."""
+    resolved_song_id = int(song_id)
+    title_lookup, _, _, _ = _load_song_lookup()
+    result: List[ShowcaseTitle] = []
+    seen: set[Tuple[str, str, str]] = set()
+
+    for relation in load_song_title_relations():
+        relation_song_ids: set[int] = set()
+        for song_name in relation.song_names:
+            for lookup_key in _song_lookup_keys(song_name):
+                relation_song_ids.update(title_lookup.get(lookup_key, ()))
+        if resolved_song_id not in relation_song_ids:
+            continue
+
+        identity = (
+            _normalize_title_key(relation.title_name),
+            relation.requirement_type,
+            relation.difficulty_scope,
+        )
+        if identity in seen:
+            continue
+        seen.add(identity)
+
+        plate_scope = (
+            "oni"
+            if relation.difficulty_scope == "oni_or_inner_oni"
+            else relation.difficulty_scope
+        )
+        plate_id = _relation_plate_id(
+            relation.title_name,
+            relation.requirement_type,
+            plate_scope,
+        )
+        result.append(
+            ShowcaseTitle(
+                title_name=relation.title_name,
+                plate_id=plate_id,
+                requirement_type=relation.requirement_type,
+                difficulty_scope=relation.difficulty_scope,
+                condition_text=relation.condition_text,
+                song_names=relation.song_names,
+                song_ids=tuple(sorted(relation_song_ids)),
+                const_value=0.0,
+                priority_const_value=0.0,
+                is_multi_song=len(relation.song_names) > 1,
+                showcase_bg_plate_id=_relation_showcase_bg_plate_id(
+                    relation.title_name,
+                    plate_id,
+                ),
+            )
+        )
+
+    return sorted(result, key=_showcase_sort_key)

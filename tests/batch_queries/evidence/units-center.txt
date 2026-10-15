@@ -1,0 +1,21 @@
+10-15 11:14:25 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/center-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+........................ [ 23%]
+........................................................................ [ 92%]
+........                                                                 [100%]
+=============================== warnings summary ===============================
+../center-env/lib/python3.11/site-packages/_pytest/config/__init__.py:1345
+  /var/tmp/taiko-query-management-20261015/center-env/lib/python3.11/site-packages/_pytest/config/__init__.py:1345: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; anyio
+    self._mark_plugins_for_rewrite(hook, disable_autoload)
+
+../sakura/taiko/nonebot_plugin_method_calls/extractor.py:4
+  /var/tmp/taiko-query-management-20261015/sakura/taiko/nonebot_plugin_method_calls/extractor.py:4: DeprecationWarning: module 'sre_parse' is deprecated
+    import sre_parse
+
+nonebot_plugin_method_calls/tests/test_extractor.py: 3960 warnings
+  /var/tmp/taiko-query-management-20261015/sakura/taiko/nonebot_plugin_method_calls/config.py:36: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.14/migration/
+    config_val = get_driver().config.dict().get(driver_key)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+104 passed, 3962 warnings, 264 subtests passed in 0.89s

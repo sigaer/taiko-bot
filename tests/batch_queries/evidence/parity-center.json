@@ -1,0 +1,1237 @@
+[
+  {
+    "name": "quick_actions_panel",
+    "command": "快捷操作",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "快捷操作面板：点击下方按钮可快速填入常用指令。",
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "twso",
+    "command": "查分",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "目前课题曲最高分数一览：\n1.YOU're your HERO：222000\n2.埼玉2000：未游玩\n3.震天动地！太鼓之达人：未游玩\n4.打破空想：未游玩\n5.Night of Knights / Knight of Nights：未游玩\n6.初音未来的消失-剧场版-：未游玩\n7.Ignis Danse：未游玩\n8.What's in the box?：未游玩\n9.!!!Chaos Time!!!：903852\n10.幽玄之乱：903210\n总和：2029062\n\n昵称：活动鼓手\n全球排名：1\n国内排名：1\n活动记录总分：999000\n",
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "quick_actions_panel",
+    "command": "快捷操作",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "快捷操作面板：点击下方按钮可快速填入常用指令。"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "twso",
+    "command": "查分",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "目前课题曲最高分数一览：\n1.YOU're your HERO：222000\n2.埼玉2000：未游玩\n3.震天动地！太鼓之达人：未游玩\n4.打破空想：未游玩\n5.Night of Knights / Knight of Nights：未游玩\n6.初音未来的消失-剧场版-：未游玩\n7.Ignis Danse：未游玩\n8.What's in the box?：未游玩\n9.!!!Chaos Time!!!：903852\n10.幽玄之乱：903210\n总和：2029062\n\n昵称：活动鼓手\n全球排名：1\n国内排名：1\n活动记录总分：999000\n"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "summary",
+    "command": "taiko2025",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": {
+            "type": "image",
+            "data": {
+              "file": {
+                "sha256": "05be34b1321b139b0945c0872e425b607b54ebf5c39a2f7c26361b6b7082a74b",
+                "size": [
+                  499,
+                  5194
+                ]
+              },
+              "type": null,
+              "cache": "true",
+              "proxy": "true",
+              "timeout": null
+            }
+          },
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "city_arcade_query",
+    "command": "鞍山哪有鼓",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "forward": [
+            {
+              "type": "node",
+              "data": {
+                "user_id": "90000",
+                "nickname": "太鼓地图",
+                "content": "鞍山市哪有鼓\n共 1 家店铺。\n以下为分店铺地图卡片。"
+              }
+            },
+            {
+              "type": "node",
+              "data": {
+                "user_id": "90000",
+                "nickname": "1. 合成机厅｜2台｜国服｜4币/PC｜10:00-22:00",
+                "content": {
+                  "type": "json",
+                  "data": {
+                    "data": "{\"app\":\"com.tencent.map\",\"desc\":\"地图\",\"view\":\"LocationShare\",\"ver\":\"0.0.0.1\",\"prompt\":\"[应用]地图\",\"from\":1,\"meta\":{\"Location.Search\":{\"id\":\"\",\"name\":\"合成机厅\",\"address\":\"测试路 1 号\",\"lat\":\"41.1\",\"lng\":\"122.99\",\"from\":\"plusPanel\"}},\"config\":{\"forward\":1,\"autosize\":1,\"type\":\"card\"}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "tset_alias",
+    "command": "tset 新别名 to id10000",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "已添加别名：新别名 -> Fixture 00 (id10000)",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "tset_alias",
+    "command": "tset 测试别名 to id10000",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "该别名已存在，无需重复添加。",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "tsearch_switch",
+    "command": "tsearch off",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "太鼓搜歌功能已关闭（本群）",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "custom_title_add",
+    "command": "加称号 合成称号 to id10000",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "已添加自定义称号：合成称号\n获得条件：全连《Fixture 00》表谱\n称号固定显示为金色样式，不会随更高成绩自动升级。",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_title_query",
+    "command": "查称号 id10000",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": {
+            "type": "image",
+            "data": {
+              "file": {
+                "sha256": "e621c5a3b391b7228e5de096e1caf22f7574f07258f3fe98c925ae4935e50788",
+                "size": [
+                  460,
+                  372
+                ]
+              },
+              "type": null,
+              "cache": "true",
+              "proxy": "true",
+              "timeout": null
+            }
+          },
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "summary",
+    "command": "taiko2025",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": {
+            "type": "image",
+            "data": {
+              "file": {
+                "sha256": "05be34b1321b139b0945c0872e425b607b54ebf5c39a2f7c26361b6b7082a74b",
+                "size": [
+                  499,
+                  5194
+                ]
+              },
+              "type": null,
+              "cache": "true",
+              "proxy": "true",
+              "timeout": null
+            }
+          },
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "city_arcade_query",
+    "command": "鞍山哪有鼓",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "鞍山市哪有鼓\n共 1 家店铺。\n\n1. 合成机厅｜2台｜国服｜4币/PC｜10:00-22:00\n测试路 1 号（地铁 A 口）\n备注：测试机况"
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "tset_alias",
+    "command": "tset 新别名 to id10000",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": "已添加别名：新别名 -> Fixture 00 (id10000)",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "tset_alias",
+    "command": "tset 测试别名 to id10000",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": "该别名已存在，无需重复添加。",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "tsearch_switch",
+    "command": "tsearch off",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": "太鼓搜歌功能已关闭（本群）",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "custom_title_add",
+    "command": "加称号 合成称号 to id10000",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": "已添加自定义称号：合成称号\n获得条件：全连《Fixture 00》表谱\n称号固定显示为金色样式，不会随更高成绩自动升级。",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_title_query",
+    "command": "查称号 id10000",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "e621c5a3b391b7228e5de096e1caf22f7574f07258f3fe98c925ae4935e50788",
+                  "size": [
+                    460,
+                    372
+                  ]
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 id10000",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": {
+            "type": "image",
+            "data": {
+              "file": {
+                "sha256": "98c16ddbc8949e46a0b3dbef776ea2acd3944a7b987c180bd9e1ab4992ca9d4c",
+                "size": [
+                  1040,
+                  300
+                ]
+              },
+              "type": null,
+              "cache": "true",
+              "proxy": "true",
+              "timeout": null
+            }
+          },
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 id10000 表 广东",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：スーハー2000\n匹配度：0.40\n"
+              }
+            },
+            {
+              "type": "image",
+              "data": {
+                "file": {
+                  "sha256": "e92c0dd5f9b94ff597c9d19f90f777dae93c2462eccd6f96da0581be1652b3d4",
+                  "size": [
+                    1560,
+                    300
+                  ]
+                },
+                "type": null,
+                "cache": "true",
+                "proxy": "true",
+                "timeout": null
+              }
+            }
+          ],
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "歌曲别名为必填参数。示例：歌曲排行 歌名 困难 广东",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 id10000 里",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "该歌曲没有该难度。",
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 Fixture",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": "你要找的可能是：\nid10000 Fixture 00\nid10001 Fixture 01\nid10002 Fixture 02\nid10003 Fixture 03\nid10004 Fixture 04\nid10005 Fixture 05\nid10006 Fixture 06\nid10007 Fixture 07\nid10008 Fixture 08\nid10009 Fixture 09\nid10010 Fixture 10\nid10011 Fixture 11\nid10012 Fixture 12\nid10013 Fixture 13\nid10014 Fixture 14\nid10015 Fixture 15\nid10016 Fixture 16\nid10017 Fixture 17\nid10018 Fixture 18\nid10019 Fixture 19\nid10020 Fixture 20\nid10021 Fixture 21\nid10022 Fixture 22\nid10023 Fixture 23\nid10024 Fixture 24\nid10025 Fixture 25\nid10026 Fixture 26\nid10027 Fixture 27\nid10028 Fixture 28\nid10029 Fixture 29\nid10030 Fixture 30\nid10031 Fixture 31\nid10032 Fixture 32\nid10033 Fixture 33\nid10034 Fixture 34\nid10035 Fixture 35\nid10036 Fixture 36\nid10037 Fixture 37\nid10038 Fixture 38\nid10039 Fixture 39\nid10040 Fixture 40\nid10041 Fixture 41\nid10042 Fixture 42\nid10043 Fixture 43\nid10044 Fixture 44\nid10045 Fixture 45\nid10046 Fixture 46\nid10047 Fixture 47\nid10048 Fixture 48\nid10049 Fixture 49\nid10050 Fixture 50\nid10051 Fixture 51\nid10052 Fixture 52\nid10053 Fixture 53\nid10054 Fixture 54\nid10055 Fixture 55\nid10056 Fixture 56\nid10057 Fixture 57\nid10058 Fixture 58\nid10059 Fixture 59\nid10060 Fixture 60\nid10061 Fixture 61\nid10062 Fixture 62\nid10063 Fixture 63\nid10064 Fixture 64\n",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 Fixtur00",
+    "platform": "onebot",
+    "output": [
+      [
+        {
+          "message": {
+            "type": "image",
+            "data": {
+              "file": {
+                "sha256": "98c16ddbc8949e46a0b3dbef776ea2acd3944a7b987c180bd9e1ab4992ca9d4c",
+                "size": [
+                  1040,
+                  300
+                ]
+              },
+              "type": null,
+              "cache": "true",
+              "proxy": "true",
+              "timeout": null
+            }
+          },
+          "options": {
+            "reply_message": true
+          }
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 id10000",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "98c16ddbc8949e46a0b3dbef776ea2acd3944a7b987c180bd9e1ab4992ca9d4c",
+                  "size": [
+                    1040,
+                    300
+                  ]
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 id10000 表 广东",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "text",
+              "data": {
+                "text": "你要找的可能是：スーハー2000\n匹配度：0.40"
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "e92c0dd5f9b94ff597c9d19f90f777dae93c2462eccd6f96da0581be1652b3d4",
+                  "size": [
+                    1560,
+                    300
+                  ]
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": "歌曲别名为必填参数。示例：歌曲排行 歌名 困难 广东",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 id10000 里",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "markdown",
+              "data": {
+                "markdown": {
+                  "template_id": null,
+                  "custom_template_id": null,
+                  "params": null,
+                  "content": "该歌曲没有该难度。"
+                }
+              }
+            },
+            {
+              "type": "keyboard",
+              "data": {
+                "keyboard": {
+                  "id": null,
+                  "content": {
+                    "rows": [
+                      {
+                        "buttons": [
+                          {
+                            "id": "bind",
+                            "render_data": {
+                              "label": "绑定",
+                              "visited_label": "绑定",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定 你的鼓众广场id",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "bind_qq",
+                            "render_data": {
+                              "label": "旧绑定迁移",
+                              "visited_label": "旧绑定迁移",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "绑定QQ",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "update",
+                            "render_data": {
+                              "label": "更新广场",
+                              "visited_label": "更新广场",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "update_all",
+                            "render_data": {
+                              "label": "更新广场(全部)",
+                              "visited_label": "更新广场(全部)",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoupdate all",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "my_don",
+                            "render_data": {
+                              "label": "个人信息",
+                              "visited_label": "个人信息",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "我的小咚",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "tcloud",
+                            "render_data": {
+                              "label": "词云",
+                              "visited_label": "词云",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "太鼓词云",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "trend",
+                            "render_data": {
+                              "label": "查询我的近期走势",
+                              "visited_label": "查询我的近期走势",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikotrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "playtrend",
+                            "render_data": {
+                              "label": "查询曲数Rating曲线",
+                              "visited_label": "查询曲数Rating曲线",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikoplaytrend",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "buttons": [
+                          {
+                            "id": "taikob",
+                            "render_data": {
+                              "label": "查看rt",
+                              "visited_label": "查看rt",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          },
+                          {
+                            "id": "taikob_v1",
+                            "render_data": {
+                              "label": "查看rtv1",
+                              "visited_label": "查看rtv1",
+                              "style": 1
+                            },
+                            "action": {
+                              "type": 2,
+                              "permission": {
+                                "type": 2,
+                                "specify_role_ids": null,
+                                "specify_user_ids": null
+                              },
+                              "data": "taikob20 v1",
+                              "reply": null,
+                              "enter": null,
+                              "anchor": null,
+                              "unsupport_tips": "当前客户端暂不支持按钮快捷指令，请手动输入命令。",
+                              "click_limit": null,
+                              "at_bot_show_channel_list": null
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 Fixture",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": "你要找的可能是：\nid10000 Fixture 00\nid10001 Fixture 01\nid10002 Fixture 02\nid10003 Fixture 03\nid10004 Fixture 04\nid10005 Fixture 05\nid10006 Fixture 06\nid10007 Fixture 07\nid10008 Fixture 08\nid10009 Fixture 09\nid10010 Fixture 10\nid10011 Fixture 11\nid10012 Fixture 12\nid10013 Fixture 13\nid10014 Fixture 14\nid10015 Fixture 15\nid10016 Fixture 16\nid10017 Fixture 17\nid10018 Fixture 18\nid10019 Fixture 19\nid10020 Fixture 20\nid10021 Fixture 21\nid10022 Fixture 22\nid10023 Fixture 23\nid10024 Fixture 24\nid10025 Fixture 25\nid10026 Fixture 26\nid10027 Fixture 27\nid10028 Fixture 28\nid10029 Fixture 29\nid10030 Fixture 30\nid10031 Fixture 31\nid10032 Fixture 32\nid10033 Fixture 33\nid10034 Fixture 34\nid10035 Fixture 35\nid10036 Fixture 36\nid10037 Fixture 37\nid10038 Fixture 38\nid10039 Fixture 39\nid10040 Fixture 40\nid10041 Fixture 41\nid10042 Fixture 42\nid10043 Fixture 43\nid10044 Fixture 44\nid10045 Fixture 45\nid10046 Fixture 46\nid10047 Fixture 47\nid10048 Fixture 48\nid10049 Fixture 49\nid10050 Fixture 50\nid10051 Fixture 51\nid10052 Fixture 52\nid10053 Fixture 53\nid10054 Fixture 54\nid10055 Fixture 55\nid10056 Fixture 56\nid10057 Fixture 57\nid10058 Fixture 58\nid10059 Fixture 59\nid10060 Fixture 60\nid10061 Fixture 61\nid10062 Fixture 62\nid10063 Fixture 63\nid10064 Fixture 64\n",
+          "options": {}
+        }
+      ],
+      []
+    ]
+  },
+  {
+    "name": "song_rank",
+    "command": "歌曲排行 Fixtur00",
+    "platform": "qq",
+    "output": [
+      [
+        {
+          "message": [
+            {
+              "type": "reference",
+              "data": {
+                "reference": {
+                  "message_id": "fixture",
+                  "ignore_get_message_error": true
+                }
+              }
+            },
+            {
+              "type": "file_image",
+              "data": {
+                "content": {
+                  "sha256": "98c16ddbc8949e46a0b3dbef776ea2acd3944a7b987c180bd9e1ab4992ca9d4c",
+                  "size": [
+                    1040,
+                    300
+                  ]
+                },
+                "file_name": null
+              }
+            }
+          ],
+          "options": {}
+        }
+      ],
+      []
+    ]
+  }
+]

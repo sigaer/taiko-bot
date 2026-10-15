@@ -6,10 +6,8 @@ from typing import Dict, Any, Tuple, List, Optional
 from functools import lru_cache
 from PIL import Image, ImageDraw, ImageFont
 from .progress_catalog import load_active_song_ids
-from .twso import find_player
 from .score_calculator import compute_all_from_userdata
 import io
-from .draw_summary import render_taiko_2025_summary
 from .draw_dress import (
     build_dress_image,
     draw_achievement_overview,

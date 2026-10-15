@@ -1032,3 +1032,86 @@ def render_my_don_image(user_id, *, userdata, title_overrides=(), showcase_layou
     buf = BytesIO()
     final_img.save(buf, format="PNG")
     return buf.getvalue()
+
+ACH_BOX = (81, 1182, 418, 1367)
+
+ACH_ROW_Y_FRAC = [0.15, 0.39, 0.62, 0.87]
+
+ACH_COL_X_FRAC = [0.23, 0.55, 0.87]
+
+ACH_NUM_W_FRAC = 0.22
+
+ACH_NUM_H_FRAC = 0.18
+
+ACH_ROW1_X_FRAC = 0.87
+
+def _pick_achievement_bg(count_level: int) -> Optional[Path]:
+    level = max(1, min(5, int(count_level)))
+    path = TEMPLATES_DIR / f"bg_level_{level}_panel.png"
+    if path.exists():
+        return path
+    return None
+
+def draw_achievement_overview(
+    base: Image.Image,
+    draw: ImageDraw.ImageDraw,
+    userdata: Dict[str, Any],
+    sx: float,
+    sy: float,
+    font: ImageFont.ImageFont,
+    stroke_width: int,
+    fill: Tuple[int, int, int],
+    stroke_fill: Tuple[int, int, int],
+    offset_xy: Tuple[int, int] = (0, 0),
+) -> Tuple[int, int, int, int]:
+    ox, oy = offset_xy
+    ach = userdata.get("achievement", {}) or {}
+    ary_rank = ach.get("ary_score_rank_count", [0] * 7) or [0] * 7
+    ary_crown = ach.get("ary_crown_count", [0] * 3) or [0] * 3
+    count_level = _safe_int(ach.get("count_level", 1), 1)
+
+    ach_box_s = _offset_box(_scale_box(ACH_BOX, sx, sy), ox, oy)
+    ax1, ay1, ax2, ay2 = ach_box_s
+    aw, ah = (ax2 - ax1), (ay2 - ay1)
+
+    bg_path = _pick_achievement_bg(count_level)
+    if bg_path:
+        bg = Image.open(bg_path).convert("RGBA")
+        bg = bg.resize((aw, ah), Image.LANCZOS)
+        base.alpha_composite(bg, (ax1, ay1))
+
+    num_w = int(aw * ACH_NUM_W_FRAC)
+    num_h = int(ah * ACH_NUM_H_FRAC)
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[0])
+    x = ax1 + int(aw * ACH_ROW1_X_FRAC)
+    box = (x - num_w // 2, y - num_h // 2, x + num_w // 2, y + num_h // 2)
+    _draw_text_center(
+        draw, box, str(_safe_int(ary_rank[6])), font, fill, stroke_fill, stroke_width
+    )
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[1])
+    for i, v in enumerate(ary_rank[3:6]):
+        cx = ax1 + int(aw * ACH_COL_X_FRAC[i])
+        box = (cx - num_w // 2, y - num_h // 2, cx + num_w // 2, y + num_h // 2)
+        _draw_text_center(
+            draw, box, str(_safe_int(v)), font, fill, stroke_fill, stroke_width
+        )
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[2])
+    for i, v in enumerate(ary_rank[0:3]):
+        cx = ax1 + int(aw * ACH_COL_X_FRAC[i])
+        box = (cx - num_w // 2, y - num_h // 2, cx + num_w // 2, y + num_h // 2)
+        _draw_text_center(
+            draw, box, str(_safe_int(v)), font, fill, stroke_fill, stroke_width
+        )
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[3])
+    for i, v in enumerate(ary_crown[0:3]):
+        cx = ax1 + int(aw * ACH_COL_X_FRAC[i])
+        box = (cx - num_w // 2, y - num_h // 2, cx + num_w // 2, y + num_h // 2)
+        _draw_text_center(
+            draw, box, str(_safe_int(v)), font, fill, stroke_fill, stroke_width
+        )
+
+    return ach_box_s

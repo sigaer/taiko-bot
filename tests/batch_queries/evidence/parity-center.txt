@@ -1,0 +1,33 @@
+10-15 11:11:50 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/center-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+center 1 quick_actions_panel 快捷操作 PASS
+center 2 twso 查分 PASS
+center 3 quick_actions_panel 快捷操作 PASS
+center 4 twso 查分 PASS
+center 5 summary taiko2025 PASS
+center 6 city_arcade_query 鞍山哪有鼓 PASS
+center 7 tset_alias tset 新别名 to id10000 PASS
+center 8 tset_alias tset 测试别名 to id10000 PASS
+center 9 tsearch_switch tsearch off PASS
+center 10 custom_title_add 加称号 合成称号 to id10000 PASS
+center 11 song_title_query 查称号 id10000 PASS
+center 12 summary taiko2025 PASS
+center 13 city_arcade_query 鞍山哪有鼓 PASS
+center 14 tset_alias tset 新别名 to id10000 PASS
+center 15 tset_alias tset 测试别名 to id10000 PASS
+center 16 tsearch_switch tsearch off PASS
+center 17 custom_title_add 加称号 合成称号 to id10000 PASS
+center 18 song_title_query 查称号 id10000 PASS
+center 19 song_rank 歌曲排行 id10000 PASS
+center 20 song_rank 歌曲排行 id10000 表 广东 PASS
+center 21 song_rank 歌曲排行 PASS
+center 22 song_rank 歌曲排行 id10000 里 PASS
+center 23 song_rank 歌曲排行 Fixture PASS
+center 24 song_rank 歌曲排行 Fixtur00 PASS
+center 25 song_rank 歌曲排行 id10000 PASS
+center 26 song_rank 歌曲排行 id10000 表 广东 PASS
+center 27 song_rank 歌曲排行 PASS
+center 28 song_rank 歌曲排行 id10000 里 PASS
+center 29 song_rank 歌曲排行 Fixture PASS
+center 30 song_rank 歌曲排行 Fixtur00 PASS

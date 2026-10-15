@@ -1,0 +1,12 @@
+10-15 11:14:29 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/client-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+client full host load PASS; owned player matchers, zero migrated legacy entries
+........................                                                 [100%]
+=============================== warnings summary ===============================
+../client-env/lib/python3.11/site-packages/_pytest/config/__init__.py:1277
+  /var/tmp/taiko-query-management-20261015/client-env/lib/python3.11/site-packages/_pytest/config/__init__.py:1277: PytestAssertRewriteWarning: Module already imported so cannot be rewritten: anyio
+    self._mark_plugins_for_rewrite(hook)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+24 passed, 1 warning in 1.57s

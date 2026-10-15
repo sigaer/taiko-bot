@@ -1,0 +1,32 @@
+10-15 11:12:36 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/client-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+client 1 tset_alias tset wrong PASS
+client 2 tset_alias tset 测试别名 to id10000 PASS
+client 3 tset_alias tset 另一个 to Fixture PASS
+client 4 tset_alias tset 另一个 to 不存在歌曲 PASS
+client 5 tsearch_switch tsearch on PASS
+client 6 quick_actions_panel taiko帮助 PASS
+client 7 song_rank 歌曲排名 id10000 难度=4 地区=广东 PASS
+client 8 song_rank 排行歌曲 id10000 鬼 44 PASS
+client 9 song_rank 歌曲排行 id10000 广东 表 PASS
+client 10 song_rank 歌曲排行 id10000 松 PASS
+client 11 song_rank 歌曲排行 id10000 PASS
+client 12 city_arcade_query 鞍山哪有鼓 PASS
+client 13 tset_alias tset 失败别名 to id10000 PASS
+client 14 tset_alias tset 失败别名 to id10000 PASS
+client 15 tset_alias tset wrong PASS
+client 16 tset_alias tset 测试别名 to id10000 PASS
+client 17 tset_alias tset 另一个 to Fixture PASS
+client 18 tset_alias tset 另一个 to 不存在歌曲 PASS
+client 19 tsearch_switch tsearch on PASS
+client 20 quick_actions_panel taiko帮助 PASS
+client 21 song_rank 歌曲排名 id10000 难度=4 地区=广东 PASS
+client 22 song_rank 排行歌曲 id10000 鬼 44 PASS
+client 23 song_rank 歌曲排行 id10000 广东 表 PASS
+client 24 song_rank 歌曲排行 id10000 松 PASS
+client 25 song_rank 歌曲排行 id10000 PASS
+client 26 city_arcade_query 鞍山哪有鼓 PASS
+client 27 tset_alias tset 失败别名 to id10000 PASS
+client 28 tset_alias tset 失败别名 to id10000 PASS
+client 29 parameter/API/write/cache edges PASS

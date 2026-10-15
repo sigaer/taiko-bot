@@ -1,0 +1,6 @@
+10-15 11:12:47 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-query-management-20261015/center-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+/var/tmp/taiko-query-management-20261015/taiko/tests/batch_queries/events.py:55: DeprecationWarning: module 'sre_parse' is deprecated
+  return original_import(name,*args,**kwargs)
+center 110 security/statistics PASS; records 106

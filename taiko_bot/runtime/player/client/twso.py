@@ -1,3 +1,4 @@
+from ...public.config import root
 import json
 from pathlib import Path
 
@@ -8,6 +9,24 @@ from taiko_bot.settings import get_settings
 _SETTINGS = get_settings()
 TWSO_DATA_PATH = _SETTINGS.root_dir / "songs" / "twso_data.json"
 
+
+
+
+def find_player(taiko_no: str):
+    with TWSO_DATA_PATH.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    cn_data = [item for item in data if len(str(item.get("taiko_no", ""))) < 10]
+    cn_rank_map = {
+        str(item.get("taiko_no")): index + 1
+        for index, item in enumerate(cn_data)
+    }
+    for item in data:
+        if str(item.get("taiko_no")) == str(taiko_no):
+            result = dict(item)
+            if str(item.get("taiko_no")) in cn_rank_map:
+                result["cn_rank"] = cn_rank_map[str(item.get("taiko_no"))]
+            return result
+    return None
 
 def update_twso_data():
     proxies = {"http": "socks5://127.0.0.1:7890", "https": "socks5://127.0.0.1:7890"}
@@ -44,20 +63,3 @@ def update_twso_data():
         json.dumps(data, ensure_ascii=False, indent=4),
         encoding="utf-8",
     )
-
-
-def find_player(taiko_no: str):
-    with TWSO_DATA_PATH.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-    cn_data = [item for item in data if len(str(item.get("taiko_no", ""))) < 10]
-    cn_rank_map = {
-        str(item.get("taiko_no")): index + 1
-        for index, item in enumerate(cn_data)
-    }
-    for item in data:
-        if str(item.get("taiko_no")) == str(taiko_no):
-            result = dict(item)
-            if str(item.get("taiko_no")) in cn_rank_map:
-                result["cn_rank"] = cn_rank_map[str(item.get("taiko_no"))]
-            return result
-    return None

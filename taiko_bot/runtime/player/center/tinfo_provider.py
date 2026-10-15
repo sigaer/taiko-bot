@@ -80,7 +80,7 @@ class TinfoHostProvider:
             options["max_file_bytes"] = MAX_BYTES
         return PublicationStore(self._root, identity, **options)
 
-    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None, b30_command=None, trend_command=None):
+    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None, b30_command=None, trend_command=None, summary_command=False):
         rows, entry, observation = self._snapshot(actor, principal)
         self._initial = (actor, principal, observation)
         virtual = entry["current_slot"] == 0
@@ -124,6 +124,9 @@ class TinfoHostProvider:
                 try:
                     raw = view.current_raw()
                     current = json.loads(raw.decode("utf-8"))
+                    if summary_command:
+                        from datetime import datetime
+                        self.summary_utime = str(datetime.fromtimestamp(round(view.file_times("current")["ctime"])))
                 except Exception as error:
                     # Preserve tinfo's deferred renderer error priority. A query
                     # returning text does not start failing because current is absent.

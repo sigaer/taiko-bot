@@ -1,0 +1,43 @@
+{
+  "baselines": {
+    "taiko": "cb7a8c1",
+    "sakura": "4d6beda"
+  },
+  "version": "0.10.0",
+  "normal_parity": {
+    "center": 30,
+    "client": 26
+  },
+  "edges": {
+    "center": 43,
+    "client": 29
+  },
+  "security": {
+    "center": {
+      "cases": 110,
+      "records": 106
+    },
+    "client": {
+      "cases": 104,
+      "records": 97
+    }
+  },
+  "transactions": 8,
+  "units": {
+    "center": 104,
+    "client": 24,
+    "statistics_subtests": 264
+  },
+  "representative_regressions": 204,
+  "load_orders": 6,
+  "host_loads": 2,
+  "legacy_entries": 0,
+  "new_entries": {
+    "center": 9,
+    "client": 7
+  },
+  "io_violations": [],
+  "database": "isolated SQLite adapter with original MySQL statements; no real MySQL connection",
+  "sakura_runtime_net_deleted_lines": 4266,
+  "client_legacy_runtime_net_deleted_lines": 2508
+}

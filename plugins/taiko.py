@@ -4,9 +4,6 @@ from .utils.public_score_token import (
 )
 from .utils.taiko_db import get_taiko_db_connection
 from taiko_bot.merged_source_id import build_center_virtual_user_id
-from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
-from .utils.draw_summary import render_taiko_2025_summary
-from .utils.twso import find_player
 from .utils.song_visibility import (
     is_song_id_publicly_visible,
     is_song_publicly_visible,
@@ -18,16 +15,6 @@ from .utils.hiroba.credentials import (
     load_hiroba_credentials,
 )
 from .utils.hiroba.parser import parse_profile
-from .utils.arcade_map import (
-    CityShopQueryResult,
-    build_tencent_map_location_json,
-    format_city_shop_forward_nickname,
-    format_taiko_city_shop_entry,
-    format_taiko_city_shop_reply,
-    format_taiko_city_shop_summary,
-    query_taiko_shops_by_city,
-)
-from .utils.score_calculator import compute_all_from_userdata_records, getUtime
 import random
 import re
 import shlex
@@ -116,11 +103,8 @@ SONG_DATA_PATH = SONGS_DIR / "song_data.json"
 COVER_DIR = ASSETS_DIR / "cover"
 OSS_COVER_PREFIX = "oss://sigaer/cover"
 FONT_PATH = "assets/fonts/DDFont.ttf"
-SONG_RANK_FONT_PATH = "/usr/share/fonts/NotoSansCJKSC-Black.ttf"
 
 FUMENS_DIR = Path("assets") / "fumens"
-ALIAS_LOG_PATH = ROOT_DIR / "logs" / "alias_action_log.json"
-REGION_MAP_PATH = SONGS_DIR / "region_map.json"
 TAIKO_FORUM_BASE_URL = _SETTINGS.viewer_base_url
 DEVELOPER_QQ_EXPORT_DIR = ROOT_DIR / "output" / "developer_userdata_exports"
 HIROBA_SERVICE_TAIKO_NO = "862074224984"
@@ -134,7 +118,6 @@ MANUAL_SCORE_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
 
 
-CITY_ARCADE_QUERY_REGEX = re.compile(r"^(?P<city>.+?)(?:哪有鼓|哪里有鼓)\s*[？?]?$")
 UPDATE_COMMAND_PATTERN = re.compile(
     r"^(?:taikoupdate|更新广场)(?:(?:\s+|)(?P<show_all>all|全部|全量|-a|--all))?\s*$",
     flags=re.IGNORECASE,
@@ -208,44 +191,6 @@ def _is_update_typo_candidate_text(text: str) -> bool:
     return len(normalized) in (10, 11, 12)
 
 
-RANK_DIFF_INPUT_MAP = {
-    "简单": 1,
-    "梅": 1,
-    "一般": 2,
-    "竹": 2,
-    "困难": 3,
-    "松": 3,
-    "魔王": 4,
-    "鬼": 4,
-    "里魔王": 5,
-    "里谱": 5,
-    "里": 5,
-}
-RANK_DIFF_LABEL_MAP = {
-    1: "简单",
-    2: "一般",
-    3: "困难",
-    4: "魔王",
-    5: "里魔王",
-}
-RANK_DIFF_EN_MAP = {
-    "easy": 1,
-    "normal": 2,
-    "hard": 3,
-    "oni": 4,
-    "ura": 5,
-    "inner": 5,
-    "inneroni": 5,
-}
-REGION_SUFFIXES = [
-    "省",
-    "市",
-    "自治区",
-    "壮族自治区",
-    "回族自治区",
-    "维吾尔自治区",
-    "特别行政区",
-]
 DRAW_GUESS_DATA_DIR = ROOT_DIR / "data" / "draw_guess"
 DRAW_GUESS_IMAGE_DIR = DRAW_GUESS_DATA_DIR / "images"
 DRAW_GUESS_DB_PATH = DRAW_GUESS_DATA_DIR / "records.json"
@@ -385,48 +330,8 @@ async def _finish_text_reply(
     raise FinishedException
 
 
-def _resolve_onebot_forward_sender_id(bot: Bot, event: MessageEvent) -> int:
-    for candidate in (
-        getattr(bot, "self_id", None),
-        getattr(event, "self_id", None),
-        event.get_user_id() if hasattr(event, "get_user_id") else None,
-    ):
-        try:
-            return int(str(candidate or "").strip())
-        except Exception:
-            continue
-    return 10000
 
 
-def _build_city_arcade_forward_messages(
-    bot: Bot,
-    event: MessageEvent,
-    result: CityShopQueryResult,
-) -> list[MessageSegment]:
-    sender_id = _resolve_onebot_forward_sender_id(bot, event)
-    if not result.shops:
-        return []
-    nodes = [
-        MessageSegment.node_custom(
-            user_id=sender_id,
-            nickname="太鼓地图",
-            content=format_taiko_city_shop_summary(result),
-        )
-    ]
-    for index, shop in enumerate(result.shops, start=1):
-        map_json = build_tencent_map_location_json(shop)
-        if map_json:
-            content = MessageSegment.json(map_json)
-        else:
-            content = format_taiko_city_shop_entry(index, shop)
-        nodes.append(
-            MessageSegment.node_custom(
-                user_id=sender_id,
-                nickname=format_city_shop_forward_nickname(index, shop),
-                content=content,
-            )
-        )
-    return nodes
 
 
 async def _send_text_reply_without_finish(
@@ -459,33 +364,8 @@ async def _finish_image_reply(
     raise FinishedException
 
 
-async def _ensure_asset_resources_ready(
-    matcher: Matcher,
-    event: MessageEvent,
-    *resource_names: str,
-) -> bool:
-    ok, message = ensure_asset_resource_available(resource_names, _SETTINGS)
-    if ok:
-        return True
-    await _finish_text_reply(matcher, event, message)
-    return False
 
 
-def _to_jpeg_bytes(img_buf: bytes | BytesIO, quality: int = 85) -> bytes:
-    if isinstance(img_buf, BytesIO):
-        data = img_buf.getvalue()
-    else:
-        data = img_buf
-    img = Image.open(BytesIO(data))
-    if img.mode in ("RGBA", "LA"):
-        base = Image.new("RGB", img.size, (255, 255, 255))
-        base.paste(img, mask=img.split()[-1])
-        img = base
-    else:
-        img = img.convert("RGB")
-    out = BytesIO()
-    img.save(out, format="JPEG", quality=quality, optimize=True)
-    return out.getvalue()
 
 
 def load_song_data(*, include_hidden: bool = False):
@@ -571,181 +451,18 @@ def _apply_center_sync_result(payload: Dict[str, Any], *, fallback_source: str) 
     return decode_image_bytes(payload)
 
 
-def load_alias_data():
-    """读取 song_alias.json（dict 列表）"""
-    with open("songs/song_alias.json", "r", encoding="utf-8") as f:
-        return json.load(f)
 
 
-def load_region_map() -> Dict[str, int]:
-    with REGION_MAP_PATH.open("r", encoding="utf-8") as f:
-        return json.load(f)
 
 
-def _parse_rank_diff_token(token: str) -> Optional[int]:
-    t = token.strip()
-    if not t:
-        return None
-    if t in RANK_DIFF_INPUT_MAP:
-        return RANK_DIFF_INPUT_MAP[t]
-    t_lower = t.lower()
-    if t_lower in RANK_DIFF_EN_MAP:
-        return RANK_DIFF_EN_MAP[t_lower]
-    if t.isdigit():
-        v = int(t)
-        if 1 <= v <= 5:
-            return v
-    m = re.match(r"^(?:难度|等级|level|lv)\s*([1-5])$", t, flags=re.IGNORECASE)
-    if m:
-        return int(m.group(1))
-    m = re.match(r"^(?:难度|等级)\s*(.+)$", t)
-    if m:
-        suffix = m.group(1).strip()
-        if suffix in RANK_DIFF_INPUT_MAP:
-            return RANK_DIFF_INPUT_MAP[suffix]
-        if suffix.isdigit():
-            v = int(suffix)
-            if 1 <= v <= 5:
-                return v
-    return None
 
 
-def _normalize_region_token(
-    token: str, region_map: Dict[str, int], id_to_name: Dict[int, str]
-) -> Optional[Tuple[str, int]]:
-    t = token.strip().strip("，,。.;；")
-    if not t:
-        return None
-    if t in region_map:
-        return (t, region_map[t])
-    if t.isdigit():
-        rid = int(t)
-        if rid in id_to_name:
-            return (id_to_name[rid], rid)
-    for suf in REGION_SUFFIXES:
-        if t.endswith(suf):
-            base = t[: -len(suf)]
-            if base in region_map:
-                return (base, region_map[base])
-    return None
 
 
-def _parse_song_rank_args(
-    arg_str: str, region_map: Dict[str, int]
-) -> Tuple[str, Optional[int], Optional[int], Optional[str]]:
-    text = re.sub(r"\s+", " ", arg_str).strip()
-    if not text:
-        return "", None, None, None
-
-    tokens = text.split(" ")
-    id_to_name: Dict[int, str] = {}
-    for name, rid in region_map.items():
-        if rid not in id_to_name:
-            id_to_name[rid] = name
-
-    diff_id: Optional[int] = None
-    province_id: Optional[int] = None
-    province_name: Optional[str] = None
-    alias_tokens: List[str] = []
-
-    if len(tokens) > 1:
-        for tok in tokens:
-            if not tok:
-                continue
-            key_val = re.split(r"[=:：]", tok, maxsplit=1)
-            if len(key_val) == 2:
-                key, val = key_val[0].strip(), key_val[1].strip()
-                if key.lower() in ("难度", "等级", "level", "lv"):
-                    diff = _parse_rank_diff_token(val)
-                    if diff is not None and diff_id is None:
-                        diff_id = diff
-                        continue
-                if key.lower() in ("省份", "地区", "地域", "region"):
-                    region = _normalize_region_token(val, region_map, id_to_name)
-                    if region and province_id is None:
-                        province_name, province_id = region
-                        continue
-
-            if diff_id is None:
-                diff = _parse_rank_diff_token(tok)
-                if diff is not None:
-                    diff_id = diff
-                    continue
-            if province_id is None:
-                if tok in ("全国", "全服", "全区", "全国榜", "全服榜"):
-                    province_name = "全国"
-                    province_id = None
-                    continue
-                region = _normalize_region_token(tok, region_map, id_to_name)
-                if region:
-                    province_name, province_id = region
-                    continue
-            alias_tokens.append(tok)
-
-    parsed_any = diff_id is not None or province_name is not None
-    if alias_tokens:
-        alias = " ".join(alias_tokens).strip()
-    else:
-        alias = "" if parsed_any and len(tokens) > 1 else text
-
-    # 兼容无空格输入：从首尾提取难度/地区
-    remainder = alias
-    if remainder and (diff_id is None or province_id is None):
-        if province_id is None:
-            region_keys = sorted(region_map.keys(), key=len, reverse=True)
-            for key in region_keys:
-                if remainder.endswith(key) and len(remainder) > len(key):
-                    province_name = key
-                    province_id = region_map[key]
-                    remainder = remainder[: -len(key)].strip()
-                    break
-            if province_id is None:
-                for suf in REGION_SUFFIXES:
-                    if remainder.endswith(suf) and len(remainder) > len(suf):
-                        base = remainder[: -len(suf)].strip()
-                        if base in region_map:
-                            province_name = base
-                            province_id = region_map[base]
-                            remainder = remainder[: -len(suf)].strip()
-                            break
-        if diff_id is None:
-            diff_keys = sorted(RANK_DIFF_INPUT_MAP.keys(), key=len, reverse=True)
-            for key in diff_keys:
-                if remainder.endswith(key) and len(remainder) > len(key):
-                    diff_id = RANK_DIFF_INPUT_MAP[key]
-                    remainder = remainder[: -len(key)].strip()
-                    break
-            if diff_id is None:
-                for key in diff_keys:
-                    if remainder.startswith(key) and len(remainder) > len(key):
-                        diff_id = RANK_DIFF_INPUT_MAP[key]
-                        remainder = remainder[len(key) :].strip()
-                        break
-
-    alias = remainder or alias
-    return alias, diff_id, province_id, province_name
 
 
-def save_alias_data(data: List[Dict[str, Any]]) -> None:
-    with open("songs/song_alias.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def append_alias_log(entry: Dict[str, Any]) -> None:
-    ALIAS_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    if ALIAS_LOG_PATH.exists():
-        try:
-            with ALIAS_LOG_PATH.open("r", encoding="utf-8") as f:
-                data = json.load(f)
-            if not isinstance(data, list):
-                data = []
-        except Exception:
-            data = []
-    else:
-        data = []
-    data.append(entry)
-    with ALIAS_LOG_PATH.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
 def get_song_title_by_id(song_id: str) -> str:
@@ -756,12 +473,6 @@ def get_song_title_by_id(song_id: str) -> str:
     return ""
 
 
-def get_song_entry_by_id(song_id: str) -> Optional[Dict[str, Any]]:
-    data = load_song_data()
-    for item in data:
-        if str(item.get("id")) == str(song_id):
-            return item
-    return None
 
 
 def _upload_cover_to_oss(cover_path: Path) -> Tuple[bool, str]:
@@ -818,23 +529,6 @@ def _wrap_text(
     return lines
 
 
-def _truncate_text(
-    draw: ImageDraw.ImageDraw, text: str, font: ImageFont.ImageFont, max_w: int
-) -> str:
-    if draw.textlength(text, font=font) <= max_w:
-        return text
-    ell = "…"
-    if draw.textlength(ell, font=font) > max_w:
-        return ""
-    left, right = 0, len(text)
-    while left < right:
-        mid = (left + right) // 2
-        t = text[:mid] + ell
-        if draw.textlength(t, font=font) <= max_w:
-            left = mid + 1
-        else:
-            right = mid
-    return text[: right - 1] + ell if right > 0 else ell
 
 
 def render_draw_guess_list_image(
@@ -887,213 +581,7 @@ def render_draw_guess_list_image(
     return buf.getvalue()
 
 
-def render_ranking_image(
-    song_title: str,
-    sections: List[Tuple[str, Optional[List[Tuple[int, str, Optional[int]]]]]],
-    province_name: Optional[str] = None,
-    width: int = 1040,
-    padding: int = 28,
-    font_size: int = 22,
-    line_gap: int = 10,
-    bg_color: Tuple[int, int, int] = (244, 246, 249),
-    fg_color: Tuple[int, int, int] = (28, 32, 36),
-) -> bytes:
-    font = _load_alias_font(SONG_RANK_FONT_PATH, font_size)
-    title_font = _load_alias_font(SONG_RANK_FONT_PATH, font_size + 10)
-    section_font = _load_alias_font(SONG_RANK_FONT_PATH, font_size + 3)
-    header_font = _load_alias_font(SONG_RANK_FONT_PATH, font_size)
-    tmp = Image.new("RGBA", (width, 10), (*bg_color, 255))
-    draw = ImageDraw.Draw(tmp)
 
-    title = f"歌曲排行 {song_title}"
-    if province_name:
-        title += f"（{province_name}）"
-
-    title_lines = _wrap_text(draw, title, title_font, width - padding * 2)
-    title_h = int((font_size + 10) * 1.55) * len(title_lines)
-    section_h = int((font_size + 3) * 1.45)
-    row_h = int(font_size * 1.5)
-    rank_w = 52
-    score_w = 140
-    gap = 10
-    min_name_w = int(draw.textlength("测" * 5, font=font)) + 8
-    columns = max(1, len(sections))
-    col_gap = 32 if columns >= 4 else 28
-    min_col_width = rank_w + gap + score_w + gap + min_name_w
-    width = max(
-        width,
-        padding * 2 + columns * min_col_width + col_gap * (columns - 1),
-    )
-    col_width = int((width - padding * 2 - col_gap * (columns - 1)) / columns)
-
-    def section_height(rankings: Optional[List[Tuple[int, str, Optional[int]]]]) -> int:
-        row_count = 1
-        if rankings:
-            row_count = len(rankings)
-        return section_h + line_gap + row_h + line_gap + row_count * (row_h + line_gap)
-
-    rows: List[List[Tuple[str, Optional[List[Tuple[int, str, Optional[int]]]]]]] = []
-    for i in range(0, len(sections), columns):
-        rows.append(sections[i : i + columns])
-
-    height = padding * 2 + title_h + line_gap
-    for row in rows:
-        row_heights = [section_height(rankings) for _, rankings in row]
-        height += max(row_heights) + line_gap
-
-    img = Image.new("RGBA", (width, height), (*bg_color, 255))
-    draw = ImageDraw.Draw(img)
-
-    y = padding
-    for line in title_lines:
-        line_w = draw.textlength(line, font=title_font)
-        draw.text(((width - line_w) / 2, y), line, fill=fg_color, font=title_font)
-        y += int((font_size + 10) * 1.55)
-    y += line_gap
-
-    section_bg = (230, 235, 242)
-    row_alt = (236, 239, 244)
-    header_fg = (60, 66, 75)
-    line_color = (210, 214, 220)
-
-    for row in rows:
-        row_heights = [section_height(rankings) for _, rankings in row]
-        row_height = max(row_heights)
-        for col_idx, (diff_label, rankings) in enumerate(row):
-            x = padding + col_idx * (col_width + col_gap)
-            score_right = x + col_width
-            name_x = x + rank_w + gap
-            name_w = max(min_name_w, score_right - score_w - name_x - gap)
-
-            draw.rectangle([x, y, x + col_width, y + section_h], fill=section_bg)
-            section_text = f"{diff_label} Top20"
-            section_w = draw.textlength(section_text, font=section_font)
-            draw.text(
-                (x + (col_width - section_w) / 2, y + 2),
-                section_text,
-                fill=fg_color,
-                font=section_font,
-            )
-            y_section = y + section_h + line_gap
-
-            rank_text = "排名"
-            rank_text_w = draw.textlength(rank_text, font=header_font)
-            draw.text(
-                (x + (rank_w - rank_text_w) / 2, y_section),
-                rank_text,
-                fill=header_fg,
-                font=header_font,
-            )
-            name_text = "玩家"
-            name_text_w = draw.textlength(name_text, font=header_font)
-            draw.text(
-                (name_x + (name_w - name_text_w) / 2, y_section),
-                name_text,
-                fill=header_fg,
-                font=header_font,
-            )
-            score_text = "分数"
-            score_text_w = draw.textlength(score_text, font=header_font)
-            draw.text(
-                (score_right - score_w + (score_w - score_text_w) / 2, y_section),
-                score_text,
-                fill=header_fg,
-                font=header_font,
-            )
-            y_section += row_h + line_gap
-
-            data_rows: List[Tuple[Optional[int], str, Optional[int]]] = []
-            if rankings is None:
-                data_rows = [(None, "获取失败", None)]
-            elif not rankings:
-                data_rows = [(None, "暂无排行数据", None)]
-            else:
-                data_rows = rankings
-
-            for idx, row_item in enumerate(data_rows):
-                if idx % 2 == 0:
-                    draw.rectangle(
-                        [x, y_section - 2, x + col_width, y_section + row_h + 2],
-                        fill=row_alt,
-                    )
-                rank, name, score = row_item
-                rank_text = "--" if rank is None else str(rank)
-                rank_text_w = draw.textlength(rank_text, font=font)
-                draw.text(
-                    (x + (rank_w - rank_text_w) / 2, y_section),
-                    rank_text,
-                    fill=fg_color,
-                    font=font,
-                )
-
-                name_text = name or "未知"
-                name_disp = _truncate_text(draw, name_text, font, name_w)
-                name_disp_w = draw.textlength(name_disp, font=font)
-                draw.text(
-                    (name_x + (name_w - name_disp_w) / 2, y_section),
-                    name_disp,
-                    fill=fg_color,
-                    font=font,
-                )
-
-                score_text = "--" if score is None else f"{score:,}"
-                score_w_text = draw.textlength(score_text, font=font)
-                draw.text(
-                    (score_right - score_w + (score_w - score_w_text) / 2, y_section),
-                    score_text,
-                    fill=fg_color,
-                    font=font,
-                )
-                draw.line(
-                    [x, y_section + row_h + 2, x + col_width, y_section + row_h + 2],
-                    fill=line_color,
-                    width=1,
-                )
-                y_section += row_h + line_gap
-
-        y += row_height + line_gap
-
-    buf = BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
-    return buf.getvalue()
-
-def _extract_rankings(
-    payload: Dict[str, Any], diff_id: int
-) -> Optional[List[Tuple[int, str, Optional[int]]]]:
-    if "status" in payload and payload.get("status") not in (0, "0"):
-        return None
-    data = payload.get("data", {}) if isinstance(payload, dict) else {}
-    rank_data = data.get("rank_data", [])
-    if isinstance(rank_data, dict):
-        rank_data = [rank_data]
-    target = None
-    for item in rank_data:
-        if item.get("level") == diff_id:
-            target = item
-            break
-    if target is None and rank_data:
-        target = rank_data[0]
-    if not target:
-        return []
-
-    rankings = []
-    for entry in target.get("rankings", []) or []:
-        rank = entry.get("rank")
-        costume = entry.get("gameCostume") or {}
-        name = costume.get("mydon_name") or entry.get("mydon_name") or "未知"
-        score = entry.get("score")
-        try:
-            rank_val = int(rank)
-        except Exception:
-            continue
-        score_val = None
-        try:
-            score_val = int(score) if score is not None else None
-        except Exception:
-            score_val = None
-        rankings.append((rank_val, name, score_val))
-    rankings.sort(key=lambda x: x[0])
-    return rankings[:20]
 
 
 def song_id_exists(target_id: str) -> bool:
@@ -3817,17 +3305,8 @@ async def update_handle(event: MessageEvent):
     await _finish_text_reply(update, event, success_message, quick_actions=True)
 
 
-quick_actions_panel = on_regex(r"^/?快捷操作$", rule=taiko_rule)
 
 
-@quick_actions_panel.handle()
-async def quick_actions_panel_handle(event: MessageEvent):
-    await _finish_text_reply(
-        quick_actions_panel,
-        event,
-        "快捷操作面板：点击下方按钮可快速填入常用指令。",
-        quick_actions=True,
-    )
 
 
 developer_userdata = on_regex(
@@ -3946,125 +3425,12 @@ async def public_score_token_handle(event: MessageEvent):
     )
 
 
-song_rank = on_regex(r"^(歌曲排行|歌曲排名|排行歌曲)\s*(.*)$", rule=taiko_rule)
 
 
-@song_rank.handle()
-async def song_rank_handle(event: MessageEvent):
-    plain_text = extract_plain_text(event)
-    m = re.match(r"^(歌曲排行|歌曲排名|排行歌曲)\s*(.*)$", plain_text)
-    if not m:
-        await song_rank.finish("参数错误。示例：歌曲排行 歌名 困难 广东")
-
-    arg_str = (m.group(2) or "").strip()
-    if not arg_str:
-        await song_rank.finish("歌曲别名为必填参数。示例：歌曲排行 歌名 困难 广东")
-
-    region_map = load_region_map()
-    song_alias, diff_id, province_id, province_name = _parse_song_rank_args(
-        arg_str, region_map
-    )
-    if not song_alias:
-        await song_rank.finish("歌曲别名为必填参数。示例：歌曲排行 歌名 困难 广东")
-
-    music_list = queryMusic(song_alias)
-    if len(music_list) == 0:
-        await _finish_text_reply(song_rank, event, "未找到任何歌曲？")
-    fuzzy_hint = ""
-    if _is_fuzzy_query_result(music_list):
-        fuzzy_hint = _build_fuzzy_query_hint(music_list)
-    elif len(music_list) > 1:
-        msg = "你要找的可能是：\n"
-        for music in music_list:
-            msg += f"id{music[0]} {music[1]}\n"
-        await song_rank.finish(msg)
-
-    song_id = int(music_list[0][0])
-    song_title = music_list[0][1]
-    song_entry = get_song_entry_by_id(song_id)
-    if not song_entry:
-        await _finish_text_reply(song_rank, event, "歌曲信息缺失，无法查询排行。")
-
-    if diff_id is not None:
-        level_val = song_entry.get(f"level_{diff_id}")
-        if level_val is None or (
-            isinstance(level_val, str) and level_val.strip() == "-"
-        ):
-            await _finish_text_reply(song_rank, event, "该歌曲没有该难度。")
-        diff_ids = [diff_id]
-    else:
-        diff_ids = []
-        for i in range(1, 6):
-            level_val = song_entry.get(f"level_{i}")
-            if level_val is None:
-                continue
-            if isinstance(level_val, str) and level_val.strip() == "-":
-                continue
-            diff_ids.append(i)
-
-    if not diff_ids:
-        await _finish_text_reply(song_rank, event, "该歌曲没有可用难度。")
-
-    sections: List[Tuple[str, Optional[List[Tuple[int, str, Optional[int]]]]]] = []
-    ranking_error: Optional[str] = None
-    for d in diff_ids:
-        try:
-            payload = fetch_wahlap_ranking(song_id, d, province_id=province_id)
-            rankings = _extract_rankings(payload, d)
-        except ViewerClientError as exc:
-            if ranking_error is None:
-                ranking_error = str(exc)
-            rankings = None
-        sections.append((RANK_DIFF_LABEL_MAP.get(d, f"难度{d}"), rankings))
-    if ranking_error and all(rankings is None for _label, rankings in sections):
-        await _finish_text_reply(song_rank, event, ranking_error)
-
-    if not await _ensure_asset_resources_ready(song_rank, event, "core-assets", "cover-assets"):
-        return
-    img_buf = render_ranking_image(song_title, sections, province_name=province_name)
-    img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-    if fuzzy_hint:
-        await _finish_image_reply(song_rank, event, img_jpg, prefix_text=fuzzy_hint)
-    else:
-        await _finish_image_reply(song_rank, event, img_jpg)
 
 
-summary = on_fullmatch("taiko2025", rule=taiko_rule)
 
 
-@summary.handle()
-async def summary_handle(event: MessageEvent):
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await summary.finish(_taiko_bind_usage_message(event), reply_message=True)
-    if bind_target == 403:
-        await summary.finish("查不到呢，可能不给看哦~", reply_message=True)
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await summary.finish(str(bind_target["error"]), reply_message=True)
-    taiko_id = str(bind_target["user_id"])
-    try:
-        utime = getUtime(taiko_id)
-        t = utime.split("-")
-    except Exception as e:
-        await summary.finish("请更新数据后使用~", reply_message=True)
-    if int(t[0]) < 2026:
-        await summary.finish("请更新数据后使用~", reply_message=True)
-    elif int(t[1]) == 1 and int(t[2][:2]) < 3:
-        await summary.finish("请更新数据后使用~", reply_message=True)
-    if not await _ensure_asset_resources_ready(
-        summary,
-        event,
-        "core-assets",
-        "cover-assets",
-        "dress-assets",
-        "nameplate-assets",
-    ):
-        return
-    try:
-        result = render_taiko_2025_summary(taiko_id)
-    except Exception as e:
-        await summary.finish("查不到捏，怎么回事呢？", reply_message=True)
-    await summary.finish(MessageSegment.image(result), reply_message=True)
 
 
 # 查配置
@@ -4073,50 +3439,8 @@ async def summary_handle(event: MessageEvent):
 # 也支持仅输入 bpm / bpm区间 查歌名
 
 
-twso = on_regex(r"^/?查分$", rule=taiko_rule)
 
 
-@twso.handle()
-async def twso_handle(event: MessageEvent):
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(twso, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(twso, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(twso, event, str(bind_target["error"]))
-    user_id = str(bind_target["user_id"])
-    target_music_list = [1384, 354, 979, 1277, 412, 283, 194, 835, 518, 463]
-    target_title_list = [
-        "YOU're your HERO",
-        "埼玉2000",
-        "震天动地！太鼓之达人",
-        "打破空想",
-        "Night of Knights / Knight of Nights",
-        "初音未来的消失-剧场版-",
-        "Ignis Danse",
-        "What's in the box?",
-        "!!!Chaos Time!!!",
-        "幽玄之乱",
-    ]
-    result_list = []
-    for id in target_music_list:
-        res = get_score_by_id_and_level(id, user_id, 4)
-        result_list.append(res if res else None)
-    res = "目前课题曲最高分数一览：\n"
-    for index in range(0, 10):
-        res += f"{index+1}.{target_title_list[index]}：{result_list[index]['high_score'] if result_list[index] else '未游玩'}\n"
-    total_score = sum(list(map(lambda x: x["high_score"] if x else 0, result_list)))
-    res += f"总和：{total_score}\n\n"
-    try:
-        if isinstance(bind_target, dict) and bind_target.get("is_virtual"):
-            res += "u0 合并账户不提供活动排行信息"
-        else:
-            score_dict = find_player(str(user_id))
-            res += f"昵称：{score_dict['mydon_name']}\n全球排名：{score_dict['rank']}\n国内排名：{score_dict['cn_rank']}\n活动记录总分：{score_dict['total_score']}\n"
-    except Exception as e:
-        res += "未查询到参与活动信息，可能未报名活动"
-    await _finish_text_reply(twso, event, res)
 
 
 cover_cmd = on_regex(r"^cover\s*(\d+)", flags=re.IGNORECASE, rule=taiko_rule)
@@ -4224,36 +3548,8 @@ def file_to_bytesio(path: Path) -> BytesIO:
 # =========================
 # 指令：tsearch on/off
 # =========================
-tsearch_switch = on_regex(
-    r"^tsearch\s*(?P<state>on|off)$",
-    priority=10,
-    rule=taiko_rule,
-    permission=SUPERUSER | GROUP_ADMIN | GROUP_OWNER,
-    block=True,
-)
 
 
-@tsearch_switch.handle()
-async def _(matcher: Matcher, event: MessageEvent):
-    msg_text = extract_plain_text(event).strip().lower()
-    m = re.match(r"^tsearch\s*(?P<state>on|off)$", msg_text)
-    if not m:
-        await matcher.finish("格式不正确，应为：tsearch on/off")
-
-    group_id = getattr(event, "group_id", None)
-    if group_id is None:
-        await matcher.finish("该指令仅支持群聊使用。")
-
-    enabled = m.group("state") == "on"
-    group_key = get_group_key(event=event)
-    if group_key is None:
-        await matcher.finish("该指令仅支持群聊使用。")
-    changed = apply_switch(group_key, "tsearch", enabled)
-    state_text = "开启" if enabled else "关闭"
-    if changed:
-        await matcher.finish(f"tsearch 已{state_text}（本群）")
-    else:
-        await matcher.finish(f"tsearch 已是{state_text}状态（本群）")
 
 
 # =========================
@@ -4264,104 +3560,8 @@ async def _(matcher: Matcher, event: MessageEvent):
 # =========================
 # 指令：tset xxx to xxx
 # =========================
-tset_alias = on_regex(r"^tset\b.*", priority=10, rule=taiko_rule, block=True)
 
 
-@tset_alias.handle()
-async def _(matcher: Matcher, event: MessageEvent):
-    msg_text = extract_plain_text(event)
-    m = re.match(r"^tset\s*(.+?)\s*to\s*(.+)$", msg_text, flags=re.IGNORECASE)
-    if not m:
-        await matcher.finish("格式好像有问题捏，格式：tsetxxx to xxx")
-
-    alias_to_add = m.group(1).strip()
-    target_key = m.group(2).strip()
-    if not alias_to_add or not target_key:
-        await matcher.finish("格式好像有问题捏，格式：tsetxxx to xxx")
-
-    try:
-        results = queryMusic(target_key)
-    except Exception as e:
-        await matcher.finish(f"查询歌曲失败：{e}")
-
-    if not results:
-        await matcher.finish("未找到匹配的歌曲。")
-    if _is_fuzzy_query_result(results):
-        await matcher.finish(_build_fuzzy_query_hint(results))
-    if len(results) > 1:
-        msg = "你要找的可能是：\n"
-        for music in results:
-            msg += f"id{music[0]} {music[1]}\n"
-        await matcher.finish(msg.strip())
-
-    song_id = str(results[0][0])
-    song_title = results[0][1]
-    alias_data = load_alias_data()
-
-    target_entry = None
-    for entry in alias_data:
-        if str(entry.get("id")) == song_id:
-            target_entry = entry
-            break
-
-    if target_entry is None:
-        title = get_song_title_by_id(song_id) or song_title
-        target_entry = {"id": int(song_id), "aliases": [], "song_name_jp": title}
-        alias_data.append(target_entry)
-
-    aliases = target_entry.get("aliases") or []
-    existing_lower = {str(a).lower() for a in aliases}
-    base_title = (target_entry.get("song_name_jp") or song_title or "").lower()
-    if alias_to_add.lower() in existing_lower or alias_to_add.lower() == base_title:
-        await matcher.finish("该别名已存在，无需重复添加。")
-
-    aliases.append(alias_to_add)
-    target_entry["aliases"] = aliases
-
-    try:
-        save_alias_data(alias_data)
-    except Exception as e:
-        await matcher.finish(f"保存失败：{e}")
-
-    group_id = getattr(event, "group_id", None)
-    group_text = str(group_id) if group_id is not None else "private"
-
-    # 获取用户昵称和群昵称
-    user_nickname = ""
-    group_name = ""
-    if hasattr(event, "sender") and event.sender:
-        user_nickname = getattr(event.sender, "nickname", "") or ""
-    if group_id is not None:
-        group_name = getattr(event, "group_name", "") or ""
-
-    logger.info(
-        "alias_add user_id=%s user_nickname=%s group_id=%s group_name=%s song_id=%s alias=%s",
-        event.get_user_id(),
-        user_nickname,
-        group_text,
-        group_name,
-        song_id,
-        alias_to_add,
-    )
-
-    try:
-        append_alias_log(
-            {
-                "time": datetime.utcnow().isoformat(timespec="seconds") + "Z",
-                "action": "add_alias",
-                "user_id": event.get_user_id(),
-                "user_nickname": user_nickname,
-                "group_id": group_id,
-                "group_name": group_name,
-                "song_id": song_id,
-                "song_title": song_title,
-                "alias": alias_to_add,
-            }
-        )
-    except Exception as e:
-        logger.warning("alias_add_log_failed error=%s", e)
-
-    await matcher.finish(f"已添加别名：{alias_to_add} -> {song_title} (id{song_id})")
 
 
 # =========================
@@ -4372,65 +3572,8 @@ async def _(matcher: Matcher, event: MessageEvent):
 # =========================
 # 指令：xx哪有鼓
 # =========================
-city_arcade_query = on_regex(
-    CITY_ARCADE_QUERY_REGEX.pattern, priority=10, rule=taiko_rule, block=True
-)
 
 
-@city_arcade_query.handle()
-async def city_arcade_query_handle(bot: Bot, event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-
-    msg_text = extract_plain_text(event).strip()
-    match = CITY_ARCADE_QUERY_REGEX.fullmatch(msg_text)
-    if not match:
-        await _finish_text_reply(
-            city_arcade_query,
-            event,
-            "格式错误，请直接发送“鞍山哪有鼓”这类指令。",
-        )
-        return
-
-    city_name = match.group("city").strip()
-    try:
-        result = await query_taiko_shops_by_city(city_name)
-    except ValueError as exc:
-        await _finish_text_reply(city_arcade_query, event, str(exc))
-        return
-    except RuntimeError as exc:
-        await _finish_text_reply(city_arcade_query, event, str(exc))
-        return
-    except Exception:
-        logger.exception("query taiko city shops failed: city=%s", city_name)
-        await _finish_text_reply(
-            city_arcade_query,
-            event,
-            "查询失败，鼓众地图可能暂时不可用，请稍后再试。",
-        )
-        return
-
-    reply_text = format_taiko_city_shop_reply(result)
-    if not is_qq_official_event(event):
-        try:
-            forward_messages = _build_city_arcade_forward_messages(
-                bot,
-                event,
-                result,
-            )
-            if forward_messages and await send_onebot_forward_messages(
-                city_arcade_query,
-                bot,
-                event,
-                forward_messages,
-            ):
-                return
-        except Exception:
-            logger.exception(
-                "send city arcade forward reply failed: city=%s", city_name
-            )
-
-    await _finish_text_reply(city_arcade_query, event, reply_text)
 
 
 # =========================
