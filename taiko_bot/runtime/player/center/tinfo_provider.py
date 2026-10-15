@@ -80,7 +80,7 @@ class TinfoHostProvider:
             options["max_file_bytes"] = MAX_BYTES
         return PublicationStore(self._root, identity, **options)
 
-    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None, b30_command=None):
+    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None, b30_command=None, trend_command=None):
         rows, entry, observation = self._snapshot(actor, principal)
         self._initial = (actor, principal, observation)
         virtual = entry["current_slot"] == 0
@@ -161,12 +161,15 @@ class TinfoHostProvider:
                         # Preserve B30 Application error mapping at its render branch.
                         self.b30_preparation_error = error
                         history = ()
+                if trend_command is not None:
+                    from .trend_history import capture
+                    history = capture(self, view, store, trend_command)
                 publication = view.publication
                 provenance = Provenance(
                     "native-publication" if publication else "native-legacy",
                     _digest(publication) if publication else sha256(raw).hexdigest(),
                     None, expected, ids, profile)
-                if include_history or b30_command is not None:
+                if include_history or b30_command is not None or trend_command is not None:
                     from dataclasses import replace
                     observation_id = _digest({'current': provenance.current_view, 'history': history})
                     provenance = replace(provenance, current_view=observation_id, history_view=observation_id)
@@ -177,3 +180,6 @@ class TinfoHostProvider:
 
     def prepare_b30(self, actor, principal, command):
         return self.prepare(actor,principal,b30_command=command)
+
+    def prepare_trend(self, actor, principal, command):
+        return self.prepare(actor, principal, trend_command=command)

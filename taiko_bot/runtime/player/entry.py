@@ -111,3 +111,4 @@ from . import recommendation
 from . import progress
 
 from . import b30
+from . import trend  # noqa: E402,F401

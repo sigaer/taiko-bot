@@ -101,3 +101,6 @@ class TinfoHostProvider:
             self.b30_inputs['daily_points']=build_daily_rating_points(private.authorized_target.user_id,N,
                 json_path=self.settings.root_dir/'songs/rating_structured_with_ids.json',history_snapshots=thaw(private.history) or ())
         return private
+
+    def prepare_trend(self, actor, principal, command):
+        return self.prepare(actor, principal, include_history=True)

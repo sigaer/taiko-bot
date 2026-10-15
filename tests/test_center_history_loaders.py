@@ -90,9 +90,9 @@ def test_native_trend_and_previous_loaders_match_frozen_disk_order_and_delta_pro
     expected_songs = update["_load_previous_song_map"](1001)
     expected_dojo = update["_load_previous_dojo_state"](1001)
     calls = answer_history(monkeypatch, cfg, raw)
-    current_trend = importlib.import_module("plugins.utils.score_calculator")
+    current_trend = importlib.import_module("taiko_bot.runtime.player.client.trend_support.score_calculator")
     current_update = importlib.import_module("plugins.utils.draw_dress")
-    assert current_trend.load_user_snapshots(1001) == expected_trend
+    assert list(current_trend.iter_user_snapshots(1001, provider.ensure_userdata_history_available("1001", settings=cfg))) == expected_trend
     assert current_update._load_previous_song_map(1001) == expected_songs
     assert current_update._load_previous_dojo_state(1001) == expected_dojo
     assert len(calls) == 3 and all(request.url.params.get("format") == "raw-v1" for request in calls)
@@ -138,22 +138,22 @@ def test_blank_meta_timestamp_keeps_filename_microseconds_and_unknown_mtime(cfg,
     raw = [{"fileName": "data_20250101_000000_000001.json", "capturedAt": "", "payload": {"profile": {}, "achievement": {}, "songs": []}},
            {"fileName": "data_unknown.json", "fileMtime": 1735689600.375, "capturedAt": "wrong", "payload": {"_meta": {"full": False}, "songs": []}}]
     calls = answer_history(monkeypatch, cfg, raw)
-    from plugins.utils.score_calculator import load_user_snapshots
-    points = load_user_snapshots(1001)
+    from taiko_bot.runtime.player.client.trend_support.score_calculator import iter_user_snapshots
+    points = list(iter_user_snapshots(1001, provider.ensure_userdata_history_available("1001", settings=cfg)))
     assert [point[0] for point in points] == [datetime.datetime(2025, 1, 1, microsecond=1), datetime.datetime.fromtimestamp(1735689600.375)]
     assert len(calls) == 1
 
 
 def test_explicit_legacy_history_still_uses_captured_at_profile():
-    from plugins.utils.score_calculator import load_user_snapshots
+    from taiko_bot.runtime.player.client.trend_support.score_calculator import iter_user_snapshots
     payload = {"songs": [], "unknown": 1}
-    assert load_user_snapshots(1001, [{"capturedAt": "2025-01-02 00:00:00", "payload": payload}, {"capturedAt": "invalid", "payload": {}}]) == [(datetime.datetime(2025, 1, 2), payload)]
+    assert list(iter_user_snapshots(1001, [{"capturedAt": "2025-01-02 00:00:00", "payload": payload}, {"capturedAt": "invalid", "payload": {}}])) == [(datetime.datetime(2025, 1, 2), payload)]
 
 
 @pytest.mark.parametrize("name", ["build_daily_rating_points", "build_playcount_rating_points"])
 def test_streamed_trend_aggregation_matches_frozen_flow_with_decreasing_and_equal_counts(history, cfg, monkeypatch, name):
     root, directory, raw = history
-    from plugins.utils import score_calculator as current
+    from taiko_bot.runtime.player.client.trend_support import score_calculator as current
     trend, update, dani = oracles(root)
     # Domain calculations have separate Core Goldens. Here deterministic,
     # nonempty values isolate history aggregation, day selection and count gaps.
@@ -168,4 +168,4 @@ def test_streamed_trend_aggregation_matches_frozen_flow_with_decreasing_and_equa
     expected = old(1001)
     assert expected
     calls = answer_history(monkeypatch, cfg, raw)
-    assert getattr(current, name)(1001) == expected and len(calls) == 1
+    assert getattr(current, name)(1001, history_snapshots=provider.ensure_userdata_history_available("1001", settings=cfg)) == expected and len(calls) == 1

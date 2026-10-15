@@ -71,17 +71,21 @@ assert external_first is not None and len(external_first.matcher) == 9
 assert "plugins.taiko" not in sys.modules
 assert not any(name.startswith("plugins.utils") for name in sys.modules)
 player = nonebot.load_plugin("taiko_bot.runtime.player.entry")
-assert player is not None and len(player.matcher) == 4
+assert player is not None and len(player.matcher) == 6
 plugin = nonebot.load_plugin("plugins.taiko")
 assert plugin is not None, "Installed plugin failed to load"
 assert not hasattr(plugin.module, 'taikorec')
 assert not hasattr(plugin.module, 'matcher')
 assert not hasattr(plugin.module, 'taikob')
+assert not hasattr(plugin.module, 'trend')
+assert not hasattr(plugin.module, 'playtrend')
 assert player.module.b30.taikob in player.matcher
+assert player.module.trend.trend in player.matcher
+assert player.module.trend.playtrend in player.matcher
 assert player.module.progress.matcher in player.matcher
 assert player.module.recommendation.taikorec in player.matcher
 if a.load_only:
-    print(a.host, 'full host load PASS; one owned taikorec and progress matcher, zero legacy entries')
+    print(a.host, 'full host load PASS; six owned player matchers, zero migrated legacy entries')
     raise SystemExit(0)
 module = plugin.module
 from importlib.metadata import version

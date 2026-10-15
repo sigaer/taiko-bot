@@ -35,7 +35,7 @@ from .utils.arcade_map import (
     format_taiko_city_shop_summary,
     query_taiko_shops_by_city,
 )
-from .utils.score_calculator import compute_all_from_userdata_records, getUtime, generate_rating_trend_image, generate_rating_playcount_image
+from .utils.score_calculator import compute_all_from_userdata_records, getUtime
 import random
 import re
 import shlex
@@ -67,7 +67,6 @@ from taiko_bot.manual_account import ManualAccountApiError, call_manual_account_
 from taiko_bot.public_data import ensure_asset_resource_available
 from taiko_bot.userdata_provider import (
     UserdataProviderError,
-    ensure_userdata_history_available,
     ensure_userdata_view_available,
     ensure_userdata_available,
     update_userdata_cache_from_payload,
@@ -141,43 +140,8 @@ BIND_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 MANUAL_SCORE_DELETE_CONFIRM_SESSIONS: Dict[str, Dict[str, Any]] = {}
 TAIKO_MULTI_BIND_PATH = ROOT_DIR / "data" / "taiko_multi_bind.json"
-TREND_DIM_ALIASES = {
-    "rating": "综合Rating",
-    "综合": "综合Rating",
-    "总合": "综合Rating",
-    "综合rating": "综合Rating",
-    "ra": "综合Rating",
-    "大歌": "大歌力",
-    "大歌力": "大歌力",
-    "big_song": "大歌力",
-    "daigouryoku": "大歌力",
-    "体力": "体力",
-    "stamina": "体力",
-    "高速": "高速处理",
-    "高速处理": "高速处理",
-    "speed": "高速处理",
-    "精度": "精度力",
-    "准度": "精度力",
-    "良率": "精度力",
-    "精度力": "精度力",
-    "accuracy": "精度力",
-    "accuracy_power": "精度力",
-    "节奏": "节奏处理",
-    "节奏处理": "节奏处理",
-    "rhythm": "节奏处理",
-    "复合": "复合处理",
-    "复合处理": "复合处理",
-    "complex": "复合处理",
-    "complex_proc": "复合处理",
-}
-TREND_USAGE_MESSAGE = (
-    "参数错误。示例：taikotrend 20 30 / taikotrend 体力 / "
-    "taikotrend --dim 精度 20 / taikotrend -a / taikotrend -b"
-)
-PLAYTREND_USAGE_MESSAGE = (
-    "参数错误。示例：taikoplaytrend 20 80 / taikoplaytrend 体力 / "
-    "taikoplaytrend --dim 精度 20 / taikoplaytrend -a / taikoplaytrend -b"
-)
+
+
 CITY_ARCADE_QUERY_REGEX = re.compile(r"^(?P<city>.+?)(?:哪有鼓|哪里有鼓)\s*[？?]?$")
 UPDATE_COMMAND_PATTERN = re.compile(
     r"^(?:taikoupdate|更新广场)(?:(?:\s+|)(?P<show_all>all|全部|全量|-a|--all))?\s*$",
@@ -238,8 +202,6 @@ def _normalize_slash_command_text(text: str) -> str:
     return normalized[1:].lstrip() if normalized.startswith("/") else normalized
 
 
-
-
 def _should_trigger_tcloud_command(text: str) -> bool:
     normalized = _normalize_slash_command_text(text)
     return bool(TCLOUD_COMMAND_PATTERN.match(normalized))
@@ -260,144 +222,6 @@ def _should_trigger_update_command(text: str) -> bool:
 def _is_update_typo_candidate_text(text: str) -> bool:
     normalized = _normalize_update_command_text(str(text or "").strip())
     return len(normalized) in (10, 11, 12)
-
-
-def _normalize_trend_dim_token(token: str) -> str:
-    return re.sub(r"\s+", "", str(token or "").strip().lower())
-
-
-def _resolve_trend_dim(token: str) -> Optional[str]:
-    return TREND_DIM_ALIASES.get(_normalize_trend_dim_token(token))
-
-
-def _parse_trend_args(arg_text: str) -> Dict[str, Any]:
-    arg_text = (arg_text or "").strip()
-    bar_mode = bool(
-        re.search(r"(?:-b|--bar|bar|柱状图|柱状)", arg_text, flags=re.IGNORECASE)
-    )
-    show_all = bool(re.search(r"(?:-a|--all)", arg_text, flags=re.IGNORECASE))
-
-    selected_dim: Optional[str] = None
-    dim_flag_match = re.search(
-        r"(?:^|\s)(?:-d|--dim|维度)(?:\s+|=)(\S+)",
-        arg_text,
-        flags=re.IGNORECASE,
-    )
-    if dim_flag_match:
-        selected_dim = _resolve_trend_dim(dim_flag_match.group(1))
-        if not selected_dim:
-            raise ValueError(
-                "维度不支持。可用：综合、大歌力、体力、高速处理、精度力、节奏处理、复合处理"
-            )
-
-    tokens = re.split(r"\s+", arg_text) if arg_text else []
-    unknown_tokens: List[str] = []
-    for token in tokens:
-        if re.fullmatch(r"\d+", token):
-            continue
-        if re.fullmatch(
-            r"(?:-a|--all|-b|--bar|bar|柱状图|柱状)",
-            token,
-            flags=re.IGNORECASE,
-        ):
-            continue
-        if re.fullmatch(r"(?:-d|--dim|维度)", token, flags=re.IGNORECASE):
-            continue
-        if token.startswith(("--dim=", "-d=", "维度=")):
-            continue
-
-        resolved_dim = _resolve_trend_dim(token)
-        if resolved_dim:
-            if selected_dim is None:
-                selected_dim = resolved_dim
-            continue
-        unknown_tokens.append(token)
-
-    if unknown_tokens:
-        raise ValueError(TREND_USAGE_MESSAGE)
-
-    nums = [int(x) for x in re.findall(r"\d+", arg_text)]
-    N = nums[0] if len(nums) > 0 else 20
-    max_days = nums[1] if len(nums) > 1 else 30
-    if N < 1 or N > 50:
-        raise ValueError("N范围为 1-50")
-    if max_days < 1 or max_days > 365:
-        raise ValueError("天数范围为 1-365")
-
-    return {
-        "N": N,
-        "max_days": max_days,
-        "bar_mode": bar_mode,
-        "show_all": show_all,
-        "selected_dim": selected_dim,
-    }
-
-
-def _parse_playtrend_args(arg_text: str) -> Dict[str, Any]:
-    arg_text = (arg_text or "").strip()
-    bar_mode = bool(
-        re.search(r"(?:-b|--bar|bar|柱状图|柱状)", arg_text, flags=re.IGNORECASE)
-    )
-    show_all = bool(re.search(r"(?:-a|--all)", arg_text, flags=re.IGNORECASE))
-
-    selected_dim: Optional[str] = None
-    dim_flag_match = re.search(
-        r"(?:^|\s)(?:-d|--dim|维度)(?:\s+|=)(\S+)",
-        arg_text,
-        flags=re.IGNORECASE,
-    )
-    if dim_flag_match:
-        selected_dim = _resolve_trend_dim(dim_flag_match.group(1))
-        if not selected_dim:
-            raise ValueError(
-                "维度不支持。可用：综合、大歌力、体力、高速处理、精度力、节奏处理、复合处理"
-            )
-
-    tokens = re.split(r"\s+", arg_text) if arg_text else []
-    unknown_tokens: List[str] = []
-    for token in tokens:
-        if re.fullmatch(r"\d+", token):
-            continue
-        if re.fullmatch(
-            r"(?:-a|--all|-b|--bar|bar|柱状图|柱状)",
-            token,
-            flags=re.IGNORECASE,
-        ):
-            continue
-        if re.fullmatch(r"(?:-d|--dim|维度)", token, flags=re.IGNORECASE):
-            continue
-        if token.startswith(("--dim=", "-d=", "维度=")):
-            continue
-
-        resolved_dim = _resolve_trend_dim(token)
-        if resolved_dim:
-            if selected_dim is None:
-                selected_dim = resolved_dim
-            continue
-        unknown_tokens.append(token)
-
-    if unknown_tokens:
-        raise ValueError(PLAYTREND_USAGE_MESSAGE)
-
-    nums = [int(x) for x in re.findall(r"\d+", arg_text)]
-    N = nums[0] if len(nums) > 0 else 20
-    max_points = nums[1] if len(nums) > 1 else 80
-    if N < 1 or N > 50:
-        raise ValueError("N范围为 1-50")
-    if max_points < 1 or max_points > 500:
-        raise ValueError("曲数点数范围为 1-500")
-
-    return {
-        "N": N,
-        "max_points": max_points,
-        "bar_mode": bar_mode,
-        "show_all": show_all,
-        "selected_dim": selected_dim,
-    }
-
-
-
-
 
 
 RANK_DIFF_INPUT_MAP = {
@@ -536,10 +360,6 @@ def _is_qq_official_unsupported_command(event: MessageEvent) -> bool:
 
 def _is_qq_official_event(event: MessageEvent) -> bool:
     return is_qq_official_event(event)
-
-
-
-
 
 
 def _is_private_message_event(event: MessageEvent) -> bool:
@@ -708,14 +528,6 @@ def load_song_data(*, include_hidden: bool = False):
         for item in payload
         if isinstance(item, dict) and is_song_publicly_visible(item)
     ]
-
-
-
-
-
-
-
-
 
 
 def _to_int(value: Any, default: int = 0) -> int:
@@ -1361,8 +1173,6 @@ def _truncate_text(
     return text[: right - 1] + ell if right > 0 else ell
 
 
-
-
 def render_draw_guess_list_image(
     header: str,
     lines: List[str],
@@ -1630,8 +1440,6 @@ def song_id_exists(target_id: str) -> bool:
         if str(item.get("id")) == target_id:
             return True
     return False
-
-
 
 
 def _normalize_identity_key(identity_key: str) -> str:
@@ -2632,8 +2440,6 @@ def queryMusic(
     return results
 
 
-
-
 def _is_fuzzy_query_result(results: List[List[Any]]) -> bool:
     return (
         bool(results)
@@ -2647,8 +2453,6 @@ def _build_fuzzy_query_hint(results: List[List[Any]]) -> str:
     title = results[0][1]
     ratio = float(results[0][2]) / 100.0
     return f"你要找的可能是：{title}\n匹配度：{ratio:.2f}"
-
-
 
 
 def _now_ts() -> int:
@@ -4478,98 +4282,6 @@ async def public_score_token_handle(event: MessageEvent):
     )
 
 
-trend = on_regex(
-    r"^/?(taikotrend|rating走势)\s*(.*)$", rule=taiko_rule, flags=re.IGNORECASE
-)
-
-
-@trend.handle()
-async def trend_handle(event: MessageEvent):
-    plain_text = extract_plain_text(event)
-    raw_msg = str(event.get_message()).strip()
-    m = re.match(r"^/?(taikotrend|rating走势)\s*(.*)$", plain_text, flags=re.IGNORECASE)
-    if not m:
-        await trend.finish(TREND_USAGE_MESSAGE)
-    arg_text = (m.group(2) or "").strip()
-    try:
-        trend_args = _parse_trend_args(arg_text)
-    except ValueError as error:
-        await trend.finish(str(error))
-
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(trend, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(trend, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(trend, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(trend, event, "core-assets"):
-        return
-    user_id = str(bind_target["user_id"])
-    history_snapshots = ensure_userdata_history_available(user_id, settings=_SETTINGS)
-    img_buf = generate_rating_trend_image(
-        user_id,
-        history_snapshots=history_snapshots,
-        **trend_args,
-    )
-    if not img_buf:
-        await _finish_text_reply(
-            trend, event, "暂无历史快照，请多次使用“taikoupdate”后再试"
-        )
-    img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-    await _finish_image_reply(trend, event, img_jpg)
-
-
-playtrend = on_regex(
-    r"^/?(taikoplaytrend|rating场次|rating游玩)\s*(.*)$",
-    rule=taiko_rule,
-    flags=re.IGNORECASE,
-)
-
-
-@playtrend.handle()
-async def playtrend_handle(event: MessageEvent):
-    plain_text = extract_plain_text(event)
-    m = re.match(
-        r"^/?(taikoplaytrend|rating场次|rating游玩)\s*(.*)$",
-        plain_text,
-        flags=re.IGNORECASE,
-    )
-    if not m:
-        await playtrend.finish(PLAYTREND_USAGE_MESSAGE)
-    arg_text = (m.group(2) or "").strip()
-    try:
-        playtrend_args = _parse_playtrend_args(arg_text)
-    except ValueError as error:
-        await playtrend.finish(str(error))
-
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(playtrend, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(playtrend, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(playtrend, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(playtrend, event, "core-assets"):
-        return
-    user_id = str(bind_target["user_id"])
-    history_snapshots = ensure_userdata_history_available(user_id, settings=_SETTINGS)
-    img_buf = generate_rating_playcount_image(
-        user_id,
-        history_snapshots=history_snapshots,
-        **playtrend_args,
-    )
-    if not img_buf:
-        await _finish_text_reply(
-            playtrend,
-            event,
-            "暂无历史快照，请多次使用“taikoupdate”后再试（曲线按总曲数展示，"
-            "两次更新之间的多场游玩会合并为一个点）",
-        )
-    img_jpg = _to_jpeg_bytes(img_buf, quality=85)
-    await _finish_image_reply(playtrend, event, img_jpg)
-
-
 song_rank = on_regex(r"^(歌曲排行|歌曲排名|排行歌曲)\s*(.*)$", rule=taiko_rule)
 
 
@@ -4854,35 +4566,10 @@ async def tcloud_handle(event: MessageEvent):
     )
 
 
-
-
-
-
-
-
-
-
-
-
 # 查配置
 # [n分音符] 配置 [bpm] [难度]
 # 若省略分音符，则默认按 16 分音符处理
 # 也支持仅输入 bpm / bpm区间 查歌名
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 twso = on_regex(r"^/?查分$", rule=taiko_rule)
@@ -4929,17 +4616,6 @@ async def twso_handle(event: MessageEvent):
     except Exception as e:
         res += "未查询到参与活动信息，可能未报名活动"
     await _finish_text_reply(twso, event, res)
-
-
-
-
-
-
-
-
-
-
-
 
 
 # ========== NoneBot 命令 ==========
@@ -5168,8 +4844,6 @@ async def handle_cover(bot: Bot, event: Event, reg_group=RegexGroup()):
 # taikorec stamina 15
 
 
-
-
 # ================
 # 工具函数
 # ================
@@ -5184,10 +4858,6 @@ def file_to_bytesio(path: Path) -> BytesIO:
         bio.write(f.read())
     bio.seek(0)
     return bio
-
-
-
-
 
 
 # =========================
@@ -5228,8 +4898,6 @@ async def _(matcher: Matcher, event: MessageEvent):
 # =========================
 # 指令：xx有什么别名
 # =========================
-
-
 
 
 # =========================
@@ -5335,21 +5003,9 @@ async def _(matcher: Matcher, event: MessageEvent):
     await matcher.finish(f"已添加别名：{alias_to_add} -> {song_title} (id{song_id})")
 
 
-
-
-
-
-
-
 # =========================
 # 指令：歌曲分类位序
 # =========================
-
-
-
-
-
-
 
 
 # =========================
@@ -5423,15 +5079,11 @@ async def city_arcade_query_handle(bot: Bot, event: MessageEvent):
 # 这里用正则捕获 xx
 
 
-
-
 # =========================
 # 指令 2：里/鬼/表/松/竹/梅 idxxxx
 # =========================
 # 允许：里id1234 / 里 id1234 / 里 1234 / 里  id1234
 # 也允许：鬼id0001、表 999、松 id12
-
-
 
 
 # =========================
