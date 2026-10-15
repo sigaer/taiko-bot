@@ -104,3 +104,6 @@ class TinfoHostProvider:
 
     def prepare_trend(self, actor, principal, command):
         return self.prepare(actor, principal, include_history=True)
+
+    def prepare_display(self, actor, principal):
+        return self.prepare(actor, principal)

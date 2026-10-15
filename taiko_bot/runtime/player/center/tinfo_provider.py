@@ -183,3 +183,9 @@ class TinfoHostProvider:
 
     def prepare_trend(self, actor, principal, command):
         return self.prepare(actor, principal, trend_command=command)
+
+    def prepare_display(self, actor, principal):
+        private = self.prepare(actor, principal)
+        from .display_prepare import prepare
+        prepare(self, private)
+        return private

@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+
 import json
+
 from functools import lru_cache
+
 from io import BytesIO
+
 from pathlib import Path
+
 from typing import Dict
 
 from PIL import Image
+
 from wordcloud import WordCloud
-from taiko_bot.settings import get_settings
-from taiko_bot.userdata_provider import get_cached_userdata
 
-from .draw_dress import render_my_don_image
+ROOT_DIR = __import__("taiko_bot.runtime.public.config",fromlist=["root"]).root()
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
 SONG_DATA_PATH = ROOT_DIR / "songs" / "song_data.json"
 
 _FONT_CANDIDATES = [
@@ -22,13 +25,11 @@ _FONT_CANDIDATES = [
     str(ROOT_DIR / "assets" / "fonts" / "DDFont.ttf"),
 ]
 
-
 def _resolve_font_path() -> str | None:
     for path in _FONT_CANDIDATES:
         if Path(path).exists():
             return path
     return None
-
 
 @lru_cache(maxsize=1)
 def _load_song_name_map() -> Dict[int, str]:
@@ -49,9 +50,7 @@ def _load_song_name_map() -> Dict[int, str]:
         name_map[song_id] = name
     return name_map
 
-
-def _load_user_play_counts(user_id: int) -> Dict[int, int]:
-    userdata = get_cached_userdata(str(user_id))
+def _load_user_play_counts(userdata) -> Dict[int, int]:
     songs = userdata.get("songs", [])
     if not isinstance(songs, list):
         return {}
@@ -80,9 +79,8 @@ def _load_user_play_counts(user_id: int) -> Dict[int, int]:
         counts[song_id] = counts.get(song_id, 0) + count
     return counts
 
-
-def _build_word_frequencies(user_id: int) -> Dict[str, int]:
-    counts = _load_user_play_counts(user_id)
+def _build_word_frequencies(userdata: dict) -> Dict[str, int]:
+    counts = _load_user_play_counts(userdata)
     if not counts:
         return {}
     name_map = _load_song_name_map()
@@ -92,11 +90,10 @@ def _build_word_frequencies(user_id: int) -> Dict[str, int]:
         freqs[name] = freqs.get(name, 0) + count
     return freqs
 
-
 def _render_wordcloud_image(
-    user_id: int, width: int, height: int
+    userdata: dict, width: int, height: int
 ) -> Image.Image:
-    freqs = _build_word_frequencies(user_id)
+    freqs = _build_word_frequencies(userdata)
     if not freqs:
         raise ValueError("no_play_data")
     font_path = _resolve_font_path()
@@ -114,12 +111,11 @@ def _render_wordcloud_image(
     ).generate_from_frequencies(freqs)
     return wc.to_image().convert("RGBA")
 
-
-def render_tcloud_image(user_id: int, gap: int = 16) -> bytes:
-    left_img = Image.open(BytesIO(render_my_don_image(user_id))).convert("RGBA")
+def render_tcloud_image(userdata, *, my_don_img: bytes, gap: int = 16) -> bytes:
+    left_img = Image.open(BytesIO(my_don_img)).convert("RGBA")
     height = left_img.height
     width = max(left_img.width, height)
-    right_img = _render_wordcloud_image(user_id, width=width, height=height)
+    right_img = _render_wordcloud_image(userdata, width=width, height=height)
 
     total_width = left_img.width + gap + right_img.width
     total_height = max(left_img.height, right_img.height)

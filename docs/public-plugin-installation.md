@@ -1,7 +1,7 @@
 # Taiko runtime 安装与旧公共插件退役
 
-当前候选：`taiko-bot==0.3.0`、Application **0.7.1**、Contract **0.1.0**。
-九个公开入口与双端 tinfo 由 Taiko 内部模块维护；不再安装 `nonebot-plugin-taiko-song`。
+当前候选：`taiko-bot==0.8.0`、Application **0.8.0**、Contract **0.1.0**。
+九个公开入口与双端 tinfo、推荐、进度、B30、趋势、我的小咚、成绩筛选及词云由 Taiko 内部模块维护；不再安装 `nonebot-plugin-taiko-song`。
 本页替代旧 F-A/F-L 公共插件部署步骤。源码安装不表示授权部署或重启。
 
 ## 两个互斥 profile

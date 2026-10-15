@@ -29,11 +29,9 @@ def test_native_current_loaders_return_full_center_payload_without_disk(cfg, mon
     ("score_calculator", "compute_all_from_userdata", (1001,)),
     ("score_calculator", "build_all_stats_for_user", (1001,)),
     ("score_calculator", "getUtime", (1001,)),
-    ("tcloud", "_load_user_play_counts", (1001,)),
     ("drawinfo", "get_score_by_id_and_level", (7, 1001, 4)),
     ("drawinfo", "generate_score_image", (7, 1001)),
     ("draw_dress", "build_dress_image", (1001,)),
-    ("draw_dress", "render_my_don_image", (1001,)),
     ("draw_dress", "render_update_changes_image", (1001,)),
 ])
 def test_native_implicit_products_reject_revoked_access_before_private_disk_or_assets(cfg, monkeypatch, module, name, args):
@@ -54,12 +52,17 @@ def command_function(name, namespace):
     return namespace[name]
 
 
-def test_actual_command_song_loader_uses_center_and_rejects_invalid_rows(cfg, monkeypatch):
-    monkeypatch.setattr(provider, "get_settings", lambda: cfg)
-    transport(monkeypatch, lambda request: httpx.Response(200, json={"songs": [{"song_no": 7}, None, 1]}))
-    function = command_function("_load_user_song_records", {"List": List, "Dict": Dict, "Any": Any, "ensure_userdata_available": provider.ensure_userdata_available})
-    assert function(1001) == [{"song_no": 7}]
-    assert not cfg.userdata_dir.exists()
+def test_owned_metric_filter_uses_captured_records_without_private_reads(monkeypatch):
+    from taiko_bot.runtime.player.client.display_support import metric
+    monkeypatch.setattr(metric, "_build_song_title_map", lambda: {})
+    monkeypatch.setattr(metric, "is_song_id_publicly_visible", lambda _: True)
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Unexpected private read")
+    monkeypatch.setattr(provider, "ensure_userdata_available", forbidden)
+    monkeypatch.setattr(provider, "get_cached_userdata", forbidden)
+    rows = [{"song_no": 7, "level": 4, "ok_cnt": 1, "ng_cnt": 0}]
+    result = metric._collect_song_metric_matches(rows, "single_ok")
+    assert len(result) == 1 and result[0]["song_no"] == 7
 
 
 def test_actual_hiroba_command_helper_has_no_ttl_and_propagates_revocation():

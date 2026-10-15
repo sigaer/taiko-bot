@@ -1909,21 +1909,6 @@ def _render_my_don_rank_summary_panel(
     return panel
 
 
-def render_my_don_image(user_id: int, save_path: Optional[Path | str] = None) -> bytes:
-    userdata = get_cached_userdata(str(user_id))
-
-    final_img = _render_my_don_base_panel(user_id, userdata)
-
-    if save_path is not None:
-        save_path = Path(save_path)
-        save_path.parent.mkdir(parents=True, exist_ok=True)
-        final_img.save(save_path)
-
-    buf = BytesIO()
-    final_img.save(buf, format="PNG")
-    return buf.getvalue()
-
-
 def render_update_changes_image(
     user_id: int,
     save_path: Optional[Path | str] = None,

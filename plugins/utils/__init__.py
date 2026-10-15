@@ -16,10 +16,8 @@ from .draw_dress import (
     draw_player_info,
     render_achievement_panel,
     render_update_changes_image,
-    render_my_don_image,
     render_user_dress,
 )
-from .tcloud import render_tcloud_image
 from taiko_bot.settings import get_settings
 from taiko_bot.userdata_provider import get_cached_userdata
 

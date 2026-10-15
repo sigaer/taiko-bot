@@ -5,7 +5,7 @@ from .utils.public_score_token import (
 from .utils.taiko_db import get_taiko_db_connection
 from taiko_bot.merged_source_id import build_center_virtual_user_id
 from .utils.drawinfo import generate_score_image, get_score_by_id_and_level
-from .utils import compute_score, render_my_don_image, render_tcloud_image
+from .utils import compute_score
 from .utils.draw_summary import render_taiko_2025_summary
 from .utils.score_line import (
     available_levels_for_song,
@@ -125,7 +125,7 @@ COVER_DIR = ASSETS_DIR / "cover"
 OSS_COVER_PREFIX = "oss://sigaer/cover"
 FONT_PATH = "assets/fonts/DDFont.ttf"
 SONG_RANK_FONT_PATH = "/usr/share/fonts/NotoSansCJKSC-Black.ttf"
-SONG_METRIC_FONT_PATH = "/usr/share/fonts/NotoSansCJKSC-Black.ttf"
+
 FUMENS_DIR = Path("assets") / "fumens"
 ALIAS_LOG_PATH = ROOT_DIR / "logs" / "alias_action_log.json"
 REGION_MAP_PATH = SONGS_DIR / "region_map.json"
@@ -147,10 +147,7 @@ UPDATE_COMMAND_PATTERN = re.compile(
     r"^(?:taikoupdate|更新广场)(?:(?:\s+|)(?P<show_all>all|全部|全量|-a|--all))?\s*$",
     flags=re.IGNORECASE,
 )
-TCLOUD_COMMAND_PATTERN = re.compile(
-    r"^(?:tcloud|太鼓词云|词云)\s*$",
-    flags=re.IGNORECASE,
-)
+
 UPDATE_TYPO_TARGET = "taikoupdate"
 UPDATE_TYPO_ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 
@@ -200,11 +197,6 @@ def _normalize_bind_input(raw: str) -> str:
 def _normalize_slash_command_text(text: str) -> str:
     normalized = str(text or "").strip()
     return normalized[1:].lstrip() if normalized.startswith("/") else normalized
-
-
-def _should_trigger_tcloud_command(text: str) -> bool:
-    normalized = _normalize_slash_command_text(text)
-    return bool(TCLOUD_COMMAND_PATTERN.match(normalized))
 
 
 def _parse_update_command(text: str) -> Optional[Dict[str, Any]]:
@@ -272,19 +264,6 @@ DRAW_GUESS_REPORT_DELETE_THRESHOLD = 5
 DRAW_GUESS_DB_LOCK = asyncio.Lock()
 DRAW_GUESS_MAKE_SESSIONS: Dict[str, Dict[str, Any]] = {}
 DRAW_GUESS_GROUP_SESSIONS: Dict[str, Dict[str, Any]] = {}
-SONG_METRIC_MAX_SHOW = 30
-SONG_METRIC_DIFF_PRIORITY = {
-    5: 0,
-    4: 0,
-    3: 1,
-    2: 2,
-    1: 3,
-}
-SONG_METRIC_QUERY_PATTERN = (
-    r"^(太鼓|我的)\s*"
-    r"(?:(?P<ng>\d{1,4})不可|(?P<ok>\d{1,4})可|(?P<single_ok>单可)|(?P<dondaful>全良))"
-    r"(?:\s*(?P<order>正序|倒序|升序|降序|asc|desc))?\s*$"
-)
 
 
 def extract_plain_text(event: MessageEvent) -> str:
@@ -537,49 +516,6 @@ def _to_int(value: Any, default: int = 0) -> int:
         return default
 
 
-def _low_miss_total(ok_cnt: Any, ng_cnt: Any) -> int:
-    return _to_int(ok_cnt, 0) + _to_int(ng_cnt, 0)
-
-
-def _build_song_title_map() -> Dict[int, Dict[str, Any]]:
-    title_map: Dict[int, Dict[str, Any]] = {}
-    for item in load_song_data():
-        if not isinstance(item, dict):
-            continue
-        song_id = _to_int(item.get("id"), -1)
-        if song_id < 0:
-            continue
-        title_jp = str(
-            item.get("song_name_jp") or item.get("song_name") or f"ID{song_id}"
-        )
-        title_cn = str(item.get("song_name") or "").strip()
-        shelf_status = 0 if is_song_publicly_visible(item) else 1
-        stars: Dict[int, str] = {}
-        for lv in (1, 2, 3, 4, 5):
-            star_raw = item.get(f"level_{lv}")
-            if star_raw is None:
-                continue
-            star_text = str(star_raw).strip()
-            if not star_text or star_text == "-":
-                continue
-            stars[lv] = star_text
-        title_map[song_id] = {
-            "title_jp": title_jp,
-            "title_cn": title_cn,
-            "stars": stars,
-            "shelf_status": shelf_status,
-        }
-    return title_map
-
-
-def _load_user_song_records(user_id: int) -> List[Dict[str, Any]]:
-    payload = ensure_userdata_available(str(user_id))
-    songs = payload.get("songs")
-    if not isinstance(songs, list):
-        return []
-    return [item for item in songs if isinstance(item, dict)]
-
-
 async def _upload_json_file_for_event(
     bot: Bot, event: MessageEvent, file_path: Path, display_name: str
 ) -> None:
@@ -641,270 +577,6 @@ def _apply_center_sync_result(payload: Dict[str, Any], *, fallback_source: str) 
             source=str(payload.get("source") or fallback_source),
         )
     return decode_image_bytes(payload)
-
-
-def _collect_song_metric_matches(
-    user_id: int,
-    mode: str,
-    target_value: Optional[int] = None,
-    order_mode: str = "default",
-) -> List[Dict[str, Any]]:
-    records = _load_user_song_records(user_id)
-    title_map = _build_song_title_map()
-    matched: List[Dict[str, Any]] = []
-    for record in records:
-        song_no = _to_int(record.get("song_no"), -1)
-        level = _to_int(record.get("level"), -1)
-        if song_no < 0 or level not in (1, 2, 3, 4, 5):
-            continue
-        if not is_song_id_publicly_visible(song_no):
-            continue
-
-        ok_cnt = _to_int(record.get("ok_cnt"), 0)
-        ng_cnt = _to_int(record.get("ng_cnt", record.get("bad_cnt")), 0)
-        dondaful_cnt = _to_int(record.get("dondaful_combo_cnt"), 0)
-        full_combo_cnt = _to_int(record.get("full_combo_cnt"), 0)
-
-        # 过滤规则：
-        # - xx可：仅过滤全良（保留全连）
-        # - 单可：仅过滤全良（保留全连）
-        # - xx不可：过滤全连与全良
-        if mode in ("ok", "single_ok") and dondaful_cnt > 0:
-            continue
-        if mode == "ng" and (full_combo_cnt > 0 or dondaful_cnt > 0):
-            continue
-
-        if mode == "ok":
-            if target_value == 1:
-                if _low_miss_total(ok_cnt, ng_cnt) != 1:
-                    continue
-            elif target_value is None or ok_cnt != target_value:
-                continue
-        elif mode == "single_ok":
-            if _low_miss_total(ok_cnt, ng_cnt) >= 10:
-                continue
-        elif mode == "ng":
-            if target_value is None or ng_cnt != target_value:
-                continue
-        elif mode == "dondaful":
-            if dondaful_cnt <= 0:
-                continue
-        else:
-            continue
-
-        song_meta = title_map.get(song_no, {})
-        stars = song_meta.get("stars") if isinstance(song_meta, dict) else {}
-        star = "-"
-        if isinstance(stars, dict):
-            star = str(stars.get(level, "-"))
-
-        matched.append(
-            {
-                "song_no": song_no,
-                "level": level,
-                "title": (
-                    str(song_meta.get("title_jp"))
-                    if isinstance(song_meta, dict) and song_meta.get("title_jp")
-                    else f"ID{song_no}"
-                ),
-                "title_cn": (
-                    str(song_meta.get("title_cn", ""))
-                    if isinstance(song_meta, dict)
-                    else ""
-                ),
-                "star": star,
-                "ok_cnt": ok_cnt,
-                "ng_cnt": ng_cnt,
-                "dondaful_combo_cnt": dondaful_cnt,
-                "full_combo_cnt": full_combo_cnt,
-            }
-        )
-
-    if order_mode == "asc":
-        matched.sort(
-            key=lambda item: (
-                _get_song_metric_level_bucket(item["level"]),
-                *_build_song_metric_star_sort_key(item.get("star"), descending=False),
-                item["song_no"],
-            )
-        )
-    elif order_mode == "desc":
-        matched.sort(
-            key=lambda item: (
-                -_get_song_metric_level_bucket(item["level"]),
-                *_build_song_metric_star_sort_key(item.get("star"), descending=True),
-                item["song_no"],
-            )
-        )
-    else:
-        matched.sort(
-            key=lambda item: (
-                SONG_METRIC_DIFF_PRIORITY.get(item["level"], 99),
-                *_build_song_metric_star_sort_key(item.get("star"), descending=True),
-                item["song_no"],
-            )
-        )
-    return matched
-
-
-def _parse_song_metric_order(order_token: Optional[str]) -> str:
-    if not order_token:
-        return "default"
-    token = order_token.strip().lower()
-    if token in ("正序", "升序", "asc"):
-        return "asc"
-    if token in ("倒序", "降序", "desc"):
-        return "desc"
-    return "default"
-
-
-def _get_song_metric_level_bucket(level: int) -> int:
-    return 4 if level in (4, 5) else level
-
-
-def _parse_song_metric_star_value(star: Any) -> Optional[float]:
-    text = str(star or "").strip()
-    if not text or text == "-":
-        return None
-    match = re.search(r"\d+(?:\.\d+)?", text)
-    if not match:
-        return None
-    value = float(match.group())
-    if "+" in text:
-        value += 0.5
-    return value
-
-
-def _build_song_metric_star_sort_key(
-    star: Any, *, descending: bool = False
-) -> Tuple[bool, float]:
-    value = _parse_song_metric_star_value(star)
-    if value is None:
-        return True, float("inf")
-    return False, (-value if descending else value)
-
-
-def _render_song_metric_list_image(
-    metric_label: str,
-    songs: List[Dict[str, Any]],
-    total_count: int,
-) -> bytes:
-    width = 1120
-    padding = 24
-    line_gap = 8
-    icon_size = 24
-    num_w = 54
-    icon_gap = 10
-
-    bg_color = (245, 247, 250, 255)
-    fg_color = (28, 32, 36, 255)
-
-    font = _load_alias_font(SONG_METRIC_FONT_PATH, 24)
-    title_font = _load_alias_font(SONG_METRIC_FONT_PATH, 30)
-    sub_font = _load_alias_font(SONG_METRIC_FONT_PATH, 22)
-    tmp = Image.new("RGBA", (width, 10), bg_color)
-    draw = ImageDraw.Draw(tmp)
-
-    title_line = f"{metric_label}曲目"
-    sub_line = f"共 {total_count} 首，展示前 {len(songs)} 首"
-    title_lines = _wrap_text(draw, title_line, title_font, width - padding * 2)
-    sub_lines = _wrap_text(draw, sub_line, sub_font, width - padding * 2)
-
-    title_h = int(30 * 1.4)
-    sub_h = int(22 * 1.35)
-    row_h = 36
-
-    if songs:
-        rows_h = len(songs) * (row_h + line_gap)
-    else:
-        rows_h = row_h
-
-    content_h = (
-        len(title_lines) * (title_h + 4) + len(sub_lines) * (sub_h + 4) + 10 + rows_h
-    )
-    height = max(240, padding * 2 + content_h)
-
-    img = Image.new("RGBA", (width, height), bg_color)
-    draw = ImageDraw.Draw(img)
-
-    y = padding
-    for line in title_lines:
-        draw.text((padding, y), line, fill=fg_color, font=title_font)
-        y += title_h + 4
-    for line in sub_lines:
-        draw.text((padding, y), line, fill=fg_color, font=sub_font)
-        y += sub_h + 4
-    y += 8
-
-    if not songs:
-        draw.text((padding, y), "暂无符合条件的曲目", fill=fg_color, font=font)
-    else:
-        star_font = _load_alias_font(SONG_METRIC_FONT_PATH, 22)
-        icon_x = padding + num_w + icon_gap
-        star_x = icon_x + icon_size + 8
-        star_block_w = 56
-        title_x = star_x + star_block_w + 10
-        title_max_w = width - padding - title_x
-        for idx, item in enumerate(songs, start=1):
-            number_text = f"{idx:02d}."
-            draw.text((padding, y + 4), number_text, fill=fg_color, font=font)
-
-            level = _to_int(item.get("level"), 0)
-            icon_path = ASSETS_DIR / "icons" / "diff" / f"{level}.png"
-            if icon_path.exists():
-                try:
-                    icon = (
-                        Image.open(icon_path)
-                        .convert("RGBA")
-                        .resize((icon_size, icon_size), Image.LANCZOS)
-                    )
-                    icon_y = (
-                        y
-                        + max(0, (row_h - icon_size) // 2)
-                        + int(round(icon_size * 0.25))
-                    )
-                    img.alpha_composite(icon, (icon_x, icon_y))
-                except Exception:
-                    pass
-
-            star_raw = str(item.get("star") or "-").strip()
-            star_text = f"★{star_raw}" if star_raw and star_raw != "-" else "★-"
-            star_bbox = draw.textbbox((0, 0), star_text, font=star_font)
-            star_h = max(1, star_bbox[3] - star_bbox[1])
-            star_y = y + max(0, (row_h - star_h) // 2)
-            draw.text((star_x, star_y), star_text, fill=fg_color, font=star_font)
-
-            title_jp = str(item.get("title") or f"ID{item.get('song_no')}")
-            title_cn = str(item.get("title_cn") or "").strip()
-            if title_cn and title_cn != title_jp:
-                display_title = f"{title_jp}（{title_cn}）"
-            else:
-                display_title = title_jp
-            title = _truncate_text(draw, display_title, font, title_max_w)
-            text_bbox = draw.textbbox((0, 0), title, font=font)
-            text_h = max(1, text_bbox[3] - text_bbox[1])
-            text_y = y + max(0, (row_h - text_h) // 2)
-            draw.text((title_x, text_y), title, fill=fg_color, font=font)
-            y += row_h + line_gap
-
-    buf = BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
-    return buf.getvalue()
-
-
-def _compose_song_metric_result_image(my_don_img: bytes, list_img: bytes) -> bytes:
-    left = Image.open(BytesIO(my_don_img)).convert("RGBA")
-    right = Image.open(BytesIO(list_img)).convert("RGBA")
-    gap = 16
-    pad = 10
-    canvas_w = left.width + right.width + gap + pad * 2
-    canvas_h = max(left.height, right.height) + pad * 2
-    canvas = Image.new("RGBA", (canvas_w, canvas_h), (255, 255, 255, 0))
-    canvas.alpha_composite(left, (pad, pad))
-    canvas.alpha_composite(right, (pad + left.width + gap, pad))
-    out = BytesIO()
-    canvas.save(out, format="PNG")
-    return out.getvalue()
 
 
 def load_alias_data():
@@ -4401,169 +4073,6 @@ async def summary_handle(event: MessageEvent):
     except Exception as e:
         await summary.finish("查不到捏，怎么回事呢？", reply_message=True)
     await summary.finish(MessageSegment.image(result), reply_message=True)
-
-
-my_don = on_fullmatch("我的小咚", rule=taiko_rule)
-
-
-@my_don.handle()
-async def my_don_handle(event: MessageEvent):
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(my_don, event, _taiko_bind_usage_message(event))
-    if bind_target == 403:
-        await _finish_text_reply(my_don, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(my_don, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(
-        my_don,
-        event,
-        "core-assets",
-        "dress-assets",
-        "nameplate-assets",
-    ):
-        return
-    taiko_id = str(bind_target["user_id"])
-    try:
-        img_buf = render_my_don_image(taiko_id)
-    except FileNotFoundError:
-        await _finish_text_reply(my_don, event, "请更新数据后使用~")
-    except Exception:
-        await _finish_text_reply(my_don, event, "生成失败了，请稍后再试~")
-    await _finish_image_reply(my_don, event, img_buf)
-
-
-song_metric_query = on_regex(
-    SONG_METRIC_QUERY_PATTERN,
-    rule=taiko_rule,
-    flags=re.IGNORECASE,
-)
-
-
-@song_metric_query.handle()
-async def song_metric_query_handle(event: MessageEvent):
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await _finish_text_reply(
-            song_metric_query, event, _taiko_bind_usage_message(event)
-        )
-    if bind_target == 403:
-        await _finish_text_reply(song_metric_query, event, "查不到呢，可能不给看哦~")
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await _finish_text_reply(song_metric_query, event, str(bind_target["error"]))
-    if not await _ensure_asset_resources_ready(
-        song_metric_query,
-        event,
-        "core-assets",
-        "dress-assets",
-        "nameplate-assets",
-    ):
-        return
-    taiko_id = str(bind_target["user_id"])
-
-    plain_text = extract_plain_text(event)
-    m = re.match(SONG_METRIC_QUERY_PATTERN, plain_text, flags=re.IGNORECASE)
-    if not m:
-        await _finish_text_reply(
-            song_metric_query,
-            event,
-            "格式不正确。示例：太鼓1不可 / 我的3可倒序 / 我的单可正序 / 太鼓全良",
-        )
-
-    ng_token = m.group("ng")
-    ok_token = m.group("ok")
-    single_ok_token = m.group("single_ok")
-    order_mode = _parse_song_metric_order(m.group("order"))
-    if ng_token is not None:
-        mode = "ng"
-        target_value = int(ng_token)
-        metric_label = f"{target_value}不可"
-    elif ok_token is not None:
-        mode = "ok"
-        target_value = int(ok_token)
-        metric_label = f"{target_value}可"
-    elif single_ok_token is not None:
-        mode = "single_ok"
-        target_value = None
-        metric_label = "单可"
-    else:
-        mode = "dondaful"
-        target_value = None
-        metric_label = "全良"
-
-    try:
-        matched = _collect_song_metric_matches(
-            user_id=taiko_id,
-            mode=mode,
-            target_value=target_value,
-            order_mode=order_mode,
-        )
-        my_don_img = render_my_don_image(taiko_id)
-    except FileNotFoundError:
-        await _finish_text_reply(
-            song_metric_query, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
-        )
-    except Exception as e:
-        logger.exception("song_metric_query_failed error=%s", e)
-        await _finish_text_reply(song_metric_query, event, "查询失败了，请稍后再试~")
-
-    total_count = len(matched)
-    shown = matched[:SONG_METRIC_MAX_SHOW]
-    list_img = _render_song_metric_list_image(metric_label, shown, total_count)
-    merged = _compose_song_metric_result_image(my_don_img, list_img)
-    await _finish_image_reply(song_metric_query, event, merged)
-
-
-async def _tcloud_command_rule(event: MessageEvent) -> bool:
-    if _is_external_bot_mentioned(event):
-        return False
-    return _should_trigger_tcloud_command(extract_plain_text(event))
-
-
-tcloud = on_message(rule=taiko_rule & Rule(_tcloud_command_rule), block=False)
-
-
-@tcloud.handle()
-async def tcloud_handle(event: MessageEvent):
-    if _is_external_bot_mentioned(event):
-        return
-    bind_target = _resolve_read_bind_target_safe(event)
-    if bind_target == 404:
-        await tcloud.finish(
-            _taiko_bind_usage_message(event),
-            reply_message=True,
-        )
-    if bind_target == 403:
-        await tcloud.finish("查不到呢，可能不给看哦~", reply_message=True)
-    if isinstance(bind_target, dict) and bind_target.get("error"):
-        await tcloud.finish(str(bind_target["error"]), reply_message=True)
-    if not await _ensure_asset_resources_ready(
-        tcloud,
-        event,
-        "core-assets",
-        "dress-assets",
-        "nameplate-assets",
-    ):
-        return
-    user_id = str(bind_target["user_id"])
-
-    try:
-        img_buf = render_tcloud_image(user_id)
-    except FileNotFoundError:
-        await _finish_text_reply(
-            tcloud, event, "您还未上传数据哦~请先发送“taikoupdate”进行上传"
-        )
-    except ValueError:
-        await _finish_text_reply(tcloud, event, "没有可用于生成词云的游玩数据~")
-    except Exception:
-        await _finish_text_reply(tcloud, event, "生成失败了，请稍后再试~")
-    await _finish_image_reply(
-        tcloud,
-        event,
-        img_buf,
-        prefer_markdown_image=True,
-        markdown_image_name="tcloud",
-    )
 
 
 # 查配置

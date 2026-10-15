@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "date": "2026-10-15",
+  "bases": {
+    "taiko": "d396bda",
+    "sakura": "db0ac3e"
+  },
+  "versions": {
+    "taiko_bot": "0.8.0",
+    "application": "0.8.0",
+    "sakura": "9.82.11"
+  },
+  "successful_primary_image_parity": 176,
+  "filter_and_error_cases": {
+    "center": 146,
+    "client": 146
+  },
+  "security_cases": {
+    "center": 144,
+    "client": 144
+  },
+  "statistics_records": {
+    "center": 114,
+    "client": 114
+  },
+  "unit_tests": {
+    "center": 30,
+    "client": 24,
+    "statistics_subtests": 168
+  },
+  "representative_per_host": {
+    "public": 18,
+    "tinfo": 15,
+    "recommendation": 16,
+    "progress": 16,
+    "b30": 12,
+    "trend": 8
+  },
+  "ownership": {
+    "public_matchers": 9,
+    "player_matchers": 9,
+    "legacy_migrated_matchers": 0,
+    "load_orders_per_host": 3
+  },
+  "private_io_violations": 0,
+  "production_access": false,
+  "deployment": false,
+  "log_root": "/var/tmp/taiko-display-20261015",
+  "logs": {
+    "parity-center.log": "774448fbf0960ab56c277e791e7aa0a64d02d337708779068ba6fa7e7ea0838c",
+    "parity-client.log": "7db7d70f66870ebf86e217af1b4bb355d3f08b22c78b2c0e4349b9ab7a89dd42",
+    "faults-center.log": "1a06b2c16375c8fe1500ffeab53bc1aafc1c6c360b900c30a4d2ad733b88f831",
+    "faults-client.log": "c8969317cd98270a9c2552e8091ef532fdd4992b7f6c99d32b61ea5a1a854c1d",
+    "units-center.log": "050eabe0243e01e6029e2891f4133a67f13c8431a84fe879426ccd54358a1018",
+    "units-client.log": "afc69354864dabe1c214a425c15da3343b55fe8542c6c3d0110aeb7ca3e83f46",
+    "public-center.log": "e30c9cd8190ed726a0980906b8d77d62c643d3eb47354839ba0c2d4de6e9778b",
+    "tinfo-center.log": "367e86805958aff6c8bc9473b6cbc610835fd6225c9c2cc547a1a6bd2cd60964",
+    "rec-center.log": "d4b5f53ff32a578f8f2532995b93c8f0b145bb0f5a00d5b3370095eb8a76eb11",
+    "progress-center.log": "ba4b30bb18f7e8c72ca0e1df4cd71d21a15343cf5e12fdc6f8da896c868f27b2",
+    "b30-center.log": "6d6a617fe43c25d30aea965eb0ac7ab336bde874bec0a5beec868cbdaa38b62c",
+    "trend-center.log": "0a6dae28abb0b644caecdf4dedbda2f5ce72770364659dbb771207289b9d1bc6",
+    "host-center.log": "a7e833b0961d2b4d3888c2dc5ff87f4bd7ba32adc072d350a450dc554cbcb1c8",
+    "public-client.log": "cf18066449d6a1d2dc0f2cf4332a93be38505785fbbda628c723fee95370a1d8",
+    "tinfo-client.log": "4c0971243972e4ad47bd56152b57b1e95e8ad8274a910e06ec16475aa1dc63d8",
+    "rec-client.log": "0158f028e6a661b48995108194417b447d150001d6af903143349c13c0274204",
+    "progress-client.log": "e1a0dd1864fcc117de3043c5a6a38de734f102a7e35e4f12a49c3442134b3ed2",
+    "b30-client.log": "2efce2a76aa89db6acb9a1aa32ce1ab31bb81ddf898469db2eca92a4181ab33e",
+    "trend-client.log": "ad1a046006d3a1f8f285a7f225d886052b918f1463886db4df1ac29e17e32f5b",
+    "host-client.log": "de0f5d5b34f153db3da1c5c2dc933d97cab9f64a4a83267a7f32acaace4fc67e",
+    "showcases.log": "90ef706c4dad33050aaed5fe9e92e4e5d41f7a2d5cf4b25c48a2bd5830774ab9",
+    "security-center.log": "6442dfe36c4ceca3c7f1160d07214e9a4915ff95224ca44ca7aa6f0e8524e418",
+    "security-client.log": "b5b7858cf7b27dae0ccd92ffa8e1bf1453e97d25900b45757a84bb5948e04027",
+    "load-order.log": "12beac7fbee4b7220c29fb9b2db0d1d6a25317bfec3600045db55d59b464994f",
+    "package-final.log": "e6e934e651bffa58a2bf307fe5a64a058a83b7e0466d805ce775dac2586d5965"
+  }
+}
