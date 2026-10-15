@@ -114,7 +114,7 @@ def test_actual_visibility_command_never_upserts_or_opens_sql(tmp_path,monkeypat
     calls=[]
     monkeypatch.setattr(client,'set_center_bind_visibility',lambda principal,visible,**kwargs:calls.append((principal,visible,kwargs)) or {'matched':2})
     from taiko_runtime.platform_adapter import parse_identity_key
-    ns=commands((Path(__file__).resolve().parents[1]/'plugins/taiko.py').read_text(),{'_set_taiko_bind_visibility','_normalize_identity_key'},
+    ns=commands((Path(__file__).resolve().parents[1]/'taiko_bot/runtime/player/client/lifecycle_host.py').read_text(),{'_set_taiko_bind_visibility','_normalize_identity_key'},
         {'parse_identity_key':parse_identity_key,'_SETTINGS':cfg(tmp_path)})
     assert ns['_set_taiko_bind_visibility'](PRINCIPAL,0)==2
     assert calls[0][:2]==(PRINCIPAL,0)

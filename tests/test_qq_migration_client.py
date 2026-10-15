@@ -77,7 +77,7 @@ def test_consume_receipt_types_are_strict(tmp_path,monkeypatch,field,value):
 def namespace(names,values):
     ns={'__package__':'plugins','RegexMatched':lambda:None,**values}
     nodes=[ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0)]
-    for node in ast.parse((SOURCE/'plugins/taiko.py').read_text()).body:
+    for node in ast.parse('\n'.join((SOURCE/'taiko_bot/runtime/player/client'/name).read_text().replace('from __future__ import annotations', '') for name in ('lifecycle_host.py','identity_cluster.py'))).body:
         if getattr(node,'name','') in names:node.decorator_list=[];nodes.append(node)
     exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'<actual-client-QQ-command>','exec'),ns);return ns
 
@@ -111,5 +111,5 @@ def test_actual_migration_adapter_replay_does_not_restart_update_or_local_io(mon
     assert calls[0][:2]==('12345',TARGET)
 
 def test_dead_local_binding_reader_is_removed_from_actual_plugin():
-    names={getattr(node,'name','') for node in ast.parse((SOURCE/'plugins/taiko.py').read_text()).body}
+    names={getattr(node,'name','') for node in ast.parse('\n'.join((SOURCE/'taiko_bot/runtime/player/client'/name).read_text().replace('from __future__ import annotations', '') for name in ('lifecycle_host.py','identity_cluster.py'))).body}
     assert '_load_multi_bind_store' not in names and '_ensure_multi_bind_entry' not in names

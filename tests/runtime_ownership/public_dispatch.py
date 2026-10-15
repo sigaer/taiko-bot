@@ -72,7 +72,7 @@ assert "plugins.taiko" not in sys.modules
 assert not any(name.startswith("plugins.utils") for name in sys.modules)
 player = nonebot.load_plugin("taiko_bot.runtime.player.entry")
 assert player is not None and len(player.matcher) == (49 if a.host=="center" else 45)
-plugin = nonebot.load_plugin("plugins.taiko")
+plugin = nonebot.load_plugin("taiko_bot.runtime.community.community_entry")
 assert plugin is not None, "Installed plugin failed to load"
 assert not hasattr(plugin.module, 'taikorec')
 assert not hasattr(plugin.module, 'matcher')

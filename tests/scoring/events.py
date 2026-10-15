@@ -43,6 +43,7 @@ import nonebot
 nonebot.init(driver='~fastapi+~httpx',log_level='ERROR',taiko_song_profile=a.host,taiko_song_public_root=str(a.work))
 public=nonebot.load_plugin('taiko_bot.runtime.public');player=nonebot.load_plugin('taiko_bot.runtime.player.entry')
 assert public and player and len(public.matcher)==9 and len(player.matcher)==(49 if a.host=='center' else 45)
+assert nonebot.load_plugin("taiko_bot.runtime.community.community_entry")
 assert nonebot.require('taiko_bot.runtime.player.entry') is player.module
 entry=player.module
 import builtins

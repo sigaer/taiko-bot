@@ -46,7 +46,7 @@ def test_native_implicit_products_reject_revoked_access_before_private_disk_or_a
 
 def command_function(name, namespace):
     # Run the actual changed body without registering the untouched full Bot.
-    file = Path(__file__).resolve().parents[1] / "plugins/taiko.py"
+    file = Path(__file__).resolve().parents[1] / "taiko_bot/runtime/player/client/lifecycle_host.py"
     node = next(node for node in ast.parse(file.read_text()).body if isinstance(node, ast.FunctionDef) and node.name == name)
     exec(compile(ast.Module(body=[node], type_ignores=[]), str(file), "exec"), namespace)
     return namespace[name]

@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "sakura_removed_files": {
+    "taiko/nonebot_plugin_method_calls/__init__.py": 20,
+    "taiko/nonebot_plugin_method_calls/cleanup.py": 50,
+    "taiko/nonebot_plugin_method_calls/config.py": 114,
+    "taiko/nonebot_plugin_method_calls/extractor.py": 441,
+    "taiko/nonebot_plugin_method_calls/recorder.py": 20,
+    "taiko/nonebot_plugin_method_calls/store.py": 332,
+    "taiko/nonebot_plugin_method_calls/taiko_commands.py": 406,
+    "taiko/nonebot_plugin_method_calls/tests/__init__.py": 0,
+    "taiko/nonebot_plugin_method_calls/tests/test_extractor.py": 391,
+    "taiko/nonebot_plugin_method_calls/tests/test_rollups.py": 52,
+    "taiko/plugins/taiko.py": 2662,
+    "taiko/plugins/utils/annual_report_command.py": 108,
+    "taiko/taiko_runtime/reserved_commands.py": 25,
+    "taiko/tests/test_annual_report_command.py": 47
+  },
+  "sakura_removed_lines": 4668,
+  "protected_protocol_and_schema_changes": 0,
+  "stats_storage_body": "byte identical",
+  "annual_body": "AST identical"
+}

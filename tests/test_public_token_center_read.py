@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
-from plugins.utils import public_score_token as adapter
+from taiko_bot.runtime.player.client import public_score_token as adapter
 from taiko_bot import score_token_client as client
 from taiko_bot.viewer_client import ViewerClientError
 from test_private_read_cache import cfg, transport
@@ -63,13 +63,13 @@ def test_ownerless_compat_adapter_and_legacy_bearer_fail_before_any_io(monkeypat
     monkeypatch.setattr(client,'post_center_binding_operation',lambda *a,**k:pytest.fail('Retired authority sent HTTP'))
     with pytest.raises(adapter.PublicScoreTokenError) as error:adapter.issue_public_score_token_for_taiko_id('1001')
     assert error.value.status_code==403
-    with pytest.raises(adapter.PublicScoreTokenError) as error:adapter.fetch_latest_userdata_by_token(TOKEN)
-    assert error.value.status_code==410
+    # The retired legacy bearer accessor is absent from the runtime owner.
+    assert not hasattr(adapter, 'fetch_latest_userdata_by_token')
 
 
 @pytest.mark.parametrize('mode',['hidden','empty','manual','virtual','group','denied'])
 def test_actual_command_only_mints_private_sender_current_real_binding(mode):
-    source=Path(__file__).resolve().parents[1]/'plugins/taiko.py'
+    source=Path(__file__).resolve().parents[1]/'taiko_bot/runtime/player/client/update_cluster.py'
     fn=next(n for n in ast.parse(source.read_text()).body if isinstance(n,ast.AsyncFunctionDef) and n.name=='public_score_token_handle')
     fn.decorator_list=[]
     replies=[];issued=[]
@@ -84,7 +84,7 @@ def test_actual_command_only_mints_private_sender_current_real_binding(mode):
     def mint(taiko_id,*,identity_key):
         issued.append((taiko_id,identity_key))
         return {'token':TOKEN,'taiko_id':taiko_id,'owner_display':identity_key}
-    ns={'public_score_token':Matcher(),'_is_private_message_event':lambda event:mode!='group',
+    ns={'delivery_for':lambda matcher:matcher,'public_score_token':Matcher(),'_is_private_message_event':lambda event:mode!='group',
         '_normalize_identity_key':lambda principal:principal,'get_identity_key':lambda **kw:PRINCIPAL,
         'fetch_center_bind_info':fetch,'_SETTINGS':SimpleNamespace(),'issue_public_score_token_for_taiko_id':mint,
         'PublicScoreTokenError':adapter.PublicScoreTokenError,'ViewerClientError':ViewerClientError,

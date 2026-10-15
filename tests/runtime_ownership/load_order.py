@@ -12,7 +12,7 @@ import nonebot
 nonebot.init(driver='~fastapi+~httpx',log_level='ERROR',taiko_song_profile=sys.argv[1])
 mode=sys.argv[2] if len(sys.argv)>2 else 'reverse'
 if mode=='all':
- nonebot.load_all_plugins(['taiko_bot.runtime.player.entry','taiko_bot.runtime.public','feature_handler'],[])
+ nonebot.load_all_plugins(['taiko_bot.runtime.player.entry','taiko_bot.runtime.public','taiko_bot.runtime.community.community_entry','feature_handler'],[])
  b=nonebot.get_plugin('entry');a=nonebot.get_plugin('public')
 elif mode=='forward':
  a=nonebot.load_plugin('taiko_bot.runtime.public');b=nonebot.load_plugin('taiko_bot.runtime.player.entry')
@@ -24,3 +24,7 @@ print('PASS',sys.argv[1],mode, len(a.matcher),len(b.matcher))
 assert nonebot.require('taiko_bot.runtime.public') is a.module
 assert nonebot.require('taiko_bot.runtime.player.entry') is b.module
 assert len(a.matcher)==9 and len(b.matcher)==(49 if sys.argv[1]=="center" else 45)
+
+c = nonebot.get_plugin('community_entry') or nonebot.load_plugin('taiko_bot.runtime.community.community_entry')
+assert c and len(c.matcher) == 16
+assert 'plugins.taiko' not in sys.modules

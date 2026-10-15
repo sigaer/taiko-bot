@@ -14,8 +14,10 @@ def _load_taiko_module():
     try:
         nonebot.get_driver()
     except ValueError:
-        nonebot.init()
-    return importlib.import_module("plugins.taiko")
+        nonebot.init(taiko_song_profile="client")
+    nonebot.require("taiko_bot.runtime.community.community_entry")
+    from community.unit_owner import UnitOwner
+    return UnitOwner("client")
 
 
 class FakeSegment:
@@ -482,18 +484,18 @@ def test_resolve_taikob_dim_arg_supports_wrapped_and_flag_forms():
 
 
 def test_qq_official_what_song_trigger_variants():
-    taiko = _load_taiko_module()
-
-    assert taiko._extract_official_what_song_query("taiko 千本樱是什么歌") == "千本樱"
-    assert taiko._extract_official_what_song_query("太鼓 什么歌 千本樱") == "千本樱"
-    assert taiko._extract_official_what_song_query("太鼓是啥歌 红莲华") == "红莲华"
-    assert taiko._extract_official_what_song_query("千本樱是什么歌") is None
+    _load_taiko_module()
+    from taiko_bot.runtime.public import OFFICIAL
+    for text, expected in [('taiko 千本樱是什么歌','千本樱'),('太鼓 什么歌 千本樱','千本樱'),('太鼓是啥歌 红莲华','红莲华')]:
+        matches=[pattern.match(text) for pattern in OFFICIAL]
+        assert next(match.group('q') for match in matches if match)==expected
+    assert not any(pattern.match('千本樱是什么歌') for pattern in OFFICIAL)
 
 
 def test_what_song_rule_allows_official_variants():
     taiko = _load_taiko_module()
-    official_ok = taiko._should_handle_what_song(FakeQQGroupEvent(text="taiko 千本樱是什么歌"))
-    official_bad = taiko._should_handle_what_song(FakeQQGroupEvent(text="taiko 千本樱"))
+    official_ok = __import__("taiko_bot.runtime.public", fromlist=["eligible"]).eligible(FakeQQGroupEvent(text="taiko 千本樱是什么歌"))
+    official_bad = __import__("taiko_bot.runtime.public", fromlist=["eligible"]).eligible(FakeQQGroupEvent(text="taiko 千本樱"))
 
     assert official_ok is True
     assert official_bad is False

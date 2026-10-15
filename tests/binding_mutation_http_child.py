@@ -58,7 +58,7 @@ try:
         elif request.get('mode')=='command':
             names={'_normalize_identity_key','_center_bind_info_to_entry','_migrate_bind_from_legacy_qq'}
             nodes=[ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0)]
-            nodes += [node for node in ast.parse((Path(__file__).resolve().parents[1]/'plugins/taiko.py').read_text()).body if isinstance(node,ast.FunctionDef) and node.name in names]
+            nodes += [node for node in ast.parse((Path(__file__).resolve().parents[1]/'taiko_bot/runtime/player/client/lifecycle_host.py').read_text()).body if isinstance(node,ast.FunctionDef) and node.name in names]
             ns={'parse_identity_key':parse_identity_key,'_SETTINGS':cfg,'BIND_VERIFY_SESSIONS':{},
                 '_format_multi_bind_summary':lambda entry:' / '.join(entry['ids']),
                 '_build_bind_auto_update_tip':lambda *a,**kw:''}
@@ -74,7 +74,7 @@ try:
         names={'_normalize_identity_key','_center_bind_info_to_entry','_remove_bind_record','_set_taiko_bind_visibility',
                '_resolve_bind_remove_target','_format_multi_bind_summary','_get_bind_ids','_get_selected_bind_slot_number',
                '_has_virtual_bind_slot','_infer_bind_source','_bind_source_label'}
-        source=Path(__file__).resolve().parents[1]/'plugins/taiko.py'
+        source=Path(__file__).resolve().parents[1]/'taiko_bot/runtime/player/client/lifecycle_host.py'
         nodes=[ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0)]
         nodes += [node for node in ast.parse(source.read_text()).body if isinstance(node,ast.FunctionDef) and node.name in names]
         ns={'parse_identity_key':parse_identity_key,'re':re,'_SETTINGS':cfg,'fetch_center_bind_info':fetch_center_bind_info,

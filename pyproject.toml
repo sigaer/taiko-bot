@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.11.0"
+version = "0.12.0"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -12,6 +12,8 @@ license = "GPL-2.0-only"
 dependencies = [
     "taiko-application==0.8.0",
     "sakura-taiko-contract==0.1.0",
+    "aiomysql>=0.2.0",
+    "nonebot-plugin-apscheduler>=0.5.0",
     "beautifulsoup4>=4.12.0",
     "cryptography>=44.0.0",
     "fastapi>=0.115.0",
@@ -43,12 +45,12 @@ adapters = [
     { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
     { name = "QQ", module_name = "nonebot.adapters.qq" }
 ]
-plugins = ["taiko_bot.runtime.public", "taiko_bot.runtime.player.entry", "feature_handler", "taiko_runtime_init", "bot_pool_metrics"]
+plugins = ["taiko_bot.runtime.public", "taiko_bot.runtime.player.entry", "taiko_bot.runtime.community.community_entry", "feature_handler", "taiko_runtime_init", "bot_pool_metrics", "nonebot_plugin_method_calls"]
 plugin_dirs = ["plugins"]
 builtin_plugins = []
 
 [tool.setuptools.packages.find]
-include = ["feature_handler*", "onebot_runtime*", "plugins*", "taiko_bot*", "taiko_runtime*", "taiko_store*"]
+include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*", "plugins*", "taiko_bot*", "taiko_runtime*", "taiko_store*"]
 
 [tool.setuptools]
 py-modules = ["bot", "bot_core", "bot_gateway", "bot_pool_metrics", "taiko_data_api", "taiko_runtime_init"]

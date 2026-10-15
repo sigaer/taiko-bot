@@ -49,7 +49,7 @@ requests.sessions.Session.send = unavailable
 httpx.Client.send = unavailable
 httpx.AsyncClient.send = unavailable_async
 try:
-    for package, expected in (('taiko-bot','0.2.0'),('sakura-taiko-core','0.1.2'),('sakura-taiko-contract','0.1.0')):
+    for package, expected in (('taiko-bot','0.12.0'),('sakura-taiko-core','0.1.2'),('sakura-taiko-contract','0.1.0')):
         assert version(package) == expected
     manifest = json.loads((SOURCE/'docs/taiko-domain-extraction/phase4-adapter-manifest.json').read_text())
     modules = sorted({row['file'].removesuffix('.py').replace('/','.') for row in manifest})
@@ -62,11 +62,12 @@ try:
     payload = build_userdata(HirobaProfile('synthetic'), [HirobaScoreDetail('2',4,score=950000)])
     assert payload['songs'][0]['high_score'] == 950000
     import nonebot
-    nonebot.init()
-    command = importlib.import_module('plugins.taiko')
+    nonebot.init(taiko_song_profile="client")
+    nonebot.require('taiko_bot.runtime.community.community_entry')
+    command = importlib.import_module('taiko_bot.runtime.player.client.lifecycle_host')
     assert Path(command.__file__).is_relative_to(TARGET)
     assert command._normalize_bind_input('12345') == '12345'
-    evidence = {'gate':'INSTALLED_CLIENT_PASS','client':'0.2.0','core':'0.1.2','contract':'0.1.0',
+    evidence = {'gate':'INSTALLED_CLIENT_PASS','client':'0.12.0','core':'0.1.2','contract':'0.1.0',
                 'delegatedModules':len(modules),'wheelCodeMatchesSource':True,'commandImport':True,
                 'personalDataReads':0,'networkRequests':0,'productionWrites':0}
     Path(sys.argv[2]).write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n')

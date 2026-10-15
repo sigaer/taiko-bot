@@ -1,6 +1,6 @@
 # Taiko runtime 安装与旧公共插件退役
 
-当前候选：`taiko-bot==0.8.0`、Application **0.8.0**、Contract **0.1.0**。
+当前候选：`taiko-bot==0.12.0`、Application **0.8.0**、Contract **0.1.0**。
 九个公开入口与双端 tinfo、推荐、进度、B30、趋势、我的小咚、成绩筛选及词云由 Taiko 内部模块维护；不再安装 `nonebot-plugin-taiko-song`。
 本页替代旧 F-A/F-L 公共插件部署步骤。源码安装不表示授权部署或重启。
 
@@ -25,13 +25,14 @@ python -m pip check
 ```
 
 使用新环境可避免已退役插件残留。若在未来经授权升级既有环境，先卸载旧插件，
-确认 NoneBot 只加载 `taiko_bot.runtime.public`、`taiko_bot.runtime.player.entry` 各一次。
+确认 NoneBot 加载 `taiko_bot.runtime.public`、`taiko_bot.runtime.player.entry`、
+`taiko_bot.runtime.community.community_entry` 和包内统计 namespace 各一次；旧 `plugins.taiko` 已删除。
 其余通用宿主插件、资源与配置沿用原宿主；不新建进程共享 QQ/OneBot 连接。
 
 ## 包获取与构建
 
-Taiko 源码仓为 https://github.com/sigaer/taiko-bot 。候选分支 `feature/taiko-runtime-ownership`；
-审阅时应 checkout PR 的完整 commit SHA，不能把可变分支当成发行锁。
+Taiko 源码仓为 https://github.com/sigaer/taiko-bot 。本批归属记录见 [Bot 遗留入口退役](legacy-bot-entry-retirement.md)；
+审阅时应 checkout 集成提交的完整 commit SHA，不能把可变分支当成发行锁。
 Application 子目录和根项目在同一仓库中，以上一次 pip 调用同时提供两个本地候选，
 因此不假设这两个版本已发布到 PyPI。Core/Contract 使用 requirements-domain.txt 内既有不可变 Git revision，
 需要对应仓库权限；无权限时必须先取得同版本授权 wheel，不能替换领域版本。
