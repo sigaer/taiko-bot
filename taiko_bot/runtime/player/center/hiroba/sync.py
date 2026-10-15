@@ -463,3 +463,46 @@ def discover_hiroba_playable_cards(
     client = HirobaClient()
     cards = client.list_login_cards(email, password)
     return [card for card in cards if card.has_play_data and card.taiko_no]
+
+
+def sync_multiple_hiroba_userdatas(
+    email: str,
+    password: str,
+    *,
+    target_taiko_no: Optional[str] = None,
+    levels: Optional[Set[int]] = None,
+    max_workers: int = 4,
+    request_delay: float = 0.15,
+    progress: ProgressCallback = None,
+) -> List[str]:
+    playable_cards = discover_hiroba_playable_cards(email, password)
+    if not playable_cards:
+        raise HirobaError("该 Bandai Namco ID 下没有可同步的 Hiroba 太鼓番。")
+
+    selected_cards = playable_cards
+    if target_taiko_no:
+        target = str(target_taiko_no).strip()
+        selected_cards = [card for card in playable_cards if card.taiko_no == target]
+        if not selected_cards:
+            choices = " / ".join(
+                f"{card.taiko_no}({card.display_name})" if card.display_name else card.taiko_no
+                for card in playable_cards
+            )
+            raise HirobaError(
+                f"该 Bandai Namco ID 下未找到太鼓番 {target}。"
+                + (f"可用太鼓番：{choices}" if choices else "")
+            )
+
+    synced_ids: List[str] = []
+    for card in selected_cards:
+        taiko_no = sync_hiroba_userdata(
+            email,
+            password,
+            taiko_no=card.taiko_no,
+            levels=levels,
+            max_workers=max_workers,
+            request_delay=request_delay,
+            progress=progress,
+        )
+        synced_ids.append(taiko_no)
+    return synced_ids

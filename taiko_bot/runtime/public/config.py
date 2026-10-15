@@ -9,8 +9,4 @@ def profile():
     return value
 
 
-def root():
-    if profile() == 'client':
-        from taiko_bot.settings import get_settings
-        return get_settings().root_dir
-    return Path(getattr(get_driver().config, 'taiko_song_public_root', '.')).resolve()
+from taiko_bot.runtime.paths import root

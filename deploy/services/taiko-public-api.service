@@ -1,0 +1,16 @@
+[Unit]
+Description=Taiko Public API Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/sigaer/taiko
+Environment=TAIKO_RUNTIME_ROOT=/home/sigaer/taiko
+ExecStart=/opt/taiko-bot/bin/python -m taiko_bot.services.public_api --host 0.0.0.0 --port 9999
+Restart=always
+RestartSec=3
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

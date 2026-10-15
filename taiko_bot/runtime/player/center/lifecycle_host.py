@@ -1,5 +1,5 @@
 from __future__ import annotations
-from taiko_bot.runtime.public.config import root as _runtime_root
+from taiko_bot.runtime.paths import root as _runtime_root
 
 
 

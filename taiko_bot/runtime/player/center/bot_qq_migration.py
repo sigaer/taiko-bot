@@ -202,3 +202,8 @@ def migrate_qq_bindings(qq, target, *, code="", connection_factory, authorize=No
         if isinstance(error,QqMigrationDenied):raise
         raise QqMigrationUnavailable() from None
     finally:_close(connection,cursor,principals)
+
+
+class QqMigrationAuthorityError(QqMigrationDenied):
+    def __init__(self, status=403):
+        super().__init__("访问凭据已失效。" if status==401 else "没有迁移该绑定的权限。",code="unauthorized" if status==401 else "denied",status=status)

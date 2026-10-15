@@ -2,10 +2,6 @@
 import os
 import sys
 
-_ROOT = os.getenv("PYTHON_MEMORY_RUNTIME_ROOT", "/opt/python-memory-runtime/1.1.0")
-if _ROOT not in sys.path:
-    sys.path.insert(0, _ROOT)
-
 from runtime_memory import bounded_memoize, estimated_size
 
 

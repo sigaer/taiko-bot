@@ -1,0 +1,257 @@
+{
+  "deleted_files": [
+    {
+      "path": "taiko/deploy/taiko-public-api.service",
+      "lines": 15,
+      "kind": "deployment"
+    },
+    {
+      "path": "taiko/plugins/utils/account_sync.py",
+      "lines": 210,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/bot_binding_authority.py",
+      "lines": 78,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/bot_binding_metadata.py",
+      "lines": 95,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/bot_binding_mutation.py",
+      "lines": 252,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/bot_qq_migration.py",
+      "lines": 220,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/daily_ability.py",
+      "lines": 104,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/__init__.py",
+      "lines": 7,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/client.py",
+      "lines": 682,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/cooldown.py",
+      "lines": 139,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/credentials.py",
+      "lines": 151,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/normalize.py",
+      "lines": 9,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/parser.py",
+      "lines": 22,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/private_credentials.py",
+      "lines": 60,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/service.py",
+      "lines": 27,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/hiroba/sync.py",
+      "lines": 531,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/public_score_token.py",
+      "lines": 304,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/score_token_authority.py",
+      "lines": 153,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/snapshot_history.py",
+      "lines": 38,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/source_mutation.py",
+      "lines": 110,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/update_user.py",
+      "lines": 97,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/userdata_storage.py",
+      "lines": 281,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/viewer_binding_authority.py",
+      "lines": 50,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/viewer_qq_migration.py",
+      "lines": 89,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/plugins/utils/viewer_source_authority.py",
+      "lines": 59,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/account_sync_cli.py",
+      "lines": 50,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/hiroba_credential_cli.py",
+      "lines": 50,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/qq_migration_cli.py",
+      "lines": 35,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/source_mutation_cli.py",
+      "lines": 44,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/sync_dispatch_server.py",
+      "lines": 559,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/sync_dispatch_targets.py",
+      "lines": 36,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/scripts/sync_hiroba.py",
+      "lines": 92,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/server.py",
+      "lines": 422,
+      "kind": "source"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_cooldown.py",
+      "lines": 48,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_login_cards.py",
+      "lines": 126,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_parser_crowns.py",
+      "lines": 31,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_profile_and_stats.py",
+      "lines": 167,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_service_sync.py",
+      "lines": 103,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_sync_progress.py",
+      "lines": 22,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_transport.py",
+      "lines": 40,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_native_binding_metadata.py",
+      "lines": 113,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_private_hiroba_credentials.py",
+      "lines": 73,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_public_score_token_management.py",
+      "lines": 36,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_publication_adapters.py",
+      "lines": 159,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_publication_sync.py",
+      "lines": 208,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_publication_token_bearer.py",
+      "lines": 333,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_publication_token_issuer.py",
+      "lines": 172,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_snapshot_daily_models.py",
+      "lines": 57,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_update_user.py",
+      "lines": 22,
+      "kind": "tests"
+    },
+    {
+      "path": "taiko/tests/test_viewer_qq_migration.py",
+      "lines": 23,
+      "kind": "tests"
+    }
+  ],
+  "deleted_source_files": 32,
+  "deleted_source_lines": 5056,
+  "net_python_source_reduction_excluding_tests": 5051
+}

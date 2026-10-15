@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.12.0"
+version = "0.13.0"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -35,6 +35,15 @@ dependencies = [
     "websockets>=12.0",
     "wordcloud>=1.9.0",
 ]
+
+[project.scripts]
+taiko-public-api = "taiko_bot.services.public_api:main"
+taiko-sync-dispatch = "taiko_bot.services.sync_dispatch_server:main"
+taiko-source-mutation = "taiko_bot.cli.source_mutation_cli:main"
+taiko-account-sync = "taiko_bot.cli.account_sync_cli:main"
+taiko-hiroba-credentials = "taiko_bot.cli.hiroba_credential_cli:main"
+taiko-qq-migration = "taiko_bot.cli.qq_migration_cli:main"
+taiko-sync-hiroba = "taiko_bot.cli.sync_hiroba:main"
 
 [project.optional-dependencies]
 center = ["sakura-taiko-core[hiroba]==0.1.1", "PyMySQL>=1.1.0"]
