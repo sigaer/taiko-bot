@@ -1,0 +1,790 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viewer.sakura-bot.cn/schemas/annual-summary-v4.schema.json",
+  "title": "AnnualSummaryV4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "summaryId",
+    "generatedAt",
+    "mode",
+    "version",
+    "coverage",
+    "profileCard",
+    "period",
+    "overview",
+    "sections",
+    "achievements",
+    "finalTitle",
+    "poster",
+    "provenance"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 4
+    },
+    "summaryId": {
+      "type": "string",
+      "pattern": "^annual_[0-9a-f]{24}$"
+    },
+    "generatedAt": {
+      "$ref": "#/$defs/dateTime"
+    },
+    "mode": {
+      "enum": [
+        "version_observed",
+        "current_archive"
+      ]
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "name",
+        "startDate",
+        "endDate",
+        "effectiveEndDate",
+        "isOngoing",
+        "timezone"
+      ],
+      "properties": {
+        "key": {
+          "const": "annual_2026"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "startDate": {
+          "const": "2025-10-09"
+        },
+        "endDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "effectiveEndDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "isOngoing": {
+          "type": "boolean"
+        },
+        "timezone": {
+          "const": "Asia/Shanghai"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotCount",
+        "comparableSnapshotCount",
+        "firstSnapshotAt",
+        "lastSnapshotAt",
+        "partialStart",
+        "hasBaselineBeforeStart",
+        "sourceBreakdown",
+        "time",
+        "warnings"
+      ],
+      "properties": {
+        "snapshotCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "comparableSnapshotCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "firstSnapshotAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "lastSnapshotAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "partialStart": {
+          "type": "boolean"
+        },
+        "hasBaselineBeforeStart": {
+          "type": "boolean"
+        },
+        "sourceBreakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source",
+              "snapshotCount"
+            ],
+            "properties": {
+              "source": {
+                "type": "string"
+              },
+              "snapshotCount": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "time": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "totalObservedPlayCount",
+            "trustedProxyPlayCount",
+            "ratio",
+            "trustedEventCount",
+            "activeDays",
+            "threshold",
+            "minimumEventCount",
+            "minimumActiveDays",
+            "eligible"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "proxy",
+                "unavailable"
+              ]
+            },
+            "totalObservedPlayCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "trustedProxyPlayCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ratio": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "trustedEventCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "activeDays": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "threshold": {
+              "const": 0.8
+            },
+            "minimumEventCount": {
+              "const": 5
+            },
+            "minimumActiveDays": {
+              "const": 2
+            },
+            "eligible": {
+              "type": "boolean"
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "profileCard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nickname",
+        "title",
+        "titleplateId",
+        "province",
+        "displayDan",
+        "danName",
+        "danLevel",
+        "danMax",
+        "myDonUrl",
+        "costume"
+      ],
+      "properties": {
+        "nickname": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string"
+        },
+        "titleplateId": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "province": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "displayDan": {
+          "type": "boolean"
+        },
+        "danName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "danLevel": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "danMax": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "myDonUrl": {
+          "type": "string"
+        },
+        "costume": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "firstActualPlayDate",
+        "firstRecordAt",
+        "lastRecordAt",
+        "totalDays",
+        "activeDays"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/metricStatus"
+        },
+        "firstActualPlayDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "firstRecordAt": {
+          "$ref": "#/$defs/nullableDateTime"
+        },
+        "lastRecordAt": {
+          "$ref": "#/$defs/nullableDateTime"
+        },
+        "totalDays": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "activeDays": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "overview": {
+      "$ref": "#/$defs/metric"
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "favoriteSong",
+        "obsessionSong",
+        "favoriteShift",
+        "keyword",
+        "ratingRank",
+        "monthlyFavorites",
+        "weekdayActivity",
+        "calendarActivity",
+        "timeOfDay",
+        "lateNight",
+        "speedProfile",
+        "nearDondaful",
+        "challenge",
+        "pound",
+        "highScore",
+        "milestones",
+        "breakthrough"
+      ],
+      "properties": {
+        "favoriteSong": {
+          "$ref": "#/$defs/metric"
+        },
+        "obsessionSong": {
+          "$ref": "#/$defs/metric"
+        },
+        "favoriteShift": {
+          "$ref": "#/$defs/metric"
+        },
+        "keyword": {
+          "$ref": "#/$defs/metric"
+        },
+        "ratingRank": {
+          "$ref": "#/$defs/metric"
+        },
+        "monthlyFavorites": {
+          "$ref": "#/$defs/metric"
+        },
+        "weekdayActivity": {
+          "$ref": "#/$defs/metric"
+        },
+        "calendarActivity": {
+          "$ref": "#/$defs/metric"
+        },
+        "timeOfDay": {
+          "$ref": "#/$defs/metric"
+        },
+        "lateNight": {
+          "$ref": "#/$defs/metric"
+        },
+        "speedProfile": {
+          "$ref": "#/$defs/metric"
+        },
+        "nearDondaful": {
+          "$ref": "#/$defs/metric"
+        },
+        "challenge": {
+          "$ref": "#/$defs/metric"
+        },
+        "pound": {
+          "$ref": "#/$defs/metric"
+        },
+        "highScore": {
+          "$ref": "#/$defs/metric"
+        },
+        "milestones": {
+          "$ref": "#/$defs/metric"
+        },
+        "breakthrough": {
+          "$ref": "#/$defs/metric"
+        }
+      }
+    },
+    "achievements": {
+      "type": "object",
+      "required": [
+        "status",
+        "current",
+        "observedUnlocks",
+        "observedFirsts"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/metricStatus"
+        },
+        "current": {
+          "type": "object"
+        },
+        "observedUnlocks": {
+          "type": "object"
+        },
+        "observedFirsts": {
+          "type": "array"
+        }
+      }
+    },
+    "finalTitle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "titleKey",
+        "evidenceKey",
+        "evidenceValue"
+      ],
+      "properties": {
+        "titleKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceValue": {},
+        "strongDan": {
+          "type": "boolean"
+        },
+        "standingPresentation": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "danId",
+            "mark",
+            "family",
+            "strength",
+            "threshold",
+            "titleKey",
+            "evidenceKey",
+            "evidenceValue",
+            "provenance"
+          ],
+          "properties": {
+            "danId": {
+              "type": "integer",
+              "minimum": 12,
+              "maximum": 19
+            },
+            "mark": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 6
+            },
+            "family": {
+              "enum": [
+                "red",
+                "red_rainbow",
+                "gold",
+                "gold_rainbow"
+              ]
+            },
+            "strength": {
+              "type": "number"
+            },
+            "threshold": {
+              "type": "number"
+            },
+            "titleKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidenceKey": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidenceValue": {
+              "type": "object"
+            },
+            "provenance": {
+              "type": "string",
+              "minLength": 1
+            },
+            "source": {
+              "type": "string"
+            },
+            "danName": {
+              "type": "string"
+            },
+            "completionText": {
+              "type": "string"
+            },
+            "evidenceText": {
+              "type": "string"
+            },
+            "algorithmVersion": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "poster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "summaryId",
+        "defaultLocale",
+        "supportedLocales",
+        "width",
+        "height"
+      ],
+      "properties": {
+        "status": {
+          "const": "ready_for_render"
+        },
+        "summaryId": {
+          "type": "string"
+        },
+        "defaultLocale": {
+          "enum": [
+            "zh-CN",
+            "ja-JP"
+          ]
+        },
+        "supportedLocales": {
+          "type": "array",
+          "const": [
+            "zh-CN",
+            "ja-JP"
+          ]
+        },
+        "width": {
+          "const": 1080
+        },
+        "height": {
+          "const": 1440
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithmVersion",
+        "inputFingerprint",
+        "eventCount",
+        "playEventCount",
+        "sourceSnapshotRange",
+        "inputSnapshotCount",
+        "ignoredSnapshotCount",
+        "warnings"
+      ],
+      "properties": {
+        "algorithmVersion": {
+          "type": "string"
+        },
+        "inputFingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "eventCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "playEventCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sourceSnapshotRange": {
+          "type": "object"
+        },
+        "inputSnapshotCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ignoredSnapshotCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "metricStatus": {
+      "enum": [
+        "exact",
+        "observed",
+        "lower_bound",
+        "proxy",
+        "unavailable"
+      ]
+    },
+    "timePrecision": {
+      "enum": [
+        "batch_last_play_proxy",
+        "source_highscore_time",
+        "interval_only",
+        "sync_only",
+        "none"
+      ]
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nullableDateTime": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "data"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/metricStatus"
+        },
+        "data": {},
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "annualObservationEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eventId",
+        "type",
+        "source",
+        "sourceAccount",
+        "mergeTopology",
+        "songNo",
+        "level",
+        "observedBetween",
+        "representativeAt",
+        "representativeDate",
+        "nightDate",
+        "timePrecision",
+        "before",
+        "after",
+        "delta",
+        "warnings",
+        "sourceRef"
+      ],
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "pattern": "^evt_[0-9a-f]{24}$"
+        },
+        "type": {
+          "enum": [
+            "play_delta",
+            "high_score",
+            "manual_adjustment",
+            "counter_anomaly"
+          ]
+        },
+        "source": {
+          "type": "string"
+        },
+        "sourceAccount": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mergeTopology": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "songNo": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "observedBetween": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/dateTime"
+            },
+            "to": {
+              "$ref": "#/$defs/dateTime"
+            }
+          }
+        },
+        "representativeAt": {
+          "$ref": "#/$defs/nullableDateTime"
+        },
+        "representativeDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "nightDate": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "timePrecision": {
+          "$ref": "#/$defs/timePrecision"
+        },
+        "before": {
+          "type": "object"
+        },
+        "after": {
+          "type": "object"
+        },
+        "delta": {
+          "type": "object"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "sourceRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "$ref": "#/$defs/sourceRef"
+            },
+            "to": {
+              "$ref": "#/$defs/sourceRef"
+            }
+          }
+        }
+      }
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "sha256"
+      ],
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

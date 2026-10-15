@@ -334,3 +334,26 @@ def list_custom_title_showcase_candidates(
             )
         )
     return sorted(result, key=_showcase_sort_key)
+
+
+def custom_title_catalog_fingerprint() -> str:
+    import hashlib
+
+    try:
+        rows = list_custom_titles()
+    except Exception:
+        return "unavailable"
+    payload = [
+        [
+            row.id,
+            row.title_name,
+            row.song_id,
+            row.difficulty_level,
+            row.achievement_type,
+            row.updated_at,
+        ]
+        for row in rows
+    ]
+    return hashlib.sha1(
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()[:16]

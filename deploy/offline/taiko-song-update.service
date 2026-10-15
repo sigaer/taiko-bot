@@ -1,0 +1,17 @@
+[Unit]
+Description=Taiko daily song data updater
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/sigaer/taiko
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/sigaer/taiko/.venv/bin/python -m taiko_bot.offline.song_update_task
+Restart=always
+RestartSec=10
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

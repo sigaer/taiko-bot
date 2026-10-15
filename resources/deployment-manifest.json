@@ -1,0 +1,1043 @@
+{
+  "version": 1,
+  "owner": "taiko-bot",
+  "baseline": "Sakura 790c2c7",
+  "entries": [
+    {
+      "path": "assets/fumens/Futsuu/1007.png",
+      "sha256": "0effb0e0f29769f52f44ddee1f442cf9303a11622ec29ce56f931b54ed499a77",
+      "bytes": 25236,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1007.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1028.png",
+      "sha256": "da30080028cb1772c9b987d7e719fe01cea077325dc3af0f4099974a42898495",
+      "bytes": 61132,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1028.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1046.png",
+      "sha256": "471731318b73a1272929c75f838dce6037fce3b7632ef913d25281cf6322bfa4",
+      "bytes": 63579,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1046.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1091.png",
+      "sha256": "121420ce7e9da584b6c0c38ad00d69ab21fb7550fbf9b1b5c9257d64d218120b",
+      "bytes": 50699,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1091.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1189.png",
+      "sha256": "abd8b10265f5eb65aedfe76b62b7b24a7018487b63702e40b59cd678b9ef9c70",
+      "bytes": 37351,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1189.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1288.png",
+      "sha256": "24e1305f14f1d1fa162125a79169739aedb996c1be4d595865b172fef42f5c50",
+      "bytes": 29503,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1288.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1289.png",
+      "sha256": "10a445da779fdaee466bf7060f35b53c1ce653f8462aaf6f2e223312deadea96",
+      "bytes": 37083,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1289.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1290.png",
+      "sha256": "2936898defa30c7da8960f50ab9a29829118a4e55d055f4f55669914d0bb0d05",
+      "bytes": 27923,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1290.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1291.png",
+      "sha256": "740b7dd887a5d515e306578ec0931230d7d54d4f12f86d05f5bd38f40ccb4c6b",
+      "bytes": 32376,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1291.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1372.png",
+      "sha256": "5a777e6d6a07b22bba9c88c279ef704485040cc77d06a2021f0a79390a973a3a",
+      "bytes": 27313,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1372.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1418.png",
+      "sha256": "f3f57291fdfcfa1ce22121920daccd1bc727c8b9c5ef55854d868d0de4d76b62",
+      "bytes": 53489,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1418.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1429.png",
+      "sha256": "3e36439e8bdfa32f1f3f4716487b19b1d08b65fd907b144e32402a36581a6890",
+      "bytes": 77163,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1429.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/1440.png",
+      "sha256": "5656d731591bcffdba8cf8d9d58a86eebf786aa13537b485357e25322659cacc",
+      "bytes": 73668,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/1440.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/390.png",
+      "sha256": "fe2deba9bb12d1d3f8639b9eb5aa1972efeee1cea341cae0ae1755632a63ffb1",
+      "bytes": 66143,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/390.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/601.png",
+      "sha256": "31eab06eede1068b2373e1e3a231a9585fa6a213c30fb80d4f20a798da133829",
+      "bytes": 67086,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/601.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/606.png",
+      "sha256": "50e694276eac7c8eb19a9e2d20d624d0f9ea4be88abb8ab8d79337bdd0772659",
+      "bytes": 69779,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/606.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/719.png",
+      "sha256": "f813cd4031716442984caa83f2173574df2c77e82f6f8329cb6d8e29536e6df3",
+      "bytes": 97330,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/719.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/725.png",
+      "sha256": "5d639f078008725efc5006c01faa56340691b3615a9c0bfae14a9703fc24b24b",
+      "bytes": 53754,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/725.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/847.png",
+      "sha256": "91904f4c63f7e1e8b56684c637e446b78f562255b0b24477dd1c8b519b051f04",
+      "bytes": 42423,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/847.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/903.png",
+      "sha256": "ff8a3aae6b076036c3a9cb24573254fb2a2917c5795df3ed15e30691fdd61111",
+      "bytes": 114054,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/903.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/904.png",
+      "sha256": "77b8ab5125d4f66c31b43c954d319942263281f48672afbfa7dfef2c2a1cc135",
+      "bytes": 89241,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/904.png"
+    },
+    {
+      "path": "assets/fumens/Futsuu/930.png",
+      "sha256": "2de5aad494880be9b8d601b82baefb1d517fdb8f39b73d62322a4a1deee1a46f",
+      "bytes": 64228,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Futsuu/930.png"
+    },
+    {
+      "path": "assets/fumens/InnerOni/1222.png",
+      "sha256": "378ccc34fe095d0012d3c77e91401d5af3d0c7c91395ece60689d2e583b27e79",
+      "bytes": 116025,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/InnerOni/1222.png"
+    },
+    {
+      "path": "assets/fumens/InnerOni/1429.png",
+      "sha256": "cb3bc961b5c8f215a9fe6e562d2003ece27cb0f4b929da342584dcc7d2f5ee6d",
+      "bytes": 121916,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/InnerOni/1429.png"
+    },
+    {
+      "path": "assets/fumens/InnerOni/606.png",
+      "sha256": "c1ed0fc88cccb4cd8fbd91b74073633bf65992d1a55ec392cb60406ca83a76d4",
+      "bytes": 95008,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/InnerOni/606.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1007.png",
+      "sha256": "0a7efc2cb597d8a0bddc9743226b6ea7e7eb027e8396f988e48d8d8e059e287c",
+      "bytes": 21715,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1007.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1028.png",
+      "sha256": "df058ff0a18bcca8d16c6ad660d5153cd94670501be454b28cc70e71d6d26308",
+      "bytes": 46770,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1028.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1046.png",
+      "sha256": "373b5d6250aa6135bb45e3bf3de70c2885e3511345cdb4065c3e387326eeae11",
+      "bytes": 58163,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1046.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1091.png",
+      "sha256": "4bc624f9837f50acc31365af95f265eb1bcb0500b642b38846a32c41b9ea1187",
+      "bytes": 47422,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1091.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1189.png",
+      "sha256": "5220ed066a61ba8cee0707cb7de947cf8db083df953c4c5f0d6d1fee2f31bd7a",
+      "bytes": 36046,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1189.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1288.png",
+      "sha256": "971aff67cc8274d283489b3fddb4b6b1aac7dce81fc31f3f8b28a8d0c1bda5bc",
+      "bytes": 27098,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1288.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1289.png",
+      "sha256": "13c6a7dce10d84c68bfc790ff2d1f3c91673ad0bac5c594e2e3c8e54bb7b9d23",
+      "bytes": 35915,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1289.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1290.png",
+      "sha256": "9f5f90f1b888451c7b6daed2aa6e1e6325c0be0610e03ba90a4f8bad54463420",
+      "bytes": 26100,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1290.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1291.png",
+      "sha256": "0d3dedc9977334742270b73acdeb94eebc665f63fee78e610782eb70ce61b9de",
+      "bytes": 32114,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1291.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1372.png",
+      "sha256": "d37775df559661fa0486ed3690fa8dca52c493cffb299821042e7fbf190b9a69",
+      "bytes": 26883,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1372.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1418.png",
+      "sha256": "57a301d1cde207e16a9ef14a20e066b2900474f299b7b1e6b640b227f6f18c9e",
+      "bytes": 50221,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1418.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/1429.png",
+      "sha256": "d813ae4ed692d56403e15298890e2e84e9974d4ef88203094e84e116571fddf8",
+      "bytes": 113833,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/1429.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/390.png",
+      "sha256": "f29cd13620c953c0509dd58ae0f1caa6d678f5773e629a9bd4c4757dcf3565b8",
+      "bytes": 58323,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/390.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/601.png",
+      "sha256": "12a1fcca629b5caad1eda0eb5d57827a56ade66c5dcfb8af8b6ba458032c91b9",
+      "bytes": 66479,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/601.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/606.png",
+      "sha256": "1c1da2893c15aa516c5cd090293800417205c86720eda2d7c5aebf1173b4bc73",
+      "bytes": 63073,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/606.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/719.png",
+      "sha256": "bcdda84e73a9727ae1bb90752e6a1158d11238abcd2cf6a38c67a9a122c2ce5b",
+      "bytes": 91963,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/719.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/725.png",
+      "sha256": "25887f2979f6d75688bcfabc36afc417ac66b7d59d4741d12d3487d224779937",
+      "bytes": 50556,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/725.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/847.png",
+      "sha256": "b24d9ef59af424b28ec315b56f7eba5f88b2aafdb6a7c5704ebdba241f2277d5",
+      "bytes": 41186,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/847.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/902.png",
+      "sha256": "114a612356e2059c66119fad856d506fb1a6cf60cd6d15c4bf296a6c1100bfae",
+      "bytes": 60366,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/902.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/903.png",
+      "sha256": "4fc03002c03390ba13ff094149a290352accf28ade0b24d65b2c75dffebb93f1",
+      "bytes": 103216,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/903.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/904.png",
+      "sha256": "c24be03aea04d418b1267da66e448beb1bfb7d5100af92acd304b790c56041fa",
+      "bytes": 90077,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/904.png"
+    },
+    {
+      "path": "assets/fumens/Kantan/930.png",
+      "sha256": "13e3dddd1a6a43e01c52d0d539e10b48912d88aed0ccb59c3b90b836b106b7e5",
+      "bytes": 58259,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Kantan/930.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1007.png",
+      "sha256": "0da98f172a42e8406d866c0474adda51f41d3c2522129474ee5543be74f64310",
+      "bytes": 30205,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1007.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1028.png",
+      "sha256": "1f6310cc429bfc17eb1ce486ac3ce4eb0e836848d777c1a645ae5496324de229",
+      "bytes": 65863,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1028.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1046.png",
+      "sha256": "ab4695b14343a71a13da5790f7601436301d4aaa562fa06411de93c5123affc3",
+      "bytes": 70444,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1046.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1091.png",
+      "sha256": "49b3bf778876a0a98c9e613a2fdc5d1fe61853f63a2c639b6e9a2e508e181bc1",
+      "bytes": 58010,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1091.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1189.png",
+      "sha256": "581ff24163c8b48dff56979c4d9136deb89c46a6a0631f3cf1fb79a340d847ff",
+      "bytes": 42192,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1189.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1288.png",
+      "sha256": "6308890336b515eb3f33d59965698392688f600f6a5f9b3e6b1d88e006c916fb",
+      "bytes": 30423,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1288.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1289.png",
+      "sha256": "4c96ee444a49a5de95e7a8aed1c0063c4527a0e1bc9c5d80fe2c426f2262f867",
+      "bytes": 92062,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1289.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1290.png",
+      "sha256": "162ceca59cb280e3271b46b1872104f859cf2d7dfc1c83705edd8aac3796bd8b",
+      "bytes": 31892,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1290.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1291.png",
+      "sha256": "50197d6ceb1b8d9a4ff3c87f41667d8429defaf82fe4c5a87c239cf0f5e49897",
+      "bytes": 34118,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1291.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1372.png",
+      "sha256": "dec4d36c45a05674b8ef3399ed1c02c2b6711ffb79417402d96652fb07cdd005",
+      "bytes": 30035,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1372.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1418.png",
+      "sha256": "eb8ccd57b27a69cc78ef8bef16ff590ed9c546477251a21919a48d4307114625",
+      "bytes": 58724,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1418.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/1429.png",
+      "sha256": "e1f45260022f36319ce3d6ae18ccc3fb4dd1fb01b82a817a39883633447ec7b7",
+      "bytes": 79779,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/1429.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/390.png",
+      "sha256": "bfcfbe5fa41049166f484a85ae30fe5c00c33659d889b1db527ab0e6b5d2d009",
+      "bytes": 71170,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/390.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/601.png",
+      "sha256": "d909b1e0ee124980158b94965cb95e546e68c05fb08506eee3db00b7db0e72aa",
+      "bytes": 71641,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/601.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/606.png",
+      "sha256": "06c20cdc4993654aab9be248849a43cd652b51eeb82da9c42748905ed49892c2",
+      "bytes": 79066,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/606.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/719.png",
+      "sha256": "7bcd073024a8acab1035ad2845ec0e3c43385ac5e8c352cb1719b6a26a80498f",
+      "bytes": 110553,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/719.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/725.png",
+      "sha256": "88739ab09dc08dab6649d8a5a35fefc0e42811c72b92993e00efa8308e1db508",
+      "bytes": 59455,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/725.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/847.png",
+      "sha256": "8f6cc972bc1f00b7a249a9bf4b75385fbd37f3701795179e262b2ca695a21afb",
+      "bytes": 42631,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/847.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/903.png",
+      "sha256": "a560c0fd4f42b19cd0a18995323f7ad0ff2693263ff0739cf7f9d7402d2fd3e7",
+      "bytes": 112854,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/903.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/904.png",
+      "sha256": "1f03a91eeef19f5267deb08faa1915d583529fb56bc46571b5af50e7085c89a9",
+      "bytes": 91107,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/904.png"
+    },
+    {
+      "path": "assets/fumens/Muzukashii/930.png",
+      "sha256": "e45c6402fbf5ae7930c090dd2dd3f9c2e1ca7f5dce66f9e95ab118850fe78f34",
+      "bytes": 72713,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Muzukashii/930.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1007.png",
+      "sha256": "5dce9e10a743db4a71224b63b78076ca3328771c7f1b6a64b213058c02fdcd2e",
+      "bytes": 32304,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1007.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1028.png",
+      "sha256": "92e9f6ec7d86ae60c7953692ca4b73dac5d5b909a9b78f24118afb67105f6213",
+      "bytes": 69537,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1028.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1091.png",
+      "sha256": "26614cfc3d60077b3f4fc2bb3a9c236d7f78b9cd91349d7b29f51af634bb3b4e",
+      "bytes": 64551,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1091.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1189.png",
+      "sha256": "0f07c61b42827d029f32c44f610c31897ad206aa1f516459a34a10dcd5daaa2a",
+      "bytes": 44759,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1189.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1288.png",
+      "sha256": "89f8cef4ee9883a69c993357eda3ffe5ddd46293e2b5d02bce02354d29e1fe2d",
+      "bytes": 33875,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1288.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1289.png",
+      "sha256": "bf540f5693bb1a836b7a9c7cedcf1e0189637b239bf970a7ab95e4ba1b3e2c5a",
+      "bytes": 46032,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1289.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1290.png",
+      "sha256": "64a9aa8eb5496da890d60ebba077a89fc78ce6925cad0a2fa1e9dfd6cc9c41e4",
+      "bytes": 37716,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1290.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1291.png",
+      "sha256": "560dc6af6ae6c309dc7c58d7599019e1b6ade7918090863532d93d30d451ad70",
+      "bytes": 38101,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1291.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1372.png",
+      "sha256": "8ffe7e889bcacf96a94e6e79c060755dabf395e538c32c1b441d1a1935e970e6",
+      "bytes": 32458,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1372.png"
+    },
+    {
+      "path": "assets/fumens/Oni/1429.png",
+      "sha256": "c878ad2354c376d55d15d8ece82803f88610ce802b7bb22b9277ad15454f63c4",
+      "bytes": 125827,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/1429.png"
+    },
+    {
+      "path": "assets/fumens/Oni/390.png",
+      "sha256": "82a789d14e51ecac59c851822bc847f7c79bd6ddff6fe91e016c78457fa3a925",
+      "bytes": 72215,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/390.png"
+    },
+    {
+      "path": "assets/fumens/Oni/606.png",
+      "sha256": "167af7f5fcc6bb1cb05a9dd29e7d078fe54dfe8a370f0a643dea548e0f414f33",
+      "bytes": 97271,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/606.png"
+    },
+    {
+      "path": "assets/fumens/Oni/719.png",
+      "sha256": "7d47a065c36b4c4c459dc94c76fe0866546c88ccd760086ee3671937fa9c6644",
+      "bytes": 57183,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/719.png"
+    },
+    {
+      "path": "assets/fumens/Oni/903.png",
+      "sha256": "a2dcfa13beff7c458a70f5bdf26d1da8a0c03205b31b47ec6ff836367819c89d",
+      "bytes": 112208,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/903.png"
+    },
+    {
+      "path": "assets/fumens/Oni/904.png",
+      "sha256": "08feedce47d5961f8887e9ce44fb5be693f216591ddff7a9da3525cd8777217a",
+      "bytes": 130688,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/904.png"
+    },
+    {
+      "path": "assets/fumens/Oni/930.png",
+      "sha256": "d8d6841b31056a93167b62afa7ab496d8621530e4f071f22d2641cc42d9ef063",
+      "bytes": 82051,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/fumens/Oni/930.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/accuracy_power.png",
+      "sha256": "845b680e33129e26c7d50c832e470b19e097107314cc6f9580963a3683ddd619",
+      "bytes": 881,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/accuracy_power.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/accuracy_power.svg",
+      "sha256": "a4849dde7384523b8f68f26ed69d38b49d9af51be3ccb0f833ceb7591ad5e689",
+      "bytes": 555,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/accuracy_power.svg"
+    },
+    {
+      "path": "assets/icons/b30_dims/big_song.png",
+      "sha256": "4c7f167583ffb39093881ccf0850a8296d27602b7b584c9d76245ca52f8f1dc0",
+      "bytes": 542,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/big_song.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/big_song.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68",
+      "bytes": 517,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/big_song.svg"
+    },
+    {
+      "path": "assets/icons/b30_dims/complex_proc.png",
+      "sha256": "6102e57e6e375001b62405f036e669ce97252828364bc714b7d43d39d35099e3",
+      "bytes": 396,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/complex_proc.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/complex_proc.svg",
+      "sha256": "0cfc3c5f8a90686b6f0d13e8ed85bf651af375da81c4e2b87a1db225c4df3277",
+      "bytes": 490,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/complex_proc.svg"
+    },
+    {
+      "path": "assets/icons/b30_dims/overall_rating.png",
+      "sha256": "d26707938202fc4e0b34b7b304b5d1e56e848a4eb3a4d1a86c2596249130e7c3",
+      "bytes": 381,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/overall_rating.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/overall_rating.svg",
+      "sha256": "5fbe60a66fbebaf0a06d4b5bede3af05301d9f580c4f8f7bd65a39077389e4ae",
+      "bytes": 668,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/overall_rating.svg"
+    },
+    {
+      "path": "assets/icons/b30_dims/rhythm.png",
+      "sha256": "804f162bb41dcc08e369821e707b5b7cc1fd2d35f89e566841c25cec58224892",
+      "bytes": 678,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/rhythm.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/rhythm.svg",
+      "sha256": "b17575a9e8f462107dc378bf414c37d3f6ca362c871c7341915b91dc5ad7370a",
+      "bytes": 567,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/rhythm.svg"
+    },
+    {
+      "path": "assets/icons/b30_dims/speed.png",
+      "sha256": "2b47bb1d1bed12dd7b4bae3646f78752c902be2054853630d2b0c6b45e51a982",
+      "bytes": 508,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/speed.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/speed.svg",
+      "sha256": "f18f1b4476d1f1ba018219131fee671f2a7ac286c9eb3aa83ea72274e17f34e5",
+      "bytes": 402,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/speed.svg"
+    },
+    {
+      "path": "assets/icons/b30_dims/stamina.png",
+      "sha256": "699f133d8ba187780c1e711c5a344f36810c3b309edacedbc9ca2707d3124199",
+      "bytes": 405,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/stamina.png"
+    },
+    {
+      "path": "assets/icons/b30_dims/stamina.svg",
+      "sha256": "2b79c557d20682103605964672fe8764e2223a48b8f7f421e876ef5358c155e5",
+      "bytes": 412,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/b30_dims/stamina.svg"
+    },
+    {
+      "path": "assets/icons/diff/icon_3.png",
+      "sha256": "08e6ca2245da76ffc3b0ffb4c8672833c41c256845af1fad91ef40b0352ecaa6",
+      "bytes": 4028,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/icons/diff/icon_3.png"
+    },
+    {
+      "path": "assets/name_plate_custom/name_plate_custom_gold.png",
+      "sha256": "c47dc997e0fe976b22fddc490190f4e49a90b7a16ce06dec60080136491fdc3b",
+      "bytes": 25157,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/name_plate_custom/name_plate_custom_gold.png"
+    },
+    {
+      "path": "assets/name_plate_custom/name_plate_custom_rainbow.png",
+      "sha256": "223fc4610d9cc1e57fbbaf3719b6fc686f5385c3c3d63e649e14e3a7a085f2d1",
+      "bytes": 23642,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/name_plate_custom/name_plate_custom_rainbow.png"
+    },
+    {
+      "path": "assets/name_plate_custom/name_plate_custom_sliver.png",
+      "sha256": "faa295dbca8db1699bc54ed8fcf2ca09e272087faef7e4b54b569e86fbe29b06",
+      "bytes": 24250,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/name_plate_custom/name_plate_custom_sliver.png"
+    },
+    {
+      "path": "assets/templates/anime-bg.png",
+      "sha256": "4b5498a6b9c61c387d83b88848d1f70daabeb1e1b96dec18f4ce3ad696c9d197",
+      "bytes": 367249,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/anime-bg.png"
+    },
+    {
+      "path": "assets/templates/anime-info-bg.png",
+      "sha256": "cd6819209a6fb3b2477a8c5aa6cf3501ed9ece3251e2a2fbb6fbcf2eae86a0eb",
+      "bytes": 477156,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/anime-info-bg.png"
+    },
+    {
+      "path": "assets/templates/classic-bg.png",
+      "sha256": "cd3341a719a7a712cf31773eec6388b1f8d0934d4ba12ccf974e3ff22e05bedd",
+      "bytes": 477789,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/classic-bg.png"
+    },
+    {
+      "path": "assets/templates/classic-info-bg.png",
+      "sha256": "ae54601f430f1997ed3ad38a4a46d3f03929e3eb7e564de218c5001eff7e4de3",
+      "bytes": 494705,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/classic-info-bg.png"
+    },
+    {
+      "path": "assets/templates/gamemusic-bg.png",
+      "sha256": "eb7ff74300d9e777c96163935b88c72cc2c36aea94e0caa11b5a0433c36845ad",
+      "bytes": 478580,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/gamemusic-bg.png"
+    },
+    {
+      "path": "assets/templates/gamemusic-info-bg.png",
+      "sha256": "393f310369420c673147fb3b65944ce883e9d83e9f49213572979a060778ab74",
+      "bytes": 579174,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/gamemusic-info-bg.png"
+    },
+    {
+      "path": "assets/templates/info-bg-final-fix.png",
+      "sha256": "eac7ea20eff8b2b9269239cf8d5b4134a4cdf725bf62449286066098f7242a35",
+      "bytes": 530596,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/info-bg-final-fix.png"
+    },
+    {
+      "path": "assets/templates/kid-bg.png",
+      "sha256": "9066311252de62a6b64bdbd09496e0f6b7b84895f7b900421f22e94f0c67cd29",
+      "bytes": 453485,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/kid-bg.png"
+    },
+    {
+      "path": "assets/templates/kid-info-bg.png",
+      "sha256": "eca9a88bab6b14642a3137b4e61bbc845e0954617580f558109075c2f3b4d7bb",
+      "bytes": 543253,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/kid-info-bg.png"
+    },
+    {
+      "path": "assets/templates/original-bg.png",
+      "sha256": "fbe7907f0d87e40ea5d63fe9cf47ac1c4e9a7acce947b0128964d1100277118b",
+      "bytes": 494349,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/original-bg.png"
+    },
+    {
+      "path": "assets/templates/original-info-bg.png",
+      "sha256": "f0f07036d001af887f4daf86807e8d8d88f346ff5cc2b2f29e5d4385eb71a850",
+      "bytes": 556206,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/original-info-bg.png"
+    },
+    {
+      "path": "assets/templates/pop-bg.png",
+      "sha256": "efee595098a013c55af5d4c487cbcdac5f8075c8b1881a90cf029a9d4dd20937",
+      "bytes": 547020,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/pop-bg.png"
+    },
+    {
+      "path": "assets/templates/pop-info-bg.png",
+      "sha256": "988e8850a3450ae950e0b5704d650bffb9cd62acf59c64ebedb55676dcf00700",
+      "bytes": 657358,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/pop-info-bg.png"
+    },
+    {
+      "path": "assets/templates/variety-bg.png",
+      "sha256": "36792f5981bc044a69ce9de38c4e25ba274b1983ea916e7ccf51164923e5d2ee",
+      "bytes": 766944,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/variety-bg.png"
+    },
+    {
+      "path": "assets/templates/variety-info-bg.png",
+      "sha256": "2fcb1df210f213a60635df95d81598585d23cb5fc2033358156b04b6f02c0291",
+      "bytes": 668953,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/variety-info-bg.png"
+    },
+    {
+      "path": "assets/templates/vocaloid-bg.png",
+      "sha256": "3df860ea3f714c011a7adb9215831abf73470a0592af453e096b8a0a852a4fdc",
+      "bytes": 447820,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/vocaloid-bg.png"
+    },
+    {
+      "path": "assets/templates/vocaloid-info-bg.png",
+      "sha256": "f4db20989289594cd95b292372ecaff53ca659e72f6d90a956af722fb2f55b8e",
+      "bytes": 568957,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/assets/templates/vocaloid-info-bg.png"
+    },
+    {
+      "path": "schemas/annual-summary-v4.schema.json",
+      "sha256": "a8ecc11504f4f59c9460e2ca72ac8e330d1aa182df0f7d18936e377fedf33ad1",
+      "bytes": 17171,
+      "distribution": "source-schema",
+      "origin": "Sakura:790c2c7:taiko/schemas/annual-summary-v4.schema.json"
+    },
+    {
+      "path": "songs/_index.json",
+      "sha256": "f2067738c347c16b93237d4f932be434fc4033575a48bb03e90eb97856e484c1",
+      "bytes": 3478228,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/_index.json"
+    },
+    {
+      "path": "songs/analyze_result_filtered.json",
+      "sha256": "288b24c0fc35ce22fbe5e0d9f90638fbf4457697fa25dccd80727be5040e433f",
+      "bytes": 2326124,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/analyze_result_filtered.json"
+    },
+    {
+      "path": "songs/analyze_result_filtered_report.json",
+      "sha256": "b2ace60e8b902c56d230b92fc53e00b80d8142c750c369b0adda6cdfcac2fd15",
+      "bytes": 184,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/analyze_result_filtered_report.json"
+    },
+    {
+      "path": "songs/branch_audio_manifest.json",
+      "sha256": "2bce5190d3b360f2f80b13da16f82b67264d565337f10686ebf7caa4db9538b6",
+      "bytes": 62482,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/branch_audio_manifest.json"
+    },
+    {
+      "path": "songs/constants_id_v2.csv",
+      "sha256": "cd0fb723997e26d82fffc3e20657f2fd43d5ba2a8efb989bc4951cd8142bf566",
+      "bytes": 507611,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/constants_id_v2.csv"
+    },
+    {
+      "path": "songs/grade_dojo_nijiiro_2025_simple.json",
+      "sha256": "9c58aae53340691ac310608d3da8aa012b93364073c9a62f311d85b661ab0b7c",
+      "bytes": 20581,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/grade_dojo_nijiiro_2025_simple.json"
+    },
+    {
+      "path": "songs/grade_dojo_nijiiro_2026_simple.json",
+      "sha256": "97d0dc4230637b26c3fc4d1d8d880bc59d994e62126a659a34fc514ba3de3bcb",
+      "bytes": 22938,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/grade_dojo_nijiiro_2026_simple.json"
+    },
+    {
+      "path": "songs/grade_dojo_nijiiro_history_simple.json",
+      "sha256": "0a78bc44ae0e3479fc2ed84a5a6acfecef6aa6d0398dc85d45e15725b4b6e493",
+      "bytes": 137665,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/grade_dojo_nijiiro_history_simple.json"
+    },
+    {
+      "path": "songs/music_donda_list.json",
+      "sha256": "4750111e702f1c08ee9843202cd620f206520ca31768d85a15f9637ec8bdb267",
+      "bytes": 37088,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/music_donda_list.json"
+    },
+    {
+      "path": "songs/rating_structured_with_ids.json",
+      "sha256": "ec231a6ec40bbf0bf6405ae0889fd8ec2c23f7f906ed54a364718cfc4a4d7039",
+      "bytes": 935742,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/rating_structured_with_ids.json"
+    },
+    {
+      "path": "songs/song_alias.json",
+      "sha256": "df3ef3fef9ee91fbe6a260319492ecf7d729cbbf2216ea8cc1a6327e6a1a4c10",
+      "bytes": 285464,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/song_alias.json"
+    },
+    {
+      "path": "songs/song_data.json",
+      "sha256": "ae476e0ace6c6a3c03cdd1913f94ea9f7e407a1ea5c847455d7b998373e8c446",
+      "bytes": 3122267,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/song_data.json"
+    },
+    {
+      "path": "songs/song_difficulty.json",
+      "sha256": "732ecb14bf99959ee6658d7920594a709ae44f33ea91fc3b252e9a348cba3202",
+      "bytes": 3439,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/song_difficulty.json"
+    },
+    {
+      "path": "songs/song_id2tjapath.json",
+      "sha256": "1dc31e96bb59dc97d34bde41cdff1093e7271851daffacfa7e06653fa92543ef",
+      "bytes": 87362,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/song_id2tjapath.json"
+    },
+    {
+      "path": "songs/song_score.json",
+      "sha256": "163f945962cda399d3579c19a089dd772e60fd5c98d4cbe921348ec610593cfd",
+      "bytes": 437163,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/song_score.json"
+    },
+    {
+      "path": "songs/taiko_goku_onis.json",
+      "sha256": "30372a9781b2fe574211d2bfa418ca9bdc774c990e3ab82242ba84ec27f8cda9",
+      "bytes": 5896099,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/taiko_goku_onis.json"
+    },
+    {
+      "path": "songs/taiko_song_database.json",
+      "sha256": "a68dd7a87adc807b1524b028034c3496747f5a2b3c4bbaed67604f092b4552c7",
+      "bytes": 4053473,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/taiko_song_database.json"
+    },
+    {
+      "path": "songs/tja_note_counts.json",
+      "sha256": "4770977d6158ca64cd5098d00d230150ebf3f7c0a37f2a75c798e48fa8fe1122",
+      "bytes": 1262858,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/tja_note_counts.json"
+    },
+    {
+      "path": "songs/twso_cn_data.json",
+      "sha256": "c16e199c77c9eeacd0be99d2518564604b16309cd8c4cf2881696262e792f067",
+      "bytes": 594853,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/twso_cn_data.json"
+    },
+    {
+      "path": "songs/twso_data.json",
+      "sha256": "4a28a63ff6cf8586a310c57043ce1f4e7c48bee65f259da4de3b5ffc363da015",
+      "bytes": 3880452,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/songs/twso_data.json"
+    },
+    {
+      "path": "templates/info-bg-fix.png",
+      "sha256": "90c8097be30cdcd0206de0ba5bd74677cba571c03a19667ffd8e2c3b5ed408aa",
+      "bytes": 558827,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/templates/info-bg-fix.png"
+    },
+    {
+      "path": "templates/info-bg.png",
+      "sha256": "951ad29f574b3269dd6cda3bfa596ad27204ba8ff6b7c772c692ce9f779c8590",
+      "bytes": 559146,
+      "distribution": "private-unverified-rights",
+      "origin": "Sakura:790c2c7:taiko/templates/info-bg.png"
+    }
+  ],
+  "held": [
+    {
+      "path": "songs/archive_unused/README.md",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/analyze_result.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/db_data.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/rating_structured_with_ids_old.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/response_sample.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/song_data_with_roll.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/song_score_wiki_partial.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/taiko_titles_readable_extract.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/twso_cn_data_.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    },
+    {
+      "path": "songs/archive_unused/twso_data_.json",
+      "reason": "Historical samples may contain account or response data; contents not read or republished."
+    }
+  ]
+}

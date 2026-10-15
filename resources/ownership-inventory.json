@@ -1,0 +1,1001 @@
+{
+  "baseline": {
+    "taiko": "f11febd",
+    "sakura": "790c2c7"
+  },
+  "deletedFiles": 176,
+  "pythonNetRemovedIncludingTests": 11621,
+  "pythonImplementationNetRemoved": 9973,
+  "deleted": [
+    "taiko/assets/fumens/Futsuu/1007.png",
+    "taiko/assets/fumens/Futsuu/1028.png",
+    "taiko/assets/fumens/Futsuu/1046.png",
+    "taiko/assets/fumens/Futsuu/1091.png",
+    "taiko/assets/fumens/Futsuu/1189.png",
+    "taiko/assets/fumens/Futsuu/1288.png",
+    "taiko/assets/fumens/Futsuu/1289.png",
+    "taiko/assets/fumens/Futsuu/1290.png",
+    "taiko/assets/fumens/Futsuu/1291.png",
+    "taiko/assets/fumens/Futsuu/1372.png",
+    "taiko/assets/fumens/Futsuu/1418.png",
+    "taiko/assets/fumens/Futsuu/1429.png",
+    "taiko/assets/fumens/Futsuu/1440.png",
+    "taiko/assets/fumens/Futsuu/390.png",
+    "taiko/assets/fumens/Futsuu/601.png",
+    "taiko/assets/fumens/Futsuu/606.png",
+    "taiko/assets/fumens/Futsuu/719.png",
+    "taiko/assets/fumens/Futsuu/725.png",
+    "taiko/assets/fumens/Futsuu/847.png",
+    "taiko/assets/fumens/Futsuu/903.png",
+    "taiko/assets/fumens/Futsuu/904.png",
+    "taiko/assets/fumens/Futsuu/930.png",
+    "taiko/assets/fumens/InnerOni/1222.png",
+    "taiko/assets/fumens/InnerOni/1429.png",
+    "taiko/assets/fumens/InnerOni/606.png",
+    "taiko/assets/fumens/Kantan/1007.png",
+    "taiko/assets/fumens/Kantan/1028.png",
+    "taiko/assets/fumens/Kantan/1046.png",
+    "taiko/assets/fumens/Kantan/1091.png",
+    "taiko/assets/fumens/Kantan/1189.png",
+    "taiko/assets/fumens/Kantan/1288.png",
+    "taiko/assets/fumens/Kantan/1289.png",
+    "taiko/assets/fumens/Kantan/1290.png",
+    "taiko/assets/fumens/Kantan/1291.png",
+    "taiko/assets/fumens/Kantan/1372.png",
+    "taiko/assets/fumens/Kantan/1418.png",
+    "taiko/assets/fumens/Kantan/1429.png",
+    "taiko/assets/fumens/Kantan/390.png",
+    "taiko/assets/fumens/Kantan/601.png",
+    "taiko/assets/fumens/Kantan/606.png",
+    "taiko/assets/fumens/Kantan/719.png",
+    "taiko/assets/fumens/Kantan/725.png",
+    "taiko/assets/fumens/Kantan/847.png",
+    "taiko/assets/fumens/Kantan/902.png",
+    "taiko/assets/fumens/Kantan/903.png",
+    "taiko/assets/fumens/Kantan/904.png",
+    "taiko/assets/fumens/Kantan/930.png",
+    "taiko/assets/fumens/Muzukashii/1007.png",
+    "taiko/assets/fumens/Muzukashii/1028.png",
+    "taiko/assets/fumens/Muzukashii/1046.png",
+    "taiko/assets/fumens/Muzukashii/1091.png",
+    "taiko/assets/fumens/Muzukashii/1189.png",
+    "taiko/assets/fumens/Muzukashii/1288.png",
+    "taiko/assets/fumens/Muzukashii/1289.png",
+    "taiko/assets/fumens/Muzukashii/1290.png",
+    "taiko/assets/fumens/Muzukashii/1291.png",
+    "taiko/assets/fumens/Muzukashii/1372.png",
+    "taiko/assets/fumens/Muzukashii/1418.png",
+    "taiko/assets/fumens/Muzukashii/1429.png",
+    "taiko/assets/fumens/Muzukashii/390.png",
+    "taiko/assets/fumens/Muzukashii/601.png",
+    "taiko/assets/fumens/Muzukashii/606.png",
+    "taiko/assets/fumens/Muzukashii/719.png",
+    "taiko/assets/fumens/Muzukashii/725.png",
+    "taiko/assets/fumens/Muzukashii/847.png",
+    "taiko/assets/fumens/Muzukashii/903.png",
+    "taiko/assets/fumens/Muzukashii/904.png",
+    "taiko/assets/fumens/Muzukashii/930.png",
+    "taiko/assets/fumens/Oni/1007.png",
+    "taiko/assets/fumens/Oni/1028.png",
+    "taiko/assets/fumens/Oni/1091.png",
+    "taiko/assets/fumens/Oni/1189.png",
+    "taiko/assets/fumens/Oni/1288.png",
+    "taiko/assets/fumens/Oni/1289.png",
+    "taiko/assets/fumens/Oni/1290.png",
+    "taiko/assets/fumens/Oni/1291.png",
+    "taiko/assets/fumens/Oni/1372.png",
+    "taiko/assets/fumens/Oni/1429.png",
+    "taiko/assets/fumens/Oni/390.png",
+    "taiko/assets/fumens/Oni/606.png",
+    "taiko/assets/fumens/Oni/719.png",
+    "taiko/assets/fumens/Oni/903.png",
+    "taiko/assets/fumens/Oni/904.png",
+    "taiko/assets/fumens/Oni/930.png",
+    "taiko/assets/icons/b30_dims/accuracy_power.png",
+    "taiko/assets/icons/b30_dims/accuracy_power.svg",
+    "taiko/assets/icons/b30_dims/big_song.png",
+    "taiko/assets/icons/b30_dims/big_song.svg",
+    "taiko/assets/icons/b30_dims/complex_proc.png",
+    "taiko/assets/icons/b30_dims/complex_proc.svg",
+    "taiko/assets/icons/b30_dims/overall_rating.png",
+    "taiko/assets/icons/b30_dims/overall_rating.svg",
+    "taiko/assets/icons/b30_dims/rhythm.png",
+    "taiko/assets/icons/b30_dims/rhythm.svg",
+    "taiko/assets/icons/b30_dims/speed.png",
+    "taiko/assets/icons/b30_dims/speed.svg",
+    "taiko/assets/icons/b30_dims/stamina.png",
+    "taiko/assets/icons/b30_dims/stamina.svg",
+    "taiko/assets/icons/diff/icon_3.png",
+    "taiko/assets/name_plate_custom/name_plate_custom_gold.png",
+    "taiko/assets/name_plate_custom/name_plate_custom_rainbow.png",
+    "taiko/assets/name_plate_custom/name_plate_custom_sliver.png",
+    "taiko/assets/templates/anime-bg.png",
+    "taiko/assets/templates/anime-info-bg.png",
+    "taiko/assets/templates/classic-bg.png",
+    "taiko/assets/templates/classic-info-bg.png",
+    "taiko/assets/templates/gamemusic-bg.png",
+    "taiko/assets/templates/gamemusic-info-bg.png",
+    "taiko/assets/templates/info-bg-final-fix.png",
+    "taiko/assets/templates/kid-bg.png",
+    "taiko/assets/templates/kid-info-bg.png",
+    "taiko/assets/templates/original-bg.png",
+    "taiko/assets/templates/original-info-bg.png",
+    "taiko/assets/templates/pop-bg.png",
+    "taiko/assets/templates/pop-info-bg.png",
+    "taiko/assets/templates/variety-bg.png",
+    "taiko/assets/templates/variety-info-bg.png",
+    "taiko/assets/templates/vocaloid-bg.png",
+    "taiko/assets/templates/vocaloid-info-bg.png",
+    "taiko/deploy/taiko-song-update.service",
+    "taiko/deploy/taiko_admin_backup.cron",
+    "taiko/plugins/utils/audio_missing_mover.py",
+    "taiko/plugins/utils/branch_audio_manifest.py",
+    "taiko/plugins/utils/build_achievement_bg.py",
+    "taiko/plugins/utils/build_nijiiro_history_simple.py",
+    "taiko/plugins/utils/cover_summary.py",
+    "taiko/plugins/utils/dani_overview.py",
+    "taiko/plugins/utils/ese_audio_sync.py",
+    "taiko/plugins/utils/fumen_rename.py",
+    "taiko/plugins/utils/generate_alias.py",
+    "taiko/plugins/utils/grade_dojo_extract.py",
+    "taiko/plugins/utils/merge_index.py",
+    "taiko/plugins/utils/merge_json.py",
+    "taiko/plugins/utils/merged_bind.py",
+    "taiko/plugins/utils/song_tja_mapping.py",
+    "taiko/plugins/utils/song_update_task.py",
+    "taiko/plugins/utils/tja_roll_parser.py",
+    "taiko/plugins/utils/tja_roll_sync.py",
+    "taiko/plugins/utils/update_db.py",
+    "taiko/schemas/annual-summary-v4.schema.json",
+    "taiko/scripts/backfill_daily_ability.py",
+    "taiko/scripts/migrate_multi_bind_to_db.py",
+    "taiko/scripts/taiko_admin_backup.py",
+    "taiko/songs/_index.json",
+    "taiko/songs/analyze_result_filtered.json",
+    "taiko/songs/analyze_result_filtered_report.json",
+    "taiko/songs/branch_audio_manifest.json",
+    "taiko/songs/constants_id_v2.csv",
+    "taiko/songs/grade_dojo_nijiiro_2025_simple.json",
+    "taiko/songs/grade_dojo_nijiiro_2026_simple.json",
+    "taiko/songs/grade_dojo_nijiiro_history_simple.json",
+    "taiko/songs/music_donda_list.json",
+    "taiko/songs/rating_structured_with_ids.json",
+    "taiko/songs/song_alias.json",
+    "taiko/songs/song_data.json",
+    "taiko/songs/song_difficulty.json",
+    "taiko/songs/song_id2tjapath.json",
+    "taiko/songs/song_score.json",
+    "taiko/songs/taiko_goku_onis.json",
+    "taiko/songs/taiko_song_database.json",
+    "taiko/songs/tja_note_counts.json",
+    "taiko/songs/twso_cn_data.json",
+    "taiko/songs/twso_data.json",
+    "taiko/taiko_runtime/platform_adapter.py",
+    "taiko/taiko_runtime/qq_markdown_media.py",
+    "taiko/taiko_runtime/startup_migration.py",
+    "taiko/taiko_runtime_init.py",
+    "taiko/templates/info-bg-fix.png",
+    "taiko/templates/info-bg.png",
+    "taiko/tests/test_ese_audio_sync.py",
+    "taiko/tests/test_song_data_pipeline.py",
+    "taiko/tests/test_song_tja_mapping.py",
+    "taiko/tests/test_taiko_admin_backup.py",
+    "taiko/tests/test_tja_roll_parser.py",
+    "taiko/tests/test_tja_roll_sync.py",
+    "taiko/tjaAnalyzer.py"
+  ],
+  "remaining": [
+    {
+      "path": "taiko/AGENTS.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/README.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/bot.py",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/bot_core.py",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/bot_gateway.py",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/deploy/taiko-capacity-logs.logrotate",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/deploy/taiko-journald-capacity.conf",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/deploy/taiko-storage-maintenance.service",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/deploy/taiko-storage-maintenance.timer",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/docs/application-phase2a.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/application-phase2b.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/application-phase2c.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/application-phase2d.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/application-phase2e-installation.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/b30-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/chart-config-query.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/domain-extraction-phase6-publication.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/domain-migration-phase3.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/legacy-entry-retirement.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/lifecycle-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/offline-ownership.md",
+      "reason": "Current ownership and Viewer blockers"
+    },
+    {
+      "path": "taiko/docs/personal-display-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/progress-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/public-plugin-source-landing.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/public-score-token-api.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/qq-official-adapter.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/query-management-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/resident-memory-caches.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/runtime-installation.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/score-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/server-ownership-migration.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/song-plugin-cutover.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/taikorec-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/trend-ownership.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/docs/鼓众广场绑定教程.png",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/feature_handler/__init__.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/feature_handler/bot_group_whitelist.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/feature_handler/feature_handler.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/feature_handler/feature_switch_handler.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/growth_compute/__init__.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/growth_compute/__main__.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/hdu_upload/README.md",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/__init__.py",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/deploy/hdu-uploader.service",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/deploy/hdu.sakura-bot.cn.conf",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/server.py",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/static/app.js",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/static/favicon.ico",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/static/index.html",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/static/miku.png",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/static/styles.css",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/tests/test_server.py",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/hdu_upload/wsgi.py",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/onebot_runtime/__init__.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/onebot_runtime/adapter.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/onebot_runtime/gateway.py",
+      "reason": "Generic host; bot.py fallback/gateway and feature consumers"
+    },
+    {
+      "path": "taiko/output/grade_dojo_nijiiro_2025_extracted.json",
+      "reason": "Historical generated resource; provenance clearance required"
+    },
+    {
+      "path": "taiko/plugins/__init__.py",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/plugins/config.py",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/plugins/utils/__init__.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/admin_audit.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/__init__.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/__main__.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/aggregates.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/archive_fallback.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/cache.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/constants.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/corrections.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/dan_events.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/dan_state.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/data/finaltitle_reference_v1.json",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/eligibility.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/events.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/finaltitle.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/finaltitle_features.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/finaltitle_model.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/finaltitle_reference.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/finaltitle_reference_cli.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/helpers.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/model.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/profiling.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/ratings.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/reporting_window.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/service.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/shadow.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/snapshots.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/standalone.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/annual_summary/standing_dan.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/chart_availability.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/chart_roll_metadata.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/custom_title.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/dani_progress.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/dojo_score.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/draw_dress.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/drawinfo.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/duplicate_versions.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/evaluation_roll.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/font_fallback.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/my_don_cli.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/performance_forecast.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/progress_catalog.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/recommendation_intelligence.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/score_calculator.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/score_estimator.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/score_line.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/score_prediction_support.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/song_title_showcase.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/taiko_db.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/taiko_domain_adapter.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/taikob_v2.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/taikob_v2_data.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/target_recommend.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/target_score_core.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/plugins/utils/title_catalog.py",
+      "reason": "Viewer fixed CLI/module paths, source fingerprints and transitive calculation/render dependencies"
+    },
+    {
+      "path": "taiko/pyproject.toml",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/requirements-application.txt",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/requirements-domain.txt",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/scripts/audit_annual_reporting_window.py",
+      "reason": "Audits arbitrary legacy annual source roots; retained with Viewer source/fingerprint dependency"
+    },
+    {
+      "path": "taiko/scripts/clear_nb_inherited_proxy_env.sh",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/scripts/merged_read_cli.py",
+      "reason": "Viewer merged-read-worker.ts executes scripts.merged_read_cli"
+    },
+    {
+      "path": "taiko/scripts/start_taiko_gateway_core.sh",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/scripts/storage_maintenance.py",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/scripts/validate_domain_migration.py",
+      "reason": "Generic host/bootstrap/deployment configuration; see offline-ownership.md"
+    },
+    {
+      "path": "taiko/songs/README.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/songs/archive_unused/README.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/songs/archive_unused/analyze_result.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/db_data.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/rating_structured_with_ids_old.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/response_sample.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/song_data_with_roll.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/song_score_wiki_partial.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/taiko_titles_readable_extract.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/twso_cn_data_.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/songs/archive_unused/twso_data_.json",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    },
+    {
+      "path": "taiko/taiko_runtime/__init__.py",
+      "reason": "Generic QQ host helpers or unchanged Viewer memory/environment dependency"
+    },
+    {
+      "path": "taiko/taiko_runtime/memory.py",
+      "reason": "Generic QQ host helpers or unchanged Viewer memory/environment dependency"
+    },
+    {
+      "path": "taiko/taiko_runtime/runtime_env.py",
+      "reason": "Generic QQ host helpers or unchanged Viewer memory/environment dependency"
+    },
+    {
+      "path": "taiko/tests/account_sync_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/conftest.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/fixtures/hiroba_credential_legacy.json",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/fixtures/source_proxy_renderer_legacy.json",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/fixtures/sync_dispatch_runtime_legacy.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/fixtures/sync_dispatch_targets_runtime_legacy.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/hiroba_credential_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/native_binding_metadata_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/native_binding_mutation_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/native_qq_migration_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/qq_migration_private_fixture.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/run_method_calls_runtime_smoke.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/runtime_owner.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/source_mutation_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_annual_archive_fallback.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_annual_manual_corrections.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_annual_normalized_cache.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_count.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_custom_title.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_daily_ability.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_daily_publication.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_dani_progress.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_domain_adapter.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_drawinfo.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_duplicate_versions.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_evaluation_roll.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_feature_group_keys.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_feature_switch_handler.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_hiroba_render_crown_fallback.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_memory_caches.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_merge_kernel_decoupling.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_merged_bind.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_merged_materialization.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_merged_private_read.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_my_don_showcase_layout.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_official_command_compat.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_official_command_gate.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_official_interaction_scope.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_private_message_event.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_publication_backup.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_publication_compute.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_publication_history.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_publication_metadata_bridge.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_publication_proxy_renderer.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_publication_store.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_qq_markdown_media.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_recommendation_intelligence.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_score_calculator.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_score_estimator.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_song_title_showcase.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_star_progress.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_storage_maintenance.py",
+      "reason": "Non-Taiko/shared service: retained unchanged"
+    },
+    {
+      "path": "taiko/tests/test_taiko_image_fallback.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_taiko_runtime.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_taikob_v2.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_taikob_v2_data.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_taikorec_hints.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_target_recommend.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_update_change_highlights.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/test_version_summary.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/token_bearer_fixture.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/token_bearer_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/tests/token_issuer_sql_child.py",
+      "reason": "Historical tests retained; changed runtime imports point to Taiko owners"
+    },
+    {
+      "path": "taiko/太鼓年度总结实现方案_v2.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/太鼓年度总结实现方案_v3.md",
+      "reason": "Documentation / ownership history"
+    },
+    {
+      "path": "taiko/机器人自测报告模板-2023.xlsx",
+      "reason": "Uninspected historical sample; privacy/redistribution clearance required"
+    }
+  ]
+}

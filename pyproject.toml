@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.13.0"
+version = "0.14.0"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -37,6 +37,14 @@ dependencies = [
 ]
 
 [project.scripts]
+taiko-resources = "taiko_bot.cli.resources:main"
+taiko-annual = "taiko_bot.offline.annual_summary.__main__:main"
+taiko-growth = "taiko_bot.offline.growth_compute:entrypoint"
+taiko-recommendation = "taiko_bot.offline.recommendation_intelligence:entrypoint"
+taiko-my-don = "taiko_bot.offline.my_don_cli:main"
+taiko-song-update = "taiko_bot.offline.song_update_task:main"
+taiko-admin-backup = "taiko_bot.cli.taiko_admin_backup:main"
+
 taiko-public-api = "taiko_bot.services.public_api:main"
 taiko-sync-dispatch = "taiko_bot.services.sync_dispatch_server:main"
 taiko-source-mutation = "taiko_bot.cli.source_mutation_cli:main"
@@ -63,3 +71,6 @@ include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*"
 
 [tool.setuptools]
 py-modules = ["bot", "bot_core", "bot_gateway", "bot_pool_metrics", "taiko_data_api", "taiko_runtime_init"]
+
+[tool.setuptools.package-data]
+"taiko_bot.offline" = ["schemas/*.json", "annual_summary/data/*.json"]

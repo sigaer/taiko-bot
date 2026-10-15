@@ -2246,3 +2246,302 @@ def render_update_changes_image(
     buf = BytesIO()
     final_img.save(buf, format="PNG")
     return buf.getvalue()
+
+
+def _pick_achievement_bg(count_level: int) -> Optional[Path]:
+    level = max(1, min(5, int(count_level)))
+    path = TEMPLATES_DIR / f"bg_level_{level}_panel.png"
+    if path.exists():
+        return path
+    return None
+
+
+
+def draw_achievement_overview(
+    base: Image.Image,
+    draw: ImageDraw.ImageDraw,
+    userdata: Dict[str, Any],
+    sx: float,
+    sy: float,
+    font: ImageFont.ImageFont,
+    stroke_width: int,
+    fill: Tuple[int, int, int],
+    stroke_fill: Tuple[int, int, int],
+    offset_xy: Tuple[int, int] = (0, 0),
+) -> Tuple[int, int, int, int]:
+    ox, oy = offset_xy
+    ach = userdata.get("achievement", {}) or {}
+    ary_rank = ach.get("ary_score_rank_count", [0] * 7) or [0] * 7
+    ary_crown = ach.get("ary_crown_count", [0] * 3) or [0] * 3
+    count_level = _safe_int(ach.get("count_level", 1), 1)
+
+    ach_box_s = _offset_box(_scale_box(ACH_BOX, sx, sy), ox, oy)
+    ax1, ay1, ax2, ay2 = ach_box_s
+    aw, ah = (ax2 - ax1), (ay2 - ay1)
+
+    bg_path = _pick_achievement_bg(count_level)
+    if bg_path:
+        bg = Image.open(bg_path).convert("RGBA")
+        bg = bg.resize((aw, ah), Image.LANCZOS)
+        base.alpha_composite(bg, (ax1, ay1))
+
+    num_w = int(aw * ACH_NUM_W_FRAC)
+    num_h = int(ah * ACH_NUM_H_FRAC)
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[0])
+    x = ax1 + int(aw * ACH_ROW1_X_FRAC)
+    box = (x - num_w // 2, y - num_h // 2, x + num_w // 2, y + num_h // 2)
+    _draw_text_center(
+        draw, box, str(_safe_int(ary_rank[6])), font, fill, stroke_fill, stroke_width
+    )
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[1])
+    for i, v in enumerate(ary_rank[3:6]):
+        cx = ax1 + int(aw * ACH_COL_X_FRAC[i])
+        box = (cx - num_w // 2, y - num_h // 2, cx + num_w // 2, y + num_h // 2)
+        _draw_text_center(
+            draw, box, str(_safe_int(v)), font, fill, stroke_fill, stroke_width
+        )
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[2])
+    for i, v in enumerate(ary_rank[0:3]):
+        cx = ax1 + int(aw * ACH_COL_X_FRAC[i])
+        box = (cx - num_w // 2, y - num_h // 2, cx + num_w // 2, y + num_h // 2)
+        _draw_text_center(
+            draw, box, str(_safe_int(v)), font, fill, stroke_fill, stroke_width
+        )
+
+    y = ay1 + int(ah * ACH_ROW_Y_FRAC[3])
+    for i, v in enumerate(ary_crown[0:3]):
+        cx = ax1 + int(aw * ACH_COL_X_FRAC[i])
+        box = (cx - num_w // 2, y - num_h // 2, cx + num_w // 2, y + num_h // 2)
+        _draw_text_center(
+            draw, box, str(_safe_int(v)), font, fill, stroke_fill, stroke_width
+        )
+
+    return ach_box_s
+
+
+
+def render_achievement_panel(
+    userdata: Dict[str, Any],
+    base_font_size: int = 20,
+    base_stroke_width: int = 2,
+    fill: Tuple[int, int, int] = (255, 255, 255),
+    stroke_fill: Tuple[int, int, int] = (0, 0, 0),
+    font_path: Optional[Path] = None,
+) -> Image.Image:
+    ach = userdata.get("achievement", {}) or {}
+    ary_rank = ach.get("ary_score_rank_count", [0] * 7) or [0] * 7
+    ary_crown = ach.get("ary_crown_count", [0] * 3) or [0] * 3
+    count_level = _safe_int(ach.get("count_level", 1), 1)
+
+    bg_path = _pick_achievement_bg(count_level)
+    if bg_path:
+        panel = Image.open(bg_path).convert("RGBA")
+    else:
+        panel = Image.new("RGBA", ACH_BASE_SIZE, (0, 0, 0, 0))
+
+    target_w, target_h = panel.size
+    base_w, base_h = ACH_BASE_SIZE
+    sx = target_w / base_w
+    sy = target_h / base_h
+
+    font_size = max(10, int(round(base_font_size * (sx + sy) / 2)))
+    stroke_width = max(1, int(round(base_stroke_width * (sx + sy) / 2)))
+    font = _get_font_by_path(font_path or FONT_PATH, font_size)
+    draw = ImageDraw.Draw(panel)
+
+    base_num_w = base_w * ACH_NUM_W_FRAC
+    base_num_h = base_h * ACH_NUM_H_FRAC
+    num_w = int(round(base_num_w * sx))
+    num_h = int(round(base_num_h * sy))
+
+    row1_y = int(round(base_h * ACH_ROW_Y_FRAC[0] * sy)) - 5 + ACH_ROW_Y_ADJUST[0]
+    row2_y = int(round(base_h * ACH_ROW_Y_FRAC[1] * sy)) - 5 + ACH_ROW_Y_ADJUST[1]
+    row3_y = int(round(base_h * ACH_ROW_Y_FRAC[2] * sy)) + ACH_ROW_Y_ADJUST[2]
+    row4_y = int(round(base_h * ACH_ROW_Y_FRAC[3] * sy)) + ACH_ROW_Y_ADJUST[3]
+
+    row1_x = int(round(base_w * ACH_ROW1_X_FRAC * sx))
+    col_x = [int(round(base_w * f * sx)) for f in ACH_COL_X_FRAC]
+
+    box = (
+        row1_x - num_w // 2,
+        row1_y - num_h // 2,
+        row1_x + num_w // 2,
+        row1_y + num_h // 2,
+    )
+    _draw_text_center(
+        draw,
+        box,
+        str(_safe_int(ary_rank[6])),
+        font,
+        fill,
+        stroke_fill,
+        stroke_width,
+    )
+
+    for i, v in enumerate(ary_rank[3:6]):
+        cx = col_x[i]
+        box = (
+            cx - num_w // 2,
+            row2_y - num_h // 2,
+            cx + num_w // 2,
+            row2_y + num_h // 2,
+        )
+        _draw_text_center(
+            draw,
+            box,
+            str(_safe_int(v)),
+            font,
+            fill,
+            stroke_fill,
+            stroke_width,
+        )
+
+    row4_y = row4_y - max(1, int(round(font_size / 2)))
+    row3_y = int(round((row2_y + row4_y) / 2))
+    for i, v in enumerate(ary_rank[0:3]):
+        cx = col_x[i]
+        box = (
+            cx - num_w // 2,
+            row3_y - num_h // 2,
+            cx + num_w // 2,
+            row3_y + num_h // 2,
+        )
+        _draw_text_center(
+            draw,
+            box,
+            str(_safe_int(v)),
+            font,
+            fill,
+            stroke_fill,
+            stroke_width,
+        )
+
+    for i, v in enumerate(ary_crown[0:3]):
+        cx = col_x[i]
+        box = (
+            cx - num_w // 2,
+            row4_y - num_h // 2,
+            cx + num_w // 2,
+            row4_y + num_h // 2,
+        )
+        _draw_text_center(
+            draw,
+            box,
+            str(_safe_int(v)),
+            font,
+            fill,
+            stroke_fill,
+            stroke_width,
+        )
+
+    return panel
+
+
+
+def render_nickname_title_row(
+    nickname: str,
+    title_name: str,
+    plate_id: int,
+    *,
+    font_path: Optional[Path] = None,
+    plate_path_override: Optional[Path] = None,
+) -> Image.Image:
+    """Render the title-above-nickname plate used by My Don's nickname layout."""
+    display_name = str(nickname or "鼓手").strip() or "鼓手"
+    userdata = {
+        "profile": {
+            "mydon_name": display_name,
+            "gameCostume": {
+                "mydon_name": display_name,
+                "title": str(title_name),
+                "titleplate_id": int(plate_id),
+            },
+        }
+    }
+    return _render_my_don_nickname_title_row(
+        userdata,
+        title_name,
+        plate_id,
+        font_path or FONT_PATH,
+        plate_path_override=plate_path_override,
+    )
+
+
+
+def render_my_don_image(
+    user_id: int,
+    save_path: Optional[Path | str] = None,
+    title_overrides: Optional[Iterable[str]] = None,
+    showcase_layout: str = MY_DON_SHOWCASE_LAYOUT_NICKNAME,
+    *, score_view=None,
+) -> bytes:
+    if score_view is None:
+        with score_read_view(os.getenv("TAIKO_USERDATA_DIR") or USERDATA_DIR, str(user_id)) as view:
+            return render_my_don_image(user_id, save_path=save_path, title_overrides=title_overrides, showcase_layout=showcase_layout, score_view=view)
+    userdata = json.loads(score_view.current_raw().decode("utf-8"))
+
+    final_img = _render_my_don_base_panel(
+        user_id,
+        userdata,
+        title_overrides=tuple(title_overrides or ()),
+        showcase_layout=normalize_my_don_showcase_layout(showcase_layout),
+    )
+
+    if save_path is not None:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        final_img.save(save_path)
+
+    buf = BytesIO()
+    final_img.save(buf, format="PNG")
+    return buf.getvalue()
+
+
+
+def render_user_dress(user_id: int, save_path: Optional[Path | str] = None) -> Path:
+    image = build_dress_image(user_id)
+    if save_path is None:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        save_path = OUTPUT_DIR / f"dress_{user_id}.png"
+    else:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+    image.save(save_path)
+    return save_path
+
+
+OUTPUT_DIR = ROOT_DIR / "output"
+
+BASE_LAYER_RULES: List[Tuple[str, str]] = [
+    ("color_limb", "common/skin/skin_290_{num}.png"),
+    ("color_body", "common/body/body_290_{num}.png"),
+    ("color_face", "common/face/face_290_{num}.png"),
+]
+
+PART_RULES: List[Tuple[str, str]] = [
+    ("costume_4", "paint/paint_290_{num}.png"),
+    ("costume_3", "body/body_290_{num}.png"),
+    ("costume_2", "head/head_290_{num}.png"),
+    ("costume_5", "accessories/accF_290_{num}.png"),
+]
+
+PLAYER_LOWER_BOX = (78, 949 + 28, 78 + 346, 949 + 56)
+
+ACH_BOX = (81, 1182, 418, 1367)
+
+ACH_ROW_Y_FRAC = [0.15, 0.39, 0.62, 0.87]
+
+ACH_COL_X_FRAC = [0.23, 0.55, 0.87]
+
+ACH_NUM_W_FRAC = 0.22
+
+ACH_NUM_H_FRAC = 0.18
+
+ACH_ROW1_X_FRAC = 0.87
+
+ACH_BASE_SIZE = (353, 204)
+
+ACH_ROW_Y_ADJUST = (2, 2, 2, 0)

@@ -1,0 +1,1 @@
+15 4 * * * root /home/sigaer/taiko/.venv/bin/python -m taiko_bot.cli.taiko_admin_backup --label daily --summary "scheduled taiko admin backup" >> /home/sigaer/taiko/logs/taiko_admin_backup.log 2>&1

@@ -1108,3 +1108,40 @@ def infer_song_title_showcase(
     )
     result.sort(key=_showcase_sort_key)
     return result[:resolved_limit]
+
+
+def serialize_showcase_titles(titles: Iterable[ShowcaseTitle]) -> List[Dict[str, Any]]:
+    payload: List[Dict[str, Any]] = []
+    for item in titles:
+        payload.append(
+            {
+                "titleName": item.title_name,
+                "plateId": int(item.plate_id),
+                "requirementType": item.requirement_type,
+                "difficultyScope": item.difficulty_scope,
+                "conditionText": item.condition_text,
+                "songNames": list(item.song_names),
+                "songIds": list(item.song_ids),
+                "constValue": float(item.const_value or 0.0),
+                "isMultiSong": bool(item.is_multi_song),
+                "source": item.source,
+                "customTitleId": item.custom_title_id,
+                "difficultyLevel": item.difficulty_level,
+                "plateStyle": item.plate_style,
+            }
+        )
+    return payload
+
+
+
+def clear_song_title_showcase_caches() -> None:
+    load_title_catalog_items.cache_clear()
+    _load_song_alias_lookup.cache_clear()
+    _load_title_rarity_lookup.cache_clear()
+    _load_available_title_names.cache_clear()
+    _load_song_lookup.cache_clear()
+    _load_api_song_title_relations.cache_clear()
+    _load_legacy_base_song_title_relations.cache_clear()
+    _load_legacy_all_perfect_relations.cache_clear()
+    _load_manual_hidden_relations.cache_clear()
+    load_song_title_relations.cache_clear()

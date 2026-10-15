@@ -40,3 +40,20 @@ def normalize_dojo_scores(payload):
 def build_dojo_score_map(payload):
     normalized = isinstance(payload, dict) and isinstance(payload.get("scores"), list)
     return domain_dojo.build_dojo_score_map(payload, grade_names={} if normalized else load_grade_name_map())
+
+
+@lru_cache(maxsize=1)
+def load_grade_id_map() -> Dict[str, int]:
+    return {
+        grade_name: dan_id for dan_id, grade_name in load_grade_name_map().items()
+    }
+
+
+
+def get_grade_name_by_dan_id(dan_id: int) -> str:
+    return load_grade_name_map().get(int(dan_id), f"段位{dan_id}")
+
+
+
+def get_dan_id_by_grade_name(grade_name: str) -> Optional[int]:
+    return load_grade_id_map().get(str(grade_name).strip())

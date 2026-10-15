@@ -1,4 +1,5 @@
 from __future__ import annotations
+from dataclasses import replace
 
 
 from sakura_taiko_core.models.calculation import V2RatingResult, FullScoreRef
@@ -63,3 +64,13 @@ def aggregate_topN_value_v2(results, col, N):
 def compute_dim_topN_means_v2(results, N=20):
     return domain_v2.compute_dim_topN_means_v2(results, N,
         full_score_refs=_calc_full_score_refs() if N == 20 and results else None)
+
+
+def _build_result_from_entry(entry, song_map):
+    return domain_score_v2.result_from_entry(entry, song_map, profile="v2-center-20261010",
+        calculate=_calculate_v2_from_chart_cached)
+
+
+
+def _with_high_score(result: V2RatingResult, high_score: int) -> V2RatingResult:
+    return replace(result, high_score=high_score)
