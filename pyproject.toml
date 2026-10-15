@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.14.0"
+version = "0.14.1"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -73,4 +73,4 @@ include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*"
 py-modules = ["bot", "bot_core", "bot_gateway", "bot_pool_metrics", "taiko_data_api", "taiko_runtime_init"]
 
 [tool.setuptools.package-data]
-"taiko_bot.offline" = ["schemas/*.json", "annual_summary/data/*.json"]
+"taiko_bot.offline" = ["growth-compatibility.dat", "schemas/*.json", "annual_summary/data/*.json"]

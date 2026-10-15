@@ -1,0 +1,25 @@
+{
+  "legacyCommit": "6cc94e4",
+  "legacyFiles": {
+    "growth_compute/__main__.py": "e8b3f1911e2213bf8838fd529ae94f9dd9506d3bd432764f041df688f12df4bb",
+    "plugins/utils/chart_availability.py": "dad01624e649d23aa5735d7bb21a6684d075b71d0808d251e4bcb759f5786c40",
+    "plugins/utils/duplicate_versions.py": "7351a33e8fd0c6197a07598b32e96f2802bde923cfa9ace90e6b5cceff0e1297",
+    "plugins/utils/snapshot_history.py": "741535379c92b6d5a992e64ac501a906fc75a48df17121fcefc67ec90515e278",
+    "plugins/utils/score_calculator.py": "21cb9901df9dfa4c32e3335af5892a3b518e5b2cf54d7972894887395b951c84"
+  },
+  "artifactIdentity": "977bdc0b64c1187f4a6f3679656f02c74c97701468770bb259c5ef05580ac839",
+  "checkpoint": {
+    "state": [
+      148039572,
+      3398425904,
+      598676644,
+      1031584325,
+      2576416990,
+      2427243413,
+      397756360,
+      2395961921
+    ],
+    "length": 28621,
+    "pending": "6c696d69740a20202020290a00"
+  }
+}
