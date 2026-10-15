@@ -1,0 +1,17 @@
+10-15 10:20:13 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-score-20261015/client-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+client 7 modules 3320 lines missing []
+['__init__', 'b30_render', 'b30_single', 'draw_dress', 'score_calculator', 'song_visibility', 'taikob_v2']
+client 1 taikob20 PASS
+client 2 taikob20 -r PASS
+client 3 taikob20 v2 体力 PASS
+client 4 taikob20 PASS
+client 5 taikob20 -r PASS
+client 6 taikob20 v2 体力 PASS
+client 7 taikob20 PASS
+client 8 taikob20 -r PASS
+client 9 taikob20 v2 体力 PASS
+client 10 taikob20 PASS
+client 11 taikob20 -r PASS
+client 12 taikob20 v2 体力 PASS

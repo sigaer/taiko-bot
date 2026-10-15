@@ -1,0 +1,305 @@
+10-15 10:22:13 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-score-20261015/center-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+center 9 modules 588 lines missing []
+['__init__', 'chart_availability', 'duplicate_versions', 'score_calculator', 'score_estimator', 'score_line', 'score_prediction_support', 'song_rating_target', 'taiko_domain_adapter']
+center 1 查分 id10000 500 100 20 PASS
+center 2 分数线 极 id10000 30 PASS
+center 3 估分 id10000 PASS
+center 4 查分 表id10000 600 0 PASS
+center 5 /查分 里id10000 0 600 30 PASS
+center 6 查分 测试别名 500 100 0 PASS
+center 7 查分 id10004 1 2 PASS
+center 8 查分 不存在的歌曲 1 2 PASS
+center 9 查分 Fixture 1 2 PASS
+center 10 查分 Fixtur00 1 2 PASS
+center 11 查分 id10000 0 0 PASS
+center 12 查分 id10000 999999 999999 999999 PASS
+center 13 分数线 极 id10000 30 PASS
+center 14 分数线 極 id10000 30 PASS
+center 15 分数线 紫雅 id10000 30 PASS
+center 16 分数线 紫 id10000 30 PASS
+center 17 分数线 粉雅 id10000 30 PASS
+center 18 分数线 粉 id10000 30 PASS
+center 19 分数线 金雅 id10000 30 PASS
+center 20 分数线 金 id10000 30 PASS
+center 21 分数线 银粹 id10000 30 PASS
+center 22 分数线 銀粹 id10000 30 PASS
+center 23 分数线 银 id10000 30 PASS
+center 24 分数线 銀 id10000 30 PASS
+center 25 分数线 铜粹 id10000 30 PASS
+center 26 分数线 銅粹 id10000 30 PASS
+center 27 分数线 铜 id10000 30 PASS
+center 28 分数线 銅 id10000 30 PASS
+center 29 分数线 白粹 id10000 30 PASS
+center 30 分数线 白 id10000 30 PASS
+center 31 分数线 里id10000 极 0 PASS
+center 32 分数线 里id10000 极 60 PASS
+center 33 分数线 里id10000 极 30.5 PASS
+center 34 分数线 表id10000 极 0 PASS
+center 35 分数线 表id10000 极 60 PASS
+center 36 分数线 表id10000 极 30.5 PASS
+center 37 分数线 松id10000 极 0 PASS
+center 38 分数线 松id10000 极 60 PASS
+center 39 分数线 松id10000 极 30.5 PASS
+center 40 分数线 困难id10000 极 0 PASS
+center 41 分数线 困难id10000 极 60 PASS
+center 42 分数线 困难id10000 极 30.5 PASS
+center 43 分数线 竹id10000 极 0 PASS
+center 44 分数线 竹id10000 极 60 PASS
+center 45 分数线 竹id10000 极 30.5 PASS
+center 46 分数线 梅id10000 极 0 PASS
+center 47 分数线 梅id10000 极 60 PASS
+center 48 分数线 梅id10000 极 30.5 PASS
+center 49 分数线 极 id10000 PASS
+center 50 分数线 PASS
+center 51 分数线 极 PASS
+center 52 分数线 极 里 PASS
+center 53 分数线 极 id10000 -1 PASS
+center 54 分数线 极 id10000 61 PASS
+center 55 分数线 id10000 8 PASS
+center 56 分数线 id10000 11 PASS
+center 57 分数线 id10000 30 PASS
+center 58 分数线 id10000 0 PASS
+center 59 分数线 id10000 31 PASS
+center 60 分数线 id10001 极 PASS
+center 61 分数线 里id10002 极 PASS
+center 62 分数线 松id10002 极 PASS
+center 63 分数线 id10004 极 PASS
+center 64 分数线 不存在的歌曲 极 PASS
+center 65 分数线 Fixture 极 PASS
+center 66 分数线 Fixtur00 极 PASS
+center 67 估分 PASS
+center 68 /估分 里id10000 PASS
+center 69 估分表谱id10000 PASS
+center 70 估分 id10001 PASS
+center 71 估分 里id10002 PASS
+center 72 估分 id10004 PASS
+center 73 估分 Fixture PASS
+center 74 估分 不存在的歌曲 PASS
+center 75 估分 Fixtur00 PASS
+center 76 查分 id10000 500 100 20 PASS
+center 77 分数线 极 id10000 30 PASS
+center 78 估分 id10000 PASS
+center 79 查分 表id10000 600 0 PASS
+center 80 /查分 里id10000 0 600 30 PASS
+center 81 查分 测试别名 500 100 0 PASS
+center 82 查分 id10004 1 2 PASS
+center 83 查分 不存在的歌曲 1 2 PASS
+center 84 查分 Fixture 1 2 PASS
+center 85 查分 Fixtur00 1 2 PASS
+center 86 查分 id10000 0 0 PASS
+center 87 查分 id10000 999999 999999 999999 PASS
+center 88 分数线 极 id10000 30 PASS
+center 89 分数线 極 id10000 30 PASS
+center 90 分数线 紫雅 id10000 30 PASS
+center 91 分数线 紫 id10000 30 PASS
+center 92 分数线 粉雅 id10000 30 PASS
+center 93 分数线 粉 id10000 30 PASS
+center 94 分数线 金雅 id10000 30 PASS
+center 95 分数线 金 id10000 30 PASS
+center 96 分数线 银粹 id10000 30 PASS
+center 97 分数线 銀粹 id10000 30 PASS
+center 98 分数线 银 id10000 30 PASS
+center 99 分数线 銀 id10000 30 PASS
+center 100 分数线 铜粹 id10000 30 PASS
+center 101 分数线 銅粹 id10000 30 PASS
+center 102 分数线 铜 id10000 30 PASS
+center 103 分数线 銅 id10000 30 PASS
+center 104 分数线 白粹 id10000 30 PASS
+center 105 分数线 白 id10000 30 PASS
+center 106 分数线 里id10000 极 0 PASS
+center 107 分数线 里id10000 极 60 PASS
+center 108 分数线 里id10000 极 30.5 PASS
+center 109 分数线 表id10000 极 0 PASS
+center 110 分数线 表id10000 极 60 PASS
+center 111 分数线 表id10000 极 30.5 PASS
+center 112 分数线 松id10000 极 0 PASS
+center 113 分数线 松id10000 极 60 PASS
+center 114 分数线 松id10000 极 30.5 PASS
+center 115 分数线 困难id10000 极 0 PASS
+center 116 分数线 困难id10000 极 60 PASS
+center 117 分数线 困难id10000 极 30.5 PASS
+center 118 分数线 竹id10000 极 0 PASS
+center 119 分数线 竹id10000 极 60 PASS
+center 120 分数线 竹id10000 极 30.5 PASS
+center 121 分数线 梅id10000 极 0 PASS
+center 122 分数线 梅id10000 极 60 PASS
+center 123 分数线 梅id10000 极 30.5 PASS
+center 124 分数线 极 id10000 PASS
+center 125 分数线 PASS
+center 126 分数线 极 PASS
+center 127 分数线 极 里 PASS
+center 128 分数线 极 id10000 -1 PASS
+center 129 分数线 极 id10000 61 PASS
+center 130 分数线 id10000 8 PASS
+center 131 分数线 id10000 11 PASS
+center 132 分数线 id10000 30 PASS
+center 133 分数线 id10000 0 PASS
+center 134 分数线 id10000 31 PASS
+center 135 分数线 id10001 极 PASS
+center 136 分数线 里id10002 极 PASS
+center 137 分数线 松id10002 极 PASS
+center 138 分数线 id10004 极 PASS
+center 139 分数线 不存在的歌曲 极 PASS
+center 140 分数线 Fixture 极 PASS
+center 141 分数线 Fixtur00 极 PASS
+center 142 估分 PASS
+center 143 /估分 里id10000 PASS
+center 144 估分表谱id10000 PASS
+center 145 估分 id10001 PASS
+center 146 估分 里id10002 PASS
+center 147 估分 id10004 PASS
+center 148 估分 Fixture PASS
+center 149 估分 不存在的歌曲 PASS
+center 150 估分 Fixtur00 PASS
+center 151 查分 id10000 500 100 20 PASS
+center 152 分数线 极 id10000 30 PASS
+center 153 估分 id10000 PASS
+center 154 查分 表id10000 600 0 PASS
+center 155 /查分 里id10000 0 600 30 PASS
+center 156 查分 测试别名 500 100 0 PASS
+center 157 查分 id10004 1 2 PASS
+center 158 查分 不存在的歌曲 1 2 PASS
+center 159 查分 Fixture 1 2 PASS
+center 160 查分 Fixtur00 1 2 PASS
+center 161 查分 id10000 0 0 PASS
+center 162 查分 id10000 999999 999999 999999 PASS
+center 163 分数线 极 id10000 30 PASS
+center 164 分数线 極 id10000 30 PASS
+center 165 分数线 紫雅 id10000 30 PASS
+center 166 分数线 紫 id10000 30 PASS
+center 167 分数线 粉雅 id10000 30 PASS
+center 168 分数线 粉 id10000 30 PASS
+center 169 分数线 金雅 id10000 30 PASS
+center 170 分数线 金 id10000 30 PASS
+center 171 分数线 银粹 id10000 30 PASS
+center 172 分数线 銀粹 id10000 30 PASS
+center 173 分数线 银 id10000 30 PASS
+center 174 分数线 銀 id10000 30 PASS
+center 175 分数线 铜粹 id10000 30 PASS
+center 176 分数线 銅粹 id10000 30 PASS
+center 177 分数线 铜 id10000 30 PASS
+center 178 分数线 銅 id10000 30 PASS
+center 179 分数线 白粹 id10000 30 PASS
+center 180 分数线 白 id10000 30 PASS
+center 181 分数线 里id10000 极 0 PASS
+center 182 分数线 里id10000 极 60 PASS
+center 183 分数线 里id10000 极 30.5 PASS
+center 184 分数线 表id10000 极 0 PASS
+center 185 分数线 表id10000 极 60 PASS
+center 186 分数线 表id10000 极 30.5 PASS
+center 187 分数线 松id10000 极 0 PASS
+center 188 分数线 松id10000 极 60 PASS
+center 189 分数线 松id10000 极 30.5 PASS
+center 190 分数线 困难id10000 极 0 PASS
+center 191 分数线 困难id10000 极 60 PASS
+center 192 分数线 困难id10000 极 30.5 PASS
+center 193 分数线 竹id10000 极 0 PASS
+center 194 分数线 竹id10000 极 60 PASS
+center 195 分数线 竹id10000 极 30.5 PASS
+center 196 分数线 梅id10000 极 0 PASS
+center 197 分数线 梅id10000 极 60 PASS
+center 198 分数线 梅id10000 极 30.5 PASS
+center 199 分数线 极 id10000 PASS
+center 200 分数线 PASS
+center 201 分数线 极 PASS
+center 202 分数线 极 里 PASS
+center 203 分数线 极 id10000 -1 PASS
+center 204 分数线 极 id10000 61 PASS
+center 205 分数线 id10000 8 PASS
+center 206 分数线 id10000 11 PASS
+center 207 分数线 id10000 30 PASS
+center 208 分数线 id10000 0 PASS
+center 209 分数线 id10000 31 PASS
+center 210 分数线 id10001 极 PASS
+center 211 分数线 里id10002 极 PASS
+center 212 分数线 松id10002 极 PASS
+center 213 分数线 id10004 极 PASS
+center 214 分数线 不存在的歌曲 极 PASS
+center 215 分数线 Fixture 极 PASS
+center 216 分数线 Fixtur00 极 PASS
+center 217 估分 PASS
+center 218 /估分 里id10000 PASS
+center 219 估分表谱id10000 PASS
+center 220 估分 id10001 PASS
+center 221 估分 里id10002 PASS
+center 222 估分 id10004 PASS
+center 223 估分 Fixture PASS
+center 224 估分 不存在的歌曲 PASS
+center 225 估分 Fixtur00 PASS
+center 226 查分 id10000 500 100 20 PASS
+center 227 分数线 极 id10000 30 PASS
+center 228 估分 id10000 PASS
+center 229 查分 表id10000 600 0 PASS
+center 230 /查分 里id10000 0 600 30 PASS
+center 231 查分 测试别名 500 100 0 PASS
+center 232 查分 id10004 1 2 PASS
+center 233 查分 不存在的歌曲 1 2 PASS
+center 234 查分 Fixture 1 2 PASS
+center 235 查分 Fixtur00 1 2 PASS
+center 236 查分 id10000 0 0 PASS
+center 237 查分 id10000 999999 999999 999999 PASS
+center 238 分数线 极 id10000 30 PASS
+center 239 分数线 極 id10000 30 PASS
+center 240 分数线 紫雅 id10000 30 PASS
+center 241 分数线 紫 id10000 30 PASS
+center 242 分数线 粉雅 id10000 30 PASS
+center 243 分数线 粉 id10000 30 PASS
+center 244 分数线 金雅 id10000 30 PASS
+center 245 分数线 金 id10000 30 PASS
+center 246 分数线 银粹 id10000 30 PASS
+center 247 分数线 銀粹 id10000 30 PASS
+center 248 分数线 银 id10000 30 PASS
+center 249 分数线 銀 id10000 30 PASS
+center 250 分数线 铜粹 id10000 30 PASS
+center 251 分数线 銅粹 id10000 30 PASS
+center 252 分数线 铜 id10000 30 PASS
+center 253 分数线 銅 id10000 30 PASS
+center 254 分数线 白粹 id10000 30 PASS
+center 255 分数线 白 id10000 30 PASS
+center 256 分数线 里id10000 极 0 PASS
+center 257 分数线 里id10000 极 60 PASS
+center 258 分数线 里id10000 极 30.5 PASS
+center 259 分数线 表id10000 极 0 PASS
+center 260 分数线 表id10000 极 60 PASS
+center 261 分数线 表id10000 极 30.5 PASS
+center 262 分数线 松id10000 极 0 PASS
+center 263 分数线 松id10000 极 60 PASS
+center 264 分数线 松id10000 极 30.5 PASS
+center 265 分数线 困难id10000 极 0 PASS
+center 266 分数线 困难id10000 极 60 PASS
+center 267 分数线 困难id10000 极 30.5 PASS
+center 268 分数线 竹id10000 极 0 PASS
+center 269 分数线 竹id10000 极 60 PASS
+center 270 分数线 竹id10000 极 30.5 PASS
+center 271 分数线 梅id10000 极 0 PASS
+center 272 分数线 梅id10000 极 60 PASS
+center 273 分数线 梅id10000 极 30.5 PASS
+center 274 分数线 极 id10000 PASS
+center 275 分数线 PASS
+center 276 分数线 极 PASS
+center 277 分数线 极 里 PASS
+center 278 分数线 极 id10000 -1 PASS
+center 279 分数线 极 id10000 61 PASS
+center 280 分数线 id10000 8 PASS
+center 281 分数线 id10000 11 PASS
+center 282 分数线 id10000 30 PASS
+center 283 分数线 id10000 0 PASS
+center 284 分数线 id10000 31 PASS
+center 285 分数线 id10001 极 PASS
+center 286 分数线 里id10002 极 PASS
+center 287 分数线 松id10002 极 PASS
+center 288 分数线 id10004 极 PASS
+center 289 分数线 不存在的歌曲 极 PASS
+center 290 分数线 Fixture 极 PASS
+center 291 分数线 Fixtur00 极 PASS
+center 292 估分 PASS
+center 293 /估分 里id10000 PASS
+center 294 估分表谱id10000 PASS
+center 295 估分 id10001 PASS
+center 296 估分 里id10002 PASS
+center 297 估分 id10004 PASS
+center 298 估分 Fixture PASS
+center 299 估分 不存在的歌曲 PASS
+center 300 估分 Fixtur00 PASS

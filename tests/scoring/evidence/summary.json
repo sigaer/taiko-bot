@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "baselines": {
+    "taiko": "1afe6ea",
+    "sakura": "557f50e"
+  },
+  "version": "0.9.0",
+  "event_parity": {
+    "center": {
+      "cases": 300,
+      "result_sha256": "d0029ff1cf571da755012b18b56a70c63518ec9466eb4d8e99679033188fa0d5"
+    },
+    "client": {
+      "cases": 260,
+      "result_sha256": "dba3897013404847b1f530ba694780b65e8f4b3ac71cef416d7c957a4dbd8db5"
+    }
+  },
+  "dataset_steps": 26,
+  "security_and_statistics_cases": 64,
+  "representative_regressions": 194,
+  "unit_tests": 70,
+  "statistics_subtests": 192,
+  "load_orders": 6,
+  "player_matchers": {
+    "center": 12,
+    "client": 11
+  },
+  "retired_score_matchers": 0,
+  "core_contract_application_storage_changes": false,
+  "production_reads_deploy_restart": false,
+  "source_net_removed": {
+    "sakura_center_plugins": 528,
+    "taiko_legacy_client_plugins": 374
+  }
+}

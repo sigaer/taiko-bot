@@ -33,7 +33,7 @@ nonebot.init(driver='~fastapi+~httpx', log_level='CRITICAL', taiko_song_profile=
              taiko_song_public_root=str(a.work))
 public = nonebot.load_plugin('taiko_bot.runtime.public')
 player = nonebot.load_plugin('taiko_bot.runtime.player.entry')
-assert public and player and len(public.matcher) == 9 and len(player.matcher) == 9
+assert public and player and len(public.matcher) == 9 and len(player.matcher) == (12 if a.host=="center" else 11)
 from nonebot.adapters.onebot.v11 import Adapter, Bot, Message, GroupMessageEvent
 from nonebot.adapters.qq import Adapter as QQAdapter, Bot as QQBot
 from nonebot.adapters.qq.config import BotInfo
@@ -86,4 +86,4 @@ async def run():
 asyncio.run(run())
 assert not violations, violations
 (a.work / 'result.json').write_text(json.dumps({'host': a.host, 'cases': results, 'violations': violations}, indent=2))
-print(a.host, len(results), 'PASS; 9 public + 9 player matchers')
+print(a.host, len(results), 'PASS; public and player matcher ownership')

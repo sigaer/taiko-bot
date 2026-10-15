@@ -1,0 +1,265 @@
+10-15 10:22:22 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-score-20261015/client-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+client 1 modules 119 lines missing []
+['score_line']
+client 1 查分 id10000 500 100 20 PASS
+client 2 分数线 极 id10000 30 PASS
+client 3 查分 表id10000 600 0 PASS
+client 4 /查分 里id10000 0 600 30 PASS
+client 5 查分 测试别名 500 100 0 PASS
+client 6 查分 id10004 1 2 PASS
+client 7 查分 不存在的歌曲 1 2 PASS
+client 8 查分 Fixture 1 2 PASS
+client 9 查分 Fixtur00 1 2 PASS
+client 10 查分 id10000 0 0 PASS
+client 11 查分 id10000 999999 999999 999999 PASS
+client 12 分数线 极 id10000 30 PASS
+client 13 分数线 極 id10000 30 PASS
+client 14 分数线 紫雅 id10000 30 PASS
+client 15 分数线 紫 id10000 30 PASS
+client 16 分数线 粉雅 id10000 30 PASS
+client 17 分数线 粉 id10000 30 PASS
+client 18 分数线 金雅 id10000 30 PASS
+client 19 分数线 金 id10000 30 PASS
+client 20 分数线 银粹 id10000 30 PASS
+client 21 分数线 銀粹 id10000 30 PASS
+client 22 分数线 银 id10000 30 PASS
+client 23 分数线 銀 id10000 30 PASS
+client 24 分数线 铜粹 id10000 30 PASS
+client 25 分数线 銅粹 id10000 30 PASS
+client 26 分数线 铜 id10000 30 PASS
+client 27 分数线 銅 id10000 30 PASS
+client 28 分数线 白粹 id10000 30 PASS
+client 29 分数线 白 id10000 30 PASS
+client 30 分数线 里id10000 极 0 PASS
+client 31 分数线 里id10000 极 60 PASS
+client 32 分数线 里id10000 极 30.5 PASS
+client 33 分数线 表id10000 极 0 PASS
+client 34 分数线 表id10000 极 60 PASS
+client 35 分数线 表id10000 极 30.5 PASS
+client 36 分数线 松id10000 极 0 PASS
+client 37 分数线 松id10000 极 60 PASS
+client 38 分数线 松id10000 极 30.5 PASS
+client 39 分数线 困难id10000 极 0 PASS
+client 40 分数线 困难id10000 极 60 PASS
+client 41 分数线 困难id10000 极 30.5 PASS
+client 42 分数线 竹id10000 极 0 PASS
+client 43 分数线 竹id10000 极 60 PASS
+client 44 分数线 竹id10000 极 30.5 PASS
+client 45 分数线 梅id10000 极 0 PASS
+client 46 分数线 梅id10000 极 60 PASS
+client 47 分数线 梅id10000 极 30.5 PASS
+client 48 分数线 极 id10000 PASS
+client 49 分数线 PASS
+client 50 分数线 极 PASS
+client 51 分数线 极 里 PASS
+client 52 分数线 极 id10000 -1 PASS
+client 53 分数线 极 id10000 61 PASS
+client 54 分数线 id10000 8 PASS
+client 55 分数线 id10000 11 PASS
+client 56 分数线 id10000 30 PASS
+client 57 分数线 id10000 0 PASS
+client 58 分数线 id10000 31 PASS
+client 59 分数线 id10001 极 PASS
+client 60 分数线 里id10002 极 PASS
+client 61 分数线 松id10002 极 PASS
+client 62 分数线 id10004 极 PASS
+client 63 分数线 不存在的歌曲 极 PASS
+client 64 分数线 Fixture 极 PASS
+client 65 分数线 Fixtur00 极 PASS
+client 66 查分 id10000 500 100 20 PASS
+client 67 分数线 极 id10000 30 PASS
+client 68 查分 表id10000 600 0 PASS
+client 69 /查分 里id10000 0 600 30 PASS
+client 70 查分 测试别名 500 100 0 PASS
+client 71 查分 id10004 1 2 PASS
+client 72 查分 不存在的歌曲 1 2 PASS
+client 73 查分 Fixture 1 2 PASS
+client 74 查分 Fixtur00 1 2 PASS
+client 75 查分 id10000 0 0 PASS
+client 76 查分 id10000 999999 999999 999999 PASS
+client 77 分数线 极 id10000 30 PASS
+client 78 分数线 極 id10000 30 PASS
+client 79 分数线 紫雅 id10000 30 PASS
+client 80 分数线 紫 id10000 30 PASS
+client 81 分数线 粉雅 id10000 30 PASS
+client 82 分数线 粉 id10000 30 PASS
+client 83 分数线 金雅 id10000 30 PASS
+client 84 分数线 金 id10000 30 PASS
+client 85 分数线 银粹 id10000 30 PASS
+client 86 分数线 銀粹 id10000 30 PASS
+client 87 分数线 银 id10000 30 PASS
+client 88 分数线 銀 id10000 30 PASS
+client 89 分数线 铜粹 id10000 30 PASS
+client 90 分数线 銅粹 id10000 30 PASS
+client 91 分数线 铜 id10000 30 PASS
+client 92 分数线 銅 id10000 30 PASS
+client 93 分数线 白粹 id10000 30 PASS
+client 94 分数线 白 id10000 30 PASS
+client 95 分数线 里id10000 极 0 PASS
+client 96 分数线 里id10000 极 60 PASS
+client 97 分数线 里id10000 极 30.5 PASS
+client 98 分数线 表id10000 极 0 PASS
+client 99 分数线 表id10000 极 60 PASS
+client 100 分数线 表id10000 极 30.5 PASS
+client 101 分数线 松id10000 极 0 PASS
+client 102 分数线 松id10000 极 60 PASS
+client 103 分数线 松id10000 极 30.5 PASS
+client 104 分数线 困难id10000 极 0 PASS
+client 105 分数线 困难id10000 极 60 PASS
+client 106 分数线 困难id10000 极 30.5 PASS
+client 107 分数线 竹id10000 极 0 PASS
+client 108 分数线 竹id10000 极 60 PASS
+client 109 分数线 竹id10000 极 30.5 PASS
+client 110 分数线 梅id10000 极 0 PASS
+client 111 分数线 梅id10000 极 60 PASS
+client 112 分数线 梅id10000 极 30.5 PASS
+client 113 分数线 极 id10000 PASS
+client 114 分数线 PASS
+client 115 分数线 极 PASS
+client 116 分数线 极 里 PASS
+client 117 分数线 极 id10000 -1 PASS
+client 118 分数线 极 id10000 61 PASS
+client 119 分数线 id10000 8 PASS
+client 120 分数线 id10000 11 PASS
+client 121 分数线 id10000 30 PASS
+client 122 分数线 id10000 0 PASS
+client 123 分数线 id10000 31 PASS
+client 124 分数线 id10001 极 PASS
+client 125 分数线 里id10002 极 PASS
+client 126 分数线 松id10002 极 PASS
+client 127 分数线 id10004 极 PASS
+client 128 分数线 不存在的歌曲 极 PASS
+client 129 分数线 Fixture 极 PASS
+client 130 分数线 Fixtur00 极 PASS
+client 131 查分 id10000 500 100 20 PASS
+client 132 分数线 极 id10000 30 PASS
+client 133 查分 表id10000 600 0 PASS
+client 134 /查分 里id10000 0 600 30 PASS
+client 135 查分 测试别名 500 100 0 PASS
+client 136 查分 id10004 1 2 PASS
+client 137 查分 不存在的歌曲 1 2 PASS
+client 138 查分 Fixture 1 2 PASS
+client 139 查分 Fixtur00 1 2 PASS
+client 140 查分 id10000 0 0 PASS
+client 141 查分 id10000 999999 999999 999999 PASS
+client 142 分数线 极 id10000 30 PASS
+client 143 分数线 極 id10000 30 PASS
+client 144 分数线 紫雅 id10000 30 PASS
+client 145 分数线 紫 id10000 30 PASS
+client 146 分数线 粉雅 id10000 30 PASS
+client 147 分数线 粉 id10000 30 PASS
+client 148 分数线 金雅 id10000 30 PASS
+client 149 分数线 金 id10000 30 PASS
+client 150 分数线 银粹 id10000 30 PASS
+client 151 分数线 銀粹 id10000 30 PASS
+client 152 分数线 银 id10000 30 PASS
+client 153 分数线 銀 id10000 30 PASS
+client 154 分数线 铜粹 id10000 30 PASS
+client 155 分数线 銅粹 id10000 30 PASS
+client 156 分数线 铜 id10000 30 PASS
+client 157 分数线 銅 id10000 30 PASS
+client 158 分数线 白粹 id10000 30 PASS
+client 159 分数线 白 id10000 30 PASS
+client 160 分数线 里id10000 极 0 PASS
+client 161 分数线 里id10000 极 60 PASS
+client 162 分数线 里id10000 极 30.5 PASS
+client 163 分数线 表id10000 极 0 PASS
+client 164 分数线 表id10000 极 60 PASS
+client 165 分数线 表id10000 极 30.5 PASS
+client 166 分数线 松id10000 极 0 PASS
+client 167 分数线 松id10000 极 60 PASS
+client 168 分数线 松id10000 极 30.5 PASS
+client 169 分数线 困难id10000 极 0 PASS
+client 170 分数线 困难id10000 极 60 PASS
+client 171 分数线 困难id10000 极 30.5 PASS
+client 172 分数线 竹id10000 极 0 PASS
+client 173 分数线 竹id10000 极 60 PASS
+client 174 分数线 竹id10000 极 30.5 PASS
+client 175 分数线 梅id10000 极 0 PASS
+client 176 分数线 梅id10000 极 60 PASS
+client 177 分数线 梅id10000 极 30.5 PASS
+client 178 分数线 极 id10000 PASS
+client 179 分数线 PASS
+client 180 分数线 极 PASS
+client 181 分数线 极 里 PASS
+client 182 分数线 极 id10000 -1 PASS
+client 183 分数线 极 id10000 61 PASS
+client 184 分数线 id10000 8 PASS
+client 185 分数线 id10000 11 PASS
+client 186 分数线 id10000 30 PASS
+client 187 分数线 id10000 0 PASS
+client 188 分数线 id10000 31 PASS
+client 189 分数线 id10001 极 PASS
+client 190 分数线 里id10002 极 PASS
+client 191 分数线 松id10002 极 PASS
+client 192 分数线 id10004 极 PASS
+client 193 分数线 不存在的歌曲 极 PASS
+client 194 分数线 Fixture 极 PASS
+client 195 分数线 Fixtur00 极 PASS
+client 196 查分 id10000 500 100 20 PASS
+client 197 分数线 极 id10000 30 PASS
+client 198 查分 表id10000 600 0 PASS
+client 199 /查分 里id10000 0 600 30 PASS
+client 200 查分 测试别名 500 100 0 PASS
+client 201 查分 id10004 1 2 PASS
+client 202 查分 不存在的歌曲 1 2 PASS
+client 203 查分 Fixture 1 2 PASS
+client 204 查分 Fixtur00 1 2 PASS
+client 205 查分 id10000 0 0 PASS
+client 206 查分 id10000 999999 999999 999999 PASS
+client 207 分数线 极 id10000 30 PASS
+client 208 分数线 極 id10000 30 PASS
+client 209 分数线 紫雅 id10000 30 PASS
+client 210 分数线 紫 id10000 30 PASS
+client 211 分数线 粉雅 id10000 30 PASS
+client 212 分数线 粉 id10000 30 PASS
+client 213 分数线 金雅 id10000 30 PASS
+client 214 分数线 金 id10000 30 PASS
+client 215 分数线 银粹 id10000 30 PASS
+client 216 分数线 銀粹 id10000 30 PASS
+client 217 分数线 银 id10000 30 PASS
+client 218 分数线 銀 id10000 30 PASS
+client 219 分数线 铜粹 id10000 30 PASS
+client 220 分数线 銅粹 id10000 30 PASS
+client 221 分数线 铜 id10000 30 PASS
+client 222 分数线 銅 id10000 30 PASS
+client 223 分数线 白粹 id10000 30 PASS
+client 224 分数线 白 id10000 30 PASS
+client 225 分数线 里id10000 极 0 PASS
+client 226 分数线 里id10000 极 60 PASS
+client 227 分数线 里id10000 极 30.5 PASS
+client 228 分数线 表id10000 极 0 PASS
+client 229 分数线 表id10000 极 60 PASS
+client 230 分数线 表id10000 极 30.5 PASS
+client 231 分数线 松id10000 极 0 PASS
+client 232 分数线 松id10000 极 60 PASS
+client 233 分数线 松id10000 极 30.5 PASS
+client 234 分数线 困难id10000 极 0 PASS
+client 235 分数线 困难id10000 极 60 PASS
+client 236 分数线 困难id10000 极 30.5 PASS
+client 237 分数线 竹id10000 极 0 PASS
+client 238 分数线 竹id10000 极 60 PASS
+client 239 分数线 竹id10000 极 30.5 PASS
+client 240 分数线 梅id10000 极 0 PASS
+client 241 分数线 梅id10000 极 60 PASS
+client 242 分数线 梅id10000 极 30.5 PASS
+client 243 分数线 极 id10000 PASS
+client 244 分数线 PASS
+client 245 分数线 极 PASS
+client 246 分数线 极 里 PASS
+client 247 分数线 极 id10000 -1 PASS
+client 248 分数线 极 id10000 61 PASS
+client 249 分数线 id10000 8 PASS
+client 250 分数线 id10000 11 PASS
+client 251 分数线 id10000 30 PASS
+client 252 分数线 id10000 0 PASS
+client 253 分数线 id10000 31 PASS
+client 254 分数线 id10001 极 PASS
+client 255 分数线 里id10002 极 PASS
+client 256 分数线 松id10002 极 PASS
+client 257 分数线 id10004 极 PASS
+client 258 分数线 不存在的歌曲 极 PASS
+client 259 分数线 Fixture 极 PASS
+client 260 分数线 Fixtur00 极 PASS

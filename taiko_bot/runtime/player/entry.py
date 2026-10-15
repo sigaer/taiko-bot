@@ -113,3 +113,5 @@ from . import progress
 from . import b30
 from . import trend  # noqa: E402,F401
 from . import personal  # noqa: E402,F401
+
+from . import scoring

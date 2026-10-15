@@ -1,0 +1,71 @@
+{
+  "host": "client",
+  "steps": [
+    {
+      "step": "cold",
+      "value": 1650,
+      "writes": 1
+    },
+    {
+      "step": "hot",
+      "value": 1650,
+      "writes": 0
+    },
+    {
+      "step": "source-updated-index",
+      "value": 1650,
+      "writes": 0
+    },
+    {
+      "step": "source-updated-points",
+      "value": 964000,
+      "writes": 1
+    },
+    {
+      "step": "index-after-points",
+      "value": 1650,
+      "writes": 0
+    },
+    {
+      "step": "cache-cleared",
+      "value": 1750,
+      "writes": 0
+    },
+    {
+      "step": "missing-output-hot-index",
+      "value": 1750,
+      "writes": 0
+    },
+    {
+      "step": "missing-output-points",
+      "value": 964000,
+      "writes": 0
+    },
+    {
+      "step": "missing-source-hot-index",
+      "value": 1750,
+      "writes": 0
+    },
+    {
+      "step": "missing-source-points",
+      "value": 964000,
+      "writes": 0
+    },
+    {
+      "step": "points-cold",
+      "value": 909000,
+      "writes": 1
+    },
+    {
+      "step": "points-hot",
+      "value": 909000,
+      "writes": 0
+    },
+    {
+      "step": "points-hot-missing-source",
+      "value": 909000,
+      "writes": 0
+    }
+  ],
+  "cold_sha256": "a8762de873c847f8e8eab93e2725e5d8e44b001746362ef1f5038a2ea5a3d335"
+}

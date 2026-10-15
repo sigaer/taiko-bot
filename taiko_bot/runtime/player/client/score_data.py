@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from taiko_bot import domain as _domain
 from sakura_taiko_core.score import scoreline as _scoreline, client_scoreline as _client_scoreline
 
 import json
@@ -13,7 +12,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from taiko_bot.settings import get_settings
 
-from .evaluation_roll import compute_rating_roll_breakdown
 
 BASE = get_settings().root_dir
 SCORE_PATH = BASE / "songs" / "song_score.json"
@@ -156,6 +154,66 @@ def format_scoreline_message(
     )
 
 
-if __name__ == "__main__":
-    total, matched = rebuild_scoreline_dataset()
-    print(f"rebuilt {UNIFIED_PATH} rows={total} matched={matched}")
+JSON_PATH = UNIFIED_PATH
+
+
+@lru_cache(maxsize=1)
+def _load_score_json() -> Dict[str, Any]:
+    """
+    读取并缓存统一后的 taiko_goku_onis.json。
+    期望结构：列表，每项至少包含 id / level / initial_points。
+    """
+
+    source_mtime = max(
+        SCORE_PATH.stat().st_mtime,
+        ROLL_PATH.stat().st_mtime,
+        SONG_DATA_PATH.stat().st_mtime,
+    )
+    if not JSON_PATH.exists() or JSON_PATH.stat().st_mtime < source_mtime:
+        rebuild_scoreline_dataset(JSON_PATH)
+    if not JSON_PATH.exists():
+        raise FileNotFoundError(f"未找到分值配置文件: {JSON_PATH}")
+    with JSON_PATH.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data
+
+def _get_initial_points(song_id: int, level: int) -> int:
+    """
+    在列表型 JSON 中，遍历查找 id==song_id 且 level==level 的项，返回 initial_points（良的基础分值）。
+    若存在多条匹配，取第一条；若不存在匹配则报错。
+    """
+    data_list = _load_score_json()
+
+    for item in data_list:
+        # 允许 id 为字符串/数字，做一次安全解析
+        try:
+            item_id = int(item.get("id"))
+        except Exception:
+            continue
+        item_level = item.get("level")
+
+        if item_id == song_id and item_level == level:
+            if "initial_points" not in item:
+                raise KeyError(
+                    f"id={song_id}, level={level} 的记录缺少 'initial_points'"
+                )
+            ip = item["initial_points"]
+            return ip
+
+    raise KeyError(f"未在 {JSON_PATH} 中找到 id={song_id}, level={level} 的分值记录。")
+
+def compute_score(
+    song_id: int, good: int, ok: int, drumroll: int = 0, level: int = 4
+) -> int:
+    """
+    计算总分（支持里/表对应 level）：
+      - 良基础分值 = initial_points
+      - 可基础分值 = (initial_points // 2) 再“舍去个位” => ((initial_points // 2) // 10) * 10
+      - 连打分 = drumroll * 100
+    """
+    initial_points = _get_initial_points(song_id, level=level)
+    good_base = initial_points
+    # “除以2后舍去个位”（例如 390 -> 190, 391 -> 190）
+    ok_base = (initial_points // 2) // 10 * 10
+    total = good * good_base + ok * ok_base + drumroll * 100
+    return int(total)

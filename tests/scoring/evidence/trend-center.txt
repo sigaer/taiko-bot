@@ -1,0 +1,29 @@
+10-15 10:20:38 [SUCCESS] nonebot | NoneBot is initializing...
+/var/tmp/taiko-score-20261015/center-env/lib/python3.11/site-packages/fuzzywuzzy/fuzz.py:11: UserWarning: Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning
+  warnings.warn('Using slow pure-python SequenceMatcher. Install python-Levenshtein to remove this warning')
+center 8 modules 1443 lines missing []
+['__init__', 'daily_ability', 'duplicate_versions', 'score_calculator', 'snapshot_history', 'taiko_domain_adapter', 'taikob_v2', 'taikob_v2_data']
+center 1 taikotrend PASS
+/var/tmp/taiko-score-20261015/trend-center/frozen_trend/score_calculator.py:684: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+/var/tmp/taiko-score-20261015/center-env/lib/python3.11/site-packages/taiko_bot/runtime/player/center/trend_support/score_calculator.py:434: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+center 2 taikoplaytrend PASS
+center 3 taikotrend PASS
+/var/tmp/taiko-score-20261015/trend-center/frozen_trend/score_calculator.py:684: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+/var/tmp/taiko-score-20261015/center-env/lib/python3.11/site-packages/taiko_bot/runtime/player/center/trend_support/score_calculator.py:434: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+center 4 taikoplaytrend PASS
+center 5 taikotrend PASS
+/var/tmp/taiko-score-20261015/trend-center/frozen_trend/score_calculator.py:684: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+/var/tmp/taiko-score-20261015/center-env/lib/python3.11/site-packages/taiko_bot/runtime/player/center/trend_support/score_calculator.py:434: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+center 6 taikoplaytrend PASS
+center 7 taikotrend PASS
+/var/tmp/taiko-score-20261015/trend-center/frozen_trend/score_calculator.py:684: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+/var/tmp/taiko-score-20261015/center-env/lib/python3.11/site-packages/taiko_bot/runtime/player/center/trend_support/score_calculator.py:434: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  fig.tight_layout(rect=(0, 0, 0.86, 1))
+center 8 taikoplaytrend PASS
