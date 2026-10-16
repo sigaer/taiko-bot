@@ -11,7 +11,7 @@ RATING_DATA_PATH = BASE / "songs" / "rating_structured_with_ids.json"
 SCHEMA_PATH = BASE / "schemas" / "annual-summary-v4.schema.json"
 
 SCHEMA_VERSION = 4
-ALGORITHM_VERSION = "annual-observation-v4.5.3"
+ALGORITHM_VERSION = "annual-observation-v4.5.4"
 DEFAULT_VERSION_KEY = "annual_2026"
 DEFAULT_VERSION = {
     "key": DEFAULT_VERSION_KEY,

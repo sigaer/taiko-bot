@@ -318,6 +318,7 @@ def load_snapshot_history(
     dojo_fast_signature: Optional[bytes] = None
     song_fast_signatures: Dict[tuple[int, int], bytes] = {}
     has_previous_state = False
+    chart_identities = {}
     # Short histories rarely repeat enough objects to repay a second, fast
     # serialization pass. The threshold comes from the Phase 4 fixture matrix;
     # it affects only the equality strategy, never replay semantics.
@@ -507,6 +508,15 @@ def load_snapshot_history(
             # Sharing unchanged chart objects avoids copying the entire archive per snapshot.
             "songs": [songs[key] for key in sorted(songs)],
         }
+        observed_keys = tuple(sorted({song_key(song) for song in (payload.get("songs") or [])
+                                      if isinstance(song, dict) and song_key(song) in songs}))
+        identity = (current_source, current_source_account, tuple(current_topology))
+        # An unchanged row can still establish its first baseline under a new
+        # source/account/topology. Do not discard that evidence as a duplicate.
+        for key in observed_keys:
+            if chart_identities.get(key) != identity:
+                state_changed = True
+            chart_identities[key] = identity
         same_identity = bool(
             snapshots
             and snapshots[-1].source == current_source
@@ -529,6 +539,7 @@ def load_snapshot_history(
                 content_hash=item.content_hash,
                 warnings=item.warnings,
                 changed_keys=tuple(sorted(changed_keys)),
+                observed_keys=observed_keys,
             )
         )
         has_previous_state = True
@@ -587,6 +598,21 @@ def select_window(
     last_index = ordered.index(window[-1])
     baseline_index = ordered.index(baseline)
     selected = ordered[baseline_index : last_index + 1]
+    # An empty pre-window baseline must not erase knowledge that a chart was
+    # already observed earlier in this account archive. Keep keys, not states.
+    prior_chart_keys = frozenset(
+        song_key(song)
+        for snapshot in ordered[:baseline_index]
+        for song in snapshot.state.get("songs", [])
+    )
+    baseline_chart_identities = {}
+    for snapshot in ordered[:baseline_index + 1]:
+        identity = (snapshot.source, snapshot.source_account, tuple(snapshot.merge_topology))
+        keys = snapshot.observed_keys
+        if keys is None:
+            keys = (song_key(song) for song in snapshot.state.get("songs", []))
+        for key in keys:
+            baseline_chart_identities[key] = identity
     return WindowSelection(
         snapshots=selected,
         window_snapshots=window,
@@ -595,4 +621,6 @@ def select_window(
         end_state=window[-1].state,
         partial_start=partial_start,
         effective_end_date=effective_end_date,
+        prior_chart_keys=prior_chart_keys,
+        baseline_chart_identities=baseline_chart_identities,
     )

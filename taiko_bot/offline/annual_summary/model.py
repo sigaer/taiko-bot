@@ -35,6 +35,9 @@ class RebuiltSnapshot:
     # Chart keys whose payload changed relative to the previous retained
     # snapshot.  This is an internal replay hint; it is not serialized.
     changed_keys: Tuple[ChartKey, ...] = ()
+    # Actual rows supplied by this observation, excluding inherited delta rows.
+    # None preserves compatibility with callers constructing full states.
+    observed_keys: Optional[Tuple[ChartKey, ...]] = None
 
 
 @dataclass(frozen=True)
@@ -53,6 +56,10 @@ class WindowSelection:
     end_state: Dict[str, Any]
     partial_start: bool
     effective_end_date: Any
+    # Replay-only tombstones for charts observed before the selected baseline.
+    # Never serialized into a saved report or written back to score history.
+    prior_chart_keys: frozenset[ChartKey] = frozenset()
+    baseline_chart_identities: Dict[ChartKey, Tuple[str, Optional[str], Tuple[str, ...]]] = field(default_factory=dict)
 
 
 @dataclass

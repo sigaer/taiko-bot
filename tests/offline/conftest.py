@@ -38,7 +38,5 @@ PRIVATE_FIXTURES = {
 }
 def pytest_collection_modifyitems(items):
  for item in items:
-  if item.name == "test_source_switch_and_deleted_readded_chart_never_create_cross_epoch_delta":
-   item.add_marker(pytest.mark.xfail(strict=True, reason="Reproduced on frozen Sakura 790c2c7: source-switch event assertion fails; annual retirement blocked, algorithm unchanged"))
   if item.name in PRIVATE_FIXTURES:
    item.add_marker(pytest.mark.skip(reason="Historical production fixture: forbidden in isolated migration QA; original test retained"))

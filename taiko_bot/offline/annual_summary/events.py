@@ -191,17 +191,24 @@ def build_observation_events(
         initial_map = build_song_map(snapshots[0].state)
         identity = _identity(snapshots[0])
         for key, song in initial_map.items():
+            chart_identity = selection.baseline_chart_identities.get(key, identity)
             stage = safe_int(song.get("stage_cnt"))
             score = safe_int(song.get("high_score"))
-            stage_epochs[key] = CounterEpoch(identity, stage, stage)
-            score_epochs[key] = CounterEpoch(identity, score, score)
+            stage_epochs[key] = CounterEpoch(chart_identity, stage, stage)
+            score_epochs[key] = CounterEpoch(chart_identity, score, score)
 
     previous_map = build_song_map(snapshots[0].state) if snapshots else {}
+    # A full-snapshot absence or explicit delta removal starts a new baseline
+    # on reappearance, not a first-seen play. Retain this knowledge across
+    # source/account/topology boundaries: those boundaries do not prove play.
+    ever_seen = set(selection.prior_chart_keys)
+    ever_seen.update(previous_map)
     for index in range(1, len(snapshots)):
         previous = snapshots[index - 1]
         current = snapshots[index]
         if not (reporting_start_at <= current.observed_at < reporting_end_exclusive_at):
             previous_map = build_song_map(current.state)
+            ever_seen.update(previous_map)
             continue
         current_map = build_song_map(current.state)
         identity = _identity(current)
@@ -213,10 +220,15 @@ def build_observation_events(
         else:
             skipped_source_transitions += 1
 
+        observed_keys = current.observed_keys if current.observed_keys is not None else current_map.keys()
         if same_identity and source_allows_diff and not is_manual:
-            keys = ((key, current_map[key]) for key in current.changed_keys if key in current_map)
+            changed = set(current.changed_keys)
+            keys = ((key, current_map[key]) for key in observed_keys if key in current_map
+                    and (key in changed or key not in stage_epochs or stage_epochs[key].identity != identity))
         else:
-            keys = current_map.items()
+            # Delta-inherited charts were not observed by the new identity.
+            # Leave their old epoch in place until that chart is actually seen.
+            keys = ((key, current_map[key]) for key in observed_keys if key in current_map)
         for key, current_song in keys:
             previous_song = previous_map.get(key)
             if previous_song is None:
@@ -224,13 +236,15 @@ def build_observation_events(
                 score = safe_int(current_song.get("high_score"))
                 stage_epochs[key] = CounterEpoch(identity, stage, stage)
                 score_epochs[key] = CounterEpoch(identity, score, score)
-                # A chart the archive had never seen before. It is still a real
-                # play when the record's own last-play stamp falls inside this
-                # observation interval: the stamp only moves when the chart is
-                # played, so a stamp inside the interval proves at least one play
-                # happened there. An archive backfill carries stamps from before
-                # the interval and stays uncounted, which is what keeps a bulk
-                # import from being booked as activity on the import date.
+                if key in ever_seen:
+                    # L0/unknown on this observation; the next comparable
+                    # transition can measure change from this fresh baseline.
+                    continue
+                # Preserve the existing minimum first-observation proxy policy
+                # only for charts never seen in the available archive. This is
+                # not proof of a physical visit or an exact play timestamp.
+                # Reappearance above cannot reuse this inference. Out-of-interval
+                # archive backfills still remain uncounted.
                 first_seen_moment = None
                 first_seen_warnings = ["first_seen_chart"]
                 if same_identity and source_allows_diff and not is_manual:
@@ -439,6 +453,7 @@ def build_observation_events(
                 )
 
         previous_map = current_map
+        ever_seen.update(current_map)
 
     events.sort(
         key=lambda item: (
