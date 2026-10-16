@@ -68,6 +68,7 @@ builtin_plugins = []
 
 [tool.setuptools.packages.find]
 include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*", "plugins*", "taiko_bot*", "taiko_runtime*", "taiko_store*"]
+exclude = ["*.tests", "*.tests.*"]
 
 [tool.setuptools]
 py-modules = ["bot", "bot_core", "bot_gateway", "bot_pool_metrics", "taiko_data_api", "taiko_runtime_init"]
