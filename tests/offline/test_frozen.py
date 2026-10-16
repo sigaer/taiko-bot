@@ -9,7 +9,7 @@ import io
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from pathlib import Path
 import pytest
 
@@ -20,6 +20,47 @@ def old(monkeypatch):
         pytest.skip('External frozen source is required for differential QA')
     monkeypatch.syspath_prepend(root)
     return lambda name: importlib.import_module('frozen_source.' + name)
+
+def _fixture_annual_identity(userdata, song_path, rating_path, version, algorithm):
+    """Independent identity oracle for the TWO fixed, non-manual snapshots only.
+
+    No candidate service/helper output is used to construct expected identity.
+    This does not generalize snapshot selection or change business expectations.
+    """
+    assert algorithm in {'annual-observation-v4.5.3', 'annual-observation-v4.5.4'}
+    paths = sorted((userdata / 'synthetic').glob('data_*.json'))
+    assert [p.name for p in paths] == [
+        'data_20260101_000000_000000.json', 'data_20260103_000000_000000.json']
+    for path, day, stage in zip(paths, (1, 3), (1, 4)):
+        payload = json.loads(path.read_text())
+        assert payload['_meta'] == {'full': True, 'source': 'wahlap'}
+        assert len(payload['songs']) == 12
+        assert [song['song_no'] for song in payload['songs']] == list(range(1, 13))
+        assert all(song['stage_cnt'] == stage and song['level'] == 4
+                   and song['update_datetime'] == f'2026-01-0{day} 00:00:00'
+                   for song in payload['songs'])
+    assert version == {
+        'key': 'annual_2026', 'name': '2026 太鼓年度回顾',
+        'startDate': '2025-10-09', 'endDate': '2026-09-30',
+        'endExclusive': '2026-10-01', 'calendarDays': 357,
+        'timezone': 'Asia/Shanghai', 'reportRevision': 'annual-report-2026-r2-final-window'}
+    def canonical_hash(value):
+        return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True,
+                                         separators=(',', ':')).encode()).hexdigest()
+    start, end = date.fromisoformat(version['startDate']), date.fromisoformat(version['endDate'])
+    fingerprint = canonical_hash({
+        'algorithm': algorithm, 'manualCorrections': [],
+        'reportingWindow': {'start': start.isoformat(), 'endInclusive': end.isoformat(),
+                            'endExclusive': (end + timedelta(days=1)).isoformat(),
+                            'calendarDays': (end - start).days + 1,
+                            'timezone': 'Asia/Shanghai', 'revision': version['reportRevision']},
+        'snapshots': [{'name': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()} for path in paths],
+        'songData': hashlib.sha256(song_path.read_bytes()).hexdigest(),
+        'ratingData': hashlib.sha256(rating_path.read_bytes()).hexdigest(),
+    })
+    summary_id = 'annual_' + canonical_hash({'taikoId': 'synthetic', 'version': version['key'], 'input': fingerprint})[:24]
+    return fingerprint, summary_id
+
 
 def test_annual_success_cache_and_fingerprint(old, tmp_path):
     import test_version_summary as fixture
@@ -32,6 +73,19 @@ def test_annual_success_cache_and_fingerprint(old, tmp_path):
     args=dict(userdata_dir=userdata,song_data_path=tmp_path/'songs.json',rating_path=tmp_path/'rating.json',generated_at=datetime(2026,1,31))
     expected=old('annual_summary.service').build_annual_result('synthetic',fixture.TEST_VERSION,**args)
     assert expected['events'] and expected['summary']['schemaVersion']==4
+    old_algorithm, new_algorithm = 'annual-observation-v4.5.3', 'annual-observation-v4.5.4'
+    old_fingerprint, old_id = _fixture_annual_identity(userdata, tmp_path/'songs.json', tmp_path/'rating.json', fixture.TEST_VERSION, old_algorithm)
+    new_fingerprint, new_id = _fixture_annual_identity(userdata, tmp_path/'songs.json', tmp_path/'rating.json', fixture.TEST_VERSION, new_algorithm)
+    assert expected['summary']['provenance']['algorithmVersion'] == old_algorithm
+    assert expected['summary']['provenance']['inputFingerprint'] == old_fingerprint
+    assert expected['summary']['summaryId'] == expected['summary']['poster']['summaryId'] == old_id
+    assert old_id != new_id and old_fingerprint != new_fingerprint
+    # Approved 0.14.2/v4.5.4 identity-domain change, exactly FOUR paths.
+    # Every section, event, metric and remaining DTO field stays frozen and strict.
+    expected['summary']['summaryId'] = new_id
+    expected['summary']['poster']['summaryId'] = new_id
+    expected['summary']['provenance']['algorithmVersion'] = new_algorithm
+    expected['summary']['provenance']['inputFingerprint'] = new_fingerprint
     for _ in range(2):
         actual=service.build_annual_result('synthetic',fixture.TEST_VERSION,**args)
         assert json.dumps(actual,sort_keys=True)==json.dumps(expected,sort_keys=True)
@@ -157,3 +211,21 @@ def test_display_generators_png_bytes(old,tmp_path,monkeypatch,kind):
         assert raw.startswith(b'\x89PNG') and len(raw)>100
         results.append(hashlib.sha256(raw).hexdigest())
     assert results[0]==results[1]
+
+
+def test_annual_identity_oracle_changes_for_input_bytes_and_rejects_unapproved_domain(tmp_path):
+    import test_version_summary as fixture
+    userdata = tmp_path/'userdata'
+    fixture._write_json(tmp_path/'songs.json', fixture._song_data())
+    fixture._write_json(tmp_path/'rating.json', fixture._rating_data())
+    for day, stage in ((1, 1), (3, 4)):
+        fixture._snapshot(userdata, 'synthetic', f'2026010{day}_000000_000000', fixture._payload('wahlap', [fixture._song(i, stage=stage, updated_at=f'2026-01-0{day} 00:00:00') for i in range(1, 13)]))
+    args = (userdata, tmp_path/'songs.json', tmp_path/'rating.json', fixture.TEST_VERSION)
+    before = _fixture_annual_identity(*args, 'annual-observation-v4.5.4')
+    for path in [tmp_path/'songs.json', tmp_path/'rating.json', userdata/'synthetic/data_20260103_000000_000000.json']:
+        original = path.read_bytes()
+        path.write_bytes(original + b'\n')
+        assert _fixture_annual_identity(*args, 'annual-observation-v4.5.4') != before
+        path.write_bytes(original)
+    with pytest.raises(AssertionError):
+        _fixture_annual_identity(*args, 'annual-observation-unapproved')
