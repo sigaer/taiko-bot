@@ -37,6 +37,7 @@ with tempfile.TemporaryDirectory(prefix='taiko-0142-facts-', dir='/var/tmp') as 
         os.environ[name] = str(root)
     os.environ['TAIKO_USERDATA_DIR'] = str(root / 'userdata')
     os.environ['TAIKO_RUNTIME_ENV_FILE'] = str(root / 'absent.env')
+    os.environ['TAIKO_COMPUTE_ONLY'] = '1'
     violations = []
     def guard(event, values):
         if event in ('socket.connect', 'socket.getaddrinfo', 'subprocess.Popen'):
