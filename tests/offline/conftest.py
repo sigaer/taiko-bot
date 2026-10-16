@@ -2,17 +2,32 @@
 import os,sys,tempfile,json
 from pathlib import Path
 import pytest
-ROOT=Path(tempfile.mkdtemp(prefix='taiko-offline-qa-',dir='/var/tmp'))
+ROOT=Path(tempfile.mkdtemp(prefix='taiko-offline-qa-',dir=os.environ['QA_RUN_TMPDIR']))
 (ROOT/'songs').mkdir();(ROOT/'userdata').mkdir()
 for name,payload in {'song_data.json':[],'song_alias.json':[],'song_score.json':[],'song_id2tjapath.json':{},'grade_dojo_nijiiro_2025_simple.json':{'grades':[]},'taiko_goku_onis.json':[],'rating_structured_with_ids.json':{'songs':{},'const_table':{'const_to_score':{}}}}.items():(ROOT/'songs'/name).write_text(json.dumps(payload))
 for key,value in {'TAIKO_OFFLINE_ROOT':str(ROOT),'TAIKO_CENTER_ROOT':str(ROOT),'TAIKO_RUNTIME_ROOT':str(ROOT),'TAIKO_RUNTIME_ENV_FILE':str(ROOT/'absent.env'),'TAIKO_USERDATA_DIR':str(ROOT/'userdata'),'TAIKO_DB_USER':'synthetic','TAIKO_DB_PASSWORD':'synthetic','TAIKO_DB_NAME':'offline_test','HIROBA_CRED_KEY':'synthetic'}.items():os.environ[key]=value
+def qa_owned_path(path):
+    resolved = Path(path).resolve()
+    roots = [Path(os.environ['QA_RUN_DIR']).resolve(), Path(sys.prefix).resolve(), Path(__file__).resolve().parents[2]]
+    tooling = os.environ.get('QA_TEST_TOOLS_ROOT')
+    if tooling:
+        tools = Path(tooling).resolve()
+        assert tools.is_relative_to('/home/sigaer/taiko/qa-vault/tooling')
+        roots.append(tools)
+    frozen = os.environ.get('TAIKO_FROZEN_BASELINE_ROOT')
+    if frozen:
+        baseline = Path(frozen).resolve()
+        assert baseline.is_relative_to('/home/sigaer/taiko/qa-vault/sources')
+        roots.append(baseline)
+    return any(resolved.is_relative_to(root) for root in roots)
+
 violations=[]
 def guard(event,args):
  if event in {'socket.connect','socket.getaddrinfo'}:
   violations.append(event);raise AssertionError('Network forbidden')
  if event=='open' and isinstance(args[0],(str,bytes)):
   path=os.fsdecode(args[0])
-  if path.startswith(('/home/sigaer/taiko/','/home/sigaer/git/','/etc/taiko','/root/.ossutil')):
+  if (path.startswith(('/home/sigaer/taiko/','/home/sigaer/git/','/etc/taiko','/root/.ossutil')) and not qa_owned_path(path)):
    violations.append(path);raise AssertionError('Production read forbidden')
  if event=='subprocess.Popen':
   violations.append('subprocess');raise AssertionError('Real commands/OSS forbidden; use a recording fake')

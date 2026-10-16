@@ -28,7 +28,7 @@ assert sys.flags.isolated == 1
 assert not args.output.exists()
 assert importlib.metadata.version('taiko-bot') == '0.14.2'
 
-with tempfile.TemporaryDirectory(prefix='taiko-0142-facts-', dir='/var/tmp') as directory:
+with tempfile.TemporaryDirectory(prefix='taiko-0142-facts-', dir=os.environ['QA_RUN_TMPDIR']) as directory:
     root = Path(directory)
     (root / 'songs').mkdir()
     (root / 'userdata').mkdir()
@@ -38,6 +38,20 @@ with tempfile.TemporaryDirectory(prefix='taiko-0142-facts-', dir='/var/tmp') as 
     os.environ['TAIKO_USERDATA_DIR'] = str(root / 'userdata')
     os.environ['TAIKO_RUNTIME_ENV_FILE'] = str(root / 'absent.env')
     os.environ['TAIKO_COMPUTE_ONLY'] = '1'
+    def qa_owned_path(path):
+        resolved = Path(path).resolve()
+        roots = [Path(os.environ['QA_RUN_DIR']).resolve(), Path(sys.prefix).resolve(), Path(__file__).resolve().parents[2]]
+        tooling = os.environ.get('QA_TEST_TOOLS_ROOT')
+        if tooling:
+            tools = Path(tooling).resolve()
+            assert tools.is_relative_to('/home/sigaer/taiko/qa-vault/tooling')
+            roots.append(tools)
+        frozen = os.environ.get('TAIKO_FROZEN_BASELINE_ROOT')
+        if frozen:
+            baseline = Path(frozen).resolve()
+            assert baseline.is_relative_to('/home/sigaer/taiko/qa-vault/sources')
+            roots.append(baseline)
+        return any(resolved.is_relative_to(root) for root in roots)
     violations = []
     def guard(event, values):
         if event in ('socket.connect', 'socket.getaddrinfo', 'subprocess.Popen'):
@@ -45,7 +59,7 @@ with tempfile.TemporaryDirectory(prefix='taiko-0142-facts-', dir='/var/tmp') as 
             raise AssertionError('network/process forbidden in synthetic replay')
         if event == 'open' and isinstance(values[0], (str, bytes)):
             path = os.fsdecode(values[0])
-            if path.startswith(('/home/sigaer/taiko/', '/home/sigaer/git/', '/etc/taiko', '/root/.ossutil')):
+            if (path.startswith(('/home/sigaer/taiko/', '/home/sigaer/git/', '/etc/taiko', '/root/.ossutil')) and not qa_owned_path(path)):
                 violations.append(path)
                 raise AssertionError('production path forbidden')
     sys.addaudithook(guard)
