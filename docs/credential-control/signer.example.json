@@ -1,0 +1,7 @@
+{
+  "clientId": "operator-local",
+  "keyHex": "REPLACE_WITH_RANDOM_32_BYTE_OR_LONGER_HEX_SECRET",
+  "ownerId": "REPLACE_WITH_VERIFIED_SINGLETON_OWNER",
+  "audience": "miku-taiko-login",
+  "url": "https://upload.sakura-bot.cn/uploadTaikoLogin"
+}

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "ownerId": "REPLACE_WITH_VERIFIED_SINGLETON_OWNER",
+  "clients": {
+    "operator-local": {
+      "status": "revoked",
+      "keyHex": "REPLACE_WITH_RANDOM_32_BYTE_OR_LONGER_HEX_SECRET",
+      "expiresAt": 0,
+      "owners": ["REPLACE_WITH_VERIFIED_SINGLETON_OWNER"],
+      "audiences": ["taiko-token", "miku-taiko-login"],
+      "scopes": ["wahlap:credential:write"]
+    }
+  }
+}
