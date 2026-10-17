@@ -284,3 +284,31 @@ Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0�
 双端进度命令迁移与验收见 [progress-ownership](docs/progress-ownership.md)。
 
 双端 B30 命令迁移与验收见 [b30-ownership](docs/b30-ownership.md)。
+
+## 独立应用部署（0.15.0）
+
+本仓库同时拥有中心 Bot、独立 HTTP/同步服务、Source 生命周期、Hiroba、
+Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维护 CLI。
+`taiko_backend/`、`taiko_manager/` 属于其他项目。
+
+安装后的正式入口为 `python -I -m taiko_bot`（或 `taiko-bot`）。
+`TAIKO_SONG_PROFILE=center` 使用中心权限与已有数据，`client` 使用 Viewer API。
+入口直接加载本包已有命令，不需要 Sakura checkout、插件装载器或其 Python 搜索路径。
+中心进程加载已有的私有 `nonebot-plugin-groupmate-taiko==0.1.0` 扩展；该扩展
+原有源码通过受保护 wheel 分发，未新增业务实现。共享内存帮助包同样使用现有
+`python-memory-runtime==1.1.0` 构件。
+
+生产运行数据根仍为 `/home/sigaer/taiko`。配置及密钥使用原 `.env.prod` 和
+`/etc/taiko-runtime.env`，功能开关沿用现有 `switch.db`，群白名单沿用现有路径。
+不得把源码发布、生产 userdata/history/Publication、songs/assets 或私有素材混在一起。
+`deploy/private-resources.json` 仅记录私有部署引用；HDU 背景及 favicon 继续由
+现有私有资源包安装到既有静态站点目录，不进入公开源码或 wheel。
+
+发布时先在内存隔离构建环境生成 wheel，并将现有 Domain、Application、共享内存、
+私有社区扩展以及运行依赖放入 wheelhouse；用
+`scripts/install_release.sh VERSION WHEELHOUSE` 安装不可变环境。
+完成独立启动和最小业务验证后，运行 `scripts/deploy_taiko.sh VERSION LEGACY_NB_PID`。
+脚本核对并停用旧 screen Bot、确认旧进程退出，再启用独立 systemd 服务；后续发布
+`LEGACY_NB_PID` 传 `0`。失败即停止，由运维检查失败服务；不会启动第二套消费者。
+所有服务和 cron 使用 `/opt/taiko-bot/current`，切换不会搬迁或重算生产数据。
+Viewer 继续通过已安装的模块/CLI 使用现有 Writer 和读取接口，0.84.2 协议保持不变。

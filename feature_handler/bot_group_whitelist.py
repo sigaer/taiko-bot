@@ -127,8 +127,10 @@ def is_group_allowed(bot_id: Any, group_id: Any) -> bool:
 
 
 async def should_block_group_event(event: Event) -> bool:
-    group_id = getattr(event, "group_id", None)
-    if group_id is None:
+    group_id = str(getattr(event, "group_id", "") or "").strip()
+    if not group_id:
+        group_id = str(getattr(event, "group_openid", "") or "").strip()
+    if not group_id:
         return False
     bot_id = getattr(event, "self_id", None)
     if not is_restricted_bot(bot_id):

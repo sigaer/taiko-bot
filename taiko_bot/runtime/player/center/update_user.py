@@ -12,7 +12,7 @@ import requests
 
 import ujson as json
 
-from .dojo_score import normalize_dojo_scores
+from .dojo_version import normalize_wahlap_dojo_scores
 
 from .userdata_storage import save_userdata
 
@@ -94,7 +94,7 @@ def getUserData(user_id, *, publication_store=None):
     if dojo_response.status_code not in [200, 201]:
         return -1
     dojo_res = dojo_response.json()
-    dojo_data = normalize_dojo_scores(dojo_res)
+    dojo_data = normalize_wahlap_dojo_scores(dojo_res)
     userdata = {
         "profile": panel_data,
         "songs": song_list,

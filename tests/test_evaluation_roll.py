@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from plugins.utils.evaluation_roll import (
+from taiko_bot.offline.evaluation_roll import (
     ROTTER_TARMINATION_BALLOON_ROLL_SECONDS,
     compute_rating_roll_breakdown,
 )

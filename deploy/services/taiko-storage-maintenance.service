@@ -1,0 +1,14 @@
+[Unit]
+Description=Taiko allowlisted storage maintenance
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/taiko-bot/current/bin/python -I -m taiko_bot.cli.storage_maintenance --json
+User=root
+Group=root
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

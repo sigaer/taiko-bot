@@ -1,4 +1,4 @@
-from plugins.utils.score_calculator import compute_all_from_userdata_records
+from taiko_bot.runtime.player.client.recommendation_support.score_calculator import compute_all_from_userdata_records
 
 
 def test_compute_all_from_userdata_records_collapses_duplicate_versions_by_default():

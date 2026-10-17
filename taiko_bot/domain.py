@@ -11,12 +11,12 @@ def assert_domain_versions():
             raise RuntimeError(f'{package} version mismatch: expected {expected}, got {actual}')
 
 def identity_inputs():
-    from plugins.utils.duplicate_versions import _group_cache
+    from taiko_bot.runtime.player.client.recommendation_support.catalog import _group_cache
     _, by_id, by_title = _group_cache()
     return {sid: group.default_id for sid, group in by_id.items()}, by_id, by_title
 
 def visibility_inputs(records=(), songs=None):
-    from plugins.utils.song_visibility import load_song_index
+    from taiko_bot.runtime.player.client.recommendation_support.catalog import load_song_index
     from sakura_taiko_core.chart.visibility import is_song_id_publicly_visible
     index = load_song_index()
     ids = set(index)

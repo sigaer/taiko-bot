@@ -1,0 +1,15 @@
+{
+  "runtimeRoot": "/home/sigaer/taiko",
+  "privateResources": [
+    "assets/",
+    "songs/",
+    "hdu_upload/static/miku.png",
+    "hdu_upload/static/favicon.ico"
+  ],
+  "hduStaticRoot": "/www/wwwroot/hdu.sakura-bot.cn",
+  "publicationRoot": "userdata/",
+  "policy": "Existing private resource deployment; do not publish or relocate production data.",
+  "privateArtifacts": [
+    "nonebot_plugin_groupmate_taiko-0.1.0-py3-none-any.whl"
+  ]
+}

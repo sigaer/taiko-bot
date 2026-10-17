@@ -7,7 +7,7 @@ from typing import Any, Dict
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
-from plugins.utils.arcade_map import query_taiko_shops_by_city, sync_taiko_arcade_snapshot
+from taiko_bot.runtime.player.client.arcade_map import query_taiko_shops_by_city, sync_taiko_arcade_snapshot
 from .public_data import get_asset_sync_summary, sync_public_datasets
 from .settings import get_settings
 from .sqlite_db import ensure_schema
