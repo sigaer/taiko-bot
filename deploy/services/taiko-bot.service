@@ -8,6 +8,7 @@ Type=simple
 WorkingDirectory=/home/sigaer/taiko
 Environment=TAIKO_RUNTIME_ROOT=/home/sigaer/taiko
 Environment=TAIKO_SONG_PROFILE=center
+Environment=BOT_POOL_METRICS_SERVICE_NAME=taiko
 Environment=TAIKO_BOT_ENV_FILE=/home/sigaer/taiko/.env.prod
 Environment=FEATURE_SWITCH_DATA_DIR=/usr/lib/python3.11/site-packages/feature_handler/data
 Environment=BOT_GROUP_WHITELIST_PATH=/home/sigaer/config/bot_group_whitelist.json
