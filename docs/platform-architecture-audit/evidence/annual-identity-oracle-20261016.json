@@ -1,0 +1,319 @@
+{
+  "growthCompatibilitySha256": "0dbfd3b7a9b8a30ed9a149342071358beed990974bfa7900027ac571d2046e61",
+  "status": "PASS",
+  "exitCode": 0,
+  "tests": [
+    "/var/tmp/taiko-annual-oracle-0142-20261016/tests/offline/test_frozen.py::test_annual_success_cache_and_fingerprint",
+    "/var/tmp/taiko-annual-oracle-0142-20261016/tests/offline/test_frozen.py::test_annual_identity_oracle_changes_for_input_bytes_and_rejects_unapproved_domain",
+    "/var/tmp/taiko-annual-oracle-0142-20261016/tests/offline/test_reappearance_revision.py"
+  ],
+  "python": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/bin/python",
+  "isolated": 1,
+  "rolePackageCount": 94,
+  "rolePackages": {
+    "setuptools": "65.5.0",
+    "yarl": "1.25.1",
+    "soupsieve": "2.10",
+    "nb-cli": "1.7.4",
+    "apscheduler": "3.11.3",
+    "pydantic-core": "2.50.1",
+    "binaryornot": "0.6.0",
+    "nonebot-plugin-apscheduler": "0.5.0",
+    "python-discovery": "1.6.2",
+    "distlib": "0.4.3",
+    "msgpack": "1.2.3",
+    "markdown-it-py": "4.2.0",
+    "pygtrie": "2.6.2",
+    "textual": "8.2.8",
+    "filelock": "4.2.0",
+    "numpy": "2.4.6",
+    "h11": "0.16.0",
+    "linkify-it-py": "2.2.0",
+    "pip": "26.2.1",
+    "kiwisolver": "1.5.1",
+    "fuzzywuzzy": "0.18.0",
+    "starlette": "1.8.0",
+    "nonestorage": "0.1.0",
+    "httpx": "0.28.1",
+    "anyio": "4.15.1",
+    "sakura-taiko-core": "0.1.1",
+    "nonebot2": "2.5.0",
+    "fonttools": "4.67.0",
+    "idna": "3.20",
+    "pydantic": "2.14.1",
+    "virtualenv": "21.14.7",
+    "annotated-types": "0.8.0",
+    "propcache": "0.5.4",
+    "cryptography": "48.0.1",
+    "taiko-bot": "0.14.2",
+    "python-dateutil": "2.9.0.post0",
+    "ujson": "6.0.0",
+    "pandas": "3.0.6",
+    "arrow": "1.4.0",
+    "redis": "8.1.0",
+    "watchfiles": "1.3.0",
+    "uvicorn": "0.54.0",
+    "wordcloud": "1.9.6",
+    "pygments": "2.21.0",
+    "matplotlib": "3.11.2",
+    "typing-extensions": "4.16.0",
+    "python-memory-runtime": "1.1.0",
+    "python-slugify": "9.1.3",
+    "beautifulsoup4": "4.15.0",
+    "noneprompt": "0.1.11",
+    "nonebot-adapter-qq": "1.7.3",
+    "markupsafe": "3.0.4",
+    "taiko-application": "0.8.0",
+    "pillow": "12.3.0",
+    "platformdirs": "4.13.0",
+    "cookiecutter": "2.7.1",
+    "pyyaml": "6.0.3",
+    "contourpy": "1.3.3",
+    "annotated-doc": "0.0.5",
+    "urllib3": "2.8.0",
+    "python-dotenv": "1.2.4",
+    "text-unidecode": "1.3",
+    "cashews": "7.6.0",
+    "charset-normalizer": "3.5.2",
+    "opentelemetry-api": "1.45.1",
+    "mdit-py-plugins": "0.6.1",
+    "tzlocal": "5.4.4",
+    "pymysql": "1.2.3",
+    "loguru": "0.7.3",
+    "pycparser": "3.11",
+    "exceptiongroup": "1.3.1",
+    "click": "8.5.0",
+    "mdurl": "0.1.2",
+    "rich": "15.0.0",
+    "fastapi": "0.143.2",
+    "jinja2": "3.1.6",
+    "aiomysql": "0.3.2",
+    "httpcore": "1.0.9",
+    "tomlkit": "0.14.0",
+    "tzdata": "2026.5",
+    "typing-inspection": "0.4.4",
+    "cycler": "0.12.1",
+    "sakura-taiko-contract": "0.1.0",
+    "six": "1.17.0",
+    "multidict": "7.1.0",
+    "prompt-toolkit": "3.0.53",
+    "nonebot-adapter-onebot": "2.4.6",
+    "websockets": "17.2",
+    "cffi": "2.1.1",
+    "wcwidth": "0.9.2",
+    "requests": "2.34.2",
+    "packaging": "26.3",
+    "certifi": "2026.7.22",
+    "pyparsing": "3.3.3"
+  },
+  "externalPytest": "/var/tmp/taiko-final-ownership-20261015/wheel-env/lib/python3.11/site-packages/pytest/__init__.py",
+  "productOrigins": {
+    "taiko_bot.settings": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/settings.py",
+    "taiko_bot": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/__init__.py",
+    "taiko_bot.offline": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/__init__.py",
+    "taiko_bot.offline.annual_summary.profiling": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/profiling.py",
+    "taiko_bot.offline.paths": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/paths.py",
+    "sakura_taiko_core": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/__init__.py",
+    "sakura_taiko_core.rating": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/rating/__init__.py",
+    "sakura_taiko_contract.types": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_contract/types.py",
+    "sakura_taiko_contract.legacy": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_contract/legacy.py",
+    "sakura_taiko_contract": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_contract/__init__.py",
+    "sakura_taiko_core.models.calculation": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/models/calculation.py",
+    "sakura_taiko_core.models": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/models/__init__.py",
+    "sakura_taiko_core.rating.v1": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/rating/v1.py",
+    "sakura_taiko_core.dimension": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/dimension/__init__.py",
+    "sakura_taiko_core.dimension.v1": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/dimension/v1.py",
+    "sakura_taiko_core.chart": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/chart/__init__.py",
+    "sakura_taiko_core.chart.catalog": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/chart/catalog.py",
+    "sakura_taiko_core.score": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/score/__init__.py",
+    "sakura_taiko_core.score.calculation": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/score/calculation.py",
+    "sakura_taiko_core.recommendation": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/recommendation/__init__.py",
+    "sakura_taiko_core.recommendation.candidates": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/recommendation/candidates.py",
+    "taiko_bot.runtime": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/runtime/__init__.py",
+    "taiko_bot.runtime.player": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/runtime/player/__init__.py",
+    "taiko_bot.runtime.player.center": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/runtime/player/center/__init__.py",
+    "sakura_taiko_core.chart.identity": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/chart/identity.py",
+    "taiko_bot.runtime.player.center.duplicate_versions": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/runtime/player/center/duplicate_versions.py",
+    "taiko_bot.offline.taiko_domain_adapter": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/taiko_domain_adapter.py",
+    "taiko_store.publication": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_store/publication.py",
+    "taiko_store": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_store/__init__.py",
+    "taiko_store.reader": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_store/reader.py",
+    "sakura_taiko_core.chart.availability": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/chart/availability.py",
+    "taiko_bot.offline.chart_availability": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/chart_availability.py",
+    "taiko_bot.offline.score_calculator": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/score_calculator.py",
+    "taiko_bot.offline.annual_summary.constants": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/constants.py",
+    "taiko_bot.offline.annual_summary.helpers": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/helpers.py",
+    "taiko_bot.offline.annual_summary.eligibility": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/eligibility.py",
+    "sakura_taiko_core.chart.roll_metadata": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/sakura_taiko_core/chart/roll_metadata.py",
+    "taiko_bot.offline.chart_roll_metadata": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/chart_roll_metadata.py",
+    "taiko_bot.offline.annual_summary.aggregates": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/aggregates.py",
+    "taiko_bot.offline.annual_summary.corrections": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/corrections.py",
+    "taiko_bot.offline.annual_summary.dan_state": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/dan_state.py",
+    "taiko_bot.offline.annual_summary.dan_events": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/dan_events.py",
+    "taiko_bot.offline.annual_summary.finaltitle_features": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/finaltitle_features.py",
+    "taiko_bot.offline.annual_summary.finaltitle_reference": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/finaltitle_reference.py",
+    "taiko_bot.offline.annual_summary.finaltitle_model": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/finaltitle_model.py",
+    "taiko_bot.offline.annual_summary.finaltitle": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/finaltitle.py",
+    "taiko_bot.offline.annual_summary.standing_dan": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/standing_dan.py",
+    "taiko_bot.offline.annual_summary.model": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/model.py",
+    "taiko_bot.offline.annual_summary.events": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/events.py",
+    "taiko_bot.runtime.player.center.snapshot_history": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/runtime/player/center/snapshot_history.py",
+    "taiko_bot.offline.annual_summary.cache": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/cache.py",
+    "taiko_bot.offline.annual_summary.snapshots": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/snapshots.py",
+    "taiko_bot.offline.annual_summary.archive_fallback": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/archive_fallback.py",
+    "taiko_bot.offline.annual_summary.reporting_window": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/reporting_window.py",
+    "taiko_bot.offline.annual_summary.service": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/service.py",
+    "taiko_bot.offline.annual_summary.ratings": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/ratings.py",
+    "taiko_bot.offline.annual_summary": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/__init__.py",
+    "taiko_bot.offline.annual_summary.shadow": "/var/tmp/taiko-role-rebuild-hlmgfkq0/venv/lib/python3.11/site-packages/taiko_bot/offline/annual_summary/shadow.py"
+  },
+  "frozenOrigins": {
+    "frozen_source": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "frozen_source.annual_summary.profiling": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/profiling.py",
+      "sha256": "aa2dca3a04039138234f0713f3c2493c72a38df1644f93174ad1f5e00d47b161"
+    },
+    "frozen_source.duplicate_versions": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/duplicate_versions.py",
+      "sha256": "b33bc54fa477e3bf3031f94d6a5b4ddf318554bcd21b16af64f89650aad0cf96"
+    },
+    "frozen_source.taiko_domain_adapter": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/taiko_domain_adapter.py",
+      "sha256": "f1c75208969141febc9d5b76d3e18f5cc02fac8dfc5e381b2bcbdb739e1b523a"
+    },
+    "frozen_source.chart_availability": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/chart_availability.py",
+      "sha256": "ee1ece74fb0f951323ac8a4f530a12a52dd347ea2b58da1f112c79567b605dd5"
+    },
+    "frozen_source.score_calculator": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/score_calculator.py",
+      "sha256": "6495cffede3297efdb7c71ded08d4de2bcc63231c4ad9890c4cae4c06dd4d76b"
+    },
+    "frozen_source.annual_summary.constants": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/constants.py",
+      "sha256": "5cdf5c154bdec939eb7a3315101862392f7f2a1c41292bb1905891cc0486c354"
+    },
+    "frozen_source.annual_summary.helpers": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/helpers.py",
+      "sha256": "56d40e678e2300606a517c3d135257191d725c8a8c15106f5d801acf92b2fa49"
+    },
+    "frozen_source.annual_summary.eligibility": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/eligibility.py",
+      "sha256": "ce635be6df2f39fa11250a0fb98ea28be2ae86d536d914ab789959c1d6eb5eef"
+    },
+    "frozen_source.chart_roll_metadata": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/chart_roll_metadata.py",
+      "sha256": "92a6856bf541cbe40af02efdfe8d24a2a4ef4c641d03be689521f324c1deb7b5"
+    },
+    "frozen_source.annual_summary.aggregates": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/aggregates.py",
+      "sha256": "d9164b278c128cbfdd11c4aef4b95d3ab77288b6fd9b60c0b467b6cb4ba07745"
+    },
+    "frozen_source.annual_summary.corrections": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/corrections.py",
+      "sha256": "a0039119da32826d6cb9b6931f438f11afaa20f7cd40da79e398ce4a0bc78c52"
+    },
+    "frozen_source.annual_summary.dan_state": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/dan_state.py",
+      "sha256": "6f79a2fec0c56478d3761a015b8f918a6892876999dbf57df0cf6225c11b8ed6"
+    },
+    "frozen_source.annual_summary.dan_events": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/dan_events.py",
+      "sha256": "d7bb7e3c16860ffbfe3b72f3b795383eb82a3b3fbbd22940d65f10e911a77918"
+    },
+    "frozen_source.annual_summary.finaltitle_features": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/finaltitle_features.py",
+      "sha256": "96237a1de92803c191dfcae6dc148199267499c2efaec35bfa6705339d666111"
+    },
+    "frozen_source.annual_summary.finaltitle_reference": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/finaltitle_reference.py",
+      "sha256": "900e60c230871995c42e395bc0a6574cdb2043ea4f5cd417cf2c8a0a33bd3eb0"
+    },
+    "frozen_source.annual_summary.finaltitle_model": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/finaltitle_model.py",
+      "sha256": "5d710053f689ba454909082242c2d38011e7faeaa2aa0efae755d25e40045843"
+    },
+    "frozen_source.annual_summary.finaltitle": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/finaltitle.py",
+      "sha256": "826a17de3a3df62612da49f78fc5893980217df0c26aef0094d653885c112612"
+    },
+    "frozen_source.annual_summary.standing_dan": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/standing_dan.py",
+      "sha256": "7b546abd0c3b28faf3c9fd7ecceb502fcabd2512afab154c0f63230860f5731f"
+    },
+    "frozen_source.annual_summary.model": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/model.py",
+      "sha256": "f6db8a830a7e2fe8a99553d6a16e8527bfc237de91805b6b49c8a52abcac91ea"
+    },
+    "frozen_source.annual_summary.events": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/events.py",
+      "sha256": "e5862a583797c39eb54e6db18c96e540b897d8674f307609a24af2b6b1d62712"
+    },
+    "frozen_source.annual_summary.cache": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/cache.py",
+      "sha256": "bbccbdf1f3763a11ac82bcd3687b209558100adba93cafe905361a6c5a1e89bf"
+    },
+    "frozen_source.annual_summary.snapshots": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/snapshots.py",
+      "sha256": "243b831d9d444e9ae87fe1a9bbdd6c1d69d4af123fa619232f073c6ca3b041d0"
+    },
+    "frozen_source.annual_summary.archive_fallback": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/archive_fallback.py",
+      "sha256": "5857c48ad381cc49423569f2c3a5d5ce50b0efcdd89da7cabb80cf90ef294ce2"
+    },
+    "frozen_source.annual_summary.reporting_window": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/reporting_window.py",
+      "sha256": "450f9ca4fa6aa757f2c2240cfdaa4b30329bfc21e5286030a832d83dbd4a330d"
+    },
+    "frozen_source.annual_summary.service": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/service.py",
+      "sha256": "cf47c7c69ae6cab8abe824b68e31620229afbdb5d548c5b6ee5dadf4800ba7d6"
+    },
+    "frozen_source.annual_summary.ratings": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/ratings.py",
+      "sha256": "14b60c0e4cfcf74472b65201b82532eb53b360e3aec80c90d537681caacf18fe"
+    },
+    "frozen_source.annual_summary": {
+      "path": "/var/tmp/taiko-offline-20261015/repro-frozen/frozen_source/annual_summary/__init__.py",
+      "sha256": "10c02c798e14dce4e2dc2d5a97428d5b860e4132b68de7aa97a238c7c58b580b"
+    }
+  },
+  "frozenDigestManifestSha256": "e2d0011b81a4c54edfa8bc06518c20c81dc243901edb7a9d3c8db11f0ca415a7",
+  "testSourceSha256": {
+    "/var/tmp/taiko-annual-oracle-0142-20261016/tests/offline/test_frozen.py": "f06c6cd53427e59b1389c4f9424ca0fae60074b399103ce410fd602df4878fbf",
+    "/var/tmp/taiko-annual-oracle-0142-20261016/tests/offline/test_reappearance_revision.py": "4be9bc9a936a6c5e2234ffea0396b95960c1be93743b78af67fa393b8c7568a2",
+    "/var/tmp/taiko-annual-oracle-0142-20261016/tests/offline/test_version_summary.py": "3a6803afb2734c02f39f375d3729b60180dfd49422f75332a389b67c04506c4e"
+  },
+  "productionAccess": false,
+  "growthCompatibilityModified": false,
+  "counts": {
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "skip": 0
+  },
+  "log": {
+    "path": "/var/tmp/annual-oracle-0142-targeted-20261016.log",
+    "sha256": "75f5f59b79835a6236802e60fa6d1e6bc93dbe292a4bae059c6ac072e8194b87"
+  },
+  "runner": {
+    "path": "scripts/readiness/run-installed-annual-oracle.py",
+    "sha256": "0a75aab0b2773c719282f5a4eae9df4644f8b3e2ec21d698446118a1bdba6677"
+  },
+  "pytestTool": {
+    "path": "/var/tmp/taiko-final-ownership-20261015/wheel-env/lib/python3.11/site-packages/pytest/__init__.py",
+    "sha256": "ee37885c9583f843390684dfb496907f87a0905128e7a3cf4ad227f49ff34c2d"
+  },
+  "priorStrictTestSha256": "1e7bd496a9242ef2e2c4104d64a4286a2b8c1fe48c235bf6dbdea54e06cf6bf6",
+  "changedExpectedPaths": [
+    "summary.summaryId",
+    "summary.poster.summaryId",
+    "summary.provenance.algorithmVersion",
+    "summary.provenance.inputFingerprint"
+  ],
+  "originalFailureRetained": "/var/tmp/taiko082-combined-offline.log",
+  "scope": "Version-aware independently-derived identity expectations; complete DTO and events remain strict, no product or Growth compatibility changes."
+}

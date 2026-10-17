@@ -2690,7 +2690,7 @@ class DaniProgressService:
                 grade, entry, derived=derived, user_scores=user_scores
             )
             dojo_footer = self._footer_rows(grade, dojo_songs, dojo_totals)
-            if version != DOJO_DATA_VERSION:
+            if not entry:
                 for runtime in dojo_songs:
                     runtime["statusText"] = "暂无数据"
                 for row in dojo_footer:
@@ -2706,7 +2706,7 @@ class DaniProgressService:
                 )
             dojo_title = (
                 f"{canonical}进度（段位内，暂无本版本数据）"
-                if version != DOJO_DATA_VERSION
+                if not entry
                 else f"虹{version}{canonical}进度（段位内）"
             )
             sections.append(

@@ -16,4 +16,4 @@ def root():
     if getattr(config, "taiko_song_profile", "center") == "client":
         from taiko_bot.settings import get_settings
         return get_settings().root_dir
-    return Path(getattr(config, "taiko_song_public_root", ".")).resolve()
+    return Path(getattr(config, "taiko_song_public_root", os.environ.get("TAIKO_RUNTIME_ROOT", "."))).resolve()

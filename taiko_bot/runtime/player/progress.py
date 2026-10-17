@@ -76,9 +76,10 @@ async def progress_handle(matcher: Matcher, event: Event):
     render, dani, catalog = modules()
     request = dani.parse_dani_progress_request(prepared_command[0])
     history_version = dani.DOJO_DATA_VERSION if PROFILE == 'center' else dani.CURRENT_DANI_VERSION
-    include_history = bool(request and request['version'] == history_version)
+    include_history = bool(request and (request['version'] in dani.DOJO_VERSIONS if PROFILE == 'center' else request['version'] == history_version))
     history_options = {'include_history': include_history}
     if PROFILE == 'center':
+        history_options['history_dan_version'] = request['version'] if request else history_version
         history_options['history_dan_id'] = dani.get_dan_id_by_grade_name(request['grade']) if include_history else None
     actor = entry.helpers._normalize_identity_key(entry.helpers.get_identity_key(event=event))
     principal, _ = entry.helpers._resolve_requested_identity_key(event)

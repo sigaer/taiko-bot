@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#dcecff" />
+    <meta name="description" content="HDU 视频素材上传入口" />
+    <title>HDU · 视频素材投递</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="brand-row">
+          <span class="brand-mark" aria-hidden="true">H</span>
+          <span class="brand-copy">HDU MATERIAL DESK</span>
+        </div>
+        <div class="intro-copy">
+          <p class="eyebrow">VIDEO DROP · 04</p>
+          <h1 id="page-title">把这一段画面，<br />送到云端。</h1>
+          <p class="lead">用于收集 HDU 企划视频素材。选择文件后会直接传往 OSS，不占用网页服务器带宽。</p>
+        </div>
+        <dl class="facts">
+          <div>
+            <dt>建议命名</dt>
+            <dd>昵称-游戏名-歌曲名</dd>
+          </div>
+          <div>
+            <dt>存放位置</dt>
+            <dd>video_4</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="desk" aria-labelledby="desk-title">
+        <header class="desk-header">
+          <div>
+            <p class="eyebrow">UPLOAD QUEUE</p>
+            <h2 id="desk-title">素材投递</h2>
+          </div>
+          <span class="secure-badge"><i aria-hidden="true"></i> OSS 直传</span>
+        </header>
+
+        <div id="drop-zone" class="drop-zone" tabindex="0" role="button" aria-describedby="drop-help">
+          <input id="file-input" type="file" multiple hidden />
+          <svg class="upload-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M24 32V9m0 0-8 8m8-8 8 8M9 29v7a4 4 0 0 0 4 4h22a4 4 0 0 0 4-4v-7" />
+          </svg>
+          <strong>拖放文件到这里</strong>
+          <span id="drop-help">或点击选择，可一次添加多个文件</span>
+          <span class="choose-button">选择文件</span>
+        </div>
+
+        <div id="queue-wrap" class="queue-wrap" hidden>
+          <div class="queue-heading">
+            <span>上传队列</span>
+            <span id="queue-summary">0 个文件</span>
+          </div>
+          <ul id="queue" class="queue" aria-live="polite"></ul>
+        </div>
+
+        <div class="route" aria-hidden="true">
+          <span class="route-label">LOCAL</span>
+          <span class="route-line"><i id="route-progress"></i></span>
+          <svg viewBox="0 0 24 24"><path d="m3 11 18-8-7 18-3-7-8-3Zm8 3 4-5" /></svg>
+          <span class="route-label">OSS</span>
+        </div>
+
+        <p id="global-message" class="global-message" role="status">文件类型不限，请勿关闭正在上传的页面。</p>
+      </section>
+    </main>
+
+    <template id="queue-item-template">
+      <li class="queue-item">
+        <div class="file-type" aria-hidden="true">FILE</div>
+        <div class="file-main">
+          <div class="file-line">
+            <strong class="file-name"></strong>
+            <span class="file-percent">等待中</span>
+          </div>
+          <div class="progress-track"><i></i></div>
+          <div class="file-meta">
+            <span class="file-size"></span>
+            <span class="file-status">等待上传</span>
+          </div>
+        </div>
+        <button class="file-action" type="button">移除</button>
+      </li>
+    </template>
+  </body>
+</html>

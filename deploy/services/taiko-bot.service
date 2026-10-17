@@ -1,0 +1,24 @@
+[Unit]
+Description=Standalone Taiko QQ and OneBot application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/sigaer/taiko
+Environment=TAIKO_RUNTIME_ROOT=/home/sigaer/taiko
+Environment=TAIKO_SONG_PROFILE=center
+Environment=TAIKO_BOT_ENV_FILE=/home/sigaer/taiko/.env.prod
+Environment=FEATURE_SWITCH_DATA_DIR=/usr/lib/python3.11/site-packages/feature_handler/data
+Environment=BOT_GROUP_WHITELIST_PATH=/home/sigaer/config/bot_group_whitelist.json
+EnvironmentFile=/etc/taiko-runtime.env
+ExecStart=/opt/taiko-bot/current/bin/python -I -m taiko_bot
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+KillMode=control-group
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

@@ -2,11 +2,15 @@
 import argparse
 import json
 import logging
+import os
+import tempfile
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
+
+from taiko_bot.services.credential_control import ControlError, MAX_BODY, authorized_update, require_bearer
 
 from taiko_bot.runtime.player.center.public_score_token import (
     PublicScoreTokenError,
@@ -81,11 +85,28 @@ def load_config() -> Dict[str, Any]:
 
 
 def update_cookie(token: str) -> None:
+    # Called only inside the shared control-plane process lock after live proof.
+    if CONFIG_PATH.is_symlink() or not CONFIG_PATH.is_file():
+        raise ValueError("credential_storage_unavailable")
     data = load_config()
     data["cookie"] = token
-    with CONFIG_PATH.open("w", encoding="utf-8") as handle:
-        json.dump(data, handle, ensure_ascii=False, indent=4)
-        handle.write("\n")
+    descriptor, temporary = tempfile.mkstemp(prefix=".credential-", dir=CONFIG_PATH.parent)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            os.fchmod(stream.fileno(), 0o600)
+            json.dump(data, stream, ensure_ascii=False, indent=4)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, CONFIG_PATH)
+        directory = os.open(CONFIG_PATH.parent, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 class SongDataHandler(BaseHTTPRequestHandler):
@@ -213,69 +234,28 @@ class SongDataHandler(BaseHTTPRequestHandler):
             )
             return
 
+        self.close_connection = True
+        self.connection.settimeout(5)
         try:
-            length = int(self.headers.get("Content-Length", "0"))
-        except ValueError:
-            length = 0
-        if length <= 0:
-            self.send_json(
-                HTTPStatus.BAD_REQUEST,
-                {"error": "invalid_body", "message": "Missing request body."},
-            )
-            return
-        raw = self.rfile.read(length)
-        try:
-            payload = json.loads(raw.decode("utf-8"))
-        except json.JSONDecodeError:
-            self.send_json(
-                HTTPStatus.BAD_REQUEST,
-                {"error": "invalid_json", "message": "Request body is not valid JSON."},
-            )
-            return
-
-        if not isinstance(payload, dict):
-            self.send_json(
-                HTTPStatus.BAD_REQUEST,
-                {"error": "invalid_payload", "message": "JSON body must be an object."},
-            )
-            return
-        token = payload.get("token")
-        if not isinstance(token, str) or not token.strip():
-            self.send_json(
-                HTTPStatus.BAD_REQUEST,
-                {"error": "invalid_token", "message": "Missing token field."},
-            )
-            return
-
-        try:
-            update_cookie(token.strip())
-        except FileNotFoundError:
-            self.send_json(
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-                {
-                    "error": "config_missing",
-                    "message": f"Missing file: {CONFIG_PATH}",
-                },
-            )
-        except json.JSONDecodeError:
-            self.send_json(
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-                {
-                    "error": "config_invalid_json",
-                    "message": "config.json is not valid JSON.",
-                },
-            )
-        except ValueError as exc:
-            self.send_json(
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-                {"error": "config_invalid_format", "message": str(exc)},
-            )
+            if parsed.query or parsed.fragment:
+                raise ControlError(400)
+            require_bearer(self.headers.get("Authorization"))
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                raise ControlError(400) from None
+            if length <= 0 or length > MAX_BODY or self.headers.get("Transfer-Encoding"):
+                raise ControlError(400)
+            if self.headers.get("Content-Type", "").split(";")[0].strip() != "application/json":
+                raise ControlError(400)
+            raw = self.rfile.read(length)
+            if len(raw) != length:
+                raise ControlError(400)
+            authorized_update(self.headers.get("Authorization"), raw, "taiko-token", update_cookie)
+        except ControlError as error:
+            self.send_json(error.status, {"error": "credential_update_denied"})
         except Exception:
-            logging.exception("Unhandled error while updating config.json")
-            self.send_json(
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-                {"error": "internal_error", "message": "Unexpected server error."},
-            )
+            self.send_json(503, {"error": "credential_update_unavailable"})
         else:
             self.send_json(HTTPStatus.OK, {"status": "ok"})
 
@@ -356,6 +336,9 @@ class SongDataHandler(BaseHTTPRequestHandler):
         self.send_error(HTTPStatus.METHOD_NOT_ALLOWED)
 
     def log_message(self, fmt: str, *args: Any) -> None:
+        if urlparse(getattr(self, "path", "")).path == TOKEN_API_PATH:
+            logging.info("Credential control request completed")
+            return
         message = fmt % args
         if self._should_suppress_log(message):
             return
@@ -376,6 +359,8 @@ class SongDataHandler(BaseHTTPRequestHandler):
             self.send_response(status)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
+            if urlparse(self.path).path == TOKEN_API_PATH:
+                self.send_header("Cache-Control", "private, no-store")
             if cors:
                 self.send_header("Access-Control-Allow-Origin", "*")
                 self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")

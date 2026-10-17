@@ -1,3 +1,4 @@
+import re
 import sqlite3
 import threading
 import time
@@ -157,14 +158,75 @@ def _migrate_legacy_group_keys(conn: sqlite3.Connection) -> int:
     return migrated
 
 
+def _migrate_misclassified_qq_group_keys(conn: sqlite3.Connection) -> int:
+    rows = conn.execute(
+        """
+        SELECT group_id, feature, enabled, updated_at
+        FROM feature_switch
+        WHERE group_id LIKE 'onebot_v11:%'
+        """
+    ).fetchall()
+    migrated = 0
+    for old_group_id, feature, enabled, updated_at in rows:
+        raw_group_id = str(old_group_id).partition(":")[2]
+        if re.fullmatch(r"[0-9A-F]{32}", raw_group_id) is None:
+            continue
+
+        normalized_group_id = f"{QQ_OFFICIAL_PLATFORM}:{raw_group_id}"
+        current = conn.execute(
+            """
+            SELECT enabled, updated_at
+            FROM feature_switch
+            WHERE group_id=? AND feature=?
+            """,
+            (normalized_group_id, feature),
+        ).fetchone()
+        if current is None or int(updated_at) >= int(current[1]):
+            conn.execute(
+                """
+                INSERT INTO feature_switch (group_id, feature, enabled, updated_at)
+                VALUES (?, ?, ?, ?)
+                ON CONFLICT(group_id, feature)
+                DO UPDATE SET enabled=excluded.enabled,
+                              updated_at=excluded.updated_at
+                """,
+                (normalized_group_id, feature, enabled, updated_at),
+            )
+        conn.execute(
+            "DELETE FROM feature_switch WHERE group_id=? AND feature=?",
+            (old_group_id, feature),
+        )
+        migrated += 1
+    if migrated:
+        _clear_feature_cache()
+    return migrated
+
+
+def resolve_event_platform(event: Any) -> str:
+    group_openid = str(getattr(event, "group_openid", "") or "").strip()
+    module_name = str(getattr(event.__class__, "__module__", "") or "")
+    if group_openid or module_name.startswith("nonebot.adapters.qq"):
+        return QQ_OFFICIAL_PLATFORM
+    return ONEBOT_V11_PLATFORM
+
+
 def resolve_feature_group_key(event: Any) -> Optional[str]:
-    group_id = getattr(event, "group_id", None)
-    if group_id is not None:
-        return f"{ONEBOT_V11_PLATFORM}:{group_id}"
-    group_openid = getattr(event, "group_openid", None)
-    if group_openid is not None:
+    group_openid = str(getattr(event, "group_openid", "") or "").strip()
+    if group_openid:
         return f"{QQ_OFFICIAL_PLATFORM}:{group_openid}"
+    group_id = str(getattr(event, "group_id", "") or "").strip()
+    if group_id:
+        return f"{ONEBOT_V11_PLATFORM}:{group_id}"
     return None
+
+
+def resolve_message_claim_key(event: Any) -> str:
+    platform = resolve_event_platform(event)
+    for attr in ("message_id", "id"):
+        value = str(getattr(event, attr, "") or "").strip()
+        if value:
+            return f"{platform}:{value}"
+    return str(resolve_feature_group_key(event) or f"{platform}:{id(event)}")
 
 
 def is_first_handler(msg_id: str) -> bool:
@@ -217,6 +279,7 @@ def init_db() -> None:
             """
         )
         _migrate_legacy_group_keys(conn)
+        _migrate_misclassified_qq_group_keys(conn)
     finally:
         conn.close()
     _maybe_cleanup(int(time.time()))
@@ -287,7 +350,11 @@ def feature_on(feature: str, default: bool = True) -> Rule:
         if group_id is None:
             return True
         bot_id = str(getattr(event, "self_id", "") or "")
-        raw_group = str(getattr(event, "group_id", "") or "")
+        raw_group = str(
+            getattr(event, "group_openid", None)
+            or getattr(event, "group_id", "")
+            or ""
+        )
         if not is_group_allowed(bot_id, raw_group):
             return False
         return is_feature_enabled(group_id, feature, default=default)

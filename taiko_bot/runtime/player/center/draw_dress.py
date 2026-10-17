@@ -20,7 +20,8 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
 
-from .dojo_score import build_dojo_score_map, level_mark_to_icon, normalize_dojo_scores
+from .dojo_score import build_dojo_score_map, level_mark_to_icon
+from .dojo_version import dojo_payload_version, normalize_versioned_dojo_scores
 
 from .song_title_showcase import infer_song_title_showcase, resolve_song_title_showcase_selection
 
@@ -533,9 +534,9 @@ def _load_previous_dojo_state(user_id: int, *, score_view=None) -> Optional[Dict
 
         if _snapshot_is_full(payload):
             if "dojo" in payload:
-                current_dojo = normalize_dojo_scores(payload.get("dojo") or {})
+                current_dojo = normalize_versioned_dojo_scores(payload.get("dojo") or {})
         elif "dojo" in payload:
-            current_dojo = normalize_dojo_scores(payload.get("dojo") or {})
+            current_dojo = normalize_versioned_dojo_scores(payload.get("dojo") or {})
 
         if current_dojo is not None:
             dojo_states.append(json.loads(json.dumps(current_dojo, ensure_ascii=False)))
@@ -607,9 +608,9 @@ def _combined_low_miss_count(entry: Dict[str, Any]) -> int:
     return ok_cnt + ng_cnt
 
 @lru_cache(maxsize=1)
-def _load_dojo_grade_display_map() -> Dict[int, Dict[str, Any]]:
+def _load_dojo_grade_display_map(version: str = "2026") -> Dict[int, Dict[str, Any]]:
     payload = json.loads(
-        (ROOT_DIR / "songs" / "grade_dojo_nijiiro_2025_simple.json").read_text(
+        (ROOT_DIR / "songs" / f"grade_dojo_nijiiro_{version}_simple.json").read_text(
             encoding="utf-8"
         )
     )
@@ -794,13 +795,19 @@ def _collect_dojo_change_sections(
     item_limit: Optional[int] = 5,
     include_score_refresh: bool = False,
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
-    prev_map = build_dojo_score_map(previous_dojo)
+    version = dojo_payload_version(current_dojo)
+    if version is None:
+        return [], []
+    prev_map = (
+        build_dojo_score_map(previous_dojo)
+        if dojo_payload_version(previous_dojo) == version else {}
+    )
     curr_map = build_dojo_score_map(current_dojo)
-    grade_display_map = _load_dojo_grade_display_map()
+    grade_display_map = _load_dojo_grade_display_map(version)
 
     def make_grade_item(dan_id: int, level_mark: int, grade_name: str) -> Dict[str, Any]:
         return {
-            "title": grade_name,
+            "title": f"虹{version}{grade_name}",
             "line_icon_path": DANI_ICONS_DIR / f"{level_mark_to_icon(level_mark)}.png",
             "emphasis": "dojo",
             "sort_dan_id": dan_id,
@@ -812,9 +819,9 @@ def _collect_dojo_change_sections(
         songs = grade_meta.get("songs") or []
         song_meta = songs[song_index - 1] if song_index - 1 < len(songs) else {}
         title = str(song_meta.get("title") or f"第{song_index}曲")
-        difficulty = _to_int(song_meta.get("difficulty"), 0)
+        difficulty = _to_int(str(song_meta.get("difficulty") or "").removeprefix("level"), 0)
         item = {
-            "title": f"{grade_name} 第{song_index}曲·{title}",
+            "title": f"虹{version}{grade_name} 第{song_index}曲·{title}",
             "emphasis": "dojo",
             "sort_dan_id": dan_id,
             "sort_song_index": song_index,
@@ -2206,7 +2213,7 @@ def render_update_changes_image(
             include_score_refresh=show_all,
         )
 
-    current_dojo = normalize_dojo_scores(userdata.get("dojo") or {})
+    current_dojo = normalize_versioned_dojo_scores(userdata.get("dojo") or {})
     if previous_dojo is not None:
         dojo_left_sections, dojo_right_sections = _collect_dojo_change_sections(
             previous_dojo,

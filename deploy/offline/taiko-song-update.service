@@ -7,7 +7,7 @@ After=network-online.target
 Type=simple
 WorkingDirectory=/home/sigaer/taiko
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/home/sigaer/taiko/.venv/bin/python -m taiko_bot.offline.song_update_task
+ExecStart=/opt/taiko-bot/current/bin/python -I -m taiko_bot.offline.song_update_task
 Restart=always
 RestartSec=10
 User=root

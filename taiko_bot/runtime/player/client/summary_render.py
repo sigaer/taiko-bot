@@ -55,7 +55,6 @@ SONG_DB_PATH = Path("./songs/song_data.json")
 TWSO_CN_PATH = Path("./songs/twso_cn_data.json")
 
 # 你上传的 score_calculator.py 若在其它位置，请修改这里
-SCORE_CALC_PATH = Path("./plugins/utils/score_calculator.py")
 
 # score_calculator 内部会读取 rating_structured_with_ids.json（你项目若不同请改）
 RATING_STRUCT_PATH = Path("./songs/rating_structured_with_ids.json")

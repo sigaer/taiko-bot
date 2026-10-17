@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Taiko storage maintenance daily
+
+[Timer]
+OnCalendar=*-*-* 05:30:00 Asia/Shanghai
+Persistent=true
+RandomizedDelaySec=5m
+Unit=taiko-storage-maintenance.service
+
+[Install]
+WantedBy=timers.target

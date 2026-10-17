@@ -16,6 +16,7 @@ from taiko_application.dani.rating import build_rating_context
 from taiko_application.dani.common import CURRENT_DANI_VERSION, DOJO_DATA_VERSION
 
 from .dojo_score import build_dojo_score_map, get_dan_id_by_grade_name, normalize_dojo_scores
+from ..dojo_version import DOJO_VERSIONS, dojo_payload_version
 
 BASE = __import__("taiko_bot.runtime.player.center.recommendation_support.paths", fromlist=["ROOT"]).ROOT
 
@@ -56,12 +57,14 @@ def _load_grade_payload(version: str) -> Dict[str, Any]:
         raise KeyError(version)
     return version_payload
 
-def _load_history_dojo_payload_for_dan(history_snapshots, dan_id):
+def _load_history_dojo_payload_for_dan(history_snapshots, dan_id, version="2025"):
     if dan_id <= 0:
         return None
     for item in sorted(history_snapshots, key=lambda row: row['fileName'], reverse=True):
         payload = item['payload']
         if not isinstance(payload, dict) or 'dojo' not in payload:
+            continue
+        if dojo_payload_version(payload.get('dojo')) != version:
             continue
         dojo_payload = normalize_dojo_scores(payload.get('dojo') or {})
         if dan_id in build_dojo_score_map(dojo_payload):
@@ -72,12 +75,13 @@ def _load_history_dojo_payload_for_dan(history_snapshots, dan_id):
 def _load_dojo_progress_payload(
     userdata: Dict[str, Any], history_snapshots, dan_id: Optional[int], version: str
 ) -> Dict[str, Any]:
-    if version != DOJO_DATA_VERSION:
+    if version not in DOJO_VERSIONS:
         return normalize_dojo_scores({})
 
-    dojo_payload = normalize_dojo_scores(userdata.get("dojo") or {})
+    raw_dojo = userdata.get("dojo") or {}
+    dojo_payload = normalize_dojo_scores(raw_dojo if dojo_payload_version(raw_dojo) == version else {})
     if dan_id and dan_id not in build_dojo_score_map(dojo_payload):
-        history_payload = _load_history_dojo_payload_for_dan(history_snapshots, dan_id)
+        history_payload = _load_history_dojo_payload_for_dan(history_snapshots, dan_id, version)
         if history_payload:
             return history_payload
     return dojo_payload

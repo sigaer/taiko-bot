@@ -7,7 +7,7 @@ Type=simple
 WorkingDirectory=/home/sigaer/taiko
 Environment=TAIKO_RUNTIME_ROOT=/home/sigaer/taiko
 EnvironmentFile=/etc/taiko-runtime.env
-ExecStart=/opt/taiko-bot/bin/python -m taiko_bot.services.sync_dispatch_server
+ExecStart=/opt/taiko-bot/current/bin/python -I -m taiko_bot.services.sync_dispatch_server
 Restart=always
 RestartSec=3
 User=root

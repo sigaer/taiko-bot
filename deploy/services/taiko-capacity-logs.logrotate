@@ -1,0 +1,10 @@
+/opt/mcsmanager/daemon/logs/*.log /opt/mcsmanager/web/logs/*.log /home/sigaer/sekai/logs/*.jsonl /home/sigaer/taiko/logs/storage_maintenance.jsonl {
+    daily
+    rotate 14
+    maxsize 100M
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

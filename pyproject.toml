@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.14.0"
+version = "0.15.0"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
 license = "GPL-2.0-only"
 dependencies = [
-    "taiko-application==0.8.0",
+    "python-memory-runtime==1.1.0",
+    "taiko-application==0.8.1",
     "sakura-taiko-contract==0.1.0",
     "aiomysql>=0.2.0",
     "nonebot-plugin-apscheduler>=0.5.0",
@@ -37,6 +38,8 @@ dependencies = [
 ]
 
 [project.scripts]
+taiko-bot = "taiko_bot.bootstrap:main"
+taiko-storage-maintenance = "taiko_bot.cli.storage_maintenance:main"
 taiko-resources = "taiko_bot.cli.resources:main"
 taiko-annual = "taiko_bot.offline.annual_summary.__main__:main"
 taiko-growth = "taiko_bot.offline.growth_compute:entrypoint"
@@ -54,7 +57,8 @@ taiko-qq-migration = "taiko_bot.cli.qq_migration_cli:main"
 taiko-sync-hiroba = "taiko_bot.cli.sync_hiroba:main"
 
 [project.optional-dependencies]
-center = ["sakura-taiko-core[hiroba]==0.1.1", "PyMySQL>=1.1.0"]
+hdu = ["Flask>=3.0", "oss2>=2.18", "hypercorn>=0.14"]
+center = ["sakura-taiko-core[hiroba]==0.1.1", "PyMySQL>=1.1.0", "nonebot-plugin-groupmate-taiko==0.1.0"]
 client = ["sakura-taiko-core[hiroba]==0.1.2"]
 
 [tool.nonebot]
@@ -63,14 +67,16 @@ adapters = [
     { name = "QQ", module_name = "nonebot.adapters.qq" }
 ]
 plugins = ["taiko_bot.runtime.public", "taiko_bot.runtime.player.entry", "taiko_bot.runtime.community.community_entry", "feature_handler", "taiko_runtime_init", "bot_pool_metrics", "nonebot_plugin_method_calls"]
-plugin_dirs = ["plugins"]
+plugin_dirs = []
 builtin_plugins = []
 
 [tool.setuptools.packages.find]
-include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*", "plugins*", "taiko_bot*", "taiko_runtime*", "taiko_store*"]
+include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*", "taiko_bot*", "taiko_runtime*", "taiko_store*", "hdu_upload*"]
+exclude = ["*.tests", "*.tests.*"]
 
 [tool.setuptools]
 py-modules = ["bot", "bot_core", "bot_gateway", "bot_pool_metrics", "taiko_data_api", "taiko_runtime_init"]
 
 [tool.setuptools.package-data]
-"taiko_bot.offline" = ["schemas/*.json", "annual_summary/data/*.json"]
+"hdu_upload" = ["static/*.html", "static/*.css", "static/*.js"]
+"taiko_bot.offline" = ["growth-compatibility.dat", "schemas/*.json", "annual_summary/data/*.json"]

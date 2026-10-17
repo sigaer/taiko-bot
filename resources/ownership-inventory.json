@@ -997,5 +997,6 @@
       "path": "taiko/机器人自测报告模板-2023.xlsx",
       "reason": "Uninspected historical sample; privacy/redistribution clearance required"
     }
-  ]
+  ],
+  "supersededForCurrentStateBy": "final-ownership-inventory.json"
 }

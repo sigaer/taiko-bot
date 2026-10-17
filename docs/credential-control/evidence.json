@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "baseCommit": "15722e86bbd554ce8d89f2df031ab0f29bb7437d",
+  "worktree": "/var/tmp/taiko-credential-control-plane-20261016",
+  "applicationCandidate": "PASS_SYNTHETIC_HANDLER_SCOPE",
+  "overallCredentialGate": "BLOCKED",
+  "productionAccess": false,
+  "productionWrites": false,
+  "existingWheelModified": false,
+  "sourceSha256": {
+    "taiko_bot/services/credential_control.py": "c63f99384022e74a1029416c30d49698b91eb674d619fa7be3a930c577492ac6",
+    "taiko_bot/cli/credential_control.py": "3673118f9de7f963f074dcd182a6d2b2cc45c54faad118ffa8946a6085933ee2",
+    "taiko_bot/services/public_api.py": "4de4dc045d8f9530ce0e957ab7321658922e993c46a820887b8389317d158934",
+    "tests/credential_control/test_control.py": "437875e68bc4eb2dba5a59952364477e14b869c59853999e2fbba250c1b4f223"
+  },
+  "sharedControlModuleSha256": "c63f99384022e74a1029416c30d49698b91eb674d619fa7be3a930c577492ac6",
+  "runs": [
+    {
+      "command": [
+        "bash",
+        "/home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh",
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/credential_control",
+        "-p",
+        "test_control.py",
+        "-v"
+      ],
+      "cwd": "/var/tmp/taiko-credential-control-plane-20261016",
+      "exitCode": 0,
+      "passCount": 10,
+      "failCount": 0,
+      "skipCount": 0,
+      "log": "/var/tmp/taiko-s1-handler-final-20261016.log",
+      "logSha256": "be77443c738c32c97c3e4772c0c860e5ea8f2cd8fb165b7f2229006a2e03ab04"
+    }
+  ],
+  "scope": [
+    "actual handler over isolated loopback HTTP",
+    "actual HMAC service JWT with explicit synthetic owner allowlist",
+    "exact old center arbitrary-token probe input denied 401 and writer=0",
+    "malformed/expired upstream payload denied 400 after authentic service proof",
+    "nonce replay/concurrency and writer-failure persistence",
+    "actual atomic writer on synthetic config mode 0600"
+  ],
+  "limits": [
+    "source handler test, runtime root and public-score dependency stubbed",
+    "not installed-wheel integration",
+    "not production ACL/ingress verification",
+    "no real external HTTPS credential upload"
+  ],
+  "priorFail": {
+    "log": "/var/tmp/viewer0822-credential-probe.log",
+    "preserved": true,
+    "sha256": "1c5c26a39d6bb4e7b905ffbc5158b5a7f67d121e5c0c2ac769ef3ae054a9d720"
+  }
+}

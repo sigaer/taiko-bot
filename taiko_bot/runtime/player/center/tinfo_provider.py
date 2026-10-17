@@ -80,7 +80,7 @@ class TinfoHostProvider:
             options["max_file_bytes"] = MAX_BYTES
         return PublicationStore(self._root, identity, **options)
 
-    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None, b30_command=None, trend_command=None, summary_command=False):
+    def prepare(self, actor, principal, *, include_history=False, history_dan_id=None, history_dan_version="2025", b30_command=None, trend_command=None, summary_command=False):
         rows, entry, observation = self._snapshot(actor, principal)
         self._initial = (actor, principal, observation)
         virtual = entry["current_slot"] == 0
@@ -138,8 +138,9 @@ class TinfoHostProvider:
                     history = []
                     # Dani needs only the newest matching dojo payload. Do not
                     # retain entire song-history datasets or scan when current wins.
+                    from .dojo_version import dojo_payload_version
                     current_dojo = (current or {}).get('dojo') or {}
-                    needs_fallback = current is not None and history_dan_id and history_dan_id not in build_dojo_score_map(current_dojo)
+                    needs_fallback = current is not None and history_dan_id and (dojo_payload_version(current_dojo) != history_dan_version or history_dan_id not in build_dojo_score_map(current_dojo))
                     if needs_fallback:
                         for name in sorted(view.history_names(), reverse=True):
                             self._remaining()
@@ -150,7 +151,7 @@ class TinfoHostProvider:
                             if not isinstance(payload, dict) or 'dojo' not in payload:
                                 continue
                             dojo = payload.get('dojo') or {}
-                            if history_dan_id in build_dojo_score_map(dojo):
+                            if dojo_payload_version(dojo) == history_dan_version and history_dan_id in build_dojo_score_map(dojo):
                                 history.append({'fileName': name, 'payload': {'dojo': dojo}})
                                 break
                     history = tuple(history)

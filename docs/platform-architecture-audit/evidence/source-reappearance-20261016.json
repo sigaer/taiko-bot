@@ -1,0 +1,87 @@
+{
+  "scope": "Explicit source candidate; not installed artifact acceptance",
+  "base": "15722e86bbd554ce8d89f2df031ab0f29bb7437d",
+  "algorithmRevision": "annual-observation-v4.5.4",
+  "packageVersion": "0.14.1 unchanged; no wheel built or installed",
+  "logs": [
+    {
+      "path": "/var/tmp/taiko-final-ownership-20261015/offline-final.log",
+      "sha256": "b330d28904c89e4c238954a2845e9256f5c6847d9b90cf029c6e0b2a2d0650f4"
+    },
+    {
+      "path": "/var/tmp/taiko-final-ownership-20261015/frozen-failure.log",
+      "sha256": "d4500a154660fd226b956ae2d1d1a36ea2dc2f5f313c760760717d7df1f64822"
+    },
+    {
+      "path": "/var/tmp/viewer0822-source-switch-retry.log",
+      "sha256": "47b0d7f1c964975b7346ff5a89756c1ac04fb227ac16b2e10867d4bfaa623614"
+    },
+    {
+      "path": "/var/tmp/taiko-g1-focused-20261016.log",
+      "sha256": "fe32d3cc7eba3756501b0166efcd6d93e0bafeed8c67e7d2d743dfbb1c0dc276"
+    },
+    {
+      "path": "/var/tmp/taiko-g1-offline-20261016.log",
+      "sha256": "bbbdbaefb18da8a41ba0e517f94537a4424f18b1793d8561ad0246345eaf1c33"
+    },
+    {
+      "path": "/var/tmp/taiko-g1-offline-oracle-20261016.log",
+      "sha256": "6d329f953c88253c5ee0be3e2d74f7d890b15ddae9b6e4ae8195e1cf2a073274"
+    },
+    {
+      "path": "/var/tmp/taiko-g1-revision-preservation-20261016.log",
+      "sha256": "01cdd48247cab7b390581fe6c4304671fcddf040b2a9072ef90373db72da86eb"
+    }
+  ],
+  "results": {
+    "historicalOffline": {
+      "pass": 271,
+      "skip": 7,
+      "fail": 1,
+      "failure": "source switch then deleted/readded chart creates false play"
+    },
+    "initialFocused": {
+      "pass": 51
+    },
+    "initialOfflineMissingOracle": {
+      "pass": 275,
+      "skip": 18,
+      "limitation": "11 frozen differential cases skipped: missing TAIKO_FROZEN_BASELINE_ROOT"
+    },
+    "currentOfflineWithOracle": {
+      "pass": 299,
+      "skip": 7,
+      "fail": 1,
+      "newFactMatrixPass": 28,
+      "originalSemanticFailure": "now PASS; assertion unchanged",
+      "remainingFailure": "test_annual_success_cache_and_fingerprint: exact frozen JSON is intentionally non-equivalent after algorithm revision",
+      "privacySkips": "original seven private fixture tests retained and not accessed"
+    },
+    "separateRevisionPreservation": {
+      "pass": 1,
+      "exactDifferencePaths": [
+        "summary.summaryId",
+        "summary.poster.summaryId",
+        "summary.provenance.algorithmVersion",
+        "summary.provenance.inputFingerprint"
+      ],
+      "verified": "Cold/hot candidate preserves every old synthetic snapshot/report/cache JSON hash and writes new-version cache objects; all other output fields including events equal frozen oracle",
+      "limitation": "Synthetic files only; no SQL or production saved reports accessed"
+    }
+  },
+  "command": "bash /home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh /usr/bin/env PYTHONDONTWRITEBYTECODE=1 TAIKO_FROZEN_BASELINE_ROOT=/var/tmp/taiko-offline-20261015/repro-frozen /var/tmp/taiko-final-ownership-20261015/wheel-env/bin/python -I -m pytest tests/offline -q --runxfail -rs --tb=short",
+  "candidateImport": "Explicit repository tests/conftest.py source bootstrap; existing venv supplies dependencies only",
+  "outstanding": [
+    "Owner approves distinct wheel version/artifact and installation combination",
+    "Installed-runtime replay of corrected facts",
+    "Viewer companion product regression and historical SQL persistence evidence"
+  ],
+  "unchanged": [
+    "frozen oracle",
+    "old FAIL logs",
+    "locked 0.14.1 wheel",
+    "existing virtual environments",
+    "persisted production/user data"
+  ],
+  "revisionCommand": "bash /home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh /usr/bin/env PYTHONDONTWRITEBYTECODE=1 TAIKO_FROZEN_BASELINE_ROOT=/var/tmp/taiko-offline-20261015/repro-frozen /var/tmp/taiko-final-ownership-20261015/wheel-env/bin/python -I -m pytest tests/offline/test_reappearance_revision.py -q --runxfail --tb=short"
+}

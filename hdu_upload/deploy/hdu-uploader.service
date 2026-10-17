@@ -1,0 +1,25 @@
+[Unit]
+Description=HDU OSS multipart upload signing service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/sigaer/taiko
+Environment=PORT=3104
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=OSS_CONFIG_FILE=/root/.ossutilconfig
+Environment=OSS_BUCKET=sigaer
+Environment=OSS_UPLOAD_PREFIX=video_4/
+ExecStart=/opt/taiko-bot/current/bin/python -I -m hypercorn --bind 127.0.0.1:3104 --workers 2 hdu_upload.wsgi:app
+Restart=always
+RestartSec=3
+User=root
+Group=root
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target
