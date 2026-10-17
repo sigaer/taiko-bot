@@ -30,6 +30,9 @@ mv -T /opt/taiko-bot/current.next /opt/taiko-bot/current
 install -m 644 "$root/deploy/services/taiko-bot.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-public-api.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-sync-dispatch.service" /etc/systemd/system/taiko-sync-receiver.service
+# Supersede the existing recovery interpreter override with the release pointer.
+install -d -m 755 /etc/systemd/system/taiko-sync-receiver.service.d
+install -m 644 "$root/deploy/services/taiko-sync-runtime.conf" /etc/systemd/system/taiko-sync-receiver.service.d/zz-publication-runtime.conf
 install -m 644 "$root/deploy/offline/taiko-song-update.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-storage-maintenance.service" /etc/systemd/system/
 install -m 644 "$root/hdu_upload/deploy/hdu-uploader.service" /etc/systemd/system/
