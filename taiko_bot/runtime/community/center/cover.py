@@ -108,17 +108,8 @@ def _default_group_scope_name(event: MessageEvent) -> str:
     return f"群{group_scope}"
 
 def _upload_cover_to_oss(cover_path: Path) -> Tuple[bool, str]:
-    oss_target = f"{OSS_COVER_PREFIX}/{cover_path.name}"
-    try:
-        subprocess.run(
-            ["ossutil", "cp", "-f", str(cover_path), oss_target],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        return True, oss_target
-    except Exception as e:
-        return False, str(e)
+    from ..cover_upload import upload_cover
+    return upload_cover(cover_path)
 
 async def _extract_uploader_group_name(bot: Bot, event: MessageEvent) -> str:
     group_scope = _event_group_scope_id(event)
@@ -174,7 +165,8 @@ async def handle_cover(bot: Bot, event: MessageEvent):
             await cover_cmd.finish("歌曲ID不存在，请确认后再上传封面。")
         # 2. 检查文件是否已存在
         if save_path.exists():
-            await cover_cmd.finish("该歌曲封面已存在，若要更换请先删除旧文件。")
+            uploaded, detail = await asyncio.to_thread(_upload_cover_to_oss, save_path)
+            await cover_cmd.finish(detail)
 
         # 3. 从消息中提取图片
         msg = event.get_message()
@@ -248,5 +240,5 @@ async def handle_cover(bot: Bot, event: MessageEvent):
         except Exception as e:
             logger.warning("admin_cover_audit_failed error=%s", e)
         if uploaded:
-            await cover_cmd.finish("上传成功，并已同步到OSS")
-        await cover_cmd.finish(f"上传成功，但同步到OSS失败：{detail}")
+            await cover_cmd.finish("上传成功，原图及 200/400 缩略图已同步到 OSS")
+        await cover_cmd.finish(f"本地封面已保存；{detail}")

@@ -50,17 +50,8 @@ COVER_DIR = ASSETS_DIR / "cover"
 OSS_COVER_PREFIX = "oss://sigaer/cover"
 
 def _upload_cover_to_oss(cover_path: Path) -> Tuple[bool, str]:
-    oss_target = f"{OSS_COVER_PREFIX}/{cover_path.name}"
-    try:
-        subprocess.run(
-            ["ossutil", "cp", "-f", str(cover_path), oss_target],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-        return True, oss_target
-    except Exception as e:
-        return False, str(e)
+    from ..cover_upload import upload_cover
+    return upload_cover(cover_path)
 
 cover_cmd = on_regex(r"^cover\s*(\d+)", flags=re.IGNORECASE, rule=taiko_rule)
 
@@ -87,7 +78,8 @@ async def handle_cover(bot: Bot, event: Event, reg_group=RegexGroup()):
             await cover_cmd.finish("歌曲ID不存在，请确认后再上传封面。")
         # 2. 检查文件是否已存在
         if save_path.exists():
-            await cover_cmd.finish("该歌曲封面已存在，若要更换请先删除旧文件。")
+            uploaded, detail = await asyncio.to_thread(_upload_cover_to_oss, save_path)
+            await cover_cmd.finish(detail)
 
         # 3. 从消息中提取图片
         msg = event.get_message()
@@ -137,5 +129,5 @@ async def handle_cover(bot: Bot, event: Event, reg_group=RegexGroup()):
         # 6. 上传到 OSS
         uploaded, detail = await asyncio.to_thread(_upload_cover_to_oss, save_path)
         if uploaded:
-            await cover_cmd.finish("上传成功，并已同步到OSS")
-        await cover_cmd.finish(f"上传成功，但同步到OSS失败：{detail}")
+            await cover_cmd.finish("上传成功，原图及 200/400 缩略图已同步到 OSS")
+        await cover_cmd.finish(f"本地封面已保存；{detail}")
