@@ -56,8 +56,10 @@ def materialize(root, identity_key, ids, profile_id, virtual_id):
             for slot, identity in enumerate(ids, 1):
                 view = views[identity]
                 if view.manifest is not None:
-                    total += sum(item["bytes"] for key, item in view.manifest["files"].items()
-                                 if key == "current" or key.startswith("history/"))
+                    # Incremental materialization reads current objects only.
+                    # A cold history rebuild applies its own aggregate bound in
+                    # derive_merged_read; retained history is not current input.
+                    total += view.manifest["files"].get("current", {}).get("bytes", 0)
                     if total > MAX_BYTES:
                         raise PublicationError("Merged input limit exceeded")
                 try:
