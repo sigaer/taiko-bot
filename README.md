@@ -285,7 +285,7 @@ Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0�
 
 双端 B30 命令迁移与验收见 [b30-ownership](docs/b30-ownership.md)。
 
-## 独立应用部署（0.15.0）
+## 独立应用部署（0.15.1）
 
 本仓库同时拥有中心 Bot、独立 HTTP/同步服务、Source 生命周期、Hiroba、
 Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维护 CLI。

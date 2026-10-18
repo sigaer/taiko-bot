@@ -22,7 +22,9 @@ class BindingGuard:
     def observe(self):
         try:
             if entry.profile() == 'center':
-                return self.provider._snapshot(self.actor, self.actor)[2]
+                # Each metadata proof has its own read deadline; synchronization may
+                # outlive a score query without weakening the binding comparison.
+                return entry.create_provider()._snapshot(self.actor, self.actor)[2]
             return self.provider.snapshot(self.actor, self.actor)
         except TinfoDenied as error:
             if error.status == 404:
