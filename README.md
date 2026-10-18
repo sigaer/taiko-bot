@@ -312,3 +312,11 @@ Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维
 `LEGACY_NB_PID` 传 `0`。失败即停止，由运维检查失败服务；不会启动第二套消费者。
 所有服务和 cron 使用 `/opt/taiko-bot/current`，切换不会搬迁或重算生产数据。
 Viewer 继续通过已安装的模块/CLI 使用现有 Writer 和读取接口，0.84.2 协议保持不变。
+
+### 查配置索引自动更新
+
+每日歌曲更新任务（北京时间 09:42）在 ESE 镜像同步后，使用已有 TJA 解析器和歌曲 ID 映射重建 `songs/analyze_result_filtered.json`。新歌与已修改谱面在下一次成功任务后进入查询；任务不改变短配置频次门槛或子串匹配规则。
+
+无法重新解析的旧歌曲沿用上一份索引，新歌暂缺时记录原因；详情见同目录 `analyze_result_filtered_report.json` 的 `unresolved`、`retained_song_ids` 和 `skipped_song_ids`。整个解析或发布失败时保留当前文件。发布使用文件锁和原子替换，并保留 `.json.previous` 上一代。QQ Bot 按次读取，无需为数据刷新重启。
+
+独立重建仍可使用 `python -I -m taiko_bot.offline.merge_index --tja-root /home/sigaer/git/ESE_autosync --mapping /home/sigaer/taiko/songs/song_id2tjapath.json`。手动 CLI 默认要求完整匹配；指定 `--allow-partial` 才使用每日任务的局部更新/沿用策略。
