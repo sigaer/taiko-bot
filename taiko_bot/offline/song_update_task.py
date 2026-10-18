@@ -34,9 +34,9 @@ except Exception:
         move_missing_titles_tja_and_ogg,
     )
 try:
-    from taiko_bot.offline.ese_audio_sync import sync_audio_from_ese
+    from taiko_bot.offline.ese_audio_sync import sync_audio_from_ese, ESE_SYNC_REPO_PATH
 except Exception:
-    from ese_audio_sync import sync_audio_from_ese
+    from ese_audio_sync import sync_audio_from_ese, ESE_SYNC_REPO_PATH
 try:
     from taiko_bot.offline.branch_audio_manifest import BRANCH_AUDIO_MANIFEST_PATH
 except Exception:
@@ -2397,9 +2397,7 @@ def sync_song_data_with_taiko_database():
 
     with open(SONG_DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=4)
-    audio_sync_report = sync_audio_from_ese(
-        merged, mode="incremental", include_other=True
-    )
+    audio_sync_report = _sync_audio_and_chart_config(merged, song_tja_mapping)
     audio_sync_failure = _audio_sync_failure_message(audio_sync_report)
     if audio_sync_failure:
         print(f"[AUDIO][ESE][WARN] 自动补齐失败: {audio_sync_failure}")
@@ -2438,6 +2436,31 @@ def sync_song_data_with_taiko_database():
     )
     if audio_sync_failure:
         raise RuntimeError(f"[AUDIO][ESE] 自动补齐未完成: {audio_sync_failure}")
+
+
+def _sync_audio_and_chart_config(song_data, song_tja_mapping):
+    audio_report = sync_audio_from_ese(song_data, mode="incremental", include_other=True)
+    # Audio conversion may fail after a successful pull. Only repository sync
+    # success is required for parsing; never select a historical backup mirror.
+    repo = audio_report.get("repo") or {}
+    if not repo.get("revision") or Path(repo.get("repo_path", "")).resolve() != ESE_SYNC_REPO_PATH.resolve():
+        logger.warning("配置索引未更新：TJA 同步未完成，保留原索引")
+        return audio_report
+    try:
+        from .merge_index import rebuild_pattern_index
+        report = rebuild_pattern_index(
+            song_data, tja_root=ESE_SYNC_REPO_PATH, song_tja_mapping=song_tja_mapping,
+            output_path=ROOT_DIR / "songs/analyze_result_filtered.json",
+            report_path=ROOT_DIR / "songs/analyze_result_filtered_report.json",
+            allow_partial=True,
+        )
+        logger.info("配置索引更新完成：解析=%d 沿用=%d 暂缺=%d",
+                    report["matched_song_count"], len(report["retained_song_ids"]), len(report["skipped_song_ids"]))
+        if report["unresolved_count"]:
+            logger.warning("部分配置未能重新解析，详情见 analyze_result_filtered_report.json")
+    except Exception:
+        logger.exception("配置索引更新失败，保留原索引")
+    return audio_report
 
 
 def update_taiko_music(interactive=True):
