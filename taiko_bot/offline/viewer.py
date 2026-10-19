@@ -11,6 +11,7 @@ from .paths import root
 from .score_calculator import compute_all_from_userdata, compute_recommendations_for_user
 from .dani_progress import SUPPORTED_DANI_VERSIONS, _parser_service
 from taiko_store.reader import read_current_json, score_read_view
+from taiko_store import PublicationError
 
 
 def _userdata_root():
@@ -66,9 +67,21 @@ def render_progress_image_bytes_by_list(user_id, *args, **kwargs):
 
 def render_dani_progress_image_bytes(user_id, *args, **kwargs):
     from taiko_bot.runtime.player.center.progress_support.dani_progress import render_dani_progress_image_bytes as render
-    from taiko_bot.runtime.player.center.b30_history import _history_snapshot_inputs
     with score_read_view(_userdata_root(), str(user_id)) as view:
-        history = [dict(capturedAt=at.isoformat(), payload=data) for at, data in _history_snapshot_inputs(view)]
+        # Dani selects the latest matching dojo by the original filename. The
+        # time-only B30 DTO drops that provenance and raises KeyError downstream.
+        history = []
+        for name in view.history_names():
+            try:
+                payload = json.loads(view.history_raw(name).decode("utf-8"))
+            except (OSError, UnicodeError):
+                if view.manifest is not None:
+                    raise PublicationError("Canonical history is unavailable") from None
+                continue
+            except ValueError:
+                # Keep the existing exclusion of malformed historical JSON.
+                continue
+            history.append(dict(fileName=name, payload=payload))
         return render(user_id, *args, userdata=json.loads(view.current_raw()), history_snapshots=history, **kwargs)
 
 
