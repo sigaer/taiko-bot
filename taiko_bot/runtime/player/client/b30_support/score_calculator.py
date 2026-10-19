@@ -36,7 +36,7 @@ from matplotlib.transforms import offset_copy
 from taiko_bot.settings import get_settings
 
 def build_duplicate_song_groups(song_data_path=get_settings().root_dir / "songs/song_data.json"):
-    try: rows = load_json(song_data_path)
+    try: rows = json.loads(Path(song_data_path).read_text(encoding="utf-8"))
     except Exception: rows = []
     return _client_groups.build_rating_duplicate_groups(rows)
 
@@ -111,9 +111,10 @@ def compute_all_from_userdata_records(
     )
 
 def _compute_results_from_userdata_records(userdata_records, cfg, const_table, *, collapse_duplicate_versions=True):
+    groups, pair_ids = _domain.rating_identity_inputs()
     return _calculation._compute_results_from_userdata_records(userdata_records, cfg, const_table,
-        collapse_duplicate_versions=collapse_duplicate_versions, duplicate_groups=PAIR_ID_GROUPS,
-        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(userdata_records, cfg["songs"]),
+        collapse_duplicate_versions=collapse_duplicate_versions, duplicate_groups=groups,
+        default_ids=pair_ids, visible_song_ids=_domain.visibility_inputs(userdata_records, cfg["songs"]),
         identity_namespace="pair")
 
 aggregate_topN_value = _v1.aggregate_topN_value
@@ -305,4 +306,4 @@ def generate_top_N_image(
     return buf
 
 def get_song_chart_identity_key(song_id, level):
-    return _catalog._get_recommend_identity_key(song_id, level, PAIR_ID_MAP, identity_namespace="pair")
+    return _catalog._get_recommend_identity_key(song_id, level, _domain.rating_identity_inputs()[1], identity_namespace="pair")

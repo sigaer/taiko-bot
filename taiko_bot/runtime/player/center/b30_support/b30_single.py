@@ -7,7 +7,8 @@ from pathlib import Path
 
 from typing import Any, Dict, Iterable, List, Tuple
 
-from .score_calculator import PAIR_ID_GROUPS, build_const_table, load_rating_config
+from .score_calculator import build_const_table, load_rating_config
+from .duplicate_versions import build_duplicate_song_groups
 
 ROOT_DIR = __import__("taiko_bot.runtime.public.config", fromlist=["root"]).root()
 
@@ -52,7 +53,7 @@ def _load_rating_resources(
 
 def _compute_rating_for_entry(entry, rating_index, const_table):
     return domain_single._compute_rating_for_entry(
-        entry, rating_index, const_table, duplicate_groups=PAIR_ID_GROUPS
+        entry, rating_index, const_table, duplicate_groups=build_duplicate_song_groups()
     )
 
 def build_song_index(song_db: Iterable[Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:

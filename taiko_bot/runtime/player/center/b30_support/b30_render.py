@@ -15,7 +15,8 @@ from .b30_single import _compute_rating_for_entry, _load_rating_resources, build
 
 from .draw_dress import TITLE_FONT_PATH, draw_player_info, _crop_with_pad, _get_font, _get_font_by_path, _load_previous_song_map, build_dress_image
 
-from .score_calculator import PAIR_ID_MAP, TREND_COLORS, TREND_DIM_COLUMNS, TREND_SHORT_LABELS, _compute_results_from_userdata_records, aggregate_topN_value, compute_all_from_userdata_records, compute_dim_topN_means, load_rating_config
+from .score_calculator import TREND_COLORS, TREND_DIM_COLUMNS, TREND_SHORT_LABELS, _compute_results_from_userdata_records, aggregate_topN_value, compute_all_from_userdata_records, compute_dim_topN_means, load_rating_config
+from .duplicate_versions import build_duplicate_song_groups
 
 ROOT_DIR = __import__("taiko_bot.runtime.public.config", fromlist=["root"]).root()
 
@@ -249,6 +250,7 @@ def _pick_top_entries(
         rated.append((float(rating), entry))
 
     if collapse_duplicate_versions:
+        pair_ids = {song_id: index for index, group in enumerate(build_duplicate_song_groups()) for song_id in group}
         deduped: Dict[Tuple[str, int, int], Tuple[float, Dict[str, Any]]] = {}
         for rating, entry in rated:
             try:
@@ -256,7 +258,7 @@ def _pick_top_entries(
                 level = int(entry.get("level", 0))
             except Exception:
                 continue
-            pair_id = PAIR_ID_MAP.get(song_no)
+            pair_id = pair_ids.get(song_no)
             identity = (
                 ("pair", pair_id, level)
                 if pair_id is not None

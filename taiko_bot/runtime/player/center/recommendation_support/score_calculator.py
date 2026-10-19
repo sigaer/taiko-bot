@@ -115,8 +115,11 @@ def generate_recommend_image(
 
 def recommend_songs(all_stats, songs_cfg, const_table, best_key="rating", limit=20):
     default_ids, _ = identity_inputs()
+    available = load_cn_available_chart_keys()
+    if not available:
+        return []
     return domain_candidates.recommend_songs(all_stats, songs_cfg, const_table, best_key, limit,
-        default_ids=default_ids, cn_available_chart_keys=load_cn_available_chart_keys(),
+        default_ids=default_ids, cn_available_chart_keys=available,
         on_shelf_song_ids=load_on_shelf_song_ids())
 
 def compute_recommendations_from_records(
