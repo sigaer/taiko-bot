@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.15.2"
+version = "0.16.0"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -46,6 +46,7 @@ taiko-growth = "taiko_bot.offline.growth_compute:entrypoint"
 taiko-recommendation = "taiko_bot.offline.recommendation_intelligence:entrypoint"
 taiko-my-don = "taiko_bot.offline.my_don_cli:main"
 taiko-song-update = "taiko_bot.offline.song_update_task:main"
+taiko-song-positions = "taiko_bot.offline.song_positions:main"
 taiko-admin-backup = "taiko_bot.cli.taiko_admin_backup:main"
 
 taiko-public-api = "taiko_bot.services.public_api:main"

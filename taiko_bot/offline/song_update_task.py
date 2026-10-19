@@ -13,6 +13,7 @@ import time
 from urllib.parse import quote, urljoin
 
 from taiko_bot.offline.paths import root
+from taiko_bot.offline.song_positions import refresh_positions_safely
 ROOT_DIR = root()
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -2478,6 +2479,9 @@ def update_taiko_music(interactive=True):
     response = requests.post(url, json=data, headers=headers, timeout=30)
     response.raise_for_status()
     song_data = response.json()["data"]["list"]
+    # Use this exact national response, including every category occurrence,
+    # before deduplication or retention of historical catalog rows.
+    refresh_positions_safely(song_data, output_path=ROOT_DIR / 'songs' / 'cn_song_positions.json')
     id_list = []
     new_data = []
     for music in song_data:
@@ -2569,7 +2573,7 @@ def _scheduled_update_job():
 scheduler = BlockingScheduler()
 scheduler.add_job(
     _scheduled_update_job,
-    CronTrigger(hour=DAILY_UPDATE_HOUR, minute=DAILY_UPDATE_MINUTE),
+    CronTrigger(hour=DAILY_UPDATE_HOUR, minute=DAILY_UPDATE_MINUTE, timezone="Asia/Shanghai"),
     id=SCHEDULE_JOB_TAG,
 )
 

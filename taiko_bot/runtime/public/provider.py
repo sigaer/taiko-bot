@@ -85,6 +85,15 @@ def aliases(song_id):
 
 
 def position(song_id):
+    if profile() == 'center':
+        from taiko_bot.song_positions import INDEX_NAME, find_position, load_index
+        payload = load_index(root() / 'songs' / INDEX_NAME)
+        rows = json.loads((root() / 'songs/song_data.json').read_text(encoding='utf-8'))
+        row = next((row for row in rows if row.get('id') == int(song_id)), None)
+        if row is None:
+            return None
+        title = row.get('song_name') or row.get('song_name_jp') or f'ID{song_id}'
+        return find_position(payload, int(song_id), title)
     from sakura_taiko_core.chart import position as core
     rows = json.loads((root()/'songs/song_data.json').read_text(encoding='utf-8'))
     options = {'profile': 'position-client-20261010'} if profile() == 'client' else {}

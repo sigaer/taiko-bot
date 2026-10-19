@@ -45,6 +45,9 @@ def find_by_volume(
     return hits
 
 def format_position_reply(result: PositionResult) -> str:
+    from taiko_bot.song_positions import NationalPosition, format_national_position
+    if isinstance(result, NationalPosition):
+        return format_national_position(result)
     lines = [
         f"【{result.title}】id{result.song_id}",
         f"分类：{result.song_type}",
