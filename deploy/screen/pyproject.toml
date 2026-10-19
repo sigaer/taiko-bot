@@ -1,0 +1,8 @@
+# Runtime launcher metadata only. The installed package registers all plugins.
+[tool.nonebot]
+plugin_dirs = []
+builtin_plugins = []
+
+[tool.nonebot.adapters]
+
+[tool.nonebot.plugins]
