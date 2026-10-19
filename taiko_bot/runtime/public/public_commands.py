@@ -139,7 +139,12 @@ async def _(matcher: Matcher, event: MessageEvent):
 async def _finish_song_position_by_id(
     matcher: Matcher, event: MessageEvent, song_id: int, prefix_text: str = ""
 ) -> None:
-    result = provider.position(song_id)
+    from taiko_bot.song_positions import PositionIndexUnavailable
+    try:
+        result = provider.position(song_id)
+    except PositionIndexUnavailable:
+        await _finish_text_reply(matcher, event, '国行曲表暂不可用，请稍后再试。')
+        return
     if not result:
         await matcher.finish(f"未找到 id{song_id} 的歌曲信息。")
     reply = format_position_reply(result)

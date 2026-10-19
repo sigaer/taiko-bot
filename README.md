@@ -285,7 +285,7 @@ Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0�
 
 双端 B30 命令迁移与验收见 [b30-ownership](docs/b30-ownership.md)。
 
-## 独立应用部署（0.15.1）
+## 独立应用部署（0.16.0）
 
 本仓库同时拥有中心 Bot、独立 HTTP/同步服务、Source 生命周期、Hiroba、
 Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维护 CLI。
@@ -320,3 +320,21 @@ Viewer 继续通过已安装的模块/CLI 使用现有 Writer 和读取接口，
 无法重新解析的旧歌曲沿用上一份索引，新歌暂缺时记录原因；详情见同目录 `analyze_result_filtered_report.json` 的 `unresolved`、`retained_song_ids` 和 `skipped_song_ids`。整个解析或发布失败时保留当前文件。发布使用文件锁和原子替换，并保留 `.json.previous` 上一代。QQ Bot 按次读取，无需为数据刷新重启。
 
 独立重建仍可使用 `python -I -m taiko_bot.offline.merge_index --tja-root /home/sigaer/git/ESE_autosync --mapping /home/sigaer/taiko/songs/song_id2tjapath.json`。手动 CLI 默认要求完整匹配；指定 `--allow-partial` 才使用每日任务的局部更新/沿用策略。
+
+### 国行歌曲位置
+
+中心端的 `xx歌在哪`、`xx在什么位置`、`位置 idxxxx` 使用
+`songs/cn_song_positions.json`。该索引只保存版本、更新时间，以及各国服分类的
+有序歌曲 ID 和待定位 ID；曲名与别名继续复用现有曲库，不保存网页、成绩或完整歌曲记录。
+客户端 profile 的既有位置查询和公共数据协议不变。
+
+现有每日歌曲任务于北京时间 **09:42** 从华立本次接口响应取得收录与全部分类，
+在去重、合并旧曲库前生成位置索引。顺序参考官方街机分类曲表，同名翻唱按版本区分。
+回复显示参考位序和倒数位置；未匹配曲目明确显示位置待确认，未收录不推断为下架。
+海外独有歌曲和本地历史残留不进入索引。
+
+更新采用文件锁、校验及原子替换，保留 `.json.previous` 上一代。
+接口异常、网页结构变化或匹配覆盖率低于 80% 时保留当前索引，其他歌曲更新继续执行。
+Bot 按次读取，成功刷新后无需重启。独立刷新只需
+`python -I -m taiko_bot.offline.song_positions`，不触发音频、谱面或其他数据重建；
+`--output PATH` 可用于隔离候选验证。生产数据不进入 Git 或 wheel。
