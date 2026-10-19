@@ -285,13 +285,14 @@ Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0�
 
 双端 B30 命令迁移与验收见 [b30-ownership](docs/b30-ownership.md)。
 
-## 独立应用部署（0.16.0）
+## 独立应用部署（0.16.1）
 
 本仓库同时拥有中心 Bot、独立 HTTP/同步服务、Source 生命周期、Hiroba、
 Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维护 CLI。
 `taiko_backend/`、`taiko_manager/` 属于其他项目。
 
-安装后的正式入口为 `python -I -m taiko_bot`（或 `taiko-bot`）。
+安装后的入口为 `python -I -m taiko_bot`（或 `taiko-bot`）；中心也支持在原
+`taiko` screen 中用 `nb run` 启动同一份安装包。
 `TAIKO_SONG_PROFILE=center` 使用中心权限与已有数据，`client` 使用 Viewer API。
 入口直接加载本包已有命令，不需要 Sakura checkout、插件装载器或其 Python 搜索路径。
 中心进程加载已有的私有 `nonebot-plugin-groupmate-taiko==0.1.0` 扩展；该扩展
@@ -311,7 +312,28 @@ Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维
 脚本核对并停用旧 screen Bot、确认旧进程退出，再启用独立 systemd 服务；后续发布
 `LEGACY_NB_PID` 传 `0`。失败即停止，由运维检查失败服务；不会启动第二套消费者。
 所有服务和 cron 使用 `/opt/taiko-bot/current`，切换不会搬迁或重算生产数据。
+Bot 已选择 screen 模式时，发布脚本会先核对并停止该 screen 的旧 Bot，
+切换发行环境后仍在该 screen 中启动，不启用第二份 systemd Bot。
+首次随发布切换可传第三参数 `screen`：`scripts/deploy_taiko.sh VERSION 0 screen`。
 Viewer 继续通过已安装的模块/CLI 使用现有 Writer 和读取接口，0.84.2 协议保持不变。
+
+### screen 中启动与重启
+
+已有单窗口 `taiko` screen 为空闲 bash 时，执行
+`python3 scripts/taiko_screen.py start` 可选择 screen 模式。
+脚本复用该会话，停用 `taiko-bot.service` 的自动启动，并检查端口防止重复实例。
+其他 HTTP、同步与每日歌曲更新服务继续独立运行。
+
+进入 `screen -r taiko` 后，`Ctrl+C` 停止 Bot，再输入 `nb run` 即可重启。
+该 shell 的 `nb` 使用 `/opt/taiko-bot/current` 的 CLI 和 Python，显式跳过旧 `.venv`；
+`/home/sigaer/taiko/bot.py` 仅链接到安装包入口，`pyproject.toml` 仅含启动元数据，
+不复制旧业务源码或搜索 Sakura checkout。新 shell 可先执行
+`source /home/sigaer/taiko-bot/scripts/taiko_screen_env.sh`。
+
+启动模式保存在 `/home/sigaer/taiko/runtime/bot-launch-mode`，后续发布沿用该选择。
+screen 模式由终端手动控制，退出后不会自动拉起；主机重启后需先创建
+`screen -S taiko` 并加载上述环境。脚本遇到其他前台任务、占用端口或不属于
+已安装 Taiko 的进程时停止，不中断其他任务。
 
 ### 查配置索引自动更新
 
