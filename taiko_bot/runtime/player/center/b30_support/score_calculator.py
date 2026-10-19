@@ -92,10 +92,10 @@ def compute_all_from_userdata_records(
     )
 
 def _compute_results_from_userdata_records(userdata_records, cfg, const_table, *, collapse_duplicate_versions=False):
-    default_ids, _ = identity_inputs()
+    default_ids, duplicate_groups = identity_inputs()
     return domain_calculation._compute_results_from_userdata_records(
         userdata_records, cfg, const_table, collapse_duplicate_versions=collapse_duplicate_versions,
-        duplicate_groups=PAIR_ID_GROUPS, default_ids=default_ids)
+        duplicate_groups=duplicate_groups, default_ids=default_ids)
 
 def plot_radar_from_values(
     dim_values: Dict[str, float],

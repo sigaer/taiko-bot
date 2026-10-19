@@ -1,0 +1,25 @@
+name: Rating entry regression
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  installed-wheel-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build and install the actual Bot wheel
+        run: |
+          python -m pip wheel --no-deps . --wheel-dir /var/tmp/rating-wheel
+          python -m pip install --no-deps /var/tmp/rating-wheel/taiko_bot-*.whl
+      - name: Verify installed catalog revision loaders
+        run: python -I tests/recommendation/wheel_cache_smoke.py
+      - name: Compile installed Python modules
+        run: python -I -c "import importlib.metadata as m,compileall; d=m.distribution('taiko-bot'); assert compileall.compile_dir(str(d.locate_file('taiko_bot')),quiet=1)"

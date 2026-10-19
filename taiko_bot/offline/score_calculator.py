@@ -179,10 +179,10 @@ def compute_all_from_userdata_records(
 
 
 def _compute_results_from_userdata_records(userdata_records, cfg, const_table, *, collapse_duplicate_versions=False):
-    default_ids, _ = identity_inputs()
+    default_ids, duplicate_groups = identity_inputs()
     return domain_calculation._compute_results_from_userdata_records(
         userdata_records, cfg, const_table, collapse_duplicate_versions=collapse_duplicate_versions,
-        duplicate_groups=PAIR_ID_GROUPS, default_ids=default_ids)
+        duplicate_groups=duplicate_groups, default_ids=default_ids)
 
 
 # ---------- 排序并输出前20项 ----------
@@ -411,8 +411,11 @@ def collapse_stats_for_recommendation(stats):
 
 def recommend_songs(all_stats, songs_cfg, const_table, best_key="rating", limit=20):
     default_ids, _ = identity_inputs()
+    available = load_cn_available_chart_keys()
+    if not available:
+        return []
     return domain_candidates.recommend_songs(all_stats, songs_cfg, const_table, best_key, limit,
-        default_ids=default_ids, cn_available_chart_keys=load_cn_available_chart_keys(),
+        default_ids=default_ids, cn_available_chart_keys=available,
         on_shelf_song_ids=load_on_shelf_song_ids())
 
 

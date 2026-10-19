@@ -41,7 +41,7 @@ NEGATIVE_COLOR = "#C62828"  # 淡红（负向）
 NEUTRAL_COLOR = "#000000"  # 黑色
 
 def build_duplicate_song_groups(song_data_path=get_settings().root_dir / "songs/song_data.json"):
-    try: rows = load_json(song_data_path)
+    try: rows = json.loads(Path(song_data_path).read_text(encoding="utf-8"))
     except Exception: rows = []
     return _client_groups.build_rating_duplicate_groups(rows)
 
@@ -118,15 +118,17 @@ def compute_all_from_userdata_records(
     )
 
 def _compute_results_from_userdata_records(userdata_records, cfg, const_table, *, collapse_duplicate_versions=True):
+    groups, pair_ids = _domain.rating_identity_inputs()
     return _calculation._compute_results_from_userdata_records(userdata_records, cfg, const_table,
-        collapse_duplicate_versions=collapse_duplicate_versions, duplicate_groups=PAIR_ID_GROUPS,
-        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(userdata_records, cfg["songs"]),
+        collapse_duplicate_versions=collapse_duplicate_versions, duplicate_groups=groups,
+        default_ids=pair_ids, visible_song_ids=_domain.visibility_inputs(userdata_records, cfg["songs"]),
         identity_namespace="pair")
 
 def build_all_stats_from_records(records, json_path="./songs/rating_structured_with_ids.json"):
     cfg = load_rating_config(json_path)
+    _, pair_ids = _domain.rating_identity_inputs()
     return _candidates.build_all_stats_from_records(records, cfg,
-        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(records, cfg["songs"]),
+        default_ids=pair_ids, visible_song_ids=_domain.visibility_inputs(records, cfg["songs"]),
         profile="recommend-client-20261010", identity_namespace="pair")
 
 def generate_recommend_image(
@@ -364,9 +366,13 @@ def generate_recommend_image(
     return buf
 
 def recommend_songs(all_stats, songs_cfg, const_table, best_key="rating", limit=20):
+    _, pair_ids = _domain.rating_identity_inputs()
+    on_shelf = load_on_shelf_song_ids()
+    if not on_shelf:
+        return []
     return _candidates.recommend_songs(all_stats, songs_cfg, const_table, best_key, limit,
-        default_ids=PAIR_ID_MAP, visible_song_ids=_domain.visibility_inputs(songs=songs_cfg),
-        on_shelf_song_ids=load_on_shelf_song_ids(), identity_namespace="pair")
+        default_ids=pair_ids, visible_song_ids=_domain.visibility_inputs(songs=songs_cfg),
+        on_shelf_song_ids=on_shelf, identity_namespace="pair")
 
 def compute_recommendations_from_records(
     records: list,

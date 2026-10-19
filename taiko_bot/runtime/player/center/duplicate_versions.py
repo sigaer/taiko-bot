@@ -25,10 +25,14 @@ BASE = Path(__import__("os").getenv("TAIKO_CENTER_ROOT", "/home/sigaer/taiko"))
 SONG_DATA_PATH = BASE / "songs" / "song_data.json"
 
 
-@lru_cache(maxsize=4)
 def _load_song_data_mtime(path_str: str) -> Tuple[int, List[Dict[str, Any]]]:
     path = Path(path_str)
-    mtime_ns = path.stat().st_mtime_ns
+    return _load_song_data_revision(path_str, path.stat().st_mtime_ns)
+
+
+@lru_cache(maxsize=4)
+def _load_song_data_revision(path_str, mtime_ns):
+    path = Path(path_str)
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, list):
         return mtime_ns, []
