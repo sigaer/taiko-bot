@@ -4,9 +4,12 @@ set -euo pipefail
 SOURCE_ROOT="${TAIKO_SOURCE_ROOT:-/home/sigaer/taiko}"
 ASSETS_DIR="${SOURCE_ROOT}/assets"
 OUTPUT_DIR="${TAIKO_OPEN_RESOURCE_DIR:-/home/sigaer/taiko-open-resources}"
+SCOPE="${1:-all}"
+[[ "$SCOPE" == all || "$SCOPE" == dress ]] || { echo 'Usage: build_open_resource_archives.sh [all|dress]' >&2; exit 2; }
 
 mkdir -p "$OUTPUT_DIR"
-rm -f "$OUTPUT_DIR"/taiko-bot*.zip
+STAGING_DIR="$(mktemp -d "$OUTPUT_DIR/.resource-build.XXXXXX")"
+trap 'rm -rf "$STAGING_DIR"' EXIT
 
 require_paths() {
   local missing=0
@@ -26,8 +29,10 @@ build_zip() {
   shift
   (
     cd "$ASSETS_DIR"
-    zip -qr "$OUTPUT_DIR/$output_name" "$@"
+    zip -qr "$STAGING_DIR/$output_name" "$@"
   )
+  unzip -tq "$STAGING_DIR/$output_name" >/dev/null
+  mv -f "$STAGING_DIR/$output_name" "$OUTPUT_DIR/$output_name"
 }
 
 CORE_ITEMS=(fonts templates icons)
@@ -45,12 +50,14 @@ ALL_ITEMS=(
 
 require_paths "${ALL_ITEMS[@]}"
 
-build_zip "taiko-bot-core-assets.zip" "${CORE_ITEMS[@]}"
-build_zip "taiko-bot-cover-assets.zip" "${COVER_ITEMS[@]}"
 build_zip "taiko-bot-dress-assets.zip" "${DRESS_ITEMS[@]}"
-build_zip "taiko-bot-nameplate-assets.zip" "${NAMEPLATE_ITEMS[@]}"
-build_zip "taiko-bot-fumens-assets.zip" "${FUMENS_ITEMS[@]}"
-build_zip "taiko-bot-fumens-renamed.zip" "${FUMENS_ITEMS[@]}"
+if [[ "$SCOPE" == all ]]; then
+  build_zip "taiko-bot-core-assets.zip" "${CORE_ITEMS[@]}"
+  build_zip "taiko-bot-cover-assets.zip" "${COVER_ITEMS[@]}"
+  build_zip "taiko-bot-nameplate-assets.zip" "${NAMEPLATE_ITEMS[@]}"
+  build_zip "taiko-bot-fumens-assets.zip" "${FUMENS_ITEMS[@]}"
+  build_zip "taiko-bot-fumens-renamed.zip" "${FUMENS_ITEMS[@]}"
+fi
 build_zip "taiko-bot-assets.zip" "${ALL_ITEMS[@]}"
 
 du -sh "$OUTPUT_DIR"/taiko-bot*.zip
