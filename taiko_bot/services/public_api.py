@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 from taiko_bot.services.credential_control import ControlError, MAX_BODY, authorized_update, require_bearer
+from taiko_bot.services.title_content import get_official_titles_content
 
 from taiko_bot.runtime.player.center.public_score_token import (
     PublicScoreTokenError,
@@ -23,6 +24,7 @@ SONG_DATA_PATH = BASE_DIR / "songs" / "song_data.json"
 ALIAS_DATA_PATH = BASE_DIR / "songs" / "song_alias.json"
 CONFIG_PATH = BASE_DIR / "config.json"
 API_PATH = "/api/song_data"
+TITLE_API_PATH = "/api/titles"
 TOKEN_API_PATH = "/api/token"
 PUBLIC_SCORE_API_PATH = "/api/public-score/by-token"
 MAX_PUBLIC_SCORE_BODY_BYTES = 16 * 1024
@@ -118,6 +120,14 @@ class SongDataHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
+        if parsed.path == TITLE_API_PATH:
+            try:
+                content = get_official_titles_content()
+            except Exception:
+                self.send_json(HTTPStatus.SERVICE_UNAVAILABLE, {"error": "title_catalog_unavailable"})
+            else:
+                self.send_json(HTTPStatus.OK, content)
+            return
         if parsed.path != API_PATH:
             self.send_json(
                 HTTPStatus.NOT_FOUND,
@@ -359,6 +369,8 @@ class SongDataHandler(BaseHTTPRequestHandler):
             self.send_response(status)
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
+            if urlparse(self.path).path == TITLE_API_PATH:
+                self.send_header("Cache-Control", "no-store")
             if urlparse(self.path).path == TOKEN_API_PATH:
                 self.send_header("Cache-Control", "private, no-store")
             if cors:

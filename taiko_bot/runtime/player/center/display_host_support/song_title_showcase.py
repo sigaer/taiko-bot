@@ -19,7 +19,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from .duplicate_versions import default_song_id_for_query
 
-from .title_catalog import build_title_rarity_lookup, load_title_catalog_items, normalize_title_display
+from .title_catalog import build_title_rarity_lookup, load_title_catalog_items, normalize_title_display, title_catalog_cache
 
 ROOT_DIR = __import__("taiko_bot.runtime.public.config",fromlist=["root"]).root()
 
@@ -365,11 +365,11 @@ def _split_song_blob(blob: str) -> List[str]:
     parts = [_cleanup_song_name(part) for part in value.split("|")]
     return [part for part in parts if part]
 
-@lru_cache(maxsize=1)
+@title_catalog_cache
 def _load_title_rarity_lookup() -> Dict[str, Tuple[int, ...]]:
     return build_title_rarity_lookup(load_title_catalog_items())
 
-@lru_cache(maxsize=1)
+@title_catalog_cache
 def _load_available_title_names() -> frozenset[str]:
     names = {
         normalize_title_display(item.get("name") or "")
@@ -541,7 +541,7 @@ def _load_song_lookup() -> Tuple[
     }
     return frozen_lookup, const_by_song_level, const_by_title_level, level_by_song_level
 
-@lru_cache(maxsize=1)
+@title_catalog_cache
 def _load_api_song_title_relations() -> Tuple[SongTitleRelation, ...]:
     relations: List[SongTitleRelation] = []
     for item in load_title_catalog_items():
@@ -741,7 +741,7 @@ def _relation_merge_key(item: SongTitleRelation) -> Tuple[str, str, str]:
         str(item.difficulty_scope or "unspecified"),
     )
 
-@lru_cache(maxsize=1)
+@title_catalog_cache
 def load_song_title_relations() -> Tuple[SongTitleRelation, ...]:
     api_relations = list(_load_api_song_title_relations())
     relations = list(api_relations)
