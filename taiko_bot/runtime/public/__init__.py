@@ -56,3 +56,5 @@ async def handle(matcher: Matcher, event: Event):
 from . import public_commands  # noqa: E402,F401
 
 from . import catalog_commands  # noqa: E402,F401
+
+from . import event_commands  # noqa: E402,F401

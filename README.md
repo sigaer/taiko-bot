@@ -2,6 +2,8 @@
 
 `taiko-bot` 是一个面向《太鼓达人》查询与同步场景的 NoneBot 项目，支持 OneBot V11，并依赖 `viewer.sakura-bot.cn` 提供公共数据、资源包和中心代理接口。
 
+发送 `青春达人` 或 `青春之达人` 可获取限时活动【青春之达人】的机台入口二维码及使用说明，无需绑定账号。
+
 项目许可：`GPL-2.0-only`。完整文本见仓库根目录 [LICENSE](/home/sigaer/taiko-bot/LICENSE)。
 
 ## 用户说明
