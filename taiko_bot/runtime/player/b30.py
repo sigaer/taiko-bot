@@ -105,6 +105,6 @@ async def taikob_handle(matcher: Matcher, event: Event):
         result=execute_b30(CommandContext(user_id=private.authorized_target.user_id,profile=PROFILE),
                            build_ports(private,provider=provider),command)
         provider.verify(private)
-        if result is not None:await entry.deliver(delivery,event,result)
+        if result is not None:await entry.deliver(delivery,event,result,rating_v2=command[2])
     except (entry.TinfoDenied,entry.TinfoUnavailable):
         await entry.helpers._finish_text_reply(matcher,event,'授权已失效，请重新查询。' if PROFILE=='client' else '查不到呢，可能不给看哦~')

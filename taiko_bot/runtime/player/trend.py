@@ -119,7 +119,7 @@ async def handle(matcher, event, play):
                 return
         result = execute(private, command, getattr(provider,'trend_points',None))
         provider.verify(private)
-        await entry.deliver(delivery,event,result)
+        await entry.deliver(delivery,event,result,rating_v2=command[1] == 'v2')
     except (entry.TinfoDenied, entry.TinfoUnavailable):
         await entry.helpers._finish_text_reply(matcher,event,'授权已失效，请重新查询。' if PROFILE=='client' else '查不到呢，可能不给看哦~')
 

@@ -15,6 +15,7 @@ from taiko_application.merged_bind import MergedBindError
 require('taiko_bot.runtime.public')
 from ..public.config import profile
 from ..public.provider import query_with_mode, rejected_fuzzy
+from .rating_feedback import with_rating_v2_feedback
 
 from importlib.metadata import version
 for package, expected in [('sakura-taiko-core', '0.1.1' if profile() == 'center' else '0.1.2'), ('sakura-taiko-contract','0.1.0')]:
@@ -48,7 +49,9 @@ def create_provider():
     return TinfoHostProvider()
 
 
-async def deliver(matcher, event, result):
+async def deliver(matcher, event, result, *, rating_v2=False):
+    if rating_v2:
+        result = with_rating_v2_feedback(result)
     if result.kind == 'text':
         if result.delivery == 'direct':
             await matcher.finish(result.payload)
@@ -101,7 +104,8 @@ async def music_info_handle(matcher: Matcher, event: Event):
                 failure = ReadFailure(isinstance(error, FileNotFoundError), str(error))
         result = execute_score(PreparedScoreCommand(prepared, selection, context, failure, png))
         provider.verify(prepared)
-        await deliver(AuthorizedDelivery(matcher, provider, prepared), event, result)
+        await deliver(AuthorizedDelivery(matcher, provider, prepared), event, result,
+                      rating_v2=profile() == 'center' and result.kind == 'image')
     except (TinfoDenied, TinfoUnavailable):
         await matcher.finish('查不到呢，可能不给看哦~')
 
