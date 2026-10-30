@@ -365,4 +365,4 @@ Bot 按次读取，成功刷新后无需重启。独立刷新只需
 
 官方目录统一由 `taiko_bot.services.title_catalog` 从华立 `POST /api/user/all/title` 完整分页获取，使用中心 `config.json` 的 `cookie`。Bot 与 Viewer 共用原子发布的 `data/title_catalog_cache.json`；访问时最多每五分钟尝试刷新一次，失败保留最后成功目录，不依赖每日曲库或音频任务。Bot 的派生缓存随目录文件代次失效，查询匹配与自定义称号数据库规则保持原样。
 
-中心公共服务新增 `GET /api/titles`，仅返回官方称号的 `titles` 和 `total`，不返回账号解锁状态。Viewer 的 `/api/content/titles` 从此接口读取，未知条件为空字符串，不使用获得后说明、wiki 条件或自定义称号补齐。Viewer 可用 `TAIKO_TITLE_API_BASE` 指定中心公共服务地址，默认 `http://127.0.0.1:9999`。
+中心公共服务新增 `GET /api/titles`，仅返回官方称号的 `titles` 和 `total`，不返回账号解锁状态。Viewer 的 `/api/content/titles` 以此接口返回的称号清单和 ID 为准，按名称及称号底板类型匹配既有 `/taiko/title/page` 本地资料，优先使用本地的已知条件与歌曲关联，缺失字段再用官方 API 信息，两边都未知的条件为空字符串；不混入本地独有或自定义称号。Viewer 可用 `TAIKO_TITLE_API_BASE` 指定中心公共服务地址，默认 `http://127.0.0.1:9999`。
