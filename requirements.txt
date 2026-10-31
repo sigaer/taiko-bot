@@ -1,0 +1,4 @@
+-r requirements-domain.txt
+./packages/python-memory-runtime
+./packages/taiko-application
+.[client]

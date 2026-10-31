@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sakura-taiko-contract"
+version = "0.1.0"
+description = "Versioned value contracts for Sakura Taiko clients"
+requires-python = ">=3.11"
+
+[tool.setuptools]
+packages = ["sakura_taiko_contract"]

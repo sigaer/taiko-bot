@@ -1,35 +1,29 @@
 # taiko-bot
 
-`taiko-bot` 是一个面向《太鼓达人》查询与同步场景的 NoneBot 项目，支持 OneBot V11，并依赖 `viewer.sakura-bot.cn` 提供公共数据、资源包和中心代理接口。
+《太鼓达人》QQ Bot，支持 OneBot V11 和 QQ 官方机器人。曲库、素材和成绩通过 `https://viewer.sakura-bot.cn` 获取。
 
-发送 `青春达人` 或 `青春之达人` 可获取限时活动【青春之达人】的机台入口二维码及使用说明，无需绑定账号。
+常用功能：歌曲与别名查询、查配置、查分、B30、推荐、进度与趋势、我的小咚、词云、机厅地图、猜歌，以及账号绑定、切换和成绩同步。
 
-项目许可：`GPL-2.0-only`。完整文本见仓库根目录 [LICENSE](/home/sigaer/taiko-bot/LICENSE)。
+## 1. 准备
 
-## 用户说明
+- Python **3.11**、Git，Windows / Linux / macOS 均可。
+- 已能登录的 OneBot V11 客户端，或 QQ 官方机器人应用凭据。
+- 可访问 PyPI 和 `https://viewer.sakura-bot.cn`。
+- 已获批的 **Developer token**，用于读取全部用户成绩及调用 Bot 绑定、同步接口；仍受每日额度限制。
 
-- [手动成绩账号使用说明](docs/manual-score-accounts.md)
+常规部署无需自建 Viewer、MySQL 或 Redis 服务。
 
-## 1. 环境要求
-
-- Python `3.11` 或以上（当前主要测试版本为 3.11）
-- 实际可安装范围以 `pyproject.toml` 为准
-- Windows、Linux、macOS 均可运行
-- 一个可直连的 OneBot V11 客户端
-- 可访问 `https://viewer.sakura-bot.cn`
-
-## 2. 获取代码并安装
+## 2. 安装
 
 ### Windows PowerShell
 
 ```powershell
 git clone https://github.com/sigaer/taiko-bot.git
-Set-Location .\taiko-bot
+cd taiko-bot
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -U pip
-python -m pip uninstall -y nonebot-plugin-taiko-song
-python -m pip install -r requirements-domain.txt ./packages/taiko-application -e ".[client]"
+python -m pip install -r requirements.txt
 Copy-Item .env.example .env
 ```
 
@@ -38,333 +32,83 @@ Copy-Item .env.example .env
 ```bash
 git clone https://github.com/sigaer/taiko-bot.git
 cd taiko-bot
-python3 -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip uninstall -y nonebot-plugin-taiko-song
-python -m pip install -r requirements-domain.txt ./packages/taiko-application -e ".[client]"
+python -m pip install -r requirements.txt
 cp .env.example .env
 ```
 
-如果本机还没有 Python 3.11，可先从 `https://www.python.org/downloads/` 安装，或使用系统包管理器安装。
+以下命令均在 `taiko-bot` 目录、已激活的虚拟环境内执行。
 
-领域依赖固定为 `sakura-taiko-core==0.1.2` / `sakura-taiko-contract==0.1.0`。
-`requirements-domain.txt` 使用固定 Git revision，安装需要 Git、GitHub SSH 读取权限，
-以及这两个私有依赖仓库的授权。没有仓库读取权限时，向维护者获取这两个版本的 wheel，
-先运行 `python -m pip install <contract-wheel> <core-wheel>`，再按上面的同仓子项目命令安装本项目。
-Application 0.5.0 与歌曲插件 0.3.0 从本仓子项目构建安装，不假设它们已发布到 PyPI。
-中心源码宿主的独立安装顺序及 wheel 交付方式见 [公共插件安装说明](docs/public-plugin-installation.md)。
-不要用其他版本替代；启动会检查依赖版本。
-详细的验证、版本和回退说明见 [Phase 4 记录](docs/taiko-domain-extraction/phase4-client.md)。
+## 3. 配置
 
-## 3. 配置 `.env`
-
-最少需要确认这些配置：
+编辑 `.env`，填写自己的 Developer token：
 
 ```env
 HOST=0.0.0.0
 PORT=37564
+TAIKO_SONG_PROFILE=client
 TAIKO_VIEWER_BASE_URL=https://viewer.sakura-bot.cn
-TAIKO_VIEWER_DEVELOPER_TOKEN=
-TAIKO_BOT_SERVICE_TOKEN=
+TAIKO_VIEWER_DEVELOPER_TOKEN=你的DeveloperToken
 ```
 
-### 必填/常用项
+### OneBot V11
 
-- `HOST` / `PORT`
-  - bot 主服务监听地址。
-  - OneBot V11 客户端默认连接 `ws://127.0.0.1:37564/onebot/v11/ws`。
-- `TAIKO_VIEWER_BASE_URL`
-  - viewer 服务地址。
-  - 默认是 `https://viewer.sakura-bot.cn`。
-- `TAIKO_VIEWER_DEVELOPER_TOKEN`
-  - 私有成绩读取、历史、Wahlap 更新、Hiroba 同步、Hiroba 凭据状态/绑定和 QQ 绑定读取/写入/切换必须配置有效 token。
-  - 请求使用 `Authorization: Bearer <token>`，每日额度与成绩授权分别核验。
-  - 普通 token 可读取其 Viewer 账号自有绑定；跨账号服务需要私有运维按 token 登记 `source_read`、`history_read`、`wahlap_update`、`hiroba_sync` 和明确 Source 范围。
-  - 在 Viewer Phase 6 最终激活前完成服务授权登记；登记流程见 Viewer 的 `docs/taiko-domain-extraction/source-service-operations.md`。
-  - QQ 中心服务另需 `bind_read`、`bind_write`、`bind_current`；删除和可见性分别需 `bind_remove`、`bind_visibility`，旧写权限不会自动取得删除权限。须显式登记 `principals`，Source 范围必须包含该身份的全部绑定。身份格式为裸数字 QQ、`onebot_v11:QQ` 或 `qq_official:openid`，不同格式分别授权。
-  - QQ 历史迁移另需 `bind_migrate`。用原 QQ 私聊旧 bot 发送 `迁移验证码`，再私聊目标 bot 发送 `绑定QQ QQ号 验证码`。迁移接口只接受 canonical `onebot_v11:QQ` / `qq_official:openid`；服务授权须覆盖原绑定和目标已有全部 Source。验证码十分钟有效，申请不自动重试；消费重试固定同一码/目标，不恢复后来删除的绑定。客户端不再读本地 SQLite/JSON 作为 QQ 迁移依据。
-  - 普通 token 的 QQ 绑定访问要求 Viewer 账号已验证该 QQ；添加账号还要求自有同来源绑定。切换和添加 SDK 可传 `request_id`，同一凭据/授权/意图重试返回当前绑定，不重复修改或覆盖后来选择。
-  - Hiroba 凭据状态另需 `hiroba_credential_status`；绑定需 `hiroba_bind`、明确 Source/`principals` 范围。普通 token 绑定要求已有自有 Hiroba 绑定；跨账号服务覆盖发现的全部卡片及 QQ 的已有全部成员。密码仅经 HTTPS 请求体及中心私有 stdin，不进入 worker argv。
-  - Hiroba 凭据绑定 SDK 支持可选 `request_id`，等待上限 300 秒；同一授权及意图的已提交重试跳过登录、重复写入和重置后来选择。公共曲库、公开 Wahlap 玩家资料和排行榜保持原调用用途；缓存授权与其余 Phase 6 激活条件仍须完成。
-  - Hiroba 同步最多等待 900 秒；上游数据量及冷却规则沿用中心实现。
-- `TAIKO_BOT_SERVICE_TOKEN`
-  - 用于创建、认领和维护手动成绩账号，必须与 viewer 的同名配置一致。
-  - 它不是开发者额度 token；未配置时仅手动账号写命令不可用。
-  - 不要将真实值提交到仓库。
+在 OneBot 客户端配置反向 WebSocket：
 
-### QQ 官方机器人相关
-
-- `QQ_IS_SANDBOX`
-  - 仅在你接入 QQ 官方机器人时使用。
-  - `true` 表示沙箱环境，`false` 表示正式环境。
-- `QQ_BOTS`
-  - 仅在你接入 QQ 官方机器人时填写。
-  - 它是一个 JSON 数组，每个元素表示一个 QQ 官方机器人应用。
-  - 常见字段：
-    - `id`：AppID
-    - `token` / `secret`：官方后台分配的凭据
-    - `use_websocket`：是否启用 QQ 官方 WebSocket
-    - `intent`：事件订阅开关
-  - `.env.example` 中保留了一条可直接改值的示例。
-- `QQ_MARKDOWN_IMAGE_BASE_URL`
-  - 仅在你使用 QQ 官方机器人，并希望发送 Markdown 图片消息时需要关注。
-  - bot 会把图片缓存到本地输出目录，再通过这个公开地址让 QQ 侧访问。
-  - 如果你自建 viewer 域名，需要把它改成你自己的公开地址，并确保该地址能访问图片缓存目录。
-
-### 其他按需项
-
-- `BOT_GROUP_WHITELIST_PATH`
-  - 仅在你希望限制 bot 只在部分群启用时填写。
-  - 指向一个 JSON 文件，格式示例：
-```json
-{
-  "123456789": ["987654321", "1122334455"]
-}
-```
-  - 含义是：bot 账号 `123456789` 仅在这些群号内启用。
-- `TAIKO_CORE_HOST` / `TAIKO_CORE_PORT` / `TAIKO_GATEWAY_HOST` / `TAIKO_GATEWAY_PORT`
-  - 仅在你使用 Core / Gateway 双进程模式时需要。
-- `TAIKO_LOCAL_DATA_API_HOST` / `TAIKO_LOCAL_DATA_API_PORT`
-  - 仅在你打算把本地维护接口单独起成第二个进程时需要。
-  - 默认单进程部署不需要改。
-
-## 4. 首次启动行为
-
-首次启动时会自动：
-
-1. 拉取公共 JSON 数据到 `songs/`
-2. 检查 `assets/.bundle.sha256`
-3. 在资源缺失或版本变化时自动后台下载并解压最新资源包到 `assets/`
-4. 按需同步地图快照到 `storage/data/arcade_map_cache/`
-
-说明：
-
-- 绑定、当前槽位、成绩、历史都以 viewer 中心为准。
-- bot 本地不再把 `storage/cache/userdata/`、`taiko_multi_bind.json` 这类文件当作权威数据源。
-- 首次完整资源同步在普通网络环境下可能接近 15 分钟。
-- bot 进程会先启动；资源未就绪时，图片类功能会提示稍后再试，不会因为大资源包下载而卡死整个启动流程。
-
-## 5. 启动 Bot
-
-默认推荐单进程启动，不需要先单独启动本地数据 API。
-
-### Windows PowerShell
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python .\bot.py
+```text
+ws://127.0.0.1:37564/onebot/v11/ws
 ```
 
-### Linux / macOS
+如果 OneBot 与 Bot 不在同一台设备，把 `127.0.0.1` 改为 Bot 的可达地址，并放行配置的端口。
+
+### QQ 官方机器人（可选）
+
+在 `.env` 中增加：
+
+```env
+QQ_IS_SANDBOX=false
+QQ_BOTS=[{"id":"你的AppID","token":"你的Token","secret":"你的Secret","use_websocket":true,"intent":{"c2c_group_at_messages":true,"at_messages":false}}]
+```
+
+测试应用可改为 `QQ_IS_SANDBOX=true`。接收事件需在 QQ 开放平台启用相应权限。
+
+若使用 Markdown 图片消息，还需将本机 `storage/output/qq_markdown_cache/` 通过自己的 HTTPS 静态站点公开，并设置对应地址：
+
+```env
+QQ_MARKDOWN_IMAGE_BASE_URL=https://你的域名/qqbot-cache/taiko
+```
+
+## 4. 启动与验证
 
 ```bash
-source .venv/bin/activate
 python bot.py
 ```
 
-启动后：
+首次启动会拉取公共曲库，并在后台下载、解压素材到 `assets/`；较慢网络下可能需要约 15 分钟。素材未就绪时图片命令会提示稍后再试。
 
-- OneBot V11 WebSocket 地址：
-  - `ws://127.0.0.1:37564/onebot/v11/ws`
-- 同进程本地维护接口地址：
-  - `http://127.0.0.1:37564/local-api/health`
-  - `http://127.0.0.1:37564/local-api/v1/public/sync`
-  - `http://127.0.0.1:37564/local-api/v1/arcades/query?city=鞍山`
+确认 OneBot 已连接，发送：
 
-### 关于 `nb run`
+- `青春达人`：检查基本收发。
+- `xx是什么歌`：查询歌曲，将 `xx` 换为曲名或别名。
+- `绑定 鼓众广场ID`：按 Bot 提示完成账号验证。
+- `b30`：查询当前账号成绩图。
+- `taikoupdate`：更新当前华立账号成绩。
+- `更新hiroba`：同步已配置 Hiroba 凭据的账号。
+- `u1` / `u2`：切换已绑定账号。
 
-- 默认不需要 `nb run`。
-- Windows 下如果直接调用系统全局 `nb`，可能会误用全局 Python 环境，触发 `redis.asyncio` 缺失这类与 bot 本体无关的依赖错误。
-- 如果你确实想用 `nb run`，请确保使用当前虚拟环境里的 `nb`：
+停止时按 `Ctrl+C`；下次进入目录、激活虚拟环境后再次执行 `python bot.py`。
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-.\.venv\Scripts\nb.exe run
-```
+## 5. 常见问题
 
-## 6. 本地维护接口
+- **安装失败**：确认 Python 为 3.11，并从仓库根目录执行 `python -m pip install -r requirements.txt`。
+- **Bot 不回复**：检查 OneBot 反向 WebSocket 地址、连接日志和端口；若群功能曾被关闭，由群管理员发送 `开启taiko功能`。
+- **401 / 403**：核对 `.env` 中的 Developer token 是否有效、已获批或已撤销；修改后重启 Bot。
+- **429**：开发者当日额度已用尽，等待额度恢复。
+- **图片提示资源未就绪**：等待后台下载完成，并检查 Viewer 网络连通性及磁盘空间。
+- **手动成绩账号**：创建、认领和修改还需维护者提供的 `TAIKO_BOT_SERVICE_TOKEN`；可留空，不影响上述常用功能。
 
-默认已经合并进 bot 进程，挂载路径是 `/local-api`，平时不需要单独启动。
+升级时停止 Bot，执行 `git pull` 和 `python -m pip install -r requirements.txt`，再启动。保留自己的 `.env`、`storage/`、`songs/` 和 `assets/`。
 
-常用接口：
-
-- `GET /local-api/health`
-- `POST /local-api/v1/public/sync`
-- `POST /local-api/v1/arcades/sync`
-- `GET /local-api/v1/arcades/query?city=鞍山`
-- `GET /local-api/v1/userdata/{user_id}`
-- `GET /local-api/v1/userdata/{user_id}/history`
-- `GET/PUT /local-api/v1/runtime/draw-guess`
-
-成绩与历史 GET 要求调用者自己的 `Authorization: Bearer <token>`；中心核验该凭据的 Source 权限。本地接口不会替匿名请求使用配置中的 Bot 服务 token。
-
-私有读取每次访问中心；精确条件 GET 可在完整授权复核后确认缓存内容。内存缓存按中心地址、凭据哈希、Source 和 current/history 隔离，最多64项、总计32MiB、单项4MiB、存活30秒。过期强制重新获取，任何401/403/429/503或连接失败均拒绝旧缓存；不把成绩写入普通Source-ID磁盘缓存。需要同时使用成绩和历史的加载器核对同一个已验证发布版本，变化时最多重试一次。
-
-客户端 0.2.4 的私有历史加载器请求 `?format=raw-v1`，需要中心 Viewer 0.82.0 的已激活服务。Phase 6 中的仓库提交是激活前准备，当前线上版本仍须以部署台账为准。默认 SDK 历史 DTO 保持兼容；新私有加载器拒绝缺少排序元数据的非空历史。`fileName` 与捕获的文件时间只保留旧排序语义，不表示游玩时间或测量事实；u0 使用带微秒的合并配方名称，不伪造磁盘时间。趋势、更新图、B30 和当前段位进度由中心历史重建，B30/更新图/当前段位使用同一 current/history 版本；本地查询 token 在读取前后复核。旧本地成绩写入及原生 Hiroba 同步入口返回410，现有命令继续使用中心代理。
-
-u0 读取由中心合并全部成员，客户端不写本地合并成绩。内部 `u0v1_` 标识完整编码 Bot principal，保留官方身份中的大小写、下划线和尾部字符。中心必须证明 principal 的 `bind_read` 与所有成绩成员的 `source_read`；u0 历史还需所有成员的 `history_read`，因为历史包含当前观察点。普通账号须有已验证 QQ 与完整自有成绩绑定。合并发布标识包含全部成员的版本及绑定/profile 选择，与单成员标识分别验证。
-
-以下接口已经停用，会返回 `410 Gone`：
-
-- `GET/PUT /local-api/v1/runtime/multi-bind`
-- `PUT /local-api/v1/userdata/{user_id}`
-
-如果你确实需要把它单独起成第二个进程：
-
-### Windows PowerShell
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-python -m uvicorn taiko_data_api:app --host 127.0.0.1 --port 37565
-```
-
-### Linux / macOS
-
-```bash
-source .venv/bin/activate
-./scripts/start_local_data_api.sh
-```
-
-## 7. Core / Gateway 双进程模式
-
-只有在你明确需要 Core / Gateway 分离部署时再使用这一模式。
-
-### Windows PowerShell
-
-终端 1：
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-$env:BOT_POOL_METRICS_SERVICE_NAME="taiko"
-python -m uvicorn bot_core:app --host 127.0.0.1 --port 37563
-```
-
-终端 2：
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-$env:ONEBOT_GATEWAY_SERVICE_NAME="taiko"
-$env:ONEBOT_GATEWAY_CORE_WS_URL="ws://127.0.0.1:37563/onebot/v11/ws"
-$env:ONEBOT_GATEWAY_CORE_HTTP_URL="http://127.0.0.1:37563"
-$env:ONEBOT_GATEWAY_ALLOW_CROSS_HOST_TAKEOVER="1"
-$env:ONEBOT_GATEWAY_DUPLICATE_TAKEOVER_IDLE="0"
-python -m uvicorn bot_gateway:app --host 0.0.0.0 --port 37564
-```
-
-### Linux / macOS
-
-```bash
-source .venv/bin/activate
-./scripts/start_taiko_gateway_core.sh
-```
-
-## 8. 主要功能
-
-- 成绩更新：`taikoupdate`、`更新广场`、`更新hiroba`
-- 成绩查询：`b30`、进度图、查分、总结图、词云
-- 地图查询：`xx哪有鼓`
-- 绑定与多账号：绑定、切换账号；当前槽位由 viewer 中心统一维护
-- 本地维护接口：公共数据同步、地图同步、运行态存储、中心数据代理查询
-
-网页成绩 token 仅在私聊中为发送者的中心当前实账号签发，服务需显式 `score_token_issue` scope、principal 及全部绑定 Source 授权。隐藏的自有账号可用，u0/手动/他人绑定拒绝。签发 POST 不自动重试；再次发送命令会生成新 token 并使旧 token 失效。旧本地 bearer helper 已停用。客户端 0.2.6 需与 Viewer 0.82.0 中心协议一起激活。
-
-### Taiko Runtime 归属切换候选（Phase 2F-E）
-
-公开九命令、双端 tinfo、taikorec 与进度命令 由本仓 `taiko_bot.runtime.public` / `taiko_bot.runtime.player`
-维护，在宿主原有 NoneBot 进程内加载。旧 `nonebot-plugin-taiko-song` 已退役；
-不得同时装载旧插件和内部入口，也没有新的插件发行包。
-
-候选版本 taiko-bot 0.6.0 / Application 0.8.0。客户端使用 `[client]` 精确固定
-Core 0.1.2；中心使用 `[center]` 固定 Core 0.1.1，Contract 均为 0.1.0。
-中心接入使用 Sakura 候选的现有 driver，不启动第二个连接消费者。
-
-[完整边界、验证与未上线说明](docs/taiko-runtime-ownership-cutover.md)。
-
-推荐命令迁移与有限验收见 [taikorec 归属交付](docs/taikorec-ownership.md)。
-
-双端进度命令迁移与验收见 [progress-ownership](docs/progress-ownership.md)。
-
-双端 B30 命令迁移与验收见 [b30-ownership](docs/b30-ownership.md)。
-
-## 独立应用部署（0.16.1）
-
-本仓库同时拥有中心 Bot、独立 HTTP/同步服务、Source 生命周期、Hiroba、
-Publication Writer、Growth/年度离线任务、歌曲更新、HDU 上传和维护 CLI。
-`taiko_backend/`、`taiko_manager/` 属于其他项目。
-
-安装后的入口为 `python -I -m taiko_bot`（或 `taiko-bot`）；中心也支持在原
-`taiko` screen 中用 `nb run` 启动同一份安装包。
-`TAIKO_SONG_PROFILE=center` 使用中心权限与已有数据，`client` 使用 Viewer API。
-入口直接加载本包已有命令，不需要 Sakura checkout、插件装载器或其 Python 搜索路径。
-中心进程加载已有的私有 `nonebot-plugin-groupmate-taiko==0.1.0` 扩展；该扩展
-原有源码通过受保护 wheel 分发，未新增业务实现。共享内存帮助包同样使用现有
-`python-memory-runtime==1.1.0` 构件。
-
-生产运行数据根仍为 `/home/sigaer/taiko`。配置及密钥使用原 `.env.prod` 和
-`/etc/taiko-runtime.env`，功能开关沿用现有 `switch.db`，群白名单沿用现有路径。
-不得把源码发布、生产 userdata/history/Publication、songs/assets 或私有素材混在一起。
-`deploy/private-resources.json` 仅记录私有部署引用；HDU 背景及 favicon 继续由
-现有私有资源包安装到既有静态站点目录，不进入公开源码或 wheel。
-
-发布时先在内存隔离构建环境生成 wheel，并将现有 Domain、Application、共享内存、
-私有社区扩展以及运行依赖放入 wheelhouse；用
-`scripts/install_release.sh VERSION WHEELHOUSE` 安装不可变环境。
-完成独立启动和最小业务验证后，运行 `scripts/deploy_taiko.sh VERSION LEGACY_NB_PID`。
-脚本核对并停用旧 screen Bot、确认旧进程退出，再启用独立 systemd 服务；后续发布
-`LEGACY_NB_PID` 传 `0`。失败即停止，由运维检查失败服务；不会启动第二套消费者。
-所有服务和 cron 使用 `/opt/taiko-bot/current`，切换不会搬迁或重算生产数据。
-Bot 已选择 screen 模式时，发布脚本会先核对并停止该 screen 的旧 Bot，
-切换发行环境后仍在该 screen 中启动，不启用第二份 systemd Bot。
-首次随发布切换可传第三参数 `screen`：`scripts/deploy_taiko.sh VERSION 0 screen`。
-Viewer 继续通过已安装的模块/CLI 使用现有 Writer 和读取接口，0.84.2 协议保持不变。
-
-### screen 中启动与重启
-
-已有单窗口 `taiko` screen 为空闲 bash 时，执行
-`python3 scripts/taiko_screen.py start` 可选择 screen 模式。
-脚本复用该会话，停用 `taiko-bot.service` 的自动启动，并检查端口防止重复实例。
-其他 HTTP、同步与每日歌曲更新服务继续独立运行。
-
-进入 `screen -r taiko` 后，`Ctrl+C` 停止 Bot，再输入 `nb run` 即可重启。
-该 shell 的 `nb` 使用 `/opt/taiko-bot/current` 的 CLI 和 Python，显式跳过旧 `.venv`；
-`/home/sigaer/taiko/bot.py` 仅链接到安装包入口，`pyproject.toml` 仅含启动元数据，
-不复制旧业务源码或搜索 Sakura checkout。新 shell 可先执行
-`source /home/sigaer/taiko-bot/scripts/taiko_screen_env.sh`。
-
-启动模式保存在 `/home/sigaer/taiko/runtime/bot-launch-mode`，后续发布沿用该选择。
-screen 模式由终端手动控制，退出后不会自动拉起；主机重启后需先创建
-`screen -S taiko` 并加载上述环境。脚本遇到其他前台任务、占用端口或不属于
-已安装 Taiko 的进程时停止，不中断其他任务。
-
-### 查配置索引自动更新
-
-每日歌曲更新任务（北京时间 09:42）在 ESE 镜像同步后，使用已有 TJA 解析器和歌曲 ID 映射重建 `songs/analyze_result_filtered.json`。新歌与已修改谱面在下一次成功任务后进入查询；任务不改变短配置频次门槛或子串匹配规则。
-
-无法重新解析的旧歌曲沿用上一份索引，新歌暂缺时记录原因；详情见同目录 `analyze_result_filtered_report.json` 的 `unresolved`、`retained_song_ids` 和 `skipped_song_ids`。整个解析或发布失败时保留当前文件。发布使用文件锁和原子替换，并保留 `.json.previous` 上一代。QQ Bot 按次读取，无需为数据刷新重启。
-
-独立重建仍可使用 `python -I -m taiko_bot.offline.merge_index --tja-root /home/sigaer/git/ESE_autosync --mapping /home/sigaer/taiko/songs/song_id2tjapath.json`。手动 CLI 默认要求完整匹配；指定 `--allow-partial` 才使用每日任务的局部更新/沿用策略。
-
-### 国行歌曲位置
-
-中心端的 `xx歌在哪`、`xx在什么位置`、`位置 idxxxx` 使用
-`songs/cn_song_positions.json`。该索引只保存版本、更新时间，以及各国服分类的
-有序歌曲 ID 和待定位 ID；曲名与别名继续复用现有曲库，不保存网页、成绩或完整歌曲记录。
-客户端 profile 的既有位置查询和公共数据协议不变。
-
-现有每日歌曲任务于北京时间 **09:42** 从华立本次接口响应取得收录与全部分类，
-在去重、合并旧曲库前生成位置索引。顺序参考官方街机分类曲表，同名翻唱按版本区分。
-回复显示参考位序和倒数位置；未匹配曲目明确显示位置待确认，未收录不推断为下架。
-海外独有歌曲和本地历史残留不进入索引。
-
-更新采用文件锁、校验及原子替换，保留 `.json.previous` 上一代。
-接口异常、网页结构变化或匹配覆盖率低于 80% 时保留当前索引，其他歌曲更新继续执行。
-Bot 按次读取，成功刷新后无需重启。独立刷新只需
-`python -I -m taiko_bot.offline.song_positions`，不触发音频、谱面或其他数据重建；
-`--output PATH` 可用于隔离候选验证。生产数据不进入 Git 或 wheel。
-
-### 官方与自定义称号
-
-官方目录统一由 `taiko_bot.services.title_catalog` 从华立 `POST /api/user/all/title` 完整分页获取，使用中心 `config.json` 的 `cookie`。Bot 与 Viewer 共用原子发布的 `data/title_catalog_cache.json`；访问时最多每五分钟尝试刷新一次，失败保留最后成功目录，不依赖每日曲库或音频任务。Bot 的派生缓存随目录文件代次失效，查询匹配与自定义称号数据库规则保持原样。
-
-中心公共服务新增 `GET /api/titles`，仅返回官方称号的 `titles` 和 `total`，不返回账号解锁状态。Viewer 的 `/api/content/titles` 以此接口返回的称号清单和 ID 为准，按名称及称号底板类型匹配既有 `/taiko/title/page` 本地资料，优先使用本地的已知条件与歌曲关联，缺失字段再用官方 API 信息，两边都未知的条件为空字符串；不混入本地独有或自定义称号。Viewer 可用 `TAIKO_TITLE_API_BASE` 指定中心公共服务地址，默认 `http://127.0.0.1:9999`。
+许可：[GPL-2.0-only](LICENSE)。

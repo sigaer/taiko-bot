@@ -31,7 +31,7 @@ def create_app():
         "feature_handler", "taiko_bot.runtime.public",
         "taiko_bot.runtime.player.entry", "taiko_bot.runtime.community.community_entry",
         "taiko_bot.runtime.center_startup" if profile == "center" else "taiko_runtime_init",
-        "bot_pool_metrics", "nonebot_plugin_method_calls",
+        "bot_pool_metrics",
     ]
     if profile == "center":
         plugins.append("nonebot_plugin_groupmate_taiko")

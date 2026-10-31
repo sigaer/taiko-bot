@@ -9,5 +9,5 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 release="/opt/taiko-bot/releases/$version"
 [[ ! -e "$release" ]] || { echo 'Release already exists; choose a new version' >&2; exit 1; }
 python3 -m venv "$release"
-"$release/bin/pip" install --no-index --find-links "$wheelhouse" -c "$root/deploy/runtime-lock.txt" "taiko-bot[center,hdu]==$version"
+"$release/bin/pip" install --no-index --find-links "$wheelhouse" -c "$root/deploy/runtime-lock.txt" "taiko-bot[center]==$version"
 "$release/bin/pip" check

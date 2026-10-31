@@ -4,7 +4,7 @@ import json
 from .bot_qq_migration import (
     issue_qq_migration_code,migrate_qq_bindings,QqMigrationDenied,QqMigrationAuthorityError,
 )
-from .viewer_source_authority import validate_source_actor,SourceAuthorityError
+from .viewer_source_authority import validate_source_actor,SourceAuthorityError,require_legacy_developer_grant
 
 
 def _deny(status=403):raise QqMigrationAuthorityError(status)
@@ -19,7 +19,10 @@ def require_qq_migration_authority(cursor, actor, grant, principal, data):
     else:
         cursor.execute("SELECT CAST(id AS CHAR),user_id FROM web_developer_tokens WHERE token_hash=%s AND status='active' AND revoked_at IS NULL FOR UPDATE",(actor['credential'],))
         if cursor.fetchone()!=(actor['tokenId'],actor['userId']):_deny(401)
-    if grant.get('kind')=='owner':
+    if grant.get('kind')=='developer':
+        try:require_legacy_developer_grant(cursor,actor,grant,lock=True)
+        except SourceAuthorityError as error:_deny(error.status)
+    elif grant.get('kind')=='owner':
         match=re.fullmatch(r'onebot_v11:([1-9][0-9]{4,14})',principal)
         if match is None:_deny()
         cursor.execute("""SELECT CAST(id AS CHAR),user_id,qq_number,status,DATE_FORMAT(verified_at,'%%Y-%%m-%%dT%%H:%%i:%%s')
@@ -72,8 +75,8 @@ def run_viewer_qq_migration(request, *, connection_factory):
     if (not isinstance(request,dict) or not isinstance(request.get('operationId'),str) or not re.fullmatch(r'[a-f0-9]{32}',request['operationId'])
             or request.get('action') not in {'issue','migrate'} or not isinstance(request.get('principal'),str)
             or not re.fullmatch(r'onebot_v11:[0-9]{1,128}|qq_official:[A-Za-z0-9_-]{1,128}',request['principal'])
-            or not isinstance(request.get('grant'),dict) or request['grant'].get('kind') not in {'owner','service'}
-            or not isinstance(request['grant'].get('tuple'),list) or len(request['grant']['tuple'])!=(5 if request['grant']['kind']=='owner' else 10)):
+            or not isinstance(request.get('grant'),dict) or request['grant'].get('kind') not in {'owner','service','developer'}
+            or (request['grant']['kind']!='developer' and (not isinstance(request['grant'].get('tuple'),list) or len(request['grant']['tuple'])!=(5 if request['grant']['kind']=='owner' else 10)))):
         raise SourceAuthorityError(400,'invalid_request')
     actor=validate_source_actor(request.get('actor'));grant=request['grant'];principal=request['principal'];captured=[None]
     def authorize(cursor,data):

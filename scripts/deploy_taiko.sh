@@ -42,10 +42,9 @@ install -d -m 755 /etc/systemd/system/taiko-sync-receiver.service.d
 install -m 644 "$root/deploy/services/taiko-sync-runtime.conf" /etc/systemd/system/taiko-sync-receiver.service.d/zz-publication-runtime.conf
 install -m 644 "$root/deploy/offline/taiko-song-update.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-storage-maintenance.service" /etc/systemd/system/
-install -m 644 "$root/hdu_upload/deploy/hdu-uploader.service" /etc/systemd/system/
 install -m 644 "$root/deploy/offline/taiko_admin_backup.cron" /etc/cron.d/taiko-admin-backup
 systemctl daemon-reload
-for service in taiko-public-api taiko-sync-receiver taiko-song-update hdu-uploader; do
+for service in taiko-public-api taiko-sync-receiver taiko-song-update; do
   systemctl restart "$service"
   systemctl is-active --quiet "$service"
 done

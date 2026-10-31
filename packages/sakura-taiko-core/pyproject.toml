@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sakura-taiko-core"
+version = "0.1.2"
+description = "Pure Taiko domain models, parsers, calculations and recommendation"
+requires-python = ">=3.11"
+dependencies = ["sakura-taiko-contract==0.1.0"]
+
+[project.optional-dependencies]
+hiroba = ["beautifulsoup4>=4.12,<5"]
+
+[tool.setuptools]
+packages = ["sakura_taiko_core", "sakura_taiko_core.models", "sakura_taiko_core.score", "sakura_taiko_core.chart", "sakura_taiko_core.rating", "sakura_taiko_core.dimension", "sakura_taiko_core.parser", "sakura_taiko_core.recommendation"]
+package-dir = {"sakura_taiko_core" = "core"}

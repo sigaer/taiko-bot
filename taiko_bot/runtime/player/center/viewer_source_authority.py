@@ -21,6 +21,20 @@ def validate_source_actor(value):
         raise SourceAuthorityError(400, "invalid_request")
     return dict(value)
 
+def require_legacy_developer_grant(cursor, actor, grant, *, lock=False):
+    """Reprove the legacy Bot credential; v1 ResourceGrants are unrelated."""
+    if actor["kind"] != "developer" or set(grant) != {"kind", "applicationId"}:
+        denied()
+    cursor.execute("""SELECT CAST(app.id AS CHAR) FROM web_developer_tokens t
+        JOIN web_developer_applications app ON app.id=t.application_id AND app.user_id=t.user_id
+        JOIN web_user_accounts a ON a.id=t.user_id
+        WHERE t.id=%s AND t.user_id=%s AND t.token_hash=%s AND t.status='active'
+        AND t.revoked_at IS NULL AND app.status='approved' AND a.email_verified=1"""
+        + (" FOR UPDATE" if lock else ""), (actor["tokenId"], actor["userId"], actor["credential"]))
+    if cursor.fetchone() != (grant["applicationId"],):
+        denied()
+
+
 def require_source_authority(cursor, actor, grant, source, scope, *, lock=False):
     suffix = " FOR UPDATE" if lock else ""
     cursor.execute("SELECT id FROM web_user_accounts WHERE id=%s"+suffix, (actor["userId"],))
@@ -39,7 +53,9 @@ def require_source_authority(cursor, actor, grant, source, scope, *, lock=False)
             raise SourceAuthorityError(401, "unauthorized")
     if not isinstance(grant, dict):
         denied()
-    if grant.get("kind") == "owner":
+    if grant.get("kind") == "developer":
+        require_legacy_developer_grant(cursor, actor, grant, lock=lock)
+    elif grant.get("kind") == "owner":
         expected = grant.get("binding")
         if not isinstance(expected, dict) or expected.get("taiko_id") != source or expected.get("source") != ("wahlap" if scope == "wahlap_update" else "hiroba") or expected.get("manual_account_id"):
             denied()

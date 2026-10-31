@@ -1,1 +1,0 @@
-"""HDU video upload service."""

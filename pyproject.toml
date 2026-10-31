@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.18.1"
+version = "0.19.0"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -13,7 +13,6 @@ dependencies = [
     "python-memory-runtime==1.1.0",
     "taiko-application==0.8.1",
     "sakura-taiko-contract==0.1.0",
-    "aiomysql>=0.2.0",
     "nonebot-plugin-apscheduler>=0.5.0",
     "beautifulsoup4>=4.12.0",
     "cryptography>=44.0.0",
@@ -58,7 +57,6 @@ taiko-qq-migration = "taiko_bot.cli.qq_migration_cli:main"
 taiko-sync-hiroba = "taiko_bot.cli.sync_hiroba:main"
 
 [project.optional-dependencies]
-hdu = ["Flask>=3.0", "oss2>=2.18", "hypercorn>=0.14"]
 center = ["sakura-taiko-core[hiroba]==0.1.1", "PyMySQL>=1.1.0", "nonebot-plugin-groupmate-taiko==0.1.0"]
 client = ["sakura-taiko-core[hiroba]==0.1.2"]
 
@@ -67,12 +65,12 @@ adapters = [
     { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
     { name = "QQ", module_name = "nonebot.adapters.qq" }
 ]
-plugins = ["taiko_bot.runtime.public", "taiko_bot.runtime.player.entry", "taiko_bot.runtime.community.community_entry", "feature_handler", "taiko_runtime_init", "bot_pool_metrics", "nonebot_plugin_method_calls"]
+plugins = ["taiko_bot.runtime.public", "taiko_bot.runtime.player.entry", "taiko_bot.runtime.community.community_entry", "feature_handler", "taiko_runtime_init", "bot_pool_metrics"]
 plugin_dirs = []
 builtin_plugins = []
 
 [tool.setuptools.packages.find]
-include = ["nonebot_plugin_method_calls*", "feature_handler*", "onebot_runtime*", "taiko_bot*", "taiko_runtime*", "taiko_store*", "hdu_upload*"]
+include = ["feature_handler*", "onebot_runtime*", "taiko_bot*", "taiko_runtime*", "taiko_store*"]
 exclude = ["*.tests", "*.tests.*"]
 
 [tool.setuptools]
@@ -80,5 +78,4 @@ py-modules = ["bot", "bot_core", "bot_gateway", "bot_pool_metrics", "taiko_data_
 
 [tool.setuptools.package-data]
 "taiko_bot.runtime.public" = ["images/*.jpg"]
-"hdu_upload" = ["static/*.html", "static/*.css", "static/*.js"]
 "taiko_bot.offline" = ["growth-compatibility.dat", "schemas/*.json", "annual_summary/data/*.json"]
