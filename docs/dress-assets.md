@@ -44,3 +44,18 @@ with a backup of changed files and publish the catalog last. Preserve unrelated
 historical resources. Rebuild the existing dress archive and total asset bundle,
 then verify the Viewer manifest and download endpoint before deploying the Bot
 with the standard installed-release script. No Viewer API change is required.
+
+## Official title plates
+
+The title catalog refresh updates names and conditions; nameplate images are separate resources. Import the mini-program title mapping as well when its plates change:
+
+```sh
+bash /home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh \
+  /opt/taiko-bot/current/bin/python -I -m taiko_bot.offline.nameplate_import \
+  INPUT.zip /var/tmp/taiko-nameplate-stage \
+  --missing-from /home/sigaer/taiko/assets/name_plate --download
+```
+
+The importer stages both ordinary and dan variants using game IDs, including plates that share one remote image. It parses data without executing JavaScript, downloads at most four images concurrently, verifies bounded PNGs, and refuses to overwrite staged files. Review the staged images and report, then copy only verified missing files to `assets/name_plate`. Keep private assets and import reports outside Git.
+
+Rebuild the nameplate archive and total bundle with `scripts/build_open_resource_archives.sh nameplate` under the bounded build wrapper, then verify the Viewer manifest and bundle endpoints. This scope preserves the other individual resource archives. All supported plate IDs should render in both ordinary and dan layouts; use synthetic profiles for rendering checks.
