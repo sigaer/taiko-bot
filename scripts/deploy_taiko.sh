@@ -40,6 +40,11 @@ install -m 644 "$root/deploy/services/taiko-sync-dispatch.service" /etc/systemd/
 # Supersede the existing recovery interpreter override with the release pointer.
 install -d -m 755 /etc/systemd/system/taiko-sync-receiver.service.d
 install -m 644 "$root/deploy/services/taiko-sync-runtime.conf" /etc/systemd/system/taiko-sync-receiver.service.d/zz-publication-runtime.conf
+# Historical Viewer drop-ins pinned an older private worker even after Bot
+# releases. Apply the shared release pointer; Viewer restart remains owned by
+# its standard deploy_forum_web.sh procedure.
+install -d -m 755 /etc/systemd/system/taiko-viewer.service.d
+install -m 644 "$root/deploy/services/taiko-viewer-python.conf" /etc/systemd/system/taiko-viewer.service.d/zzzzzz-taiko-center-python.conf
 install -m 644 "$root/deploy/offline/taiko-song-update.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-storage-maintenance.service" /etc/systemd/system/
 install -m 644 "$root/deploy/offline/taiko_admin_backup.cron" /etc/cron.d/taiko-admin-backup

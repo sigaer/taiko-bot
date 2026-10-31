@@ -283,6 +283,15 @@ class PublicationStore:
             raise PublicationError("Score object hash mismatch")
         return raw
 
+    def adopt(self):
+        """Explicit maintenance/writer adoption, never a read-side fallback.
+
+        Keep an existing committed generation unchanged on retries. The caller
+        must fence legacy writers before taking this protocol's exclusive lease.
+        """
+        self._require_lock(write=True)
+        return self.view() or self._adopt()
+
     def _adopt(self):
         self._require_lock(write=True)
         files = {}
