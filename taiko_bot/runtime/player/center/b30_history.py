@@ -9,15 +9,19 @@ from .b30_support.score_calculator import *
 from .b30_support.score_calculator import _compute_results_from_userdata_records
 from .b30_support import taikob_v2 as v2
 from .snapshot_history import parse_snapshot_time
+from .history_time import admit_history_snapshot, history_time_ceiling, is_future_history_time
 TrendPoint = Tuple[datetime.datetime, Dict[str,float], float]
 TrendImageStatus = str
 def _song_key(song: Dict[str, Any]) -> tuple:
     return (song.get("song_no"), song.get("level"))
 
 def _history_snapshot_inputs(view):
+    ceiling = history_time_ceiling()
     timed = [(parse_snapshot_time(Path(name), fallback_mtime=lambda name=name: view.file_times("history/" + name)["mtime"]), name)
              for name in view.history_names()]
     for timestamp, name in sorted(timed):
+        if is_future_history_time(timestamp, ceiling):
+            continue
         try:
             snapshot = json.loads(view.history_raw(name).decode("utf-8"))
         except (OSError, UnicodeError):
@@ -27,7 +31,9 @@ def _history_snapshot_inputs(view):
         except ValueError:
             # Invalid historical JSON remains excluded as in the old rebuild.
             continue
-        yield timestamp, snapshot
+        snapshot = admit_history_snapshot(timestamp, snapshot, ceiling)
+        if snapshot is not None:
+            yield timestamp, snapshot
 
 def _reconstruct_user_snapshots(inputs):
     snapshots: List[Tuple[datetime.datetime, Dict[str, Any]]] = []
@@ -80,6 +86,8 @@ def _reconstruct_user_snapshots(inputs):
 def _limit_trend_points_to_recent_days(
     points: List[TrendPoint], max_days: Optional[int]
 ) -> List[TrendPoint]:
+    ceiling = history_time_ceiling()
+    points = [point for point in points if not is_future_history_time(point[0], ceiling)]
     if not points or not max_days:
         return points
 
@@ -107,6 +115,9 @@ def _build_daily_rating_points_from_view(
     _publication_store, snapshots,
 ) -> Tuple[TrendImageStatus, List[TrendPoint]]:
     from .b30_daily import archive, archive_path, needs_measurement, store_measurement
+    ceiling = history_time_ceiling()
+    snapshots = [(captured, admitted) for captured, payload in snapshots
+                 if (admitted := admit_history_snapshot(captured, payload, ceiling)) is not None]
     custom = any((aggregate_topn_value_fn, compute_dim_topn_means_fn, results_from_records_fn))
     namespace = archive_namespace or (None if custom else f"v1-top{N}" + ("-merged" if collapse_duplicate_versions else ""))
     if not snapshots:
