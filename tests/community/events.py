@@ -163,7 +163,7 @@ async def scenario(old):
  await call('draw_guess_rank','你画我猜排行 -a')
  await call('draw_guess_rank','你画我猜排行 invalid')
  await call('draw_guess_like','',('1',));await call('draw_guess_like','',('99',))
- for _ in range(5):await call('draw_guess_report','',('1',))
+ for user in range(100,105):await call('draw_guess_report','',('1',),user=user)
  rec=await ns['_get_draw_guess_record'](1);assert rec['report_count']==5 and not rec['active']
  await call('draw_guess_make_start','画太鼓歌名',('',));await call('draw_guess_make_router','0')
  assert not ns['DRAW_GUESS_MAKE_SESSIONS']
@@ -175,7 +175,10 @@ async def scenario(old):
  await asyncio.gather(*(ns['_update_draw_guess_record_counters'](1,like_delta=1) for _ in range(12)))
  assert (await ns['_get_draw_guess_record'](1))['like_count']==13
  data=json.loads(ns['DRAW_GUESS_DB_PATH'].read_text())
- for item in data['records']:item.pop('created_at',None)
+ for item in data['records']:
+  item.pop('created_at',None)
+  if not old:
+   assert len(item.pop('reporter_ids'))==5
  return results,data
 async def cover_scenario(old):
  ns=frozen['cover'] if old else vars(mods['cover']);root=setup(ns,'cover-old' if old else 'cover-new');audits=[];ns['write_admin_action_log']=lambda **kw:audits.append(kw)

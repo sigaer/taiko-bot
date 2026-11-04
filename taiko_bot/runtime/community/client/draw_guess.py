@@ -1,5 +1,7 @@
 from __future__ import annotations
 from ..concurrency import serialized
+from ..reporting import submit_report
+from ...player.client.messages import get_identity_key
 
 from ...public.provider import query_with_mode as _query_music_with_mode
 
@@ -817,6 +819,7 @@ async def _create_draw_guess_record(
             "guess_wrong_count": 0,
             "like_count": 0,
             "report_count": 0,
+            "reporter_ids": [],
             "created_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
         }
         records.append(record)
@@ -835,8 +838,6 @@ async def _update_draw_guess_record_counters(
     guess_correct_delta: int = 0,
     guess_wrong_delta: int = 0,
     like_delta: int = 0,
-    report_delta: int = 0,
-    set_active: Optional[bool] = None,
 ) -> Optional[Dict[str, Any]]:
     async with DRAW_GUESS_DB_LOCK:
         data = _load_draw_guess_db()
@@ -854,11 +855,6 @@ async def _update_draw_guess_record_counters(
             0, _as_int(record.get("guess_wrong_count"), 0) + guess_wrong_delta
         )
         record["like_count"] = max(0, _as_int(record.get("like_count"), 0) + like_delta)
-        record["report_count"] = max(
-            0, _as_int(record.get("report_count"), 0) + report_delta
-        )
-        if set_active is not None:
-            record["active"] = bool(set_active)
 
         _save_draw_guess_db(data)
         return dict(record)
@@ -1293,18 +1289,17 @@ async def _(matcher: Matcher, groups=RegexGroup()):
     )
 
 @draw_guess_report.handle()
-async def _(matcher: Matcher, groups=RegexGroup()):
+async def _(matcher: Matcher, event: MessageEvent, groups=RegexGroup()):
     record_id = _as_int(groups[0] if groups else 0, 0)
-    record = await _update_draw_guess_record_counters(record_id, report_delta=1)
-    if record is None:
-        await matcher.finish("该id不存在", reply_message=True)
-
-    report_count = _as_int(record.get("report_count"), 0)
-    msg = f"已举报你画我猜id{record_id}，本你画我猜已被{report_count}人举报！"
-    if report_count == DRAW_GUESS_REPORT_DELETE_THRESHOLD:
-        await _update_draw_guess_record_counters(record_id, set_active=False)
-        msg += f"\n你画我猜id{record_id}已删除。"
-    await matcher.finish(msg, reply_message=True)
+    result = await submit_report(
+        record_id,
+        get_identity_key(event=event),
+        lock=DRAW_GUESS_DB_LOCK,
+        load_db=_load_draw_guess_db,
+        save_db=_save_draw_guess_db,
+        threshold=DRAW_GUESS_REPORT_DELETE_THRESHOLD,
+    )
+    await matcher.finish(result.message(record_id), reply_message=True)
 
 @draw_guess_view.handle()
 async def _(matcher: Matcher, groups=RegexGroup()):
