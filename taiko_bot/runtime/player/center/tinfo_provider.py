@@ -93,6 +93,13 @@ class TinfoHostProvider:
         for attempt in range(2):
             if self._snapshot(actor, principal)[2] != observation:
                 raise TinfoDenied()
+            if trend_command is not None:
+                from .source_registration import ensure_registered
+                from .materialization import build_virtual_user_id
+                for member in sorted(ids):
+                    ensure_registered(self._store(member, merged=virtual), self.verify_initial)
+                if virtual:
+                    ensure_registered(self._store(build_virtual_user_id(principal), merged=True), self.verify_initial)
             if virtual:
                 materialized = materialize_merged_bind_userdata(principal, entry, userdata_dir=self._root)
                 identity = materialized.virtual_user_id

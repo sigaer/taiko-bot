@@ -7,6 +7,7 @@ from nonebot.matcher import Matcher
 from nonebot.rule import Rule
 from taiko_application.commands import CommandResult
 from taiko_application.private_input import thaw
+from taiko_store import PublicationError
 from . import entry
 
 PROFILE = entry.profile()
@@ -96,13 +97,17 @@ async def handle(matcher, event, play):
         return
     except Exception as error:
         from .center.taikob_v2_data import V2DataSourceError
-        accepted = ((entry.MergedBindError, entry.TinfoUnavailable, V2DataSourceError) if PROFILE == 'center'
+        accepted = ((entry.MergedBindError, entry.TinfoUnavailable, V2DataSourceError, PublicationError) if PROFILE == 'center'
                     else (entry.UserdataProviderError, entry.TinfoUnavailable))
         if not isinstance(error, accepted):
             raise
         try:
             provider.verify_initial()
             message = 'Rating v2 上游定数数据暂时不可用，请稍后再试' if isinstance(error,V2DataSourceError) else str(error)
+            if isinstance(error, PublicationError):
+                from nonebot import logger
+                logger.opt(exception=error).error('Trend storage preparation failed')
+                message = '历史成绩暂时无法读取，请稍后重试。'
             await entry.helpers._finish_text_reply(entry.AuthorizedDelivery(matcher,provider,None),event,message)
         except (entry.TinfoDenied, entry.TinfoUnavailable):
             await entry.helpers._finish_text_reply(matcher,event,'查不到呢，可能不给看哦~')
