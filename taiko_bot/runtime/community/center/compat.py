@@ -303,6 +303,7 @@ qq_official_unsupported_gate = on_message(
 )
 qq_official_unsupported_gate._sakura_patterns = tuple(QQ_OFFICIAL_UNSUPPORTED_PATTERNS)
 qq_official_unsupported_gate._sakura_platforms = ('qq',)
+qq_official_unsupported_gate._sakura_contexts = ('group',)
 
 @qq_official_unsupported_gate.handle()
 async def qq_official_unsupported_gate_handle(event: MessageEvent):
