@@ -301,6 +301,8 @@ qq_official_unsupported_gate = on_message(
     rule=Rule(_is_qq_official_unsupported_command),
     block=True,
 )
+qq_official_unsupported_gate._sakura_patterns = tuple(QQ_OFFICIAL_UNSUPPORTED_PATTERNS)
+qq_official_unsupported_gate._sakura_platforms = ('qq',)
 
 @qq_official_unsupported_gate.handle()
 async def qq_official_unsupported_gate_handle(event: MessageEvent):

@@ -22,6 +22,7 @@ async def eligible(event: Event):
 
 taikob = (on_message(rule=entry.feature_on('taiko') & Rule(eligible)) if PROFILE == 'center'
           else on_regex(PATTERN.pattern, flags=re.IGNORECASE, rule=entry.feature_on('taiko')))
+taikob._sakura_patterns = (PATTERN,)
 
 def modules():
     return tuple(import_module(f'.{PROFILE}.b30_support.{name}', __package__)

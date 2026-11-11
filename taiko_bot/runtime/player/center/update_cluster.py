@@ -5,8 +5,10 @@ from ..lifecycle_authority import lifecycle_boundary, delivery_for
 from .lifecycle_host import (Bot, DEVELOPER_QQ_EXPORT_DIR, GameLoginQrError, MessageEvent, PublicScoreTokenError, Rule, UPDATE_TYPO_VARIANTS, _build_u0_readonly_message, _build_update_command_hint, _can_request_game_login_qr, _execute_taiko_update, _fetch_developer_userdata_via_forum, _finish_image_reply, _finish_text_reply, _game_login_qr_command_rule, _get_current_bind_entry, _get_current_bind_taiko_id, _get_selected_bind_slot_number, _get_taiko_bind_info, _infer_bind_source, _is_external_bot_mentioned, _is_private_message_event, _is_update_command_targeting_other_account, _normalize_identity_key, _normalize_update_command_text, _parse_update_command, _resolve_requested_identity_key, _should_trigger_update_command, _taiko_bind_usage_message, _update_command_rule, _update_typo_rule, _upload_json_file_for_event, asyncio, datetime, extract_plain_text, fetch_game_login_qr_image, get_identity_key, issue_public_score_token_for_taiko_id, json, load_wahlap_authorization, logger, on_message, on_regex, re, taiko_rule, try_acquire_taiko_update_slot)
 
 update = on_message(rule=taiko_rule & Rule(_update_command_rule), block=False)
+update._sakura_patterns = host.UPDATE_COMMAND_SEARCH_PATTERNS
 
 update_typo = on_message(rule=taiko_rule & Rule(_update_typo_rule), block=False)
+update_typo._sakura_patterns = tuple(re.compile(re.escape(v), re.I) for v in UPDATE_TYPO_VARIANTS)
 
 public_score_token = on_regex(
     r"^(?:网页成绩token|成绩token|scoretoken|获取token)(?:\s*(?:重置|刷新|reset))?$",
@@ -23,6 +25,7 @@ developer_userdata = on_regex(
 game_login_qr = on_message(
     rule=taiko_rule & Rule(_game_login_qr_command_rule),
 )
+game_login_qr._sakura_patterns = (r'^码来$',)
 
 @update.handle()
 @lifecycle_boundary("update", host)

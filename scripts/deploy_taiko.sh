@@ -12,6 +12,8 @@ release="/opt/taiko-bot/releases/$version"
 "$release/bin/python" -I -c 'import importlib.metadata as m,sys; assert m.version("taiko-bot")==sys.argv[1]; import taiko_bot,taiko_store,runtime_memory; assert all("site-packages" in x.__file__ for x in (taiko_bot,taiko_store,runtime_memory))' "$version"
 "$release/bin/pip" check
 launch_mode="${3:-systemd}"
+bot_only="${TAIKO_DEPLOY_BOT_ONLY:-0}"
+[[ "$bot_only" == 0 || "$bot_only" == 1 ]] || { echo 'TAIKO_DEPLOY_BOT_ONLY must be 0 or 1' >&2; exit 2; }
 mode_file=/home/sigaer/taiko/runtime/bot-launch-mode
 if [[ $# == 2 && -f "$mode_file" ]]; then launch_mode="$(<"$mode_file")"; fi
 [[ "$launch_mode" == systemd || "$launch_mode" == screen ]] || { echo 'Unknown Bot launch mode' >&2; exit 1; }
@@ -35,6 +37,7 @@ fi
 ln -s "$release" /opt/taiko-bot/current.next
 mv -T /opt/taiko-bot/current.next /opt/taiko-bot/current
 install -m 644 "$root/deploy/services/taiko-bot.service" /etc/systemd/system/
+if [[ "$bot_only" == 0 ]]; then
 install -m 644 "$root/deploy/services/taiko-public-api.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-sync-dispatch.service" /etc/systemd/system/taiko-sync-receiver.service
 # Supersede the existing recovery interpreter override with the release pointer.
@@ -48,11 +51,14 @@ install -m 644 "$root/deploy/services/taiko-viewer-python.conf" /etc/systemd/sys
 install -m 644 "$root/deploy/offline/taiko-song-update.service" /etc/systemd/system/
 install -m 644 "$root/deploy/services/taiko-storage-maintenance.service" /etc/systemd/system/
 install -m 644 "$root/deploy/offline/taiko_admin_backup.cron" /etc/cron.d/taiko-admin-backup
+fi
 systemctl daemon-reload
+if [[ "$bot_only" == 0 ]]; then
 for service in taiko-public-api taiko-sync-receiver taiko-song-update; do
   systemctl restart "$service"
   systemctl is-active --quiet "$service"
 done
+fi
 if [[ "$launch_mode" == screen ]]; then
   /usr/bin/python3 "$root/scripts/taiko_screen.py" start
 else

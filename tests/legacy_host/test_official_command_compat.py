@@ -48,6 +48,27 @@ def test_cover_command_not_blocked_by_qq_official_gate():
     assert taiko._is_qq_official_unsupported_command(event) is False
 
 
+def test_center_binding_keyboards_identify_taiko(monkeypatch):
+    from taiko_runtime import platform_adapter
+    from taiko_bot.runtime import center_platform_adapter
+    from taiko_bot.runtime.player.center import messages
+    monkeypatch.setenv("TAIKO_SONG_PROFILE", "center")
+    for module in (platform_adapter, center_platform_adapter, messages):
+        keyboard = module._build_qq_quick_action_keyboard()
+        buttons = {button.id: button for row in keyboard.content.rows for button in row.buttons}
+        assert buttons["bind"].action.data.startswith("taiko 绑定")
+        assert buttons["bind_qq"].action.data.startswith("taiko 绑定QQ")
+
+
+def test_standalone_client_binding_keyboard_keeps_native_commands(monkeypatch):
+    from taiko_runtime import platform_adapter
+    monkeypatch.setenv("TAIKO_SONG_PROFILE", "client")
+    keyboard = platform_adapter._build_qq_quick_action_keyboard()
+    buttons = {button.id: button for row in keyboard.content.rows for button in row.buttons}
+    assert buttons["bind"].action.data == "绑定"
+    assert buttons["bind_qq"].action.data == "绑定QQ"
+
+
 def test_official_at_prefix_command_matchers_ignore_mention_segment():
     taiko = _load_taiko_module()
 
@@ -81,7 +102,7 @@ def test_official_at_prefix_command_matchers_ignore_mention_segment():
     for name in ("score_line_cmd", "score_cmd", "score_estimate_cmd"):
         assert not hasattr(taiko, name)
         assert getattr(runtime.scoring, name) in nonebot.get_plugin("entry").matcher
-    assert len(nonebot.get_plugin("public").matcher) == 9
+    assert runtime.music_info not in nonebot.get_plugin("public").matcher
     assert music_info_match is not None
     assert music_info_match.group(1) == "红"
 

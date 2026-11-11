@@ -18,8 +18,10 @@ PLAY_PATTERN = r'^/?(taikoplaytrend|rating场次|rating游玩)\s*(.*)$'
 def register(pattern):
     async def eligible(event: Event):
         return re.match(pattern, entry.helpers.extract_plain_text(event), re.I) is not None
-    return (on_message(rule=entry.feature_on('taiko') & Rule(eligible)) if PROFILE == 'center'
-            else on_regex(pattern, flags=re.I, rule=entry.feature_on('taiko')))
+    matcher = (on_message(rule=entry.feature_on('taiko') & Rule(eligible)) if PROFILE == 'center'
+               else on_regex(pattern, flags=re.I, rule=entry.feature_on('taiko')))
+    matcher._sakura_patterns = (re.compile(pattern, re.I),)
+    return matcher
 
 
 trend = register(TREND_PATTERN)

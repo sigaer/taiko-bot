@@ -140,6 +140,7 @@ async def _cover_command_rule(event: MessageEvent) -> bool:
     return _extract_cover_command_match(event) is not None
 
 cover_cmd = on_message(rule=taiko_rule & Rule(_cover_command_rule))
+cover_cmd._sakura_patterns = (COVER_COMMAND_RE,)
 
 @cover_cmd.handle()
 async def handle_cover(bot: Bot, event: MessageEvent):

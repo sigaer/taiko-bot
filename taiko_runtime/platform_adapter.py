@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Iterable, Literal, Optional, Sequence, Tuple
@@ -308,6 +309,8 @@ def _build_qq_quick_action_keyboard():
     ) = _load_qq_quick_action_api()
 
     def _build_button(button_id: str, label: str, command: str) -> Any:
+        if os.getenv("TAIKO_SONG_PROFILE", "client") == "center" and command.startswith("绑定"):
+            command = "taiko " + command
         return Button(
             id=button_id,
             render_data=RenderData(

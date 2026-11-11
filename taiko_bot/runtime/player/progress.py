@@ -30,6 +30,7 @@ async def eligible(event: Event):
 
 matcher = (on_message(rule=entry.feature_on('taiko') & Rule(eligible)) if PROFILE == 'center'
            else on_regex(r'^.+进度(?:\s+\d+)?$', rule=entry.feature_on('taiko') & Rule(eligible)))
+matcher._sakura_patterns = (re.compile(r'^(?!(?:' + '|'.join(FOREIGN_PROGRESS_COMMANDS) + r')$).+进度(?:\s+\d+)?$'),)
 
 
 def modules():

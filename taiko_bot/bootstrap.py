@@ -38,6 +38,9 @@ def create_app():
     for name in plugins:
         if nonebot.load_plugin(name) is None:
             raise RuntimeError(f"Required Taiko module failed to load: {name}")
+    if profile == "center":
+        from sakura_command_routing import install as install_command_routing
+        install_command_routing("taiko")
     app = nonebot.get_asgi()
     if profile == "client":
         from taiko_bot.local_api import app as local_app

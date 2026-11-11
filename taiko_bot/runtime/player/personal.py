@@ -15,6 +15,7 @@ async def don_eligible(event: Event):
 
 my_don = (on_message(rule=entry.feature_on('taiko') & Rule(don_eligible)) if PROFILE=='center'
           else on_fullmatch('我的小咚',rule=entry.feature_on('taiko')))
+my_don._sakura_patterns = (r'^我的小咚$',)
 
 
 class MetricImageError(Exception):
@@ -130,6 +131,7 @@ async def cloud_eligible(event: Event):
 _metric=import_module(f'.{PROFILE}.display_support.metric',__package__)
 song_metric_query=on_regex(_metric.SONG_METRIC_QUERY_PATTERN,flags=re.I,rule=entry.feature_on('taiko'))
 tcloud=on_message(rule=entry.feature_on('taiko') & Rule(cloud_eligible),block=False)
+tcloud._sakura_patterns = (re.compile(r'^(?:tcloud|太鼓词云|词云)\s*$', re.I),)
 
 
 @song_metric_query.handle()

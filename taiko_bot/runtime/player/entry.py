@@ -40,6 +40,7 @@ async def eligible(event: Event):
 
 music_info = (on_message(rule=feature_on('taiko') & Rule(eligible)) if profile() == 'center'
               else on_regex(PATTERN.pattern, rule=feature_on('taiko')))
+music_info._sakura_patterns = (PATTERN,)
 
 
 def create_provider():
