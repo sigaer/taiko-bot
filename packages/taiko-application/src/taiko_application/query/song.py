@@ -1,10 +1,15 @@
 from __future__ import annotations
-from typing import Any, Dict, List, Optional, Tuple
+
+from collections.abc import Callable, Iterable, Iterator
+from typing import Any
+
 from sakura_taiko_core.chart import identity
+
 from .context import SongQueryContext
+from .song_matching import normalize_song_query, song_similarity
 
 
-def _collapse(context, rows):
+def _collapse(context: SongQueryContext, rows):
     by_id, by_title = (
         context.group_provider()
         if context.group_provider is not None
@@ -15,119 +20,114 @@ def _collapse(context, rows):
     )
 
 
+def _dedupe_by_id(rows: Iterable[list[Any]]) -> list[list[Any]]:
+    seen = set()
+    result = []
+    for row in rows:
+        if row[0] not in seen:
+            seen.add(row[0])
+            result.append(row)
+    return result
+
+
+def _name_hits(songs, query: str, key: Callable[[str], str], *, partial=False):
+    hits = []
+    for song in songs:
+        jp = str(song.get("song_name_jp") or "")
+        cn = str(song.get("song_name") or "")
+        names = [key(value) for value in (jp, cn) if value]
+        if any(query in name if partial else query == name for name in names):
+            hits.append([song.get("id"), jp or cn])
+    return _dedupe_by_id(hits)
+
+
+def _alias_identity(entry, id_to_title):
+    sid = entry.get("id")
+    try:
+        sid = int(sid)
+    except (TypeError, ValueError):
+        pass
+    title = entry.get("song_name_jp") or id_to_title.get(sid) or str(sid)
+    return sid, title
+
+
+def _alias_hits(aliases, query: str, id_to_title, key: Callable[[str], str]):
+    return _dedupe_by_id(
+        list(_alias_identity(entry, id_to_title))
+        for entry in aliases
+        if any(
+            query == key(alias)
+            for alias in entry.get("aliases") or []
+            if isinstance(alias, str) and alias
+        )
+    )
+
+
+def _fuzzy_candidates(context, id_to_title) -> Iterator[tuple[Any, str, str]]:
+    for song in context.songs:
+        sid = song.get("id")
+        title = song.get("song_name_jp") or song.get("song_name") or str(sid)
+        for field in ("song_name_jp", "song_name"):
+            value = normalize_song_query(str(song.get(field) or ""))
+            if value:
+                yield sid, title, value
+    for entry in context.aliases:
+        sid, title = _alias_identity(entry, id_to_title)
+        for alias in entry.get("aliases") or []:
+            if isinstance(alias, str):
+                value = normalize_song_query(alias)
+                if value:
+                    yield sid, title, value
+
+
 def query_music(context: SongQueryContext):
-    song_data, alias_data = context.songs, context.aliases
-    name = context.query
-    allow_partial, allow_fuzzy = context.allow_partial, context.allow_fuzzy
-    query = (name or "").strip()
+    query = (context.query or "").strip()
     if not query:
-        return ([], None)
+        return [], None
     query_lower = query.lower()
-    id_to_title: Dict[int, str] = {}
-    for music in song_data:
+    query_key = normalize_song_query(query)
+    id_to_title = {}
+    for song in context.songs:
         try:
-            sid = int(music.get("id"))
-        except Exception:
+            sid = int(song.get("id"))
+        except (TypeError, ValueError):
             continue
-        title = music.get("song_name_jp") or music.get("song_name") or f"ID{sid}"
-        id_to_title[sid] = title
+        id_to_title[sid] = song.get("song_name_jp") or song.get("song_name") or f"ID{sid}"
 
-    def _dedupe_by_id(rows: List[List[Any]]) -> List[List[Any]]:
-        seen = set()
-        out: List[List[Any]] = []
-        for row in rows:
-            if not row:
-                continue
-            sid = row[0]
-            if sid in seen:
-                continue
-            seen.add(sid)
-            out.append(row)
-        return out
+    # Keep literal names, explicit IDs and literal aliases ahead of normalization.
+    hits = _name_hits(context.songs, query_lower, str.lower)
+    if hits:
+        return _collapse(context, hits), "exact_name"
+    id_token = query_key.removeprefix("id")
+    if id_token.isdigit() and int(id_token) in id_to_title:
+        sid = int(id_token)
+        return [[sid, id_to_title[sid]]], "exact_id"
+    hits = _alias_hits(context.aliases, query_lower, id_to_title, str.lower)
+    if hits:
+        return _collapse(context, hits), "exact_alias"
 
-    exact_name_hits: List[List[Any]] = []
-    for music in song_data:
-        jp = str(music.get("song_name_jp") or "")
-        cn = str(music.get("song_name") or "")
-        jp_lower = jp.lower()
-        cn_lower = cn.lower()
-        if query_lower == jp_lower or query_lower == cn_lower:
-            exact_name_hits.append([music.get("id"), jp or cn])
-    exact_name_hits = _dedupe_by_id(exact_name_hits)
-    if exact_name_hits:
-        return (_collapse(context, exact_name_hits), "exact_name")
-    id_token = query_lower
-    if id_token.startswith("id"):
-        id_token = id_token[2:]
-    id_token = id_token.strip()
-    if id_token.isdigit():
-        target_id = int(id_token)
-        if target_id in id_to_title:
-            return ([[target_id, id_to_title[target_id]]], "exact_id")
-    exact_alias_hits: List[List[Any]] = []
-    for entry in alias_data:
-        aliases = entry.get("aliases") or []
-        sid = entry.get("id")
-        try:
-            sid_int = int(sid)
-        except Exception:
-            sid_int = sid
-        for alias in aliases:
-            if isinstance(alias, str) and query_lower == alias.lower():
-                title = (
-                    entry.get("song_name_jp") or id_to_title.get(sid_int) or str(sid)
-                )
-                exact_alias_hits.append([sid_int, title])
-                break
-    exact_alias_hits = _dedupe_by_id(exact_alias_hits)
-    if exact_alias_hits:
-        return (_collapse(context, exact_alias_hits), "exact_alias")
-    if allow_partial:
-        partial_name_hits: List[List[Any]] = []
-        for music in song_data:
-            jp = str(music.get("song_name_jp") or "")
-            cn = str(music.get("song_name") or "")
-            jp_lower = jp.lower()
-            cn_lower = cn.lower()
-            if (
-                jp_lower
-                and query_lower in jp_lower
-                or (cn_lower and query_lower in cn_lower)
-            ):
-                partial_name_hits.append([music.get("id"), jp or cn])
-        partial_name_hits = _dedupe_by_id(partial_name_hits)
-        if partial_name_hits:
-            return (_collapse(context, partial_name_hits), "partial_name")
-    if not allow_fuzzy:
-        return ([], None)
-    best_match: Optional[Dict[str, Any]] = None
-    for music in song_data:
-        sid = music.get("id")
-        title = music.get("song_name_jp") or music.get("song_name") or str(sid)
-        candidates = [
-            str(music.get("song_name_jp") or "").lower(),
-            str(music.get("song_name") or "").lower(),
-        ]
-        scores = [context.similarity(query_lower, cand) for cand in candidates if cand]
-        if not scores:
-            continue
-        ratio = max(scores)
-        if best_match is None or ratio > best_match["ratio"]:
-            best_match = {"id": sid, "title": title, "ratio": ratio}
-    for entry in alias_data:
-        sid = entry.get("id")
-        if str(sid).isdigit():
-            sid_as_int = int(sid)
-            title = entry.get("song_name_jp") or id_to_title.get(sid_as_int) or str(sid)
-        else:
-            title = entry.get("song_name_jp") or str(sid)
-        aliases = entry.get("aliases") or []
-        for alias in aliases:
-            if not isinstance(alias, str):
-                continue
-            ratio = context.similarity(query_lower, alias.lower())
-            if best_match is None or ratio > best_match["ratio"]:
-                best_match = {"id": sid, "title": title, "ratio": ratio}
-    if best_match is None:
-        return ([], None)
-    return ([[best_match["id"], best_match["title"], best_match["ratio"]]], "fuzzy")
+    hits = _name_hits(context.songs, query_key, normalize_song_query)
+    if hits:
+        return _collapse(context, hits), "exact_name"
+    hits = _alias_hits(context.aliases, query_key, id_to_title, normalize_song_query)
+    if hits:
+        return _collapse(context, hits), "exact_alias"
+    if context.allow_partial:
+        hits = _name_hits(context.songs, query_key, normalize_song_query, partial=True)
+        if hits:
+            return _collapse(context, hits), "partial_name"
+    if not context.allow_fuzzy:
+        return [], None
+
+    # A per-query memo avoids rescoring names repeated across languages and aliases.
+    scores = {}
+    best = None
+    for sid, title, value in _fuzzy_candidates(context, id_to_title):
+        if value not in scores:
+            scores[value] = song_similarity(
+                query_key, value, context.similarity, allow_partial=context.allow_partial
+            )
+        score = scores[value]
+        if best is None or score > best[2]:
+            best = [sid, title, score]
+    return ([best], "fuzzy") if best is not None else ([], None)
