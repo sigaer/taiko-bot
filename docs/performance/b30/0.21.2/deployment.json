@@ -1,0 +1,266 @@
+{
+  "status": "PASS_deployed",
+  "code_commit": "9e7f84d9352cee27305ec09192167ea0fcdde548",
+  "versions": {
+    "taiko-bot": "0.21.2",
+    "taiko-application": "0.8.3"
+  },
+  "git_tags": [
+    "v0.21.2",
+    "application-v0.8.3"
+  ],
+  "wheel_sha256": {
+    "taiko_application-0.8.3-py3-none-any.whl": "9f55914c754ca387cbf877c127b3e6100a481ba094a392d34ed170e3ba51b1be",
+    "taiko_bot-0.21.2-py3-none-any.whl": "2ad8dc9ba2a8d49b36e41a021c8676bc8f6eaa11544d28aac54c1281902ec54e"
+  },
+  "artifact_directory": "/opt/taiko-bot/artifacts",
+  "deploy_command": "TAIKO_DEPLOY_BOT_ONLY=1 scripts/deploy_taiko.sh 0.21.2 0",
+  "before": {
+    "timestamp": "2026-11-12T08:11:27.521782+00:00",
+    "release": "/opt/taiko-bot/releases/0.21.1",
+    "services": {
+      "taiko-bot": {
+        "MainPID": "1932398",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:23 CST",
+        "MemoryCurrent": "877445120",
+        "ActiveState": "active"
+      },
+      "taiko-public-api": {
+        "MainPID": "1932286",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "122163200",
+        "ActiveState": "active"
+      },
+      "taiko-sync-receiver": {
+        "MainPID": "1932290",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "18595840",
+        "ActiveState": "active"
+      },
+      "taiko-viewer": {
+        "MainPID": "1914718",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 11:52:33 CST",
+        "MemoryCurrent": "1201512448",
+        "ActiveState": "active"
+      },
+      "taiko-song-update": {
+        "MainPID": "1932294",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "34676736",
+        "ActiveState": "active"
+      },
+      "taiko-memory-monitor": {
+        "MainPID": "3751671",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Fri 2026-09-18 15:35:20 CST",
+        "MemoryCurrent": "14827520",
+        "ActiveState": "active"
+      }
+    },
+    "ports": {
+      "37563": false,
+      "37564": true
+    },
+    "connected_bot_count": 15,
+    "connected_bot_set_sha256": "856a9f447628b5267f0d85db2422eb330d4abdd9c55c176a29e16c9eb8b1a272",
+    "actual_process_inventory": null
+  },
+  "after": {
+    "timestamp": "2026-11-12T08:23:34.045028+00:00",
+    "release": "/opt/taiko-bot/releases/0.21.2",
+    "services": {
+      "taiko-bot": {
+        "MainPID": "2206583",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 16:11:29 CST",
+        "MemoryCurrent": "471744512",
+        "ActiveState": "active"
+      },
+      "taiko-public-api": {
+        "MainPID": "1932286",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "122163200",
+        "ActiveState": "active"
+      },
+      "taiko-sync-receiver": {
+        "MainPID": "1932290",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "18595840",
+        "ActiveState": "active"
+      },
+      "taiko-viewer": {
+        "MainPID": "1914718",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 11:52:33 CST",
+        "MemoryCurrent": "1303388160",
+        "ActiveState": "active"
+      },
+      "taiko-song-update": {
+        "MainPID": "1932294",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "34676736",
+        "ActiveState": "active"
+      },
+      "taiko-memory-monitor": {
+        "MainPID": "3751671",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Fri 2026-09-18 15:35:20 CST",
+        "MemoryCurrent": "14905344",
+        "ActiveState": "active"
+      }
+    },
+    "ports": {
+      "37563": false,
+      "37564": true
+    },
+    "connected_bot_count": 15,
+    "connected_bot_set_sha256": "856a9f447628b5267f0d85db2422eb330d4abdd9c55c176a29e16c9eb8b1a272",
+    "actual_process_inventory": {
+      "python": "3.11.4",
+      "executable": "/opt/taiko-bot/current/bin/python",
+      "packages": {
+        "taiko-bot": {
+          "version": "0.21.2",
+          "module": "/opt/taiko-bot/releases/0.21.2/lib/python3.11/site-packages/taiko_bot/__init__.py"
+        },
+        "taiko-application": {
+          "version": "0.8.3",
+          "module": "/opt/taiko-bot/releases/0.21.2/lib/python3.11/site-packages/taiko_application/__init__.py"
+        },
+        "sakura-taiko-core": {
+          "version": "0.1.1",
+          "module": "/opt/taiko-bot/releases/0.21.2/lib/python3.11/site-packages/sakura_taiko_core/__init__.py"
+        },
+        "sakura-taiko-contract": {
+          "version": "0.1.0",
+          "module": "/opt/taiko-bot/releases/0.21.2/lib/python3.11/site-packages/sakura_taiko_contract/__init__.py"
+        },
+        "Pillow": {
+          "version": "11.3.0",
+          "module": "/opt/taiko-bot/releases/0.21.2/lib/python3.11/site-packages/PIL/__init__.py"
+        }
+      },
+      "numpy": "2.4.6",
+      "pandas": "3.0.6"
+    }
+  },
+  "other_service_pids_unchanged": [
+    "taiko-public-api",
+    "taiko-sync-receiver",
+    "taiko-viewer",
+    "taiko-song-update",
+    "taiko-memory-monitor"
+  ],
+  "service_unit_unchanged": true,
+  "postdeploy_offline_verification": {
+    "status": "PASS",
+    "cases": 6,
+    "qa_id": "qa-d2a888771359",
+    "one_time_parallel_qa_authorized": true,
+    "limits": {
+      "cpu.max": "200000 100000",
+      "memory.high": "2147483648",
+      "memory.max": "3221225472",
+      "memory.swap.max": "268435456"
+    },
+    "runtime_max_seconds": 900,
+    "excludes_performance_conclusions": true,
+    "real_bot_test_traffic": false,
+    "cases_verified": [
+      {
+        "user": "U05",
+        "command": "taikob30 v1",
+        "output": {
+          "kind": "image",
+          "sha256": "a44d9dec8beb5ce1cdfedaa83ae6a50c2839ad58869d542e5201b9e57e093ac4",
+          "pixels": "b9d0a533ca1f840b2cdf453ad07ca3fead0d08d1fdb06684959f91a316476bd1",
+          "size": [
+            1080,
+            3030
+          ],
+          "bytes": 775796
+        }
+      },
+      {
+        "user": "U05",
+        "command": "taikob",
+        "output": {
+          "kind": "image",
+          "sha256": "77ce44d87a9f3bba49eccdf66f56df4ca28512fdfe65dd977ed974e1609b68f6",
+          "pixels": "0b279f4e414efc4238ce0c4b92c37165dced4f01311edd47fbce56b5e3bf1929",
+          "size": [
+            1080,
+            2436
+          ],
+          "bytes": 581145
+        }
+      },
+      {
+        "user": "U08",
+        "command": "taikob30 v1",
+        "output": {
+          "kind": "image",
+          "sha256": "3882ec5355ab56b1f283cd4897b1c50c29e99fa6b4da2c90a0d29d782751c62c",
+          "pixels": "3388053ff7b9e368e0245aa49077ec793a797b7e52a61d570c62b8d019d74a36",
+          "size": [
+            1080,
+            3030
+          ],
+          "bytes": 799810
+        }
+      },
+      {
+        "user": "U08",
+        "command": "taikob",
+        "output": {
+          "kind": "image",
+          "sha256": "16a2cd20ed7388dd91b4e83ae6692126b34e0df6c87c8e7faae98aaeec321adc",
+          "pixels": "0c9f6c226ebaf77bbb3e32a98a12706d0cd5e880d050351c31903562075e407c",
+          "size": [
+            1080,
+            2436
+          ],
+          "bytes": 591909
+        }
+      },
+      {
+        "user": "U11",
+        "command": "taikob",
+        "output": {
+          "kind": "image",
+          "sha256": "785048d674c32032fec4106118844ee7e123c89f6cea6cabb9b89d9a00477fa7",
+          "pixels": "d9e05ba426a795f7306c79cfc8637c2e8b93645fb4f1daeeeb0a6099f2429c71",
+          "size": [
+            1080,
+            2436
+          ],
+          "bytes": 609652
+        }
+      },
+      {
+        "user": "U12",
+        "command": "taikob",
+        "output": {
+          "kind": "image",
+          "sha256": "e6ffec012a74d75ef53b871364ae459977cb952d49684881069b27acfd5c398d",
+          "pixels": "08bafbed843cb0dbbd80f9c2ed33f3e79584698a2121d8c13538b62513a0d2b9",
+          "size": [
+            1080,
+            2436
+          ],
+          "bytes": 600119
+        }
+      }
+    ]
+  },
+  "rollback_release_preserved": "/opt/taiko-bot/releases/0.21.1",
+  "memory_note": "MemoryCurrent is service cgroup accounting under live traffic; it is not isolated peak RSS and its before/after difference is not a performance conclusion. Stability and leaks are assessed by the separate controlled 100-render stress test."
+}
