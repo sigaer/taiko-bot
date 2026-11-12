@@ -1,5 +1,5 @@
 {
-  "status": "PASS_candidate_verified",
+  "status": "PASS_deployed",
   "versions": {
     "taiko-bot": "0.22.1",
     "taiko-application": "0.9.1"
@@ -8,7 +8,8 @@
   "qa": {
     "final_build": "qa-fc33675a9efd",
     "installed_verification": "qa-95fcca5f7c5e",
-    "dependency_and_baseline": "qa-2fe309ce7f59"
+    "dependency_and_baseline": "qa-2fe309ce7f59",
+    "production_activation": "qa-6c569f48af0f"
   },
   "checks": {
     "performance_and_bxx_units": 47,
@@ -27,5 +28,6 @@
     "taiko_application-0.9.1-py3-none-any.whl": "4930247f311e117bba4a37fa4c4ce964a09fa7a722b380420097547a749292a1"
   },
   "raw_evidence": "/var/tmp/taiko-bxx-summary/verification-qa-95fcca5f7c5e",
-  "production_private_data_used_in_qa": false
+  "production_private_data_used_in_qa": false,
+  "code_commit": "1910f4e"
 }

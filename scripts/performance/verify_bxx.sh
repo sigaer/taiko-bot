@@ -52,7 +52,7 @@ PY
 from pathlib import Path
 import hashlib, subprocess, sys
 root, installed = map(Path, sys.argv[1:])
-names = subprocess.check_output(['git', '-C', str(root), 'diff', 'HEAD', '--name-only'], text=True).splitlines()
+names = subprocess.check_output(['git', '-C', str(root), 'diff', '3e0ca22', '--name-only'], text=True).splitlines()
 names += subprocess.check_output(['git', '-C', str(root), 'ls-files', '--others', '--exclude-standard'], text=True).splitlines()
 checked = 0
 for name in names:

@@ -1,0 +1,176 @@
+{
+  "status": "PASS_deployed",
+  "code_commit": "1910f4e",
+  "commands": [
+    "TAIKO_DEPLOY_BOT_ONLY=1 scripts/deploy_taiko.sh 0.22.1 0",
+    "systemctl restart taiko-sync-receiver.service"
+  ],
+  "before": {
+    "timestamp": "2026-11-12T13:08:03.339331+00:00",
+    "release": "/opt/taiko-bot/releases/0.22.0",
+    "services": {
+      "taiko-bot": {
+        "MainPID": "2450290",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 21:00:59 CST",
+        "MemoryCurrent": "581001216",
+        "ActiveState": "active"
+      },
+      "taiko-public-api": {
+        "MainPID": "1932286",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "121552896",
+        "ActiveState": "active"
+      },
+      "taiko-sync-receiver": {
+        "MainPID": "1932290",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "18599936",
+        "ActiveState": "active"
+      },
+      "taiko-viewer": {
+        "MainPID": "1914718",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 11:52:33 CST",
+        "MemoryCurrent": "1590812672",
+        "ActiveState": "active"
+      },
+      "taiko-song-update": {
+        "MainPID": "1932294",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "34426880",
+        "ActiveState": "active"
+      },
+      "taiko-memory-monitor": {
+        "MainPID": "3751671",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Fri 2026-09-18 15:35:20 CST",
+        "MemoryCurrent": "14471168",
+        "ActiveState": "active"
+      }
+    },
+    "ports": {
+      "37563": false,
+      "37564": true
+    },
+    "connected_bot_count": 16,
+    "connected_bot_set_sha256": "8bca5cb364c1171fdcd64d3d8d7d5e4161c10f49187870e76c0f002fc54e50e2",
+    "actual_process_inventory": {
+      "python": "3.11.4",
+      "executable": "/opt/taiko-bot/current/bin/python",
+      "packages": {
+        "taiko-bot": {
+          "version": "0.22.0",
+          "module": "/opt/taiko-bot/releases/0.22.0/lib/python3.11/site-packages/taiko_bot/__init__.py"
+        },
+        "taiko-application": {
+          "version": "0.9.0",
+          "module": "/opt/taiko-bot/releases/0.22.0/lib/python3.11/site-packages/taiko_application/__init__.py"
+        },
+        "sakura-taiko-core": {
+          "version": "0.1.1",
+          "module": "/opt/taiko-bot/releases/0.22.0/lib/python3.11/site-packages/sakura_taiko_core/__init__.py"
+        },
+        "sakura-taiko-contract": {
+          "version": "0.1.0",
+          "module": "/opt/taiko-bot/releases/0.22.0/lib/python3.11/site-packages/sakura_taiko_contract/__init__.py"
+        },
+        "Pillow": {
+          "version": "11.3.0",
+          "module": "/opt/taiko-bot/releases/0.22.0/lib/python3.11/site-packages/PIL/__init__.py"
+        }
+      },
+      "numpy": "2.4.6",
+      "pandas": "3.0.6"
+    }
+  },
+  "after": {
+    "timestamp": "2026-11-12T13:10:25.532874+00:00",
+    "release": "/opt/taiko-bot/releases/0.22.1",
+    "services": {
+      "taiko-bot": {
+        "MainPID": "2458833",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 21:09:17 CST",
+        "MemoryCurrent": "179507200",
+        "ActiveState": "active"
+      },
+      "taiko-public-api": {
+        "MainPID": "1932286",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "121552896",
+        "ActiveState": "active"
+      },
+      "taiko-sync-receiver": {
+        "MainPID": "2459310",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 21:09:52 CST",
+        "MemoryCurrent": "18317312",
+        "ActiveState": "active"
+      },
+      "taiko-viewer": {
+        "MainPID": "1914718",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 11:52:33 CST",
+        "MemoryCurrent": "1598242816",
+        "ActiveState": "active"
+      },
+      "taiko-song-update": {
+        "MainPID": "1932294",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Thu 2026-11-12 12:08:22 CST",
+        "MemoryCurrent": "34426880",
+        "ActiveState": "active"
+      },
+      "taiko-memory-monitor": {
+        "MainPID": "3751671",
+        "NRestarts": "0",
+        "ExecMainStartTimestamp": "Fri 2026-09-18 15:35:20 CST",
+        "MemoryCurrent": "13844480",
+        "ActiveState": "active"
+      }
+    },
+    "ports": {
+      "37563": false,
+      "37564": true
+    },
+    "connected_bot_count": 16,
+    "connected_bot_set_sha256": "8bca5cb364c1171fdcd64d3d8d7d5e4161c10f49187870e76c0f002fc54e50e2",
+    "actual_process_inventory": {
+      "python": "3.11.4",
+      "executable": "/opt/taiko-bot/current/bin/python",
+      "packages": {
+        "taiko-bot": {
+          "version": "0.22.1",
+          "module": "/opt/taiko-bot/releases/0.22.1/lib/python3.11/site-packages/taiko_bot/__init__.py"
+        },
+        "taiko-application": {
+          "version": "0.9.1",
+          "module": "/opt/taiko-bot/releases/0.22.1/lib/python3.11/site-packages/taiko_application/__init__.py"
+        },
+        "sakura-taiko-core": {
+          "version": "0.1.1",
+          "module": "/opt/taiko-bot/releases/0.22.1/lib/python3.11/site-packages/sakura_taiko_core/__init__.py"
+        },
+        "sakura-taiko-contract": {
+          "version": "0.1.0",
+          "module": "/opt/taiko-bot/releases/0.22.1/lib/python3.11/site-packages/sakura_taiko_contract/__init__.py"
+        },
+        "Pillow": {
+          "version": "11.3.0",
+          "module": "/opt/taiko-bot/releases/0.22.1/lib/python3.11/site-packages/PIL/__init__.py"
+        }
+      },
+      "numpy": "2.4.6",
+      "pandas": "3.0.6"
+    }
+  },
+  "connected_bot_set_restored": true,
+  "business_data_migrated_or_rebuilt": false,
+  "viewer_restarted": false,
+  "sync_receiver_health_http_status": 200
+}
