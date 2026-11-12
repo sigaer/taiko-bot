@@ -7,6 +7,7 @@ from sakura_taiko_core.chart import identity
 
 from .context import SongQueryContext
 from .song_matching import normalize_song_query, song_similarity
+from .song_phonetics import same_pronunciation
 
 
 def _collapse(context: SongQueryContext, rows):
@@ -118,6 +119,16 @@ def query_music(context: SongQueryContext):
             return _collapse(context, hits), "partial_name"
     if not context.allow_fuzzy:
         return [], None
+
+    phonetic = _dedupe_by_id(
+        [sid, title, 90]
+        for sid, title, value in _fuzzy_candidates(context, id_to_title)
+        if same_pronunciation(query_key, value)
+    )
+    if phonetic:
+        # Preserve every distinct song instead of letting catalog order decide
+        # between homophones. Existing callers display the candidate list.
+        return _collapse(context, phonetic), "fuzzy"
 
     # A per-query memo avoids rescoring names repeated across languages and aliases.
     scores = {}

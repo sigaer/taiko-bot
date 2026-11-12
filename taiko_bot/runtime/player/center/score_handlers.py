@@ -16,6 +16,8 @@ queryMusic = lambda query: query_with_mode(query)[0]
 _finish_text_reply = entry.helpers._finish_text_reply
 from .score_data import DIFFICULTY_LEVEL_LABELS
 from .score_rating_target import get_song_rating_info, compute_song_rating_target, format_song_rating_target_message
+from sakura_taiko_core.score.scoreline import _DIFF_PREFIXES
+from ..scoreline_query import resolve_scoreline_query, song_choice_message
 
 _SCORE_ESTIMATE_COMMAND_RE = re.compile(r"^/?估分\s*(.*)$")
 
@@ -107,9 +109,7 @@ async def execute_estimate(matcher, event, private, provider):
     if _is_rejected_fuzzy_query_result(results):
         fuzzy_hint = _build_fuzzy_query_hint(results)
     if len(results) > 1:
-        await matcher.finish(
-            f"匹配结果过多（{len(results)} 条），请提供更精确的歌曲别名或id。"
-        )
+        await matcher.finish(song_choice_message(results))
 
     song_id = int(results[0][0])
     song_title = str(results[0][1] or "")
@@ -148,12 +148,11 @@ async def execute_estimate(matcher, event, private, provider):
 async def handle_line(matcher: Matcher, event: Event):
     plain_text = extract_plain_text(event)
     try:
-        request = parse_scoreline_request(plain_text)
+        request, results = resolve_scoreline_query(
+            plain_text, parse_scoreline_request, query_with_mode, _DIFF_PREFIXES
+        )
     except ValueError as e:
         await matcher.finish(str(e))
-
-    try:
-        results: List[List[Any]] = queryMusic(request.song_query)
     except Exception as e:
         await matcher.finish(f"查询歌曲失败：{e}")
 
@@ -163,9 +162,7 @@ async def handle_line(matcher: Matcher, event: Event):
     if _is_rejected_fuzzy_query_result(results):
         fuzzy_hint = _build_fuzzy_query_hint(results)
     if len(results) > 1:
-        await matcher.finish(
-            f"匹配结果过多（{len(results)} 条），请提供更精确的歌曲别名或id。"
-        )
+        await matcher.finish(song_choice_message(results))
 
     song_id = int(results[0][0])
     song_title = str(results[0][1] or "")
@@ -241,9 +238,7 @@ async def handle_score(
     if _is_rejected_fuzzy_query_result(results):
         fuzzy_hint = _build_fuzzy_query_hint(results)
     if len(results) > 1:
-        await matcher.finish(
-            f"匹配结果过多（{len(results)} 条），请提供更精确的别名。"
-        )
+        await matcher.finish(song_choice_message(results))
 
     # 唯一命中：取 id
     song_id = int(results[0][0])

@@ -7,6 +7,8 @@ from nonebot.params import RegexGroup
 from .. import entry
 from ...public.provider import query_with_mode, resolve, rejected_fuzzy
 from .score_data import available_levels_for_song, get_scoreline_entry, parse_scoreline_request, compute_scoreline_result, format_scoreline_message, compute_score
+from sakura_taiko_core.score.client_scoreline import _DIFF_PREFIXES
+from ..scoreline_query import resolve_scoreline_query, song_choice_message
 extract_plain_text = entry.helpers.extract_plain_text
 _build_fuzzy_query_hint = entry.helpers._build_fuzzy_query_hint
 _is_fuzzy_query_result = rejected_fuzzy
@@ -19,12 +21,11 @@ _finish_text_reply = entry.helpers._finish_text_reply
 async def handle_line(matcher: Matcher, event: Event):
     plain_text = extract_plain_text(event)
     try:
-        request = parse_scoreline_request(plain_text)
+        request, results = resolve_scoreline_query(
+            plain_text, parse_scoreline_request, query_with_mode, _DIFF_PREFIXES
+        )
     except ValueError as e:
         await matcher.finish(str(e))
-
-    try:
-        results: List[List[Any]] = queryMusic(request.song_query)
     except Exception as e:
         await matcher.finish(f"查询歌曲失败：{e}")
 
@@ -34,9 +35,7 @@ async def handle_line(matcher: Matcher, event: Event):
     if _is_fuzzy_query_result(results):
         fuzzy_hint = _build_fuzzy_query_hint(results)
     if len(results) > 1:
-        await matcher.finish(
-            f"匹配结果过多（{len(results)} 条），请提供更精确的歌曲别名或id。"
-        )
+        await matcher.finish(song_choice_message(results))
 
     song_id = int(results[0][0])
     song_title = str(results[0][1] or "")
@@ -95,9 +94,7 @@ async def handle_score(
     if _is_fuzzy_query_result(results):
         fuzzy_hint = _build_fuzzy_query_hint(results)
     if len(results) > 1:
-        await matcher.finish(
-            f"匹配结果过多（{len(results)} 条），请提供更精确的别名。"
-        )
+        await matcher.finish(song_choice_message(results))
 
     # 唯一命中：取 id
     song_id = int(results[0][0])
