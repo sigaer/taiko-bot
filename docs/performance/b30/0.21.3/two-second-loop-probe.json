@@ -1,0 +1,1747 @@
+{
+  "purpose": "bounded loopback health reads; no Bot events; no response payload retained",
+  "rows": [
+    {
+      "started_ns": 28428469821520536,
+      "wall_ms": 26.466913,
+      "status": 200
+    },
+    {
+      "started_ns": 28428470098412653,
+      "wall_ms": 3.015493,
+      "status": 200
+    },
+    {
+      "started_ns": 28428470351791964,
+      "wall_ms": 2.811209,
+      "status": 200
+    },
+    {
+      "started_ns": 28428470604987485,
+      "wall_ms": 2.83863,
+      "status": 200
+    },
+    {
+      "started_ns": 28428470858190699,
+      "wall_ms": 2.684664,
+      "status": 200
+    },
+    {
+      "started_ns": 28428471111285265,
+      "wall_ms": 2.740802,
+      "status": 200
+    },
+    {
+      "started_ns": 28428471364399943,
+      "wall_ms": 2.84076,
+      "status": 200
+    },
+    {
+      "started_ns": 28428471617592888,
+      "wall_ms": 2.614645,
+      "status": 200
+    },
+    {
+      "started_ns": 28428471870559703,
+      "wall_ms": 2.471723,
+      "status": 200
+    },
+    {
+      "started_ns": 28428472123382281,
+      "wall_ms": 3.060495,
+      "status": 200
+    },
+    {
+      "started_ns": 28428472376805535,
+      "wall_ms": 2.60637,
+      "status": 200
+    },
+    {
+      "started_ns": 28428472629768572,
+      "wall_ms": 2.523422,
+      "status": 200
+    },
+    {
+      "started_ns": 28428472882677443,
+      "wall_ms": 5.220704,
+      "status": 200
+    },
+    {
+      "started_ns": 28428473138251476,
+      "wall_ms": 2.457708,
+      "status": 200
+    },
+    {
+      "started_ns": 28428473391113426,
+      "wall_ms": 2.495343,
+      "status": 200
+    },
+    {
+      "started_ns": 28428473643959813,
+      "wall_ms": 2.552657,
+      "status": 200
+    },
+    {
+      "started_ns": 28428473896864471,
+      "wall_ms": 2.567344,
+      "status": 200
+    },
+    {
+      "started_ns": 28428474149800027,
+      "wall_ms": 8.227358,
+      "status": 200
+    },
+    {
+      "started_ns": 28428474408376659,
+      "wall_ms": 2.444378,
+      "status": 200
+    },
+    {
+      "started_ns": 28428474661175524,
+      "wall_ms": 2.373011,
+      "status": 200
+    },
+    {
+      "started_ns": 28428474913924178,
+      "wall_ms": 2.428211,
+      "status": 200
+    },
+    {
+      "started_ns": 28428475166714048,
+      "wall_ms": 2.403323,
+      "status": 200
+    },
+    {
+      "started_ns": 28428475419484231,
+      "wall_ms": 2.44376,
+      "status": 200
+    },
+    {
+      "started_ns": 28428475672305723,
+      "wall_ms": 238.35694,
+      "status": 200
+    },
+    {
+      "started_ns": 28428476161031824,
+      "wall_ms": 2.445781,
+      "status": 200
+    },
+    {
+      "started_ns": 28428476413848267,
+      "wall_ms": 2.619608,
+      "status": 200
+    },
+    {
+      "started_ns": 28428476666898631,
+      "wall_ms": 2.604285,
+      "status": 200
+    },
+    {
+      "started_ns": 28428476919873016,
+      "wall_ms": 2.554454,
+      "status": 200
+    },
+    {
+      "started_ns": 28428477172835913,
+      "wall_ms": 2.602252,
+      "status": 200
+    },
+    {
+      "started_ns": 28428477425794087,
+      "wall_ms": 2.551008,
+      "status": 200
+    },
+    {
+      "started_ns": 28428477678713977,
+      "wall_ms": 2.443434,
+      "status": 200
+    },
+    {
+      "started_ns": 28428477931511568,
+      "wall_ms": 2.494563,
+      "status": 200
+    },
+    {
+      "started_ns": 28428478184380331,
+      "wall_ms": 3.061,
+      "status": 200
+    },
+    {
+      "started_ns": 28428478437808715,
+      "wall_ms": 2.616842,
+      "status": 200
+    },
+    {
+      "started_ns": 28428478690790571,
+      "wall_ms": 2.66071,
+      "status": 200
+    },
+    {
+      "started_ns": 28428478943811091,
+      "wall_ms": 2.579337,
+      "status": 200
+    },
+    {
+      "started_ns": 28428479196742761,
+      "wall_ms": 2.512073,
+      "status": 200
+    },
+    {
+      "started_ns": 28428479449604975,
+      "wall_ms": 2.446923,
+      "status": 200
+    },
+    {
+      "started_ns": 28428479702173574,
+      "wall_ms": 2.612669,
+      "status": 200
+    },
+    {
+      "started_ns": 28428479955155030,
+      "wall_ms": 2.493453,
+      "status": 200
+    },
+    {
+      "started_ns": 28428480207997044,
+      "wall_ms": 2.450652,
+      "status": 200
+    },
+    {
+      "started_ns": 28428480460815429,
+      "wall_ms": 2.724463,
+      "status": 200
+    },
+    {
+      "started_ns": 28428480713916224,
+      "wall_ms": 2.424272,
+      "status": 200
+    },
+    {
+      "started_ns": 28428480966689023,
+      "wall_ms": 2.44496,
+      "status": 200
+    },
+    {
+      "started_ns": 28428481219487698,
+      "wall_ms": 2.516276,
+      "status": 200
+    },
+    {
+      "started_ns": 28428481472358745,
+      "wall_ms": 2.43729,
+      "status": 200
+    },
+    {
+      "started_ns": 28428481725177760,
+      "wall_ms": 2.88012,
+      "status": 200
+    },
+    {
+      "started_ns": 28428481978179012,
+      "wall_ms": 2.43872,
+      "status": 200
+    },
+    {
+      "started_ns": 28428482230966776,
+      "wall_ms": 181.345043,
+      "status": 200
+    },
+    {
+      "started_ns": 28428482662673057,
+      "wall_ms": 2.454014,
+      "status": 200
+    },
+    {
+      "started_ns": 28428482915477864,
+      "wall_ms": 2.824659,
+      "status": 200
+    },
+    {
+      "started_ns": 28428483168663679,
+      "wall_ms": 2.617151,
+      "status": 200
+    },
+    {
+      "started_ns": 28428483421651494,
+      "wall_ms": 2.51213,
+      "status": 200
+    },
+    {
+      "started_ns": 28428483674511541,
+      "wall_ms": 2.588261,
+      "status": 200
+    },
+    {
+      "started_ns": 28428483927482997,
+      "wall_ms": 2.529344,
+      "status": 200
+    },
+    {
+      "started_ns": 28428484180388150,
+      "wall_ms": 2.564872,
+      "status": 200
+    },
+    {
+      "started_ns": 28428484433118418,
+      "wall_ms": 2.439732,
+      "status": 200
+    },
+    {
+      "started_ns": 28428484685938888,
+      "wall_ms": 2.614759,
+      "status": 200
+    },
+    {
+      "started_ns": 28428484938930950,
+      "wall_ms": 2.618716,
+      "status": 200
+    },
+    {
+      "started_ns": 28428485191923165,
+      "wall_ms": 52.498697,
+      "status": 200
+    },
+    {
+      "started_ns": 28428485494797603,
+      "wall_ms": 2.698467,
+      "status": 200
+    },
+    {
+      "started_ns": 28428485747883513,
+      "wall_ms": 2.532784,
+      "status": 200
+    },
+    {
+      "started_ns": 28428486000775460,
+      "wall_ms": 2.647685,
+      "status": 200
+    },
+    {
+      "started_ns": 28428486253772286,
+      "wall_ms": 2.509223,
+      "status": 200
+    },
+    {
+      "started_ns": 28428486506641058,
+      "wall_ms": 2.433983,
+      "status": 200
+    },
+    {
+      "started_ns": 28428486759442123,
+      "wall_ms": 2.718622,
+      "status": 200
+    },
+    {
+      "started_ns": 28428487012515955,
+      "wall_ms": 2.611897,
+      "status": 200
+    },
+    {
+      "started_ns": 28428487265474338,
+      "wall_ms": 2.665444,
+      "status": 200
+    },
+    {
+      "started_ns": 28428487518523306,
+      "wall_ms": 2.624872,
+      "status": 200
+    },
+    {
+      "started_ns": 28428487771511195,
+      "wall_ms": 2.526753,
+      "status": 200
+    },
+    {
+      "started_ns": 28428488024406788,
+      "wall_ms": 3.177807,
+      "status": 200
+    },
+    {
+      "started_ns": 28428488277954667,
+      "wall_ms": 2.50218,
+      "status": 200
+    },
+    {
+      "started_ns": 28428488530838953,
+      "wall_ms": 2.425343,
+      "status": 200
+    },
+    {
+      "started_ns": 28428488783659796,
+      "wall_ms": 3.573253,
+      "status": 200
+    },
+    {
+      "started_ns": 28428489037598676,
+      "wall_ms": 2.89837,
+      "status": 200
+    },
+    {
+      "started_ns": 28428489290862661,
+      "wall_ms": 2.430888,
+      "status": 200
+    },
+    {
+      "started_ns": 28428489543660903,
+      "wall_ms": 2.884579,
+      "status": 200
+    },
+    {
+      "started_ns": 28428489796924965,
+      "wall_ms": 2.454544,
+      "status": 200
+    },
+    {
+      "started_ns": 28428490049762628,
+      "wall_ms": 2.652912,
+      "status": 200
+    },
+    {
+      "started_ns": 28428490302779939,
+      "wall_ms": 2.598457,
+      "status": 200
+    },
+    {
+      "started_ns": 28428490555732580,
+      "wall_ms": 2.610624,
+      "status": 200
+    },
+    {
+      "started_ns": 28428490808694861,
+      "wall_ms": 2.616717,
+      "status": 200
+    },
+    {
+      "started_ns": 28428491061657386,
+      "wall_ms": 14.822888,
+      "status": 200
+    },
+    {
+      "started_ns": 28428491326850127,
+      "wall_ms": 3.119327,
+      "status": 200
+    },
+    {
+      "started_ns": 28428491580322843,
+      "wall_ms": 2.550446,
+      "status": 200
+    },
+    {
+      "started_ns": 28428491833226794,
+      "wall_ms": 2.427993,
+      "status": 200
+    },
+    {
+      "started_ns": 28428492086015239,
+      "wall_ms": 2.642958,
+      "status": 200
+    },
+    {
+      "started_ns": 28428492339014949,
+      "wall_ms": 2.469608,
+      "status": 200
+    },
+    {
+      "started_ns": 28428492591851749,
+      "wall_ms": 2.632584,
+      "status": 200
+    },
+    {
+      "started_ns": 28428492844853567,
+      "wall_ms": 2.648611,
+      "status": 200
+    },
+    {
+      "started_ns": 28428493097866664,
+      "wall_ms": 2.66444,
+      "status": 200
+    },
+    {
+      "started_ns": 28428493350896928,
+      "wall_ms": 2.627472,
+      "status": 200
+    },
+    {
+      "started_ns": 28428493603877253,
+      "wall_ms": 2.438082,
+      "status": 200
+    },
+    {
+      "started_ns": 28428493856678266,
+      "wall_ms": 2.509556,
+      "status": 200
+    },
+    {
+      "started_ns": 28428494109581281,
+      "wall_ms": 3.171408,
+      "status": 200
+    },
+    {
+      "started_ns": 28428494363169647,
+      "wall_ms": 2.681728,
+      "status": 200
+    },
+    {
+      "started_ns": 28428494616213374,
+      "wall_ms": 247.882646,
+      "status": 200
+    },
+    {
+      "started_ns": 28428495114458867,
+      "wall_ms": 2.692943,
+      "status": 200
+    },
+    {
+      "started_ns": 28428495367527680,
+      "wall_ms": 3.598194,
+      "status": 200
+    },
+    {
+      "started_ns": 28428495621522693,
+      "wall_ms": 9.537971,
+      "status": 200
+    },
+    {
+      "started_ns": 28428495881426871,
+      "wall_ms": 2.576162,
+      "status": 200
+    },
+    {
+      "started_ns": 28428496134371400,
+      "wall_ms": 2.513432,
+      "status": 200
+    },
+    {
+      "started_ns": 28428496387255989,
+      "wall_ms": 2.49835,
+      "status": 200
+    },
+    {
+      "started_ns": 28428496640149221,
+      "wall_ms": 2.878109,
+      "status": 200
+    },
+    {
+      "started_ns": 28428496893372776,
+      "wall_ms": 2.746344,
+      "status": 200
+    },
+    {
+      "started_ns": 28428497146475903,
+      "wall_ms": 2.503235,
+      "status": 200
+    },
+    {
+      "started_ns": 28428497399328178,
+      "wall_ms": 2.383596,
+      "status": 200
+    },
+    {
+      "started_ns": 28428497652063551,
+      "wall_ms": 6.860324,
+      "status": 200
+    },
+    {
+      "started_ns": 28428497909301514,
+      "wall_ms": 2.379754,
+      "status": 200
+    },
+    {
+      "started_ns": 28428498162037046,
+      "wall_ms": 2.363939,
+      "status": 200
+    },
+    {
+      "started_ns": 28428498414769678,
+      "wall_ms": 2.437581,
+      "status": 200
+    },
+    {
+      "started_ns": 28428498667566691,
+      "wall_ms": 2.554704,
+      "status": 200
+    },
+    {
+      "started_ns": 28428498920487174,
+      "wall_ms": 4.429347,
+      "status": 200
+    },
+    {
+      "started_ns": 28428499175278687,
+      "wall_ms": 315.828522,
+      "status": 200
+    },
+    {
+      "started_ns": 28428499741505636,
+      "wall_ms": 2.865816,
+      "status": 200
+    },
+    {
+      "started_ns": 28428499994750839,
+      "wall_ms": 3.104666,
+      "status": 200
+    },
+    {
+      "started_ns": 28428500248229111,
+      "wall_ms": 3.161867,
+      "status": 200
+    },
+    {
+      "started_ns": 28428500501805050,
+      "wall_ms": 3.098112,
+      "status": 200
+    },
+    {
+      "started_ns": 28428500755275806,
+      "wall_ms": 11.646323,
+      "status": 200
+    },
+    {
+      "started_ns": 28428501017298799,
+      "wall_ms": 3.143869,
+      "status": 200
+    },
+    {
+      "started_ns": 28428501270839407,
+      "wall_ms": 2.48589,
+      "status": 200
+    },
+    {
+      "started_ns": 28428501523678187,
+      "wall_ms": 3.800574,
+      "status": 200
+    },
+    {
+      "started_ns": 28428501777864133,
+      "wall_ms": 8.62978,
+      "status": 200
+    },
+    {
+      "started_ns": 28428502036849189,
+      "wall_ms": 11.871995,
+      "status": 200
+    },
+    {
+      "started_ns": 28428502299097544,
+      "wall_ms": 2.506156,
+      "status": 200
+    },
+    {
+      "started_ns": 28428502551962670,
+      "wall_ms": 2.492391,
+      "status": 200
+    },
+    {
+      "started_ns": 28428502804880437,
+      "wall_ms": 3.015602,
+      "status": 200
+    },
+    {
+      "started_ns": 28428503058185918,
+      "wall_ms": 204.62419,
+      "status": 200
+    },
+    {
+      "started_ns": 28428503513168818,
+      "wall_ms": 2.429261,
+      "status": 200
+    },
+    {
+      "started_ns": 28428503765954318,
+      "wall_ms": 2.619994,
+      "status": 200
+    },
+    {
+      "started_ns": 28428504018953963,
+      "wall_ms": 2.771065,
+      "status": 200
+    },
+    {
+      "started_ns": 28428504272160137,
+      "wall_ms": 2.842737,
+      "status": 200
+    },
+    {
+      "started_ns": 28428504525379223,
+      "wall_ms": 2.954057,
+      "status": 200
+    },
+    {
+      "started_ns": 28428504778701101,
+      "wall_ms": 2.809479,
+      "status": 200
+    },
+    {
+      "started_ns": 28428505031890341,
+      "wall_ms": 3.091174,
+      "status": 200
+    },
+    {
+      "started_ns": 28428505285352351,
+      "wall_ms": 2.82262,
+      "status": 200
+    },
+    {
+      "started_ns": 28428505538560346,
+      "wall_ms": 2.77713,
+      "status": 200
+    },
+    {
+      "started_ns": 28428505791720556,
+      "wall_ms": 3.676049,
+      "status": 200
+    },
+    {
+      "started_ns": 28428506045805301,
+      "wall_ms": 2.734484,
+      "status": 200
+    },
+    {
+      "started_ns": 28428506298922422,
+      "wall_ms": 3.195154,
+      "status": 200
+    },
+    {
+      "started_ns": 28428506552495946,
+      "wall_ms": 2.389802,
+      "status": 200
+    },
+    {
+      "started_ns": 28428506805239053,
+      "wall_ms": 2.647281,
+      "status": 200
+    },
+    {
+      "started_ns": 28428507058184184,
+      "wall_ms": 6.270444,
+      "status": 200
+    },
+    {
+      "started_ns": 28428507314834878,
+      "wall_ms": 2.432096,
+      "status": 200
+    },
+    {
+      "started_ns": 28428507567633107,
+      "wall_ms": 2.567281,
+      "status": 200
+    },
+    {
+      "started_ns": 28428507820530153,
+      "wall_ms": 2.641809,
+      "status": 200
+    },
+    {
+      "started_ns": 28428508073535461,
+      "wall_ms": 2.691282,
+      "status": 200
+    },
+    {
+      "started_ns": 28428508326580116,
+      "wall_ms": 7.981899,
+      "status": 200
+    },
+    {
+      "started_ns": 28428508584922106,
+      "wall_ms": 2.789323,
+      "status": 200
+    },
+    {
+      "started_ns": 28428508838082895,
+      "wall_ms": 2.515178,
+      "status": 200
+    },
+    {
+      "started_ns": 28428509090995181,
+      "wall_ms": 2.356601,
+      "status": 200
+    },
+    {
+      "started_ns": 28428509343704601,
+      "wall_ms": 2.522876,
+      "status": 200
+    },
+    {
+      "started_ns": 28428509596580190,
+      "wall_ms": 5.263748,
+      "status": 200
+    },
+    {
+      "started_ns": 28428509852201712,
+      "wall_ms": 3.009647,
+      "status": 200
+    },
+    {
+      "started_ns": 28428510105560539,
+      "wall_ms": 2.512893,
+      "status": 200
+    },
+    {
+      "started_ns": 28428510358194927,
+      "wall_ms": 2.722268,
+      "status": 200
+    },
+    {
+      "started_ns": 28428510611272886,
+      "wall_ms": 2.47144,
+      "status": 200
+    },
+    {
+      "started_ns": 28428510864103318,
+      "wall_ms": 2.435594,
+      "status": 200
+    },
+    {
+      "started_ns": 28428511116890164,
+      "wall_ms": 2.400154,
+      "status": 200
+    },
+    {
+      "started_ns": 28428511369650915,
+      "wall_ms": 2.45349,
+      "status": 200
+    },
+    {
+      "started_ns": 28428511622452885,
+      "wall_ms": 2.567866,
+      "status": 200
+    },
+    {
+      "started_ns": 28428511875370112,
+      "wall_ms": 2.427981,
+      "status": 200
+    },
+    {
+      "started_ns": 28428512128172002,
+      "wall_ms": 2.425716,
+      "status": 200
+    },
+    {
+      "started_ns": 28428512380988680,
+      "wall_ms": 2.416151,
+      "status": 200
+    },
+    {
+      "started_ns": 28428512633785069,
+      "wall_ms": 2.484779,
+      "status": 200
+    },
+    {
+      "started_ns": 28428512886621418,
+      "wall_ms": 2.52,
+      "status": 200
+    },
+    {
+      "started_ns": 28428513139493512,
+      "wall_ms": 2.622355,
+      "status": 200
+    },
+    {
+      "started_ns": 28428513392482951,
+      "wall_ms": 2.620907,
+      "status": 200
+    },
+    {
+      "started_ns": 28428513645534611,
+      "wall_ms": 2.521676,
+      "status": 200
+    },
+    {
+      "started_ns": 28428513898183747,
+      "wall_ms": 2.553731,
+      "status": 200
+    },
+    {
+      "started_ns": 28428514151096913,
+      "wall_ms": 3.056077,
+      "status": 200
+    },
+    {
+      "started_ns": 28428514404514725,
+      "wall_ms": 2.787988,
+      "status": 200
+    },
+    {
+      "started_ns": 28428514657658228,
+      "wall_ms": 2.490011,
+      "status": 200
+    },
+    {
+      "started_ns": 28428514910508243,
+      "wall_ms": 2.46905,
+      "status": 200
+    },
+    {
+      "started_ns": 28428515163325462,
+      "wall_ms": 202.867989,
+      "status": 200
+    },
+    {
+      "started_ns": 28428515616551794,
+      "wall_ms": 2.995196,
+      "status": 200
+    },
+    {
+      "started_ns": 28428515869891868,
+      "wall_ms": 2.367773,
+      "status": 200
+    },
+    {
+      "started_ns": 28428516122612223,
+      "wall_ms": 2.692138,
+      "status": 200
+    },
+    {
+      "started_ns": 28428516375656104,
+      "wall_ms": 2.53394,
+      "status": 200
+    },
+    {
+      "started_ns": 28428516628561741,
+      "wall_ms": 2.586096,
+      "status": 200
+    },
+    {
+      "started_ns": 28428516881506186,
+      "wall_ms": 2.495613,
+      "status": 200
+    },
+    {
+      "started_ns": 28428517134357585,
+      "wall_ms": 2.660563,
+      "status": 200
+    },
+    {
+      "started_ns": 28428517387387300,
+      "wall_ms": 2.51009,
+      "status": 200
+    },
+    {
+      "started_ns": 28428517640258451,
+      "wall_ms": 2.548785,
+      "status": 200
+    },
+    {
+      "started_ns": 28428517893165671,
+      "wall_ms": 2.562033,
+      "status": 200
+    },
+    {
+      "started_ns": 28428518146080107,
+      "wall_ms": 2.63638,
+      "status": 200
+    },
+    {
+      "started_ns": 28428518399108671,
+      "wall_ms": 3.163515,
+      "status": 200
+    },
+    {
+      "started_ns": 28428518652628538,
+      "wall_ms": 2.74784,
+      "status": 200
+    },
+    {
+      "started_ns": 28428518905750520,
+      "wall_ms": 2.421683,
+      "status": 200
+    },
+    {
+      "started_ns": 28428519158528373,
+      "wall_ms": 2.917871,
+      "status": 200
+    },
+    {
+      "started_ns": 28428519411820888,
+      "wall_ms": 2.501647,
+      "status": 200
+    },
+    {
+      "started_ns": 28428519664689283,
+      "wall_ms": 2.468902,
+      "status": 200
+    },
+    {
+      "started_ns": 28428519917523296,
+      "wall_ms": 2.53777,
+      "status": 200
+    },
+    {
+      "started_ns": 28428520170208876,
+      "wall_ms": 2.544163,
+      "status": 200
+    },
+    {
+      "started_ns": 28428520423147335,
+      "wall_ms": 3.157488,
+      "status": 200
+    },
+    {
+      "started_ns": 28428520676703178,
+      "wall_ms": 2.616768,
+      "status": 200
+    },
+    {
+      "started_ns": 28428520929687077,
+      "wall_ms": 5.629399,
+      "status": 200
+    },
+    {
+      "started_ns": 28428521185722779,
+      "wall_ms": 7.782221,
+      "status": 200
+    },
+    {
+      "started_ns": 28428521443863443,
+      "wall_ms": 2.66181,
+      "status": 200
+    },
+    {
+      "started_ns": 28428521696881769,
+      "wall_ms": 2.669052,
+      "status": 200
+    },
+    {
+      "started_ns": 28428521949914112,
+      "wall_ms": 2.457251,
+      "status": 200
+    },
+    {
+      "started_ns": 28428522202761065,
+      "wall_ms": 8.631406,
+      "status": 200
+    },
+    {
+      "started_ns": 28428522461786242,
+      "wall_ms": 2.782455,
+      "status": 200
+    },
+    {
+      "started_ns": 28428522714949175,
+      "wall_ms": 2.920447,
+      "status": 200
+    },
+    {
+      "started_ns": 28428522968247404,
+      "wall_ms": 2.750961,
+      "status": 200
+    },
+    {
+      "started_ns": 28428523221347243,
+      "wall_ms": 2.921978,
+      "status": 200
+    },
+    {
+      "started_ns": 28428523474698287,
+      "wall_ms": 2.416902,
+      "status": 200
+    },
+    {
+      "started_ns": 28428523727516343,
+      "wall_ms": 2.766384,
+      "status": 200
+    },
+    {
+      "started_ns": 28428523980669150,
+      "wall_ms": 2.693438,
+      "status": 200
+    },
+    {
+      "started_ns": 28428524233761481,
+      "wall_ms": 2.788439,
+      "status": 200
+    },
+    {
+      "started_ns": 28428524486936641,
+      "wall_ms": 2.907701,
+      "status": 200
+    },
+    {
+      "started_ns": 28428524740216392,
+      "wall_ms": 2.54035,
+      "status": 200
+    },
+    {
+      "started_ns": 28428524993133483,
+      "wall_ms": 3.101892,
+      "status": 200
+    },
+    {
+      "started_ns": 28428525246590756,
+      "wall_ms": 2.56148,
+      "status": 200
+    },
+    {
+      "started_ns": 28428525499525678,
+      "wall_ms": 2.348216,
+      "status": 200
+    },
+    {
+      "started_ns": 28428525752237581,
+      "wall_ms": 2.527472,
+      "status": 200
+    },
+    {
+      "started_ns": 28428526005126202,
+      "wall_ms": 2.54378,
+      "status": 200
+    },
+    {
+      "started_ns": 28428526258024664,
+      "wall_ms": 4.101339,
+      "status": 200
+    },
+    {
+      "started_ns": 28428526512476802,
+      "wall_ms": 2.518393,
+      "status": 200
+    },
+    {
+      "started_ns": 28428526765369406,
+      "wall_ms": 2.648072,
+      "status": 200
+    },
+    {
+      "started_ns": 28428527018374358,
+      "wall_ms": 2.403485,
+      "status": 200
+    },
+    {
+      "started_ns": 28428527271124432,
+      "wall_ms": 2.68551,
+      "status": 200
+    },
+    {
+      "started_ns": 28428527524179317,
+      "wall_ms": 2.425898,
+      "status": 200
+    },
+    {
+      "started_ns": 28428527776959586,
+      "wall_ms": 2.612267,
+      "status": 200
+    },
+    {
+      "started_ns": 28428528029924993,
+      "wall_ms": 4.833115,
+      "status": 200
+    },
+    {
+      "started_ns": 28428528285105325,
+      "wall_ms": 2.71029,
+      "status": 200
+    },
+    {
+      "started_ns": 28428528538173937,
+      "wall_ms": 2.50689,
+      "status": 200
+    },
+    {
+      "started_ns": 28428528791032283,
+      "wall_ms": 2.515055,
+      "status": 200
+    },
+    {
+      "started_ns": 28428529043918780,
+      "wall_ms": 2.491625,
+      "status": 200
+    },
+    {
+      "started_ns": 28428529296768166,
+      "wall_ms": 2.477063,
+      "status": 200
+    },
+    {
+      "started_ns": 28428529549600721,
+      "wall_ms": 2.450184,
+      "status": 200
+    },
+    {
+      "started_ns": 28428529802204325,
+      "wall_ms": 6.513411,
+      "status": 200
+    },
+    {
+      "started_ns": 28428530059051158,
+      "wall_ms": 2.75252,
+      "status": 200
+    },
+    {
+      "started_ns": 28428530312154468,
+      "wall_ms": 2.669148,
+      "status": 200
+    },
+    {
+      "started_ns": 28428530565173484,
+      "wall_ms": 2.488842,
+      "status": 200
+    },
+    {
+      "started_ns": 28428530818017922,
+      "wall_ms": 207.401443,
+      "status": 200
+    },
+    {
+      "started_ns": 28428531275776327,
+      "wall_ms": 2.641346,
+      "status": 200
+    },
+    {
+      "started_ns": 28428531528793995,
+      "wall_ms": 2.592906,
+      "status": 200
+    },
+    {
+      "started_ns": 28428531781762757,
+      "wall_ms": 4.193635,
+      "status": 200
+    },
+    {
+      "started_ns": 28428532036338706,
+      "wall_ms": 2.532421,
+      "status": 200
+    },
+    {
+      "started_ns": 28428532289229135,
+      "wall_ms": 2.39935,
+      "status": 200
+    },
+    {
+      "started_ns": 28428532541984889,
+      "wall_ms": 2.4438,
+      "status": 200
+    },
+    {
+      "started_ns": 28428532794796999,
+      "wall_ms": 2.964344,
+      "status": 200
+    },
+    {
+      "started_ns": 28428533048134335,
+      "wall_ms": 2.531994,
+      "status": 200
+    },
+    {
+      "started_ns": 28428533301069451,
+      "wall_ms": 3.036907,
+      "status": 200
+    },
+    {
+      "started_ns": 28428533554480318,
+      "wall_ms": 2.855043,
+      "status": 200
+    },
+    {
+      "started_ns": 28428533807688605,
+      "wall_ms": 2.666619,
+      "status": 200
+    },
+    {
+      "started_ns": 28428534060700412,
+      "wall_ms": 2.442358,
+      "status": 200
+    },
+    {
+      "started_ns": 28428534313345720,
+      "wall_ms": 2.905603,
+      "status": 200
+    },
+    {
+      "started_ns": 28428534566635172,
+      "wall_ms": 2.73005,
+      "status": 200
+    },
+    {
+      "started_ns": 28428534819725604,
+      "wall_ms": 2.501432,
+      "status": 200
+    },
+    {
+      "started_ns": 28428535072597135,
+      "wall_ms": 2.580714,
+      "status": 200
+    },
+    {
+      "started_ns": 28428535325537392,
+      "wall_ms": 2.505758,
+      "status": 200
+    },
+    {
+      "started_ns": 28428535578313667,
+      "wall_ms": 2.376884,
+      "status": 200
+    },
+    {
+      "started_ns": 28428535831041331,
+      "wall_ms": 2.665402,
+      "status": 200
+    },
+    {
+      "started_ns": 28428536084074213,
+      "wall_ms": 2.641937,
+      "status": 200
+    },
+    {
+      "started_ns": 28428536337074788,
+      "wall_ms": 2.648617,
+      "status": 200
+    },
+    {
+      "started_ns": 28428536590081833,
+      "wall_ms": 2.491642,
+      "status": 200
+    },
+    {
+      "started_ns": 28428536842927897,
+      "wall_ms": 2.540312,
+      "status": 200
+    },
+    {
+      "started_ns": 28428537095820977,
+      "wall_ms": 2.404788,
+      "status": 200
+    },
+    {
+      "started_ns": 28428537348619645,
+      "wall_ms": 4.838644,
+      "status": 200
+    },
+    {
+      "started_ns": 28428537603585882,
+      "wall_ms": 2.716478,
+      "status": 200
+    },
+    {
+      "started_ns": 28428537856668880,
+      "wall_ms": 2.446883,
+      "status": 200
+    },
+    {
+      "started_ns": 28428538109502523,
+      "wall_ms": 12.218456,
+      "status": 200
+    },
+    {
+      "started_ns": 28428538372167120,
+      "wall_ms": 3.174932,
+      "status": 200
+    },
+    {
+      "started_ns": 28428538625728243,
+      "wall_ms": 158.183788,
+      "status": 200
+    },
+    {
+      "started_ns": 28428539034197594,
+      "wall_ms": 3.128799,
+      "status": 200
+    },
+    {
+      "started_ns": 28428539287685173,
+      "wall_ms": 2.554164,
+      "status": 200
+    },
+    {
+      "started_ns": 28428539540495041,
+      "wall_ms": 2.487181,
+      "status": 200
+    },
+    {
+      "started_ns": 28428539793336473,
+      "wall_ms": 2.87946,
+      "status": 200
+    },
+    {
+      "started_ns": 28428540046604677,
+      "wall_ms": 2.510226,
+      "status": 200
+    },
+    {
+      "started_ns": 28428540299514919,
+      "wall_ms": 2.415206,
+      "status": 200
+    },
+    {
+      "started_ns": 28428540552317727,
+      "wall_ms": 3.011028,
+      "status": 200
+    },
+    {
+      "started_ns": 28428540805694708,
+      "wall_ms": 2.546562,
+      "status": 200
+    },
+    {
+      "started_ns": 28428541058605775,
+      "wall_ms": 2.664152,
+      "status": 200
+    },
+    {
+      "started_ns": 28428541311626011,
+      "wall_ms": 2.443748,
+      "status": 200
+    },
+    {
+      "started_ns": 28428541564419240,
+      "wall_ms": 2.407701,
+      "status": 200
+    },
+    {
+      "started_ns": 28428541817204723,
+      "wall_ms": 2.485865,
+      "status": 200
+    },
+    {
+      "started_ns": 28428542070046140,
+      "wall_ms": 2.483811,
+      "status": 200
+    },
+    {
+      "started_ns": 28428542322881214,
+      "wall_ms": 2.809857,
+      "status": 200
+    },
+    {
+      "started_ns": 28428542576066710,
+      "wall_ms": 2.613004,
+      "status": 200
+    },
+    {
+      "started_ns": 28428542829036900,
+      "wall_ms": 2.455461,
+      "status": 200
+    },
+    {
+      "started_ns": 28428543081855089,
+      "wall_ms": 2.506674,
+      "status": 200
+    },
+    {
+      "started_ns": 28428543334711951,
+      "wall_ms": 2.399896,
+      "status": 200
+    },
+    {
+      "started_ns": 28428543587492960,
+      "wall_ms": 2.57875,
+      "status": 200
+    },
+    {
+      "started_ns": 28428543840480470,
+      "wall_ms": 2.420393,
+      "status": 200
+    },
+    {
+      "started_ns": 28428544093256491,
+      "wall_ms": 2.995195,
+      "status": 200
+    },
+    {
+      "started_ns": 28428544346623965,
+      "wall_ms": 2.482717,
+      "status": 200
+    },
+    {
+      "started_ns": 28428544599461204,
+      "wall_ms": 2.543887,
+      "status": 200
+    },
+    {
+      "started_ns": 28428544852401003,
+      "wall_ms": 2.691642,
+      "status": 200
+    },
+    {
+      "started_ns": 28428545105249099,
+      "wall_ms": 2.763989,
+      "status": 200
+    },
+    {
+      "started_ns": 28428545358177303,
+      "wall_ms": 2.498984,
+      "status": 200
+    },
+    {
+      "started_ns": 28428545611044315,
+      "wall_ms": 2.963501,
+      "status": 200
+    },
+    {
+      "started_ns": 28428545864364010,
+      "wall_ms": 2.671014,
+      "status": 200
+    },
+    {
+      "started_ns": 28428546117433162,
+      "wall_ms": 2.638145,
+      "status": 200
+    },
+    {
+      "started_ns": 28428546370435998,
+      "wall_ms": 2.685172,
+      "status": 200
+    },
+    {
+      "started_ns": 28428546623473864,
+      "wall_ms": 2.504484,
+      "status": 200
+    },
+    {
+      "started_ns": 28428546876343546,
+      "wall_ms": 3.063396,
+      "status": 200
+    },
+    {
+      "started_ns": 28428547129757095,
+      "wall_ms": 2.472538,
+      "status": 200
+    },
+    {
+      "started_ns": 28428547382606872,
+      "wall_ms": 2.717411,
+      "status": 200
+    },
+    {
+      "started_ns": 28428547635704032,
+      "wall_ms": 229.380122,
+      "status": 200
+    },
+    {
+      "started_ns": 28428548115460687,
+      "wall_ms": 7.593031,
+      "status": 200
+    },
+    {
+      "started_ns": 28428548373429560,
+      "wall_ms": 2.603024,
+      "status": 200
+    },
+    {
+      "started_ns": 28428548626386645,
+      "wall_ms": 2.5884,
+      "status": 200
+    },
+    {
+      "started_ns": 28428548879320211,
+      "wall_ms": 2.571671,
+      "status": 200
+    },
+    {
+      "started_ns": 28428549132244073,
+      "wall_ms": 2.646853,
+      "status": 200
+    },
+    {
+      "started_ns": 28428549385253976,
+      "wall_ms": 2.550007,
+      "status": 200
+    },
+    {
+      "started_ns": 28428549638180552,
+      "wall_ms": 2.596541,
+      "status": 200
+    },
+    {
+      "started_ns": 28428549891126882,
+      "wall_ms": 2.483422,
+      "status": 200
+    },
+    {
+      "started_ns": 28428550143963672,
+      "wall_ms": 2.723069,
+      "status": 200
+    },
+    {
+      "started_ns": 28428550397029793,
+      "wall_ms": 2.396414,
+      "status": 200
+    },
+    {
+      "started_ns": 28428550649801384,
+      "wall_ms": 2.638231,
+      "status": 200
+    },
+    {
+      "started_ns": 28428550902813530,
+      "wall_ms": 3.059922,
+      "status": 200
+    },
+    {
+      "started_ns": 28428551156233788,
+      "wall_ms": 2.480975,
+      "status": 200
+    },
+    {
+      "started_ns": 28428551409083233,
+      "wall_ms": 2.706624,
+      "status": 200
+    },
+    {
+      "started_ns": 28428551662161938,
+      "wall_ms": 2.882886,
+      "status": 200
+    },
+    {
+      "started_ns": 28428551915420277,
+      "wall_ms": 2.839132,
+      "status": 200
+    },
+    {
+      "started_ns": 28428552168612549,
+      "wall_ms": 2.603044,
+      "status": 200
+    },
+    {
+      "started_ns": 28428552421603483,
+      "wall_ms": 2.557261,
+      "status": 200
+    },
+    {
+      "started_ns": 28428552674546186,
+      "wall_ms": 2.853732,
+      "status": 200
+    },
+    {
+      "started_ns": 28428552927773332,
+      "wall_ms": 2.339973,
+      "status": 200
+    },
+    {
+      "started_ns": 28428553180476740,
+      "wall_ms": 2.473415,
+      "status": 200
+    },
+    {
+      "started_ns": 28428553433316464,
+      "wall_ms": 2.524757,
+      "status": 200
+    },
+    {
+      "started_ns": 28428553686220396,
+      "wall_ms": 3.06973,
+      "status": 200
+    },
+    {
+      "started_ns": 28428553939641631,
+      "wall_ms": 2.408332,
+      "status": 200
+    },
+    {
+      "started_ns": 28428554192411999,
+      "wall_ms": 2.592171,
+      "status": 200
+    },
+    {
+      "started_ns": 28428554445378737,
+      "wall_ms": 12.817004,
+      "status": 200
+    },
+    {
+      "started_ns": 28428554708598165,
+      "wall_ms": 3.189485,
+      "status": 200
+    },
+    {
+      "started_ns": 28428554962175512,
+      "wall_ms": 2.487194,
+      "status": 200
+    },
+    {
+      "started_ns": 28428555215014748,
+      "wall_ms": 2.406306,
+      "status": 200
+    },
+    {
+      "started_ns": 28428555467776404,
+      "wall_ms": 2.493758,
+      "status": 200
+    },
+    {
+      "started_ns": 28428555720623894,
+      "wall_ms": 2.494027,
+      "status": 200
+    },
+    {
+      "started_ns": 28428555973469963,
+      "wall_ms": 9.782877,
+      "status": 200
+    },
+    {
+      "started_ns": 28428556233449806,
+      "wall_ms": 3.188099,
+      "status": 200
+    },
+    {
+      "started_ns": 28428556486993579,
+      "wall_ms": 2.449493,
+      "status": 200
+    },
+    {
+      "started_ns": 28428556739796447,
+      "wall_ms": 2.503591,
+      "status": 200
+    },
+    {
+      "started_ns": 28428556992659379,
+      "wall_ms": 2.704439,
+      "status": 200
+    },
+    {
+      "started_ns": 28428557245716952,
+      "wall_ms": 2.497102,
+      "status": 200
+    },
+    {
+      "started_ns": 28428557498578330,
+      "wall_ms": 2.483705,
+      "status": 200
+    },
+    {
+      "started_ns": 28428557751411274,
+      "wall_ms": 2.665982,
+      "status": 200
+    },
+    {
+      "started_ns": 28428558004451442,
+      "wall_ms": 2.629973,
+      "status": 200
+    },
+    {
+      "started_ns": 28428558257480908,
+      "wall_ms": 2.637158,
+      "status": 200
+    },
+    {
+      "started_ns": 28428558510458325,
+      "wall_ms": 7.462178,
+      "status": 200
+    },
+    {
+      "started_ns": 28428558768278285,
+      "wall_ms": 2.555677,
+      "status": 200
+    },
+    {
+      "started_ns": 28428559021190115,
+      "wall_ms": 2.551956,
+      "status": 200
+    },
+    {
+      "started_ns": 28428559274145511,
+      "wall_ms": 2.920599,
+      "status": 200
+    },
+    {
+      "started_ns": 28428559527455369,
+      "wall_ms": 6.510115,
+      "status": 200
+    },
+    {
+      "started_ns": 28428559784333692,
+      "wall_ms": 2.988878,
+      "status": 200
+    }
+  ],
+  "qa_run_id": "qa-ccd779cb711e",
+  "limitation": "No B30 request was observed during this 90-second window. Idle health timings cannot rule out request-time event-loop stalls."
+}

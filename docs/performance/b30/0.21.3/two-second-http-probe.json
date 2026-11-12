@@ -1,0 +1,840 @@
+{
+  "purpose": "unauthenticated read-only GET, no Bot account or messages",
+  "proxy_policy": "matches production direct access; no production configuration changed",
+  "rows": [
+    {
+      "pooled": false,
+      "iteration": 0,
+      "wall_ms": 108.363432,
+      "client_construct_ms": 40.462876,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 63.432435
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 73.370007
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 73.394678
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 82.16167
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 82.458154
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 82.693939
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 82.699944
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 82.763577
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 82.768009
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 107.090221
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 107.762309
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 107.965227
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 108.112683
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 108.17255
+        }
+      ],
+      "total_call_ms": 108.533376
+    },
+    {
+      "pooled": false,
+      "iteration": 1,
+      "wall_ms": 51.184432,
+      "client_construct_ms": 5.649915,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 6.151324
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 16.060829
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 16.080513
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 25.186376
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 25.461093
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 25.647658
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 25.65161
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 25.708813
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 25.711875
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 50.336938
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 50.611706
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 50.781795
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 50.923743
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 51.005205
+        }
+      ],
+      "total_call_ms": 51.354151
+    },
+    {
+      "pooled": false,
+      "iteration": 2,
+      "wall_ms": 51.324908,
+      "client_construct_ms": 5.511252,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 6.009895
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 16.884473
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 16.901036
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 27.307394
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 27.587773
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 27.765898
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 27.769862
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 27.818241
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 27.821203
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 50.518886
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 50.783449
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 50.96715
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 51.106177
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 51.161902
+        }
+      ],
+      "total_call_ms": 51.490072
+    },
+    {
+      "pooled": false,
+      "iteration": 3,
+      "wall_ms": 63.316605,
+      "client_construct_ms": 5.532243,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 6.016053
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 20.253261
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 20.268891
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 33.124907
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 33.382864
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 33.550916
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 33.554774
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 33.605314
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 33.608547
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 62.413854
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 62.680721
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 62.946777
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 63.087273
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 63.136947
+        }
+      ],
+      "total_call_ms": 63.484003
+    },
+    {
+      "pooled": false,
+      "iteration": 4,
+      "wall_ms": 53.961374,
+      "client_construct_ms": 5.291195,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 5.774153
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 15.433502
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 15.449393
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 24.65769
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 24.891216
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 25.048592
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 25.052433
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 25.096696
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 25.099755
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 53.194531
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 53.45592
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 53.59439
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 53.734165
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 53.798784
+        }
+      ],
+      "total_call_ms": 54.128182
+    },
+    {
+      "pooled": false,
+      "iteration": 5,
+      "wall_ms": 48.325689,
+      "client_construct_ms": 5.204677,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 5.672566
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 15.795161
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 15.809876
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 25.442069
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 25.682139
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 25.83766
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 25.841759
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 25.883493
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 25.886423
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 47.592121
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 47.847557
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 47.995179
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 48.123058
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 48.17533
+        }
+      ],
+      "total_call_ms": 48.477344
+    },
+    {
+      "pooled": false,
+      "iteration": 6,
+      "wall_ms": 50.209134,
+      "client_construct_ms": 5.544041,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 6.083836
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 15.655509
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 15.669985
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 24.592445
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 24.811047
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 24.967228
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 24.97115
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 25.013182
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 25.016045
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 49.414983
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 49.664885
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 49.833994
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 50.001069
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 50.052491
+        }
+      ],
+      "total_call_ms": 50.359469
+    },
+    {
+      "pooled": true,
+      "iteration": 0,
+      "wall_ms": 103.88258,
+      "client_construct_ms": 0.006253,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "connection.connect_tcp.started",
+          "ms": 0.485919
+        },
+        {
+          "name": "connection.connect_tcp.complete",
+          "ms": 12.068576
+        },
+        {
+          "name": "connection.start_tls.started",
+          "ms": 12.082421
+        },
+        {
+          "name": "connection.start_tls.complete",
+          "ms": 23.400072
+        },
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 23.622586
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 23.77648
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 23.780453
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 23.820999
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 23.82417
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 103.008441
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 103.35097
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 103.521349
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 103.663305
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 103.717897
+        }
+      ],
+      "total_call_ms": 103.891239
+    },
+    {
+      "pooled": true,
+      "iteration": 1,
+      "wall_ms": 54.072425,
+      "client_construct_ms": 0.000224,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 0.432554
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 0.610001
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 0.614136
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 0.64708
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 0.649933
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 53.298847
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 53.530054
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 53.690359
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 53.861092
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 53.913634
+        }
+      ],
+      "total_call_ms": 54.080203
+    },
+    {
+      "pooled": true,
+      "iteration": 2,
+      "wall_ms": 26.673389,
+      "client_construct_ms": 0.00036,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 0.440265
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 0.600582
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 0.604573
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 0.638373
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 0.643986
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 25.929184
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 26.167864
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 26.325261
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 26.464582
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 26.513148
+        }
+      ],
+      "total_call_ms": 26.680824
+    },
+    {
+      "pooled": true,
+      "iteration": 3,
+      "wall_ms": 28.71766,
+      "client_construct_ms": 0.000298,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 0.451607
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 0.604801
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 0.608523
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 0.641366
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 0.644265
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 27.750797
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 28.049188
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 28.244835
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 28.445746
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 28.515403
+        }
+      ],
+      "total_call_ms": 28.727257
+    },
+    {
+      "pooled": true,
+      "iteration": 4,
+      "wall_ms": 27.151039,
+      "client_construct_ms": 0.00029,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 0.547183
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 0.731245
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 0.735839
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 0.776625
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 0.780239
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 26.097228
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 26.419278
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 26.64336
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 26.843781
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 26.910022
+        }
+      ],
+      "total_call_ms": 27.162551
+    },
+    {
+      "pooled": true,
+      "iteration": 5,
+      "wall_ms": 58.751402,
+      "client_construct_ms": 0.000398,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 0.58788
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 0.79492
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 0.800839
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 0.849607
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 0.854751
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 58.032541
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 58.254194
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 58.416364
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 58.554008
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 58.602646
+        }
+      ],
+      "total_call_ms": 58.758646
+    },
+    {
+      "pooled": true,
+      "iteration": 6,
+      "wall_ms": 32.170914,
+      "client_construct_ms": 0.000379,
+      "http_status": 404,
+      "trace": [
+        {
+          "name": "http11.send_request_headers.started",
+          "ms": 0.433021
+        },
+        {
+          "name": "http11.send_request_headers.complete",
+          "ms": 0.588692
+        },
+        {
+          "name": "http11.send_request_body.started",
+          "ms": 0.592554
+        },
+        {
+          "name": "http11.send_request_body.complete",
+          "ms": 0.623849
+        },
+        {
+          "name": "http11.receive_response_headers.started",
+          "ms": 0.626858
+        },
+        {
+          "name": "http11.receive_response_headers.complete",
+          "ms": 31.473618
+        },
+        {
+          "name": "http11.receive_response_body.started",
+          "ms": 31.691623
+        },
+        {
+          "name": "http11.receive_response_body.complete",
+          "ms": 31.833988
+        },
+        {
+          "name": "http11.response_closed.started",
+          "ms": 31.971153
+        },
+        {
+          "name": "http11.response_closed.complete",
+          "ms": 32.016588
+        }
+      ],
+      "total_call_ms": 32.17856
+    }
+  ],
+  "origin": "https://api.bot.qq.com/",
+  "method": "GET",
+  "authenticated": false,
+  "qa_run_id": "qa-6ea4dc38ad7d",
+  "measurement": "total_call_ms includes per-request client construction and close for the one-shot client; pooled client is constructed once before requests; first request in each mode is excluded from warm summary",
+  "limitation": "All responses are unauthenticated root HTTP 404. This is connection-overhead evidence, not a measured optimization of authenticated message POSTs."
+}
