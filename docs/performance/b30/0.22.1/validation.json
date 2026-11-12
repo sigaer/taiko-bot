@@ -29,5 +29,15 @@
   },
   "raw_evidence": "/var/tmp/taiko-bxx-summary/verification-qa-95fcca5f7c5e",
   "production_private_data_used_in_qa": false,
-  "code_commit": "1910f4e"
+  "code_commit": "1910f4e",
+  "production_latency_audit": {
+    "raw_records": 19,
+    "after_group_steady_requests": 5,
+    "raw_file": "latency-production.json",
+    "comparison_file": "latency-comparison.json",
+    "raw_sha256": "4ad77425735a2d1d131ff30877adeaa85ba99ace0bde32fdf505d57657c7b536",
+    "verification_qa": "qa-826e718547c4",
+    "checks": "PASS: source SHA256, original baseline parity, independent interval-union recomputation, per-request phase totals, four group memberships and all group statistics",
+    "runtime_changes": false
+  }
 }

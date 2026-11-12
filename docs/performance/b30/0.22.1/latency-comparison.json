@@ -1,0 +1,985 @@
+{
+  "schema": 1,
+  "measurement_date": "2026-11-12",
+  "timezone": "Asia/Shanghai",
+  "collected_at": "2026-11-12T13:56:03.685368+00:00",
+  "source_file": "latency-production.json",
+  "source_sha256": "4ad77425735a2d1d131ff30877adeaa85ba99ace0bde32fdf505d57657c7b536",
+  "method": {
+    "boundary": "Adapter dispatch to send API acknowledgement; excludes client and pre-dispatch network latency",
+    "unit": "milliseconds",
+    "combined_phase_span_names": [
+      "history.rating_points",
+      "history.reconstruct",
+      "inputs.build_ports",
+      "provider.prepare"
+    ],
+    "combined_phase_operation": "duration of union of intervals [start_ms, start_ms + duration_ms]; merge overlaps before summing",
+    "per_span_operation": "sum same-name durations per request, then median/min/max across selected requests",
+    "selection": "completed center QQ official B20 v2, dynamic=false, dimension=null; group messages only for main comparison; exclude command.parse >100ms initialization sample",
+    "baseline_continuity": "previous_report group reuses exact five non-initialization request IDs in ../0.21.3/latency-production.json; all baseline group includes two later requests too",
+    "history_zero": "Absent historical read/reconstruct/rating spans are represented as 0; removal is additionally established by code and validation.json, not by absent spans alone",
+    "limitations": [
+      "Natural requests; player identity and score count are not recorded, so inputs cannot be matched.",
+      "Different releases, request types, initialization, workload and QQ API delays must not be pooled for causal speedup claims.",
+      "No p95 or latency guarantee is inferred from these small groups.",
+      "0.21.5 C2C and 0.22.0 Top50 are retained for context, not used as matched B20 group baselines."
+    ]
+  },
+  "groups": {
+    "previous_report_0.21.3_group_steady_5": {
+      "n": 5,
+      "request_ids": [
+        "dacb906095a54855",
+        "cd78b410cdc049b7",
+        "c770f0265f224ad9",
+        "e298a525e4074c3b",
+        "3ed0eee0c32e455a"
+      ],
+      "metrics": {
+        "provider_prepare_ms": {
+          "n": 5,
+          "median": 1216.308,
+          "minimum": 1176.638,
+          "maximum": 1404.631
+        },
+        "inputs_build_ports_ms": {
+          "n": 5,
+          "median": 274.867,
+          "minimum": 241.329,
+          "maximum": 482.082
+        },
+        "history_read_ms": {
+          "n": 5,
+          "median": 514.507,
+          "minimum": 498.822,
+          "maximum": 837.772
+        },
+        "history_capture_ms": {
+          "n": 5,
+          "median": 535.836,
+          "minimum": 517.863,
+          "maximum": 856.561
+        },
+        "history_reconstruct_ms": {
+          "n": 5,
+          "median": 12.215,
+          "minimum": 10.68,
+          "maximum": 25.6
+        },
+        "history_rating_points_ms": {
+          "n": 5,
+          "median": 863.06,
+          "minimum": 597.726,
+          "maximum": 1017.859
+        },
+        "render_compute_ms": {
+          "n": 5,
+          "median": 2335.334,
+          "minimum": 2053.245,
+          "maximum": 2768.558
+        },
+        "render_queue_ms": {
+          "n": 5,
+          "median": 1.66,
+          "minimum": 0.98,
+          "maximum": 5.564
+        },
+        "render_jpeg_ms": {
+          "n": 5,
+          "median": 40.62,
+          "minimum": 39.355,
+          "maximum": 42.734
+        },
+        "prepare_and_history_union_ms": {
+          "n": 5,
+          "median": 2343.791,
+          "minimum": 2074.831,
+          "maximum": 2865.68
+        },
+        "before_compute_ms": {
+          "n": 5,
+          "median": 1506.767,
+          "minimum": 1484.385,
+          "maximum": 1878.57
+        },
+        "dispatch_to_send_ack_ms": {
+          "n": 5,
+          "median": 6979.765,
+          "minimum": 6462.122,
+          "maximum": 7632.247
+        },
+        "upload_ms": {
+          "n": 5,
+          "median": 774.389,
+          "minimum": 704.606,
+          "maximum": 954.117
+        },
+        "send_ms": {
+          "n": 5,
+          "median": 2061.502,
+          "minimum": 1824.758,
+          "maximum": 2420.424
+        }
+      }
+    },
+    "all_0.21.3_group_steady_7": {
+      "n": 7,
+      "request_ids": [
+        "dacb906095a54855",
+        "cd78b410cdc049b7",
+        "c770f0265f224ad9",
+        "e298a525e4074c3b",
+        "3ed0eee0c32e455a",
+        "53ece28be2b14bc7",
+        "8af508685c0d4126"
+      ],
+      "metrics": {
+        "provider_prepare_ms": {
+          "n": 7,
+          "median": 1206.199,
+          "minimum": 75.767,
+          "maximum": 1404.631
+        },
+        "inputs_build_ports_ms": {
+          "n": 7,
+          "median": 252.934,
+          "minimum": 5.001,
+          "maximum": 482.082
+        },
+        "history_read_ms": {
+          "n": 7,
+          "median": 510.672,
+          "minimum": 18.229,
+          "maximum": 837.772
+        },
+        "history_capture_ms": {
+          "n": 7,
+          "median": 532.661,
+          "minimum": 33.968,
+          "maximum": 856.561
+        },
+        "history_reconstruct_ms": {
+          "n": 7,
+          "median": 11.489,
+          "minimum": 0.139,
+          "maximum": 25.6
+        },
+        "history_rating_points_ms": {
+          "n": 7,
+          "median": 802.373,
+          "minimum": 85.896,
+          "maximum": 1017.859
+        },
+        "render_compute_ms": {
+          "n": 7,
+          "median": 2279.159,
+          "minimum": 756.214,
+          "maximum": 2768.558
+        },
+        "render_queue_ms": {
+          "n": 7,
+          "median": 1.257,
+          "minimum": 0.128,
+          "maximum": 5.564
+        },
+        "render_jpeg_ms": {
+          "n": 7,
+          "median": 40.53,
+          "minimum": 39.099,
+          "maximum": 42.734
+        },
+        "prepare_and_history_union_ms": {
+          "n": 7,
+          "median": 2260.581,
+          "minimum": 166.803,
+          "maximum": 2865.68
+        },
+        "before_compute_ms": {
+          "n": 7,
+          "median": 1504.616,
+          "minimum": 114.893,
+          "maximum": 1878.57
+        },
+        "dispatch_to_send_ack_ms": {
+          "n": 7,
+          "median": 6481.805,
+          "minimum": 4045.739,
+          "maximum": 7632.247
+        },
+        "upload_ms": {
+          "n": 7,
+          "median": 832.186,
+          "minimum": 704.606,
+          "maximum": 1022.971
+        },
+        "send_ms": {
+          "n": 7,
+          "median": 2172.99,
+          "minimum": 1824.758,
+          "maximum": 2420.424
+        }
+      }
+    },
+    "after_0.22.1_group_steady_5": {
+      "n": 5,
+      "request_ids": [
+        "4551e5460ae0465e",
+        "23d31b09c67f4af3",
+        "4e203d9b91e04e0a",
+        "d1171b44aef944e1",
+        "b05e89e4487d45e4"
+      ],
+      "metrics": {
+        "provider_prepare_ms": {
+          "n": 5,
+          "median": 98.145,
+          "minimum": 95.978,
+          "maximum": 124.122
+        },
+        "inputs_build_ports_ms": {
+          "n": 5,
+          "median": 13.186,
+          "minimum": 12.998,
+          "maximum": 16.318
+        },
+        "history_read_ms": {
+          "n": 5,
+          "median": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "history_capture_ms": {
+          "n": 5,
+          "median": 15.655,
+          "minimum": 15.451,
+          "maximum": 25.78
+        },
+        "history_reconstruct_ms": {
+          "n": 5,
+          "median": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "history_rating_points_ms": {
+          "n": 5,
+          "median": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0
+        },
+        "render_compute_ms": {
+          "n": 5,
+          "median": 577.454,
+          "minimum": 500.19,
+          "maximum": 1068.18
+        },
+        "render_queue_ms": {
+          "n": 5,
+          "median": 0.661,
+          "minimum": 0.407,
+          "maximum": 1.393
+        },
+        "render_jpeg_ms": {
+          "n": 5,
+          "median": 45.558,
+          "minimum": 39.358,
+          "maximum": 50.784
+        },
+        "prepare_and_history_union_ms": {
+          "n": 5,
+          "median": 112.296,
+          "minimum": 109.54,
+          "maximum": 137.159
+        },
+        "before_compute_ms": {
+          "n": 5,
+          "median": 150.26,
+          "minimum": 140.643,
+          "maximum": 170.447
+        },
+        "dispatch_to_send_ack_ms": {
+          "n": 5,
+          "median": 3524.18,
+          "minimum": 3254.183,
+          "maximum": 5866.109
+        },
+        "upload_ms": {
+          "n": 5,
+          "median": 801.856,
+          "minimum": 697.522,
+          "maximum": 1075.848
+        },
+        "send_ms": {
+          "n": 5,
+          "median": 2070.428,
+          "minimum": 1781.233,
+          "maximum": 3783.405
+        }
+      }
+    },
+    "intermediate_0.21.5_c2c_steady_1": {
+      "n": 1,
+      "request_ids": [
+        "6d455b783f5c40f7"
+      ],
+      "metrics": {
+        "provider_prepare_ms": {
+          "n": 1,
+          "median": 149.642,
+          "minimum": 149.642,
+          "maximum": 149.642
+        },
+        "inputs_build_ports_ms": {
+          "n": 1,
+          "median": 28.187,
+          "minimum": 28.187,
+          "maximum": 28.187
+        },
+        "history_read_ms": {
+          "n": 1,
+          "median": 49.2,
+          "minimum": 49.2,
+          "maximum": 49.2
+        },
+        "history_capture_ms": {
+          "n": 1,
+          "median": 69.081,
+          "minimum": 69.081,
+          "maximum": 69.081
+        },
+        "history_reconstruct_ms": {
+          "n": 1,
+          "median": 1.058,
+          "minimum": 1.058,
+          "maximum": 1.058
+        },
+        "history_rating_points_ms": {
+          "n": 1,
+          "median": 1194.886,
+          "minimum": 1194.886,
+          "maximum": 1194.886
+        },
+        "render_compute_ms": {
+          "n": 1,
+          "median": 2112.182,
+          "minimum": 2112.182,
+          "maximum": 2112.182
+        },
+        "render_queue_ms": {
+          "n": 1,
+          "median": 0.315,
+          "minimum": 0.315,
+          "maximum": 0.315
+        },
+        "render_jpeg_ms": {
+          "n": 1,
+          "median": 42.07,
+          "minimum": 42.07,
+          "maximum": 42.07
+        },
+        "prepare_and_history_union_ms": {
+          "n": 1,
+          "median": 1373.773,
+          "minimum": 1373.773,
+          "maximum": 1373.773
+        },
+        "before_compute_ms": {
+          "n": 1,
+          "median": 251.981,
+          "minimum": 251.981,
+          "maximum": 251.981
+        },
+        "dispatch_to_send_ack_ms": {
+          "n": 1,
+          "median": 6385.0,
+          "minimum": 6385.0,
+          "maximum": 6385.0
+        },
+        "upload_ms": {
+          "n": 1,
+          "median": 1019.688,
+          "minimum": 1019.688,
+          "maximum": 1019.688
+        },
+        "send_ms": {
+          "n": 1,
+          "median": 2979.757,
+          "minimum": 2979.757,
+          "maximum": 2979.757
+        }
+      }
+    }
+  },
+  "observations": [
+    {
+      "request_id": "59514f86e3324232",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T16:59:16.591752+08:00",
+      "parse_over_100_ms": true,
+      "metrics": {
+        "provider_prepare_ms": 1896.902,
+        "inputs_build_ports_ms": 1555.783,
+        "history_read_ms": 725.413,
+        "history_capture_ms": 861.665,
+        "history_reconstruct_ms": 11.785,
+        "history_rating_points_ms": 654.496,
+        "render_compute_ms": 2921.552,
+        "render_queue_ms": 5.016,
+        "render_jpeg_ms": 38.952,
+        "prepare_and_history_union_ms": 4118.966,
+        "before_compute_ms": 3492.609,
+        "dispatch_to_send_ack_ms": 9843.014,
+        "upload_ms": 814.411,
+        "send_ms": 2592.795
+      }
+    },
+    {
+      "request_id": "dacb906095a54855",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T16:59:29.103650+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 1353.851,
+        "inputs_build_ports_ms": 482.082,
+        "history_read_ms": 837.772,
+        "history_capture_ms": 856.561,
+        "history_reconstruct_ms": 13.179,
+        "history_rating_points_ms": 1016.568,
+        "render_compute_ms": 2768.558,
+        "render_queue_ms": 5.564,
+        "render_jpeg_ms": 39.355,
+        "prepare_and_history_union_ms": 2865.68,
+        "before_compute_ms": 1878.57,
+        "dispatch_to_send_ack_ms": 7632.247,
+        "upload_ms": 954.117,
+        "send_ms": 2009.809
+      }
+    },
+    {
+      "request_id": "cd78b410cdc049b7",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T16:59:50.338153+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 1206.199,
+        "inputs_build_ports_ms": 241.329,
+        "history_read_ms": 510.672,
+        "history_capture_ms": 532.661,
+        "history_reconstruct_ms": 10.68,
+        "history_rating_points_ms": 802.373,
+        "render_compute_ms": 2279.159,
+        "render_queue_ms": 1.004,
+        "render_jpeg_ms": 42.734,
+        "prepare_and_history_union_ms": 2260.581,
+        "before_compute_ms": 1484.385,
+        "dispatch_to_send_ack_ms": 6979.765,
+        "upload_ms": 774.389,
+        "send_ms": 2420.424
+      }
+    },
+    {
+      "request_id": "c770f0265f224ad9",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T17:00:11.225469+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 1216.308,
+        "inputs_build_ports_ms": 252.934,
+        "history_read_ms": 522.149,
+        "history_capture_ms": 541.136,
+        "history_reconstruct_ms": 11.489,
+        "history_rating_points_ms": 863.06,
+        "render_compute_ms": 2369.352,
+        "render_queue_ms": 0.98,
+        "render_jpeg_ms": 40.53,
+        "prepare_and_history_union_ms": 2343.791,
+        "before_compute_ms": 1504.616,
+        "dispatch_to_send_ack_ms": 6462.122,
+        "upload_ms": 742.351,
+        "send_ms": 1824.758
+      }
+    },
+    {
+      "request_id": "e298a525e4074c3b",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T17:00:32.854820+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 1404.631,
+        "inputs_build_ports_ms": 358.494,
+        "history_read_ms": 498.822,
+        "history_capture_ms": 517.863,
+        "history_reconstruct_ms": 12.215,
+        "history_rating_points_ms": 1017.859,
+        "render_compute_ms": 2335.334,
+        "render_queue_ms": 4.119,
+        "render_jpeg_ms": 40.62,
+        "prepare_and_history_union_ms": 2793.199,
+        "before_compute_ms": 1814.257,
+        "dispatch_to_send_ack_ms": 7049.646,
+        "upload_ms": 704.606,
+        "send_ms": 2172.99
+      }
+    },
+    {
+      "request_id": "3ed0eee0c32e455a",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T17:03:33.201728+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 1176.638,
+        "inputs_build_ports_ms": 274.867,
+        "history_read_ms": 514.507,
+        "history_capture_ms": 535.836,
+        "history_reconstruct_ms": 25.6,
+        "history_rating_points_ms": 597.726,
+        "render_compute_ms": 2053.245,
+        "render_queue_ms": 1.66,
+        "render_jpeg_ms": 42.06,
+        "prepare_and_history_union_ms": 2074.831,
+        "before_compute_ms": 1506.767,
+        "dispatch_to_send_ack_ms": 6481.805,
+        "upload_ms": 832.186,
+        "send_ms": 2061.502
+      }
+    },
+    {
+      "request_id": "53ece28be2b14bc7",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T17:16:18.977774+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 156.48,
+        "inputs_build_ports_ms": 29.757,
+        "history_read_ms": 51.945,
+        "history_capture_ms": 67.848,
+        "history_reconstruct_ms": 1.337,
+        "history_rating_points_ms": 252.876,
+        "render_compute_ms": 1351.462,
+        "render_queue_ms": 0.128,
+        "render_jpeg_ms": 40.197,
+        "prepare_and_history_union_ms": 440.45,
+        "before_compute_ms": 215.94,
+        "dispatch_to_send_ack_ms": 4937.966,
+        "upload_ms": 1022.971,
+        "send_ms": 2326.193
+      }
+    },
+    {
+      "request_id": "f7e15389d5124f5f",
+      "release": "0.21.3",
+      "platform": "onebot_v11",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "onebot",
+      "finished_at": "2026-11-12T17:55:40.065102+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 776.861,
+        "inputs_build_ports_ms": 129.861,
+        "history_read_ms": 500.702,
+        "history_capture_ms": 517.751,
+        "history_reconstruct_ms": 3.682,
+        "history_rating_points_ms": 209.543,
+        "render_compute_ms": 1512.054,
+        "render_queue_ms": 2.251,
+        "render_jpeg_ms": 39.007,
+        "prepare_and_history_union_ms": 1119.947,
+        "before_compute_ms": 944.371,
+        "dispatch_to_send_ack_ms": 5381.544,
+        "upload_ms": 0.0,
+        "send_ms": null
+      }
+    },
+    {
+      "request_id": "8af508685c0d4126",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T17:59:12.310759+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 75.767,
+        "inputs_build_ports_ms": 5.001,
+        "history_read_ms": 18.229,
+        "history_capture_ms": 33.968,
+        "history_reconstruct_ms": 0.139,
+        "history_rating_points_ms": 85.896,
+        "render_compute_ms": 756.214,
+        "render_queue_ms": 1.257,
+        "render_jpeg_ms": 39.099,
+        "prepare_and_history_union_ms": 166.803,
+        "before_compute_ms": 114.893,
+        "dispatch_to_send_ack_ms": 4045.739,
+        "upload_ms": 971.268,
+        "send_ms": 2181.512
+      }
+    },
+    {
+      "request_id": "b047dbd643554a53",
+      "release": "0.21.3",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v1",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T19:35:00.880195+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 108.207,
+        "inputs_build_ports_ms": 19.613,
+        "history_read_ms": 25.271,
+        "history_capture_ms": 37.888,
+        "history_reconstruct_ms": 0.738,
+        "history_rating_points_ms": 244.787,
+        "render_compute_ms": 2057.015,
+        "render_queue_ms": 0.115,
+        "render_jpeg_ms": 39.149,
+        "prepare_and_history_union_ms": 373.345,
+        "before_compute_ms": 160.403,
+        "dispatch_to_send_ack_ms": 5611.74,
+        "upload_ms": 909.649,
+        "send_ms": 2463.952
+      }
+    },
+    {
+      "request_id": "ab1239a7b6cc41dc",
+      "release": "0.21.5",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "c2c",
+      "finished_at": "2026-11-12T20:40:45.975412+08:00",
+      "parse_over_100_ms": true,
+      "metrics": {
+        "provider_prepare_ms": 542.925,
+        "inputs_build_ports_ms": 439.315,
+        "history_read_ms": 5.303,
+        "history_capture_ms": 144.5,
+        "history_reconstruct_ms": 0.057,
+        "history_rating_points_ms": 262.687,
+        "render_compute_ms": 1999.051,
+        "render_queue_ms": 2.649,
+        "render_jpeg_ms": 38.926,
+        "prepare_and_history_union_ms": 1244.984,
+        "before_compute_ms": 1016.104,
+        "dispatch_to_send_ack_ms": 6497.769,
+        "upload_ms": 1030.472,
+        "send_ms": 2430.182
+      }
+    },
+    {
+      "request_id": "6d455b783f5c40f7",
+      "release": "0.21.5",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "c2c",
+      "finished_at": "2026-11-12T20:47:42.828551+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 149.642,
+        "inputs_build_ports_ms": 28.187,
+        "history_read_ms": 49.2,
+        "history_capture_ms": 69.081,
+        "history_reconstruct_ms": 1.058,
+        "history_rating_points_ms": 1194.886,
+        "render_compute_ms": 2112.182,
+        "render_queue_ms": 0.315,
+        "render_jpeg_ms": 42.07,
+        "prepare_and_history_union_ms": 1373.773,
+        "before_compute_ms": 251.981,
+        "dispatch_to_send_ack_ms": 6385.0,
+        "upload_ms": 1019.688,
+        "send_ms": 2979.757
+      }
+    },
+    {
+      "request_id": "0766c9dddc0b46b4",
+      "release": "0.22.0",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 50,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T21:05:15.006373+08:00",
+      "parse_over_100_ms": true,
+      "metrics": {
+        "provider_prepare_ms": 324.516,
+        "inputs_build_ports_ms": 1203.943,
+        "history_read_ms": 22.901,
+        "history_capture_ms": 150.368,
+        "history_reconstruct_ms": 0.074,
+        "history_rating_points_ms": 25.291,
+        "render_compute_ms": 2590.184,
+        "render_queue_ms": 2.742,
+        "render_jpeg_ms": 68.548,
+        "prepare_and_history_union_ms": 1553.824,
+        "before_compute_ms": 1570.875,
+        "dispatch_to_send_ack_ms": 7314.338,
+        "upload_ms": 1089.419,
+        "send_ms": 2040.326
+      }
+    },
+    {
+      "request_id": "1f0c7079d21248c2",
+      "release": "0.22.1",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "c2c",
+      "finished_at": "2026-11-12T21:29:18.057446+08:00",
+      "parse_over_100_ms": true,
+      "metrics": {
+        "provider_prepare_ms": 70.003,
+        "inputs_build_ports_ms": 443.295,
+        "history_read_ms": 0.0,
+        "history_capture_ms": 18.093,
+        "history_reconstruct_ms": 0.0,
+        "history_rating_points_ms": 0.0,
+        "render_compute_ms": 2037.476,
+        "render_queue_ms": 0.889,
+        "render_jpeg_ms": 44.767,
+        "prepare_and_history_union_ms": 513.298,
+        "before_compute_ms": 543.807,
+        "dispatch_to_send_ack_ms": 5847.423,
+        "upload_ms": 1079.298,
+        "send_ms": 2157.465
+      }
+    },
+    {
+      "request_id": "4551e5460ae0465e",
+      "release": "0.22.1",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T21:35:48.115667+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 95.978,
+        "inputs_build_ports_ms": 16.318,
+        "history_read_ms": 0.0,
+        "history_capture_ms": 25.439,
+        "history_reconstruct_ms": 0.0,
+        "history_rating_points_ms": 0.0,
+        "render_compute_ms": 834.567,
+        "render_queue_ms": 1.393,
+        "render_jpeg_ms": 45.558,
+        "prepare_and_history_union_ms": 112.296,
+        "before_compute_ms": 151.265,
+        "dispatch_to_send_ack_ms": 5866.109,
+        "upload_ms": 1075.848,
+        "send_ms": 3783.405
+      }
+    },
+    {
+      "request_id": "23d31b09c67f4af3",
+      "release": "0.22.1",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T21:53:40.359090+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 124.122,
+        "inputs_build_ports_ms": 13.037,
+        "history_read_ms": 0.0,
+        "history_capture_ms": 25.78,
+        "history_reconstruct_ms": 0.0,
+        "history_rating_points_ms": 0.0,
+        "render_compute_ms": 1068.18,
+        "render_queue_ms": 0.467,
+        "render_jpeg_ms": 50.784,
+        "prepare_and_history_union_ms": 137.159,
+        "before_compute_ms": 170.447,
+        "dispatch_to_send_ack_ms": 5138.711,
+        "upload_ms": 1068.766,
+        "send_ms": 2809.906
+      }
+    },
+    {
+      "request_id": "4e203d9b91e04e0a",
+      "release": "0.22.1",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T21:53:54.944163+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 96.354,
+        "inputs_build_ports_ms": 13.186,
+        "history_read_ms": 0.0,
+        "history_capture_ms": 15.542,
+        "history_reconstruct_ms": 0.0,
+        "history_rating_points_ms": 0.0,
+        "render_compute_ms": 514.676,
+        "render_queue_ms": 1.288,
+        "render_jpeg_ms": 39.358,
+        "prepare_and_history_union_ms": 109.54,
+        "before_compute_ms": 140.643,
+        "dispatch_to_send_ack_ms": 3369.386,
+        "upload_ms": 697.522,
+        "send_ms": 1995.919
+      }
+    },
+    {
+      "request_id": "d1171b44aef944e1",
+      "release": "0.22.1",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T21:54:24.759249+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 98.145,
+        "inputs_build_ports_ms": 12.998,
+        "history_read_ms": 0.0,
+        "history_capture_ms": 15.451,
+        "history_reconstruct_ms": 0.0,
+        "history_rating_points_ms": 0.0,
+        "render_compute_ms": 577.454,
+        "render_queue_ms": 0.407,
+        "render_jpeg_ms": 48.694,
+        "prepare_and_history_union_ms": 111.143,
+        "before_compute_ms": 147.575,
+        "dispatch_to_send_ack_ms": 3524.18,
+        "upload_ms": 707.957,
+        "send_ms": 2070.428
+      }
+    },
+    {
+      "request_id": "b05e89e4487d45e4",
+      "release": "0.22.1",
+      "platform": "qq_official",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "channel": "group",
+      "finished_at": "2026-11-12T21:55:14.496961+08:00",
+      "parse_over_100_ms": false,
+      "metrics": {
+        "provider_prepare_ms": 103.523,
+        "inputs_build_ports_ms": 13.613,
+        "history_read_ms": 0.0,
+        "history_capture_ms": 15.655,
+        "history_reconstruct_ms": 0.0,
+        "history_rating_points_ms": 0.0,
+        "render_compute_ms": 500.19,
+        "render_queue_ms": 0.661,
+        "render_jpeg_ms": 39.668,
+        "prepare_and_history_union_ms": 117.136,
+        "before_compute_ms": 150.26,
+        "dispatch_to_send_ack_ms": 3254.183,
+        "upload_ms": 801.856,
+        "send_ms": 1781.233
+      }
+    }
+  ]
+}
