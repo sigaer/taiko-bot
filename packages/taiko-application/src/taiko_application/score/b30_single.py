@@ -61,8 +61,9 @@ ARROW = "→"
 
 class B30SingleRenderer(RenderResources):
 
-    def __init__(self, context: ScorePresentationContext):
+    def __init__(self, context: ScorePresentationContext, *, resources=None):
         self.context = context
+        self._resources = resources
         self.ASSETS_DIR = Path(context.layout_assets_base or context.assets_base)
         self.FONT_TITLE_PATH = self.ASSETS_DIR / "fonts/FZPW_GBK.ttf"
         self.FONT_SCORE_PATH = self.FONT_TITLE_PATH
@@ -76,7 +77,7 @@ class B30SingleRenderer(RenderResources):
 
     def _load_font(self, path: Path, size: int) -> ImageFont.FreeTypeFont:
         try:
-            return ImageFont.truetype(str(path), size)
+            return self._resources.font(path, size) if self._resources else ImageFont.truetype(str(path), size)
         except Exception:
             return ImageFont.load_default()
 
@@ -87,7 +88,7 @@ class B30SingleRenderer(RenderResources):
             if not path.exists():
                 continue
             try:
-                return ImageFont.truetype(str(path), size)
+                return self._resources.font(path, size) if self._resources else ImageFont.truetype(str(path), size)
             except Exception:
                 continue
         return ImageFont.load_default()
@@ -157,19 +158,14 @@ class B30SingleRenderer(RenderResources):
     ) -> Optional[Image.Image]:
         if not path.exists():
             return None
-        im = self._own(self._own(Image.open(path)).convert("RGBA"))
-        if size:
-            im = self._own(im.resize(size, Image.LANCZOS))
-        return im
+        return self._resources.image(path, size=size)
 
     def _load_icon_fit(
         self, path: Path, max_size: Tuple[int, int]
     ) -> Optional[Image.Image]:
         if not path.exists():
             return None
-        im = self._own(self._own(Image.open(path)).convert("RGBA"))
-        im.thumbnail(max_size, Image.LANCZOS)
-        return im
+        return self._resources.image(path, fit=max_size)
 
     def _resolve_template_path(self, template_path: Path, assets_base: Path) -> Path:
         if template_path.exists():
@@ -301,12 +297,7 @@ class B30SingleRenderer(RenderResources):
             path = fallback_path
         else:
             return
-        art = self._own(self._own(Image.open(path)).convert("RGBA"))
-        art = self._own(
-            self._center_crop_to_square(art).resize(
-                (COVER_ART_SIZE, COVER_ART_SIZE), Image.LANCZOS
-            )
-        )
+        art = self._resources.image(path, square=True, size=(COVER_ART_SIZE, COVER_ART_SIZE))
         x, y = pos
         canvas.paste(art, (x + COVER_BORDER_WIDTH, y + COVER_BORDER_WIDTH), art)
         draw = ImageDraw.Draw(canvas)
@@ -422,7 +413,7 @@ class B30SingleRenderer(RenderResources):
         template_path = self._pick_b30_template(
             Path(template_path), assets_base, song_info.get("type", "")
         )
-        canvas = self._own(self._own(Image.open(template_path)).convert("RGBA"))
+        canvas = self._own(self._resources.image(template_path).copy())
         draw = ImageDraw.Draw(canvas)
         font_title = self._load_font_candidates(
             self.FONT_TITLE_FALLBACK_PATHS, TITLE_FONT_SIZE

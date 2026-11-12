@@ -63,6 +63,11 @@ def build_daily_rating_points(
     cfg = load_rating_config(json_path)
     const_map = cfg["const_table"]["const_to_score"]
     const_table = build_const_table(const_map)
+    from taiko_bot.runtime.player.rating_memo import RequestRatingMemo
+    from taiko_bot.public_catalog_cache import revision
+    base = Path(json_path).resolve().parent
+    calculate = RequestRatingMemo(lambda records:_compute_results_from_userdata_records(records,cfg,const_table),
+                                  lambda:(revision(base/'song_data.json'), 'v1-client'))
 
     points: List[TrendPoint] = []
     for dt, snapshot in snapshots:
@@ -70,7 +75,7 @@ def build_daily_rating_points(
         if not records:
             continue
         try:
-            results = _compute_results_from_userdata_records(records, cfg, const_table)
+            results = calculate(records)
         except Exception as e:
             print(f"警告：跳过异常历史快照 {user_id} {dt}: {e}")
             continue

@@ -46,7 +46,9 @@ def load_identity_map(catalog_path):
         stat = path.stat()
     except FileNotFoundError:
         return {}
-    return _load_revision(str(path.resolve()), (stat.st_mtime_ns, stat.st_size))
+    import hashlib, time
+    digest = hashlib.sha256(path.read_bytes()).digest() if time.time_ns()-stat.st_ctime_ns < 1_000_000_000 else None
+    return _load_revision(str(path.resolve()), (stat.st_mtime_ns, stat.st_size, stat.st_ino, stat.st_ctime_ns, digest))
 
 
 def canonical_song_id(value, aliases):

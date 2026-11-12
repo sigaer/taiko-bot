@@ -31,10 +31,9 @@ RATING_JSON_DEFAULT = ROOT_DIR / "songs" / "rating_structured_with_ids.json"
 B30_DELTA_EPSILON = 1e-9
 
 from taiko_application.score import ScorePresentationContext, B30Renderer
+from taiko_bot.runtime.player.prepared_rating import reusable_v1_results
 
-def _load_json(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+from taiko_bot.public_catalog_cache import load_public_json as _load_json, song_index as cached_song_index
 
 def _trend_series_value(
     point: Tuple[datetime.datetime, Dict[str, float], float], name: str
@@ -299,6 +298,8 @@ def render_b30_image(
     card_rating_resolver: Optional[Callable[[Dict[str, Any]], Optional[float]]] = None,
     min_level: int = 4,
     userdata, history_snapshots, daily_points, observed_at,
+    precomputed_results=None,
+    as_png_bytes=True,
 ) -> bytes:
     trend_dim_columns = trend_dim_columns or list(TREND_DIM_COLUMNS)
     trend_short_labels = trend_short_labels or TREND_SHORT_LABELS
@@ -308,11 +309,12 @@ def render_b30_image(
     # Validate the required resource before acquiring score inputs.
     with Image.open(template_path):
         pass
+    if callable(daily_points):
+        daily_points = daily_points()
 
     entries = userdata.get("songs", []) if isinstance(userdata, dict) else []
 
-    song_db = _load_json(Path(song_db_path))
-    song_index = build_song_index(song_db)
+    song_index = cached_song_index(song_db_path)
 
     _, rating_index, const_table = _load_rating_resources(str(rating_json_path))
     top_entries = _pick_top_entries(
@@ -325,7 +327,9 @@ def render_b30_image(
         min_level=min_level,
     )
 
-    if results_from_userdata_fn is None:
+    if precomputed_results is not None and reusable_v1_results(precomputed_results,profile='center',collapse=collapse_duplicate_versions,user_id=user_id,records=entries):
+        results = precomputed_results
+    elif results_from_userdata_fn is None:
         results = compute_all_from_userdata_records(
             entries,
             collapse_duplicate_versions=collapse_duplicate_versions,
@@ -427,7 +431,7 @@ def render_b30_image(
                 dress_image=dress_img,
                 title_image=title_img,
             )
-            return B30Renderer(context).render()
+            return B30Renderer(context).render(as_png_bytes=as_png_bytes)
         finally:
             title_img.close()
     finally:

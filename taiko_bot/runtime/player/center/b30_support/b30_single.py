@@ -24,32 +24,7 @@ FONT_TITLE_FALLBACK_PATHS = [
     FONT_TITLE_PATH,
 ]
 
-_RATING_RESOURCE_CACHE: Dict[
-    str, Tuple[int, Tuple[Dict[str, Any], Dict[Tuple[int, int], dict], List[tuple]]]
-] = {}
-
-def _load_rating_resources(
-    path_str: str,
-) -> Tuple[Dict[str, Any], Dict[Tuple[int, int], dict], List[tuple]]:
-    path = Path(path_str)
-    mtime_ns = path.stat().st_mtime_ns
-    cached = _RATING_RESOURCE_CACHE.get(str(path))
-    if cached and cached[0] == mtime_ns:
-        return cached[1]
-
-    cfg = load_rating_config(path)
-    const_map = cfg["const_table"]["const_to_score"]
-    const_table = build_const_table(const_map)
-    index: Dict[Tuple[int, int], dict] = {}
-    for song in cfg["songs"].values():
-        try:
-            key = (int(song.get("id", 0)), int(song.get("level", 0)))
-        except Exception:
-            continue
-        index[key] = song
-    result = (cfg, index, const_table)
-    _RATING_RESOURCE_CACHE[str(path)] = (mtime_ns, result)
-    return result
+from taiko_bot.public_catalog_cache import rating_resources as _load_rating_resources
 
 def _compute_rating_for_entry(entry, rating_index, const_table):
     return domain_single._compute_rating_for_entry(

@@ -1,6 +1,8 @@
 """Request-owned Pillow images; never close images supplied by the caller."""
 
 from PIL import Image
+from .static_resources import RequestResources
+from .cancellation import check_cancelled
 
 
 class RenderResources:
@@ -8,9 +10,13 @@ class RenderResources:
     def _own(self, image):
         if getattr(self, "_tracking", False) and isinstance(image, Image.Image):
             self._owned.append(image)
+        check_cancelled()
         return image
 
     def render(self, *args, **kwargs):
+        resource_owner = getattr(self, '_resources', None) is None
+        if resource_owner:
+            self._resources = RequestResources()
         self._owned = []
         self._tracking = True
         result = None
@@ -24,3 +30,6 @@ class RenderResources:
                     image.close()
             self._owned.clear()
             self._ICON_CACHE.clear()
+            if resource_owner:
+                self._resources.close()
+                self._resources = None

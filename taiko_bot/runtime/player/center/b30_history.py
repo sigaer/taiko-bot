@@ -10,6 +10,7 @@ from .b30_support.score_calculator import _compute_results_from_userdata_records
 from .b30_support import taikob_v2 as v2
 from .snapshot_history import parse_snapshot_time
 from .history_time import admit_history_snapshot, history_time_ceiling, is_future_history_time
+from taiko_application.score.cancellation import check_cancelled
 TrendPoint = Tuple[datetime.datetime, Dict[str,float], float]
 TrendImageStatus = str
 def _song_key(song: Dict[str, Any]) -> tuple:
@@ -35,7 +36,9 @@ def _history_snapshot_inputs(view):
         if snapshot is not None:
             yield timestamp, snapshot
 
-def _reconstruct_user_snapshots(inputs):
+def _reconstruct_user_snapshots(inputs, *, max_days=None):
+    inputs = list(inputs)
+    cutoff = inputs[-1][0].date() - datetime.timedelta(days=max_days-1) if inputs and max_days else None
     snapshots: List[Tuple[datetime.datetime, Dict[str, Any]]] = []
     current_profile: Dict[str, Any] = {}
     current_achievement: Dict[str, Any] = {}
@@ -43,6 +46,7 @@ def _reconstruct_user_snapshots(inputs):
     has_base = False
 
     for dt, snapshot in inputs:
+        check_cancelled()
         meta = snapshot.get("_meta", {}) if isinstance(snapshot, dict) else {}
         is_full = bool(meta.get("full")) or (
             isinstance(snapshot, dict)
@@ -70,6 +74,8 @@ def _reconstruct_user_snapshots(inputs):
             for key in snapshot.get("songs_removed", []) or []:
                 song_map.pop(tuple(key), None)
 
+        if cutoff is not None and dt.date() < cutoff:
+            continue
         snapshots.append(
             (
                 dt,
@@ -158,6 +164,7 @@ def _build_daily_rating_points_from_view(
     from contextlib import nullcontext
     with archive(user_id, namespace, userdata_dir=_publication_store.root, publication_store=_publication_store) if namespace else nullcontext({}) as days:
         for captured, snapshot in snapshots:
+            check_cancelled()
             day = captured.date().isoformat()
             if needs_measurement(days, captured):
                 records = snapshot.get("songs", []) if isinstance(snapshot, dict) else snapshot
@@ -207,17 +214,34 @@ def capture(provider, view, store, command, current):
         return ()
     timed=list(_history_snapshot_inputs(view))
     history=[dict(capturedAt=dt.isoformat(),payload=payload) for dt,payload in timed]
-    snapshots=_reconstruct_user_snapshots(timed)
     provider.verify_initial()
     # The legacy B30 renderer supplies custom aggregation functions (including
     # v1 defaults), so its namespace is None. Preserve this distinction from
     # explicit daily trend commands, whose named archives persist measurements.
-    _,points=_build_daily_rating_points_from_view(store.identity,N,
-        json_path=str(__import__('taiko_bot.runtime.public.config',fromlist=['root']).root()/'songs/rating_structured_with_ids.json'),
-        collapse_duplicate_versions=not use_v2,
-        aggregate_topn_value_fn=partial(v2.aggregate_topN_value_v2,snapshot=provider.b30_snapshot) if use_v2 else aggregate_topN_value,
-        compute_dim_topn_means_fn=partial(v2.compute_dim_topN_means_v2,snapshot=provider.b30_snapshot) if use_v2 else compute_dim_topN_means,
-        results_from_records_fn=(lambda records:v2.compute_all_v2_from_userdata_records(records,song_map=provider.b30_snapshot.song_map)) if use_v2 else None,
-        _publication_store=store,snapshots=snapshots)
-    provider.b30_inputs.update(history_snapshots=history,daily_points=points)
+    from taiko_bot.runtime.player.rating_memo import RequestRatingMemo
+    from taiko_bot.public_catalog_cache import revision
+    base = __import__('taiko_bot.runtime.public.config',fromlist=['root']).root()
+    snapshot = provider.b30_snapshot if use_v2 else None
+    calculate = (lambda records:v2.compute_all_v2_from_userdata_records(records,song_map=snapshot.song_map)) if use_v2 else (lambda records:compute_all_from_userdata_records(records,json_path=base/'songs/rating_structured_with_ids.json',collapse_duplicate_versions=True))
+    version = lambda:(revision(base/'songs/song_data.json'), snapshot.revision if snapshot else revision(base/'songs/rating_structured_with_ids.json'), 'v2-center-20261010' if use_v2 else 'v1-merged')
+    calculate = RequestRatingMemo(calculate, version)
+    provider.b30_results_from_records = calculate
+    aggregate = calculate.aggregate('rating', partial(v2.aggregate_topN_value_v2,snapshot=snapshot) if use_v2 else aggregate_topN_value)
+    dimensions = calculate.aggregate('dimensions', partial(v2.compute_dim_topN_means_v2,snapshot=snapshot) if use_v2 else compute_dim_topN_means)
+    identity = str(store.identity)
+    points = None
+    def prepare_points():
+        # Captured values only. This closure has no provider, view, lease or DB.
+        nonlocal points
+        if points is None:
+            snapshots = _reconstruct_user_snapshots(timed, max_days=30)
+            _, points = _build_daily_rating_points_from_view(identity, N,
+                json_path=base/'songs/rating_structured_with_ids.json',
+                collapse_duplicate_versions=not use_v2,
+                aggregate_topn_value_fn=aggregate,
+                compute_dim_topn_means_fn=dimensions,
+                results_from_records_fn=calculate, _publication_store=None, snapshots=snapshots)
+        return points
+    provider.b30_inputs.update(history_snapshots=history,daily_points=prepare_points,results_from_records_fn=calculate,
+                              aggregate_topn_value_fn=aggregate,compute_dim_topn_means_fn=dimensions)
     return history

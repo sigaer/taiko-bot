@@ -123,10 +123,10 @@ def compute_dim_topN_means_v2(results, N=20, *, snapshot):
 
 def render_b20_v2_image(user_id: int | str, N: int = 20, *, userdata, snapshot, **prepared) -> bytes:
     payload = userdata
-    current_results = compute_all_v2_from_userdata_records(
-        _extract_userdata_records(payload),
-        song_map=snapshot.song_map,
-    )
+    calculate = prepared.pop('results_from_records_fn', None) or (lambda records: compute_all_v2_from_userdata_records(records, song_map=snapshot.song_map))
+    current_results = calculate(_extract_userdata_records(payload))
+    aggregate = prepared.pop('aggregate_topn_value_fn', None) or partial(aggregate_topN_value_v2,snapshot=snapshot)
+    dimensions = prepared.pop('compute_dim_topn_means_fn', None) or partial(compute_dim_topN_means_v2,snapshot=snapshot)
     rating_map = {
         (result.song_id, result.level): float(result.AI_rating)
         for result in current_results
@@ -149,9 +149,9 @@ def render_b20_v2_image(user_id: int | str, N: int = 20, *, userdata, snapshot, 
         userdata=userdata, **prepared,
         rating_label=f"Rating b{N} v2",
         results_from_userdata_fn=lambda _: current_results,
-        results_from_records_fn=lambda records: compute_all_v2_from_userdata_records(records,song_map=snapshot.song_map),
-        aggregate_topn_value_fn=partial(aggregate_topN_value_v2,snapshot=snapshot),
-        compute_dim_topn_means_fn=partial(compute_dim_topN_means_v2,snapshot=snapshot),
+        results_from_records_fn=calculate,
+        aggregate_topn_value_fn=aggregate,
+        compute_dim_topn_means_fn=dimensions,
         trend_dim_columns=V2_DIM_COLUMNS,
         trend_short_labels=V2_TREND_SHORT_LABELS,
         trend_colors=V2_TREND_COLORS,
@@ -165,7 +165,7 @@ def render_b20_v2_dim_image(
     dim: str,
     N: int = 20,
     font_path: str | None = "assets/fonts/DDFont.ttf",
-    *, userdata, snapshot,
+    *, userdata, snapshot, as_png_bytes=True,
 ) -> bytes:
     attr = V2_COL_TO_ATTR.get(dim)
     from .dimension import _render_dimension_table_image, _render_simple_notice
@@ -225,4 +225,5 @@ def render_b20_v2_dim_image(
         assets_base=ROOT_DIR / "assets",
         font_path=font_path,
         dim_label=dim,
+        as_png_bytes=as_png_bytes,
     )

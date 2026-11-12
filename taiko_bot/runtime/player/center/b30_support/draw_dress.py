@@ -236,14 +236,16 @@ def _load_previous_song_map(
     if len(history_files) < 2:
         return None
 
-    song_states: List[List[Dict[str, Any]]] = []
+    previous_songs = None
+    count = 0
     current_songs: List[Dict[str, Any]] = []
     for history_file in history_files:
         payload = history_file["payload"]
         if not isinstance(payload, dict):
             continue
 
-        if _snapshot_is_full(payload) or not song_states:
+        previous_songs = current_songs
+        if _snapshot_is_full(payload) or not count:
             raw_songs = payload.get("songs") or []
             current_songs = [dict(song) for song in raw_songs if isinstance(song, dict)]
         else:
@@ -262,11 +264,11 @@ def _load_previous_song_map(
                 song_map.pop(key, None)
             current_songs = list(song_map.values())
 
-        song_states.append([dict(song) for song in current_songs])
+        count += 1
 
-    if len(song_states) < 2:
+    if count < 2:
         return None
-    return _build_song_map(song_states[-2])
+    return _build_song_map(previous_songs)
 
 def _crop_with_pad(
     image: Image.Image, box: Tuple[int, int, int, int], pad: int

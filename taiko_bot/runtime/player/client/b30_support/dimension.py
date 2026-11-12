@@ -10,6 +10,9 @@ from typing import Dict, Any, Tuple, List, Optional
 from functools import lru_cache
 
 from PIL import Image, ImageDraw, ImageFont
+from taiko_bot.runtime.player.render_resources import resources, request_resources
+from taiko_application.score.static_resources import RequestResources, STATIC_IMAGES
+from taiko_application.score.cancellation import check_cancelled
 
 
 import io
@@ -25,7 +28,7 @@ def _load_font(
 ) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     if font_path and os.path.exists(font_path):
         try:
-            return ImageFont.truetype(font_path, size)
+            return resources().font(font_path, size) if resources() else ImageFont.truetype(font_path, size)
         except Exception:
             pass
     # 回退
@@ -67,18 +70,17 @@ def _truncate_to_width(
             right = mid
     return text[: right - 1] + ell if right > 0 else ell
 
-@lru_cache(maxsize=128)
 def _load_icon_cached(path: str, size: int) -> Optional[Image.Image]:
     if not path or not os.path.exists(path):
         return None
     try:
-        icon = Image.open(path).convert("RGBA")
-        if size > 0:
-            w, h = icon.size
-            if h != size:
-                nw = max(1, int(round(w * size / max(1, h))))
-                icon = icon.resize((nw, size), Image.LANCZOS)
-        return icon
+        if resources():
+            return resources().image(path, height=size if size > 0 else None)
+        scope = RequestResources()
+        try:
+            return scope.image(path, height=size if size > 0 else None).copy()
+        finally:
+            scope.close()
     except Exception:
         return None
 
@@ -155,7 +157,7 @@ def _progress_fill_stops(rate: float) -> List[Tuple[float, Tuple[int, int, int]]
     deep = _mix_rgb(base, (72, 56, 66), 0.24)
     return [(0.0, light), (0.55, base), (1.0, deep)]
 
-def _build_progress_fill_image(width: int, height: int, rate: float) -> Image.Image:
+def _build_progress_fill_image_uncached(width: int, height: int, rate: float) -> Image.Image:
     fill_img = Image.new("RGBA", (max(1, width), max(1, height)), (0, 0, 0, 0))
     if rate < 50:
         draw = ImageDraw.Draw(fill_img)
@@ -195,7 +197,16 @@ def _build_progress_fill_image(width: int, height: int, rate: float) -> Image.Im
         fill=255,
     )
     fill_img.paste(gradient, (0, 0), mask)
+    gradient.close()
+    highlight.close()
+    mask.close()
     return fill_img
+
+def _build_progress_fill_image(width: int, height: int, rate: float) -> Image.Image:
+    stops = tuple(_progress_fill_stops(rate))
+    key = (('b30-progress-gradient-v1', 0, 0, 0, 0), width, height, stops)
+    image = STATIC_IMAGES.copy(key, lambda:_build_progress_fill_image_uncached(width, height, rate))
+    return resources().own(image) if resources() else image
 
 _DIM_LABEL_MAP: Dict[str, str] = {
     "big_song": "大歌力",
@@ -206,6 +217,7 @@ _DIM_LABEL_MAP: Dict[str, str] = {
     "complex_proc": "复合处理",
 }
 
+@request_resources
 def _render_dimension_table_image(
     user_id: int,
     userdata: Dict[str, Any],
@@ -214,6 +226,7 @@ def _render_dimension_table_image(
     assets_base: Path,
     font_path: str | None,
     dim_label: str,
+    as_png_bytes: bool = True,
 ) -> bytes:
     table_w = 1580
     pad = 24
@@ -228,16 +241,16 @@ def _render_dimension_table_image(
         target_width=640,
         font_path=font_path,
     )
+    resources().own(profile_panel)
     top_area_h = max(profile_panel.height + top_gap, 130)
     panel_h = title_row_h + header_h + len(rows) * row_h + 14
     img_w = table_w + pad * 2
     img_h = pad + top_area_h + panel_h + bottom_pad
 
-    img = Image.new("RGBA", (img_w, img_h), (255, 255, 255, 255))
+    img = resources().own(Image.new("RGBA", (img_w, img_h), (255, 255, 255, 255)))
     if PROGRESS_BG_PATH.exists():
         try:
-            bg = Image.open(PROGRESS_BG_PATH).convert("RGBA")
-            bg = bg.resize((img_w, img_h), Image.LANCZOS)
+            bg = resources().image(PROGRESS_BG_PATH, size=(img_w, img_h))
             img.alpha_composite(bg, (0, 0))
         except Exception:
             _draw_vertical_gradient(
@@ -323,6 +336,7 @@ def _render_dimension_table_image(
         )
 
     for idx, row in enumerate(rows):
+        check_cancelled()
         row_top = panel_y + title_row_h + header_h + 8 + idx * row_h
         row_bot = row_top + row_h - 4
         fill = (244, 239, 231, 150) if idx % 2 == 0 else (246, 248, 244, 126)
@@ -413,8 +427,11 @@ def _render_dimension_table_image(
             fill=(59, 62, 66, 248),
         )
 
+    rgb = resources().own(img.convert("RGB"))
+    if not as_png_bytes:
+        return rgb
     buf = io.BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
+    rgb.save(buf, format="PNG", optimize=True)
     return buf.getvalue()
 
 def generate_dim_top_image(
@@ -485,6 +502,7 @@ def generate_dim_top_image(
         assets_base=BASE / "assets",
         font_path=font_path,
         dim_label=dim_label,
+        as_png_bytes=as_png_bytes,
     )
 
 from taiko_bot.runtime.player.client.progress_support.render import _render_simple_notice

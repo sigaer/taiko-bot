@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
+from taiko_bot.runtime.player.render_resources import resources, request_resources
 
 from .score_calculator import PAIR_ID_GROUPS, build_const_table, load_rating_config
 
@@ -115,7 +116,7 @@ ARROW = "→"
 
 def _load_font(path: Path, size: int) -> ImageFont.FreeTypeFont:
     try:
-        return ImageFont.truetype(str(path), size)
+        return resources().font(path, size) if resources() else ImageFont.truetype(str(path), size)
     except Exception:
         return ImageFont.load_default()
 
@@ -124,7 +125,7 @@ def _load_font_candidates(paths: Iterable[Path], size: int) -> ImageFont.ImageFo
         if not path.exists():
             continue
         try:
-            return ImageFont.truetype(str(path), size)
+            return resources().font(path, size) if resources() else ImageFont.truetype(str(path), size)
         except Exception:
             continue
     return ImageFont.load_default()
@@ -192,6 +193,8 @@ def _load_icon(
 ) -> Optional[Image.Image]:
     if not path.exists():
         return None
+    if resources():
+        return resources().image(path, size=size)
     im = Image.open(path).convert("RGBA")
     if size:
         im = im.resize(size, Image.LANCZOS)
@@ -202,6 +205,8 @@ def _load_icon_fit(
 ) -> Optional[Image.Image]:
     if not path.exists():
         return None
+    if resources():
+        return resources().image(path, fit=max_size)
     im = Image.open(path).convert("RGBA")
     im.thumbnail(max_size, Image.LANCZOS)
     return im
@@ -318,10 +323,7 @@ def _paste_cover(
         path = fallback_path
     else:
         return
-    art = Image.open(path).convert("RGBA")
-    art = _center_crop_to_square(art).resize(
-        (COVER_ART_SIZE, COVER_ART_SIZE), Image.LANCZOS
-    )
+    art = resources().image(path, square=True, size=(COVER_ART_SIZE, COVER_ART_SIZE))
     x, y = pos
     canvas.paste(art, (x + COVER_BORDER_WIDTH, y + COVER_BORDER_WIDTH), art)
     draw = ImageDraw.Draw(canvas)
@@ -354,40 +356,16 @@ def _format_level_value(value: Any) -> str:
         return str(int(num))
     return f"{num:.1f}".rstrip("0").rstrip(".")
 
-_RATING_RESOURCE_CACHE: Dict[
-    str, Tuple[int, Tuple[Dict[str, Any], Dict[Tuple[int, int], dict], List[tuple]]]
-] = {}
-
-def _load_rating_resources(
-    path_str: str,
-) -> Tuple[Dict[str, Any], Dict[Tuple[int, int], dict], List[tuple]]:
-    path = Path(path_str)
-    mtime_ns = path.stat().st_mtime_ns
-    cached = _RATING_RESOURCE_CACHE.get(str(path))
-    if cached and cached[0] == mtime_ns:
-        return cached[1]
-
-    cfg = load_rating_config(path)
-    const_map = cfg["const_table"]["const_to_score"]
-    const_table = build_const_table(const_map)
-    index: Dict[Tuple[int, int], dict] = {}
-    for song in cfg["songs"].values():
-        try:
-            key = (int(song.get("id", 0)), int(song.get("level", 0)))
-        except Exception:
-            continue
-        index[key] = song
-    result = (cfg, index, const_table)
-    _RATING_RESOURCE_CACHE[str(path)] = (mtime_ns, result)
-    return result
+from taiko_bot.public_catalog_cache import rating_resources as _load_rating_resources
 
 def _compute_rating_for_entry(entry, rating_index, const_table):
     try: song_no = int(entry.get("song_no", 0))
     except Exception: return None
     if not is_song_id_publicly_visible(song_no):
         return None
+    from .score_calculator import build_duplicate_song_groups
     return _single_score._compute_rating_for_entry(entry, rating_index, const_table,
-        duplicate_groups=PAIR_ID_GROUPS)
+        duplicate_groups=build_duplicate_song_groups())
 
 def build_song_index(song_db: Iterable[Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
     index: Dict[int, Dict[str, Any]] = {}
@@ -415,6 +393,7 @@ def _paste_new_badge(canvas: Image.Image, assets_base: Path) -> None:
     y = max(0, y)
     canvas.alpha_composite(icon, (x, y))
 
+@request_resources
 def render_b30_single_card(
     entry: Dict[str, Any],
     song_info: Dict[str, Any],
@@ -431,7 +410,7 @@ def render_b30_single_card(
     template_path = _pick_b30_template(
         Path(template_path), assets_base, song_info.get("type", "")
     )
-    canvas = Image.open(template_path).convert("RGBA")
+    canvas = resources().own(resources().image(template_path).copy())
     draw = ImageDraw.Draw(canvas)
 
     font_title = _load_font_candidates(FONT_TITLE_FALLBACK_PATHS, TITLE_FONT_SIZE)
@@ -612,6 +591,9 @@ def render_b30_single_card(
         from io import BytesIO
 
         bio = BytesIO()
-        canvas.save(bio, format="PNG")
-        return bio.getvalue()
+        try:
+            canvas.save(bio, format="PNG")
+            return bio.getvalue()
+        finally:
+            canvas.close()
     return canvas

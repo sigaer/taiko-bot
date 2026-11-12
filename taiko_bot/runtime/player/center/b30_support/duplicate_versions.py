@@ -19,11 +19,14 @@ SONG_DATA_PATH = BASE / "songs" / "song_data.json"
 
 def _load_song_data_mtime(path_str: str) -> Tuple[int, List[Dict[str, Any]]]:
     path = Path(path_str)
-    return _load_song_data_revision(path_str, path.stat().st_mtime_ns)
+    stat = path.stat()
+    import hashlib, time
+    digest = hashlib.sha256(path.read_bytes()).digest() if time.time_ns()-stat.st_ctime_ns < 1_000_000_000 else None
+    return _load_song_data_revision(path_str, stat.st_mtime_ns, stat.st_size, (stat.st_ino, stat.st_ctime_ns), digest)
 
 
 @lru_cache(maxsize=4)
-def _load_song_data_revision(path_str, mtime_ns):
+def _load_song_data_revision(path_str, mtime_ns, size=None, identity=None, digest=None):
     path = Path(path_str)
     payload = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(payload, list):
@@ -39,8 +42,8 @@ def _group_cache(
     song_data_path: str | Path = SONG_DATA_PATH,
 ) -> Tuple[Dict[str, DuplicateSongGroup], Dict[int, DuplicateSongGroup], Dict[str, DuplicateSongGroup]]:
     path = Path(song_data_path)
-    mtime_ns, _ = _load_song_data_mtime(str(path))
-    return _build_group_cache(str(path), mtime_ns)
+    from taiko_bot.public_catalog_cache import revision
+    return _build_group_cache(str(path), revision(path)[1:])
 
 def build_duplicate_song_groups(
     song_data_path: str | Path = SONG_DATA_PATH,

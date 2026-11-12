@@ -41,6 +41,8 @@ def create_app():
     if profile == "center":
         from sakura_command_routing import install as install_command_routing
         install_command_routing("taiko")
+    from .runtime.package_inventory import runtime_inventory
+    nonebot.logger.info("Taiko runtime inventory: {}", runtime_inventory())
     app = nonebot.get_asgi()
     if profile == "client":
         from taiko_bot.local_api import app as local_app

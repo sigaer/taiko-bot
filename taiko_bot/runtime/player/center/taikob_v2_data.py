@@ -45,6 +45,21 @@ _snapshot: V2DataSnapshot | None = None
 _snapshot_lock = threading.Lock()
 _retry_after_monotonic = 0.0
 _refresh_in_progress = False
+_fallback_revision = None
+
+
+def _local_revision():
+    try:
+        stat = V2_DATASET_FALLBACK_PATH.stat()
+    except OSError:
+        return None
+    # The dataset is small. A digest also detects rapid in-place rewrites on
+    # filesystems whose timestamps have coarser resolution than Python's clock.
+    try:
+        digest = hashlib.sha256(V2_DATASET_FALLBACK_PATH.read_bytes()).digest()
+    except OSError:
+        return None
+    return (stat.st_mtime_ns, stat.st_size, stat.st_ino, stat.st_ctime_ns, digest)
 
 
 def parse_v2_dataset_csv(content):
@@ -96,7 +111,7 @@ def _load_fallback_snapshot() -> V2DataSnapshot:
 
 
 def _run_background_refresh() -> None:
-    global _refresh_in_progress, _retry_after_monotonic, _snapshot
+    global _refresh_in_progress, _retry_after_monotonic, _snapshot, _fallback_revision
 
     try:
         refreshed = _fetch_snapshot()
@@ -110,6 +125,7 @@ def _run_background_refresh() -> None:
             )
         else:
             _snapshot = refreshed
+            _fallback_revision = _local_revision()
             _retry_after_monotonic = 0.0
         _refresh_in_progress = False
 
@@ -128,26 +144,29 @@ def _start_background_refresh_locked(now: float) -> None:
 
 
 def load_v2_snapshot(*, force_refresh: bool = False) -> V2DataSnapshot:
-    global _retry_after_monotonic, _snapshot
+    global _retry_after_monotonic, _snapshot, _fallback_revision
 
     if force_refresh:
         refreshed = _fetch_snapshot()
         with _snapshot_lock:
             _snapshot = refreshed
+            _fallback_revision = _local_revision()
             _retry_after_monotonic = 0.0
         return refreshed
-
-    now = time.monotonic()
-    cached = _snapshot
-    if (
-        cached is not None
-        and now - cached.loaded_at_monotonic < V2_SOURCE_CACHE_TTL_SECONDS
-    ):
-        return cached
 
     with _snapshot_lock:
         now = time.monotonic()
         cached = _snapshot
+        local_revision = _local_revision()
+        if cached is not None and local_revision != _fallback_revision:
+            if local_revision is not None:
+                refreshed = _load_fallback_snapshot()
+                # A local catalog replacement invalidates metadata immediately;
+                # it does not extend the existing upstream refresh deadline.
+                if refreshed.revision != cached.revision:
+                    cached = replace(refreshed, loaded_at_monotonic=cached.loaded_at_monotonic)
+                _snapshot = cached
+            _fallback_revision = local_revision
         if cached is not None and (
             now - cached.loaded_at_monotonic < V2_SOURCE_CACHE_TTL_SECONDS
         ):
@@ -159,6 +178,7 @@ def load_v2_snapshot(*, force_refresh: bool = False) -> V2DataSnapshot:
                 cached = None
             else:
                 _snapshot = cached
+                _fallback_revision = _local_revision()
         if cached is not None:
             _start_background_refresh_locked(now)
             return cached
@@ -168,8 +188,9 @@ def load_v2_snapshot(*, force_refresh: bool = False) -> V2DataSnapshot:
 
 
 def clear_v2_source_cache() -> None:
-    global _refresh_in_progress, _retry_after_monotonic, _snapshot
+    global _refresh_in_progress, _retry_after_monotonic, _snapshot, _fallback_revision
     with _snapshot_lock:
         _snapshot = None
         _retry_after_monotonic = 0.0
         _refresh_in_progress = False
+        _fallback_revision = None

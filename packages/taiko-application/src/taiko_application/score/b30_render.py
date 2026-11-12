@@ -62,7 +62,7 @@ class B30Renderer(RenderResources):
 
     def _load_font(self, path: Path, size: int) -> ImageFont.FreeTypeFont:
         try:
-            return ImageFont.truetype(str(path), size)
+            return self._resources.font(path, size) if getattr(self, '_resources', None) else ImageFont.truetype(str(path), size)
         except Exception:
             return ImageFont.load_default()
 
@@ -208,9 +208,7 @@ class B30Renderer(RenderResources):
         if not path.exists():
             return None
         try:
-            with self._own(Image.open(path)) as source:
-                with self._own(source.convert("RGBA")) as rgba:
-                    icon = self._own(rgba.resize((size, size), Image.LANCZOS))
+            icon = self._resources.image(path, size=(size, size))
         except Exception:
             return None
         self._ICON_CACHE[key] = icon
@@ -235,7 +233,7 @@ class B30Renderer(RenderResources):
         scale = min(max_w / ow, max_h / oh)
         nw = max(1, int(round(ow * scale)))
         nh = max(1, int(round(oh * scale)))
-        resized = self._own(overlay.resize((nw, nh), Image.LANCZOS))
+        resized = overlay if (nw, nh) == overlay.size else self._own(overlay.resize((nw, nh), Image.LANCZOS))
         px, py = self._center_box(box, resized.size)
         base.alpha_composite(resized, (px, py))
 
@@ -253,7 +251,7 @@ class B30Renderer(RenderResources):
         scale = min(max_w / ow, max_h / oh) * scale_multiplier
         nw = max(1, int(round(ow * scale)))
         nh = max(1, int(round(oh * scale)))
-        resized = self._own(overlay.resize((nw, nh), Image.LANCZOS))
+        resized = overlay if (nw, nh) == overlay.size else self._own(overlay.resize((nw, nh), Image.LANCZOS))
         cx = (x1 + x2) // 2
         cy = (y1 + y2) // 2
         px = cx - nw // 2
@@ -571,13 +569,13 @@ class B30Renderer(RenderResources):
         canvas.alpha_composite(footer_part, (0, body_top + body_height))
         return canvas
 
-    def _render(self):
+    def _render(self, as_png_bytes=True):
         N = self.context.count
         assets_base = self.context.assets_base
         template_path = (
             self.context.template_path or assets_base / "templates/b30_template.png"
         )
-        template = self._own(self._own(Image.open(template_path)).convert("RGBA"))
+        template = self._resources.image(template_path)
         top_entries = self.context.top_entries
         song_index = self.context.song_index
         overall = self.context.overall
@@ -590,10 +588,7 @@ class B30Renderer(RenderResources):
         grid_x1, grid_y1, grid_x2, _ = GRID_BOX
         grid_w = grid_x2 - grid_x1
         footer_height = template.height - FOOTER_START_Y
-        with self._own(
-            Image.open(self.ASSETS_DIR / "templates" / "b30_single.png")
-        ) as card_sample:
-            card_w0, card_h0 = card_sample.size
+        card_w0, card_h0 = self._resources.image(self.ASSETS_DIR / "templates" / "b30_single.png").size
         layout = self._choose_grid_layout(
             min(len(top_entries), N),
             grid_w=grid_w,
@@ -754,11 +749,10 @@ class B30Renderer(RenderResources):
                 show_new=key in new_keys,
                 rating_delta=improved_rating_deltas.get(key),
             )
-            card_bytes = B30SingleRenderer(single_context).render()
-            card_img = self._own(
-                self._own(Image.open(BytesIO(card_bytes))).convert("RGBA")
-            )
-            card_img = self._own(card_img.resize((card_w, card_h), Image.LANCZOS))
+            # The single-card API still defaults to PNG for external callers.
+            # B30 owns this returned canvas and releases it before the next card.
+            with B30SingleRenderer(single_context, resources=self._resources).render(as_png_bytes=False) as single:
+                card_img = single.resize((card_w, card_h), Image.LANCZOS)
             row = idx // grid_cols
             col = idx % grid_cols
             row_start = row * grid_cols
@@ -771,7 +765,12 @@ class B30Renderer(RenderResources):
             y_vis = start_y + row * (card_h_vis + gap_y)
             x = x_vis - pad_x
             y = y_vis - pad_y
-            canvas.alpha_composite(card_img, (x, y))
+            try:
+                canvas.alpha_composite(card_img, (x, y))
+            finally:
+                card_img.close()
+        if not as_png_bytes:
+            return canvas
         out = BytesIO()
         canvas.save(out, format="PNG")
         return out.getvalue()

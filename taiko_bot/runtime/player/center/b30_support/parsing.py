@@ -82,18 +82,4 @@ def _resolve_taikob_dim_arg(
     dim, _ = _parse_taikob_dim_arg(args, aliases or DIM_ALIASES)
     return dim
 
-def _to_jpeg_bytes(img_buf: bytes | BytesIO, quality: int = 85) -> bytes:
-    if isinstance(img_buf, BytesIO):
-        data = img_buf.getvalue()
-    else:
-        data = img_buf
-    img = Image.open(BytesIO(data))
-    if img.mode in ("RGBA", "LA"):
-        base = Image.new("RGB", img.size, (255, 255, 255))
-        base.paste(img, mask=img.split()[-1])
-        img = base
-    else:
-        img = img.convert("RGB")
-    out = BytesIO()
-    img.save(out, format="JPEG", quality=quality, optimize=True)
-    return out.getvalue()
+from taiko_application.score.encoding import to_jpeg_bytes as _to_jpeg_bytes

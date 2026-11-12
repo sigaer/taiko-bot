@@ -20,8 +20,15 @@ FALLBACK_FONT_PATHS = (
     Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
 )
 
+def _font_revision(path):
+    try:
+        stat = Path(path).stat()
+        return stat.st_mtime_ns, stat.st_size, stat.st_ino, stat.st_ctime_ns
+    except OSError:
+        return None
+
 @lru_cache(maxsize=64)
-def _font_codepoints(path: str, index: int) -> Optional[frozenset[int]]:
+def _font_codepoints(path: str, index: int, revision=None) -> Optional[frozenset[int]]:
     if TTFont is None:
         return None
     loaded_font = None
@@ -39,7 +46,7 @@ def font_supports_char(font: ImageFont.ImageFont, char: str) -> bool:
         return True
     path = str(getattr(font, "path", "") or "")
     if path:
-        codepoints = _font_codepoints(path, int(getattr(font, "index", 0) or 0))
+        codepoints = _font_codepoints(path, int(getattr(font, "index", 0) or 0), _font_revision(path))
         if codepoints is not None:
             return ord(char) in codepoints
     try:
@@ -49,8 +56,11 @@ def font_supports_char(font: ImageFont.ImageFont, char: str) -> bool:
     except Exception:
         return True
 
-@lru_cache(maxsize=32)
 def _load_fallback_fonts(size_px: int) -> Tuple[ImageFont.ImageFont, ...]:
+    return _load_fallback_fonts_revision(size_px, tuple((str(path), _font_revision(path)) for path in FALLBACK_FONT_PATHS))
+
+@lru_cache(maxsize=32)
+def _load_fallback_fonts_revision(size_px, revisions):
     fonts: List[ImageFont.ImageFont] = []
     for path in FALLBACK_FONT_PATHS:
         if not path.exists():

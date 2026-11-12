@@ -59,10 +59,16 @@ V2_COL_TO_ATTR = {
 
 V2RatingResult = _models.V2RatingResult
 
-@lru_cache(maxsize=1)
 def _load_v2_song_map():
-    with V2_CONSTANTS_CSV.open("r", encoding="utf-8") as handle:
+    from taiko_bot.public_catalog_cache import revision
+    return _load_v2_song_map_revision(revision(V2_CONSTANTS_CSV))
+
+@lru_cache(maxsize=2)
+def _load_v2_song_map_revision(key):
+    with open(key[0], "r", encoding="utf-8") as handle:
         return _dataset.v2_client_song_map(csv.DictReader(handle))
+
+_load_v2_song_map.cache_clear = _load_v2_song_map_revision.cache_clear
 
 def _extract_userdata_records(payload: Any) -> List[Dict[str, Any]]:
     records = payload.get("songs", []) if isinstance(payload, dict) else payload
@@ -96,7 +102,7 @@ def _build_dimension_rows(
     rows.sort(key=lambda row: (-row["dim_score"], -row["score"], row["title"]))
     return rows
 
-def render_b20_v2_image(user_id: int | str, *, userdata) -> bytes:
+def render_b20_v2_image(user_id: int | str, *, userdata, as_png_bytes=True) -> bytes:
     payload = userdata
     userdata = payload if isinstance(payload, dict) else {"songs": payload}
     results = compute_all_v2_from_userdata_records(_extract_userdata_records(payload))
@@ -122,6 +128,7 @@ def render_b20_v2_image(user_id: int | str, *, userdata) -> bytes:
         assets_base=ROOT_DIR / "assets",
         font_path="assets/fonts/DDFont.ttf",
         dim_label="综合Rating",
+        as_png_bytes=as_png_bytes,
     )
 
 def render_b20_v2_dim_image(
@@ -129,7 +136,7 @@ def render_b20_v2_dim_image(
     dim: str,
     N: int = 20,
     font_path: str | None = "assets/fonts/DDFont.ttf",
-    *, userdata,
+    *, userdata, as_png_bytes=True,
 ) -> bytes:
     attr = V2_COL_TO_ATTR.get(dim)
     from .dimension import _render_dimension_table_image, _render_simple_notice
@@ -168,4 +175,5 @@ def render_b20_v2_dim_image(
         assets_base=ROOT_DIR / "assets",
         font_path=font_path,
         dim_label=dim,
+        as_png_bytes=as_png_bytes,
     )

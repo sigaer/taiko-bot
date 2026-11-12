@@ -9,6 +9,10 @@ from nonebot.rule import Rule
 from taiko_application.commands import CommandContext, CommandResult, B30Ports, prepare_b30, execute_b30
 from taiko_application.private_input import thaw
 from . import entry
+from .render_executor import executor, can_render_in_worker, RenderBusy
+from nonebot import get_driver
+
+get_driver().on_shutdown(executor.shutdown)
 
 PROFILE = entry.profile()
 PATTERN = re.compile(r'^/?taikob(?:\s*(50|[1-4]\d|[1-9]))?(?:\s*(.*))?$' if PROFILE == 'center'
@@ -35,6 +39,7 @@ def build_ports(private=None, *, provider=None):
     if private is not None:prepared_inputs["history_snapshots"] = thaw(private.history) or ()
     snapshot = getattr(provider,"b30_snapshot",None)
     preparation_error = getattr(provider,"b30_preparation_error",None)
+    prepared_calculate = getattr(provider, 'b30_results_from_records', None)
     def records():
         if private and private.current_failure:
             if private.current_failure.missing:
@@ -42,18 +47,27 @@ def build_ports(private=None, *, provider=None):
             raise ValueError(private.current_failure.message)
         return current.get('songs', []) if isinstance(current,dict) else current
     def compute(_user_id, **options):
+        from .prepared_rating import prepare_v1_results
         data=records()
-        return score.compute_all_from_userdata_records(data, **options) if PROFILE == 'center' else score.compute_all_from_userdata_records(data)
+        def calculate():
+            if PROFILE == 'center' and prepared_calculate is not None and options.get('collapse_duplicate_versions'):
+                return prepared_calculate(data)
+            return score.compute_all_from_userdata_records(data, **options) if PROFILE == 'center' else score.compute_all_from_userdata_records(data)
+        from ..public.config import root
+        return prepare_v1_results(calculate,profile=PROFILE,
+            collapse=bool(options.get('collapse_duplicate_versions')) if PROFILE=='center' else True,
+            song_path=root()/'songs/song_data.json',user_id=_user_id,records=data)
     def summary_image(user_id, **options):
         if PROFILE == "client":options.pop("collapse_duplicate_versions",None)
         records()
         if preparation_error is not None:raise preparation_error
-        return summary.render_b30_image(user_id, userdata=current, **prepared_inputs, **options)
+        return summary.render_b30_image(user_id, userdata=current, as_png_bytes=False, **prepared_inputs, **options)
     def v2_image(function,user_id,**options):
         records()
         if preparation_error is not None:raise preparation_error
         extra = {'snapshot':snapshot} if PROFILE == 'center' else {}
-        if PROFILE == 'center' and function is v2.render_b20_v2_image:extra.update(prepared_inputs)
+        if PROFILE == 'center' and function is v2.render_b20_v2_image:extra.update(prepared_inputs, as_png_bytes=False)
+        else:extra['as_png_bytes']=False
         return function(user_id,userdata=current,**extra,**options)
     from ..public.config import root
     return B30Ports(TAIKOB_FONT_PATH=str(root()/'assets/fonts/DDFont.ttf'),
@@ -66,7 +80,7 @@ def build_ports(private=None, *, provider=None):
         _resolve_taikob_dim_arg=parsing._resolve_taikob_dim_arg,
         _to_jpeg_bytes=parsing._to_jpeg_bytes,
         compute_all_from_userdata=compute,
-        generate_dim_top_image=partial(dimension.generate_dim_top_image,userdata=current),
+        generate_dim_top_image=partial(dimension.generate_dim_top_image,userdata=current,as_png_bytes=False),
         generate_top_N_image=partial(score.generate_top_N_image,observed_at=getattr(provider,'b30_observed_at',None)),
         render_b20_v2_image=partial(v2_image,v2.render_b20_v2_image),
         render_b20_v2_dim_image=partial(v2_image,v2.render_b20_v2_dim_image),
@@ -103,8 +117,15 @@ async def taikob_handle(matcher: Matcher, event: Event):
             from taiko_bot.settings import get_settings
             ok,message=ensure_asset_resource_available(('core-assets','cover-assets','dress-assets','nameplate-assets'),get_settings())
             if not ok:await entry.helpers._finish_text_reply(delivery,event,message)
-        result=execute_b30(CommandContext(user_id=private.authorized_target.user_id,profile=PROFILE),
-                           build_ports(private,provider=provider),command)
+        context=CommandContext(user_id=private.authorized_target.user_id,profile=PROFILE)
+        ports=build_ports(private,provider=provider)
+        calculate=lambda:execute_b30(context,ports,command)
+        try:
+            result=await executor.run(calculate) if can_render_in_worker(command) else await executor.run_on_host(calculate)
+        except (TimeoutError, RenderBusy) as error:
+            message='绘图请求较多，请稍后再试。' if isinstance(error,RenderBusy) else '查询超时，请稍后再试。'
+            await entry.helpers._finish_text_reply(delivery,event,message)
+            return
         provider.verify(private)
         if result is not None:await entry.deliver(delivery,event,result,rating_v2=command[2])
     except (entry.TinfoDenied,entry.TinfoUnavailable):

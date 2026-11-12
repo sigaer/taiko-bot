@@ -2,6 +2,7 @@ from __future__ import annotations
 import re
 from typing import Any, Callable
 from dataclasses import dataclass
+from PIL import Image
 from .models import CommandContext, CommandResult
 
 
@@ -22,6 +23,15 @@ class B30Ports:
     render_b20_v2_dim_image: Callable[..., Any]
     render_b20_v2_image: Callable[..., Any]
     render_b30_image: Callable[..., Any]
+
+
+def _encode_rendered(ports, image):
+    # The command owns renderer outputs. The encoder itself borrows its input.
+    try:
+        return ports._to_jpeg_bytes(image, quality=85)
+    finally:
+        if isinstance(image, Image.Image):
+            image.close()
 
 
 def execute_b30(
@@ -82,7 +92,7 @@ def execute_b30(
             if client:
                 raise
             return CommandResult("text", "请更新数据~", delivery="direct")
-        img_jpg = ports._to_jpeg_bytes(img_buf, quality=85)
+        img_jpg = _encode_rendered(ports, img_buf)
         return CommandResult("image", img_jpg, prefix_text="")
     try:
         result = ports.compute_all_from_userdata(
@@ -117,15 +127,15 @@ def execute_b30(
         return CommandResult("text", "请游玩鬼难度歌曲后再来使用哦~", delivery="direct")
     if not args:
         img_buf = ports.render_b30_image(
-            taiko_id, N=N, collapse_duplicate_versions=True
+            taiko_id, N=N, collapse_duplicate_versions=True, precomputed_results=result
         )
-        img_jpg = ports._to_jpeg_bytes(img_buf, quality=85)
+        img_jpg = _encode_rendered(ports, img_buf)
         return CommandResult("image", img_jpg, prefix_text="")
     if dim is not None:
         img_buf = ports.generate_dim_top_image(
             result, N=N, dim=dim, user_id=taiko_id, font_path=ports.TAIKOB_FONT_PATH
         )
-        img_jpg = ports._to_jpeg_bytes(img_buf, quality=85)
+        img_jpg = _encode_rendered(ports, img_buf)
         return CommandResult("image", img_jpg, prefix_text="")
     img_buf = ports.generate_top_N_image(
         result,
@@ -134,7 +144,7 @@ def execute_b30(
         dynamic_origin=dynamic_origin,
         font_path=ports.TAIKOB_FONT_PATH,
     )
-    img_jpg = ports._to_jpeg_bytes(img_buf, quality=85)
+    img_jpg = _encode_rendered(ports, img_buf)
     return CommandResult("image", img_jpg, prefix_text="")
 
 

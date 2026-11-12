@@ -68,9 +68,8 @@ def load_rating_config(json_path: str | Path) -> dict:
       }
     }
     """
-    json_path = Path(json_path)
-    with json_path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+    from taiko_bot.public_catalog_cache import load_public_json
+    return load_public_json(json_path)
 
 def compute_all_from_userdata_records(
     userdata_records: List[Dict[str, Any]],
@@ -81,9 +80,8 @@ def compute_all_from_userdata_records(
     """
     给定用户数据记录（songs 列表），计算所有曲目的综合 AI 和六维属性。
     """
-    cfg = load_rating_config(json_path)
-    const_map = cfg["const_table"]["const_to_score"]
-    const_table = build_const_table(const_map)
+    from taiko_bot.public_catalog_cache import rating_resources
+    cfg, _, const_table = rating_resources(json_path)
     return _compute_results_from_userdata_records(
         userdata_records,
         cfg,

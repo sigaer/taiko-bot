@@ -14,6 +14,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
+from taiko_bot.runtime.player.render_resources import resources, request_resources
+from taiko_bot.runtime.player.prepared_rating import reusable_v1_results
 
 from .b30_single import _compute_rating_for_entry, _load_rating_resources, build_song_index, render_b30_single_card
 
@@ -97,13 +99,11 @@ SMALL_CARD_PENALTY = 4000
 
 LARGE_CARD_PENALTY = 600
 
-def _load_json(path: Path) -> Any:
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
+from taiko_bot.public_catalog_cache import load_public_json as _load_json, song_index as cached_song_index
 
 def _load_font(path: Path, size: int) -> ImageFont.FreeTypeFont:
     try:
-        return ImageFont.truetype(str(path), size)
+        return resources().font(path, size) if resources() else ImageFont.truetype(str(path), size)
     except Exception:
         return ImageFont.load_default()
 
@@ -228,8 +228,11 @@ def _paste_scaled_center(
     nw = max(1, int(round(ow * scale)))
     nh = max(1, int(round(oh * scale)))
     resized = overlay.resize((nw, nh), Image.LANCZOS)
-    px, py = _center_box(box, resized.size)
-    base.alpha_composite(resized, (px, py))
+    try:
+        px, py = _center_box(box, resized.size)
+        base.alpha_composite(resized, (px, py))
+    finally:
+        resized.close()
 
 def _paste_scaled_center_zoom(
     base: Image.Image,
@@ -249,7 +252,10 @@ def _paste_scaled_center_zoom(
     cy = (y1 + y2) // 2
     px = cx - nw // 2
     py = cy - nh // 2
-    base.alpha_composite(resized, (px, py))
+    try:
+        base.alpha_composite(resized, (px, py))
+    finally:
+        resized.close()
 
 def _trend_series_value(point: Tuple[datetime.datetime, Dict[str, float], float], name: str) -> float:
     if name == "综合Rating":
@@ -646,31 +652,32 @@ def _compose_resizable_template(
     *,
     body_height: int,
 ) -> Image.Image:
+    own = resources().own if resources() else (lambda image:image)
     width, height = template.size
     body_top = GRID_BOX[1]
     footer_start = FOOTER_START_Y
     body_height = max(1, int(body_height))
 
-    top_part = template.crop((0, 0, width, body_top))
-    body_part = template.crop((0, body_top, width, footer_start))
-    footer_part = template.crop((0, footer_start, width, height))
+    top_part = own(template.crop((0, 0, width, body_top)))
+    body_part = own(template.crop((0, body_top, width, footer_start)))
+    footer_part = own(template.crop((0, footer_start, width, height)))
 
     if body_height <= body_part.height:
-        body = body_part.crop((0, 0, width, body_height))
+        body = own(body_part.crop((0, 0, width, body_height)))
     else:
-        body = Image.new("RGBA", (width, body_height), (0, 0, 0, 0))
+        body = own(Image.new("RGBA", (width, body_height), (0, 0, 0, 0)))
         body.alpha_composite(body_part, (0, 0))
 
         slice_y1 = BODY_REPEAT_SLICE_Y
         slice_y2 = BODY_REPEAT_SLICE_Y + BODY_REPEAT_SLICE_H
-        repeat_slice = template.crop((0, slice_y1, width, slice_y2))
+        repeat_slice = own(template.crop((0, slice_y1, width, slice_y2)))
         y = body_part.height
         while y < body_height:
             chunk_h = min(repeat_slice.height, body_height - y)
             if chunk_h == repeat_slice.height:
                 chunk = repeat_slice
             else:
-                chunk = repeat_slice.crop((0, 0, width, chunk_h))
+                chunk = own(repeat_slice.crop((0, 0, width, chunk_h)))
             body.alpha_composite(chunk, (0, y))
             y += chunk_h
 
@@ -684,6 +691,7 @@ def _compose_resizable_template(
     canvas.alpha_composite(footer_part, (0, body_top + body_height))
     return canvas
 
+@request_resources
 def render_b30_image(
     user_id: int,
     N: int = 30,
@@ -693,20 +701,21 @@ def render_b30_image(
     assets_base: str | Path = ASSETS_DIR,
     rating_json_path: str | Path = RATING_JSON_DEFAULT,
     userdata: Optional[Dict[str, Any]] = None,
+    precomputed_results=None,
+    as_png_bytes=True,
     history_snapshots, daily_points, observed_at,
 ) -> bytes:
     assets_base = Path(assets_base)
     template_path = Path(template_path)
-    template = Image.open(template_path).convert("RGBA")
+    template = resources().image(template_path)
     entries = userdata.get("songs", []) if isinstance(userdata, dict) else []
 
-    song_db = _load_json(Path(song_db_path))
-    song_index = build_song_index(song_db)
+    song_index = cached_song_index(song_db_path)
 
     _, rating_index, const_table = _load_rating_resources(str(rating_json_path))
     top_entries = _pick_top_entries(entries, rating_index, const_table, N)
 
-    results = compute_all_from_userdata_records(entries)
+    results = precomputed_results if reusable_v1_results(precomputed_results,profile='client',collapse=True,user_id=user_id,records=entries) else compute_all_from_userdata_records(entries)
     overall = aggregate_topN_value(results, "AI_rating", N)
     new_keys, dim_deltas = compute_b30_update_diff(
         user_id,
@@ -732,7 +741,7 @@ def render_b30_image(
         target_canvas_height=template.height,
         footer_height=footer_height,
     )
-    canvas = _compose_resizable_template(template, body_height=int(layout["body_height"]))
+    canvas = resources().own(_compose_resizable_template(template, body_height=int(layout["body_height"])))
     draw = ImageDraw.Draw(canvas)
 
     rating_font = _load_font(FONT_TITLE_PATH, RATING_FONT_SIZE)
@@ -796,11 +805,13 @@ def render_b30_image(
         daily_points, N, (left_box[2] - left_box[0], left_box[3] - left_box[1])
     )
     if trend_img is not None:
+        resources().own(trend_img)
         _paste_scaled_center(canvas, trend_img, left_box)
 
     dress_img = build_dress_image(userdata)
 
-    info_canvas = Image.new("RGBA", (499, 1600), (0, 0, 0, 0))
+    resources().own(dress_img)
+    info_canvas = resources().own(Image.new("RGBA", (499, 1600), (0, 0, 0, 0)))
     info_draw = ImageDraw.Draw(info_canvas)
     font_title = _get_font(16)
     title_font = _get_font_by_path(TITLE_FONT_PATH, 16)
@@ -820,7 +831,7 @@ def render_b30_image(
         offset_xy=(0, 0),
         title_font=title_font,
     )
-    title_img = _crop_with_pad(info_canvas, plate_box, pad=4)
+    title_img = resources().own(_crop_with_pad(info_canvas, plate_box, pad=4))
 
     center_mid = (center_box[1] + center_box[3]) // 2
     upper_box = (
@@ -845,6 +856,7 @@ def render_b30_image(
             (right_box[2] - right_box[0], right_box[3] - right_box[1]),
             dim_deltas=dim_deltas or None,
         )
+        resources().own(radar_img)
         _paste_scaled_center(canvas, radar_img, right_box)
 
     total_count = min(len(top_entries), N)
@@ -866,15 +878,15 @@ def render_b30_image(
         song_info = song_index.get(song_no)
         if not song_info:
             continue
-        card_bytes = render_b30_single_card(
+        card_img = render_b30_single_card(
             entry,
             song_info,
             assets_base=assets_base,
-            as_png_bytes=True,
+            as_png_bytes=False,
             show_new=get_song_chart_identity_key(song_no, level) in new_keys,
         )
-        card_img = Image.open(BytesIO(card_bytes)).convert("RGBA")
-        card_img = card_img.resize((card_w, card_h), Image.LANCZOS)
+        with card_img as single:
+            card_img = single.resize((card_w, card_h), Image.LANCZOS)
         row = idx // grid_cols
         col = idx % grid_cols
         row_start = row * grid_cols
@@ -885,8 +897,16 @@ def render_b30_image(
         y_vis = start_y + row * (card_h_vis + gap_y)
         x = x_vis - pad_x
         y = y_vis - pad_y
-        canvas.alpha_composite(card_img, (x, y))
+        try:
+            canvas.alpha_composite(card_img, (x, y))
+        finally:
+            card_img.close()
 
-    out = BytesIO()
-    canvas.save(out, format="PNG")
-    return out.getvalue()
+    if not as_png_bytes:
+        return canvas
+    try:
+        out = BytesIO()
+        canvas.save(out, format="PNG")
+        return out.getvalue()
+    finally:
+        canvas.close()

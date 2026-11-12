@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--evidence", type=Path, required=True)
 parser.add_argument("--installed", type=Path, required=True)
 parser.add_argument("--expected-core", choices=["0.1.1", "0.1.2"], default="0.1.1")
+parser.add_argument("--expected-application", default="0.8.3")
 args = parser.parse_args()
 started = time.monotonic()
 sys.dont_write_bytecode = True
@@ -44,7 +45,7 @@ import taiko_application
 assert Path(taiko_application.__file__).is_relative_to(args.installed.resolve())
 assert version("sakura-taiko-core") == args.expected_core
 assert version("sakura-taiko-contract") == "0.1.0"
-assert version("taiko-application") == "0.5.0"
+assert version("taiko-application") == args.expected_application
 classes = {
     "b30_single": B30SingleRenderer,
     "b30_render": B30Renderer,
