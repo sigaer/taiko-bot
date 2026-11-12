@@ -292,7 +292,7 @@ def _safe_int(value, default=0):
 
 def _merge_wahlap_song_without_roll_metadata(new_song, old_song=None):
     """Keep local parser results while refreshing the remaining Wahlap fields."""
-    merged = dict(new_song)
+    merged = {**(old_song or {}), **new_song}
     if isinstance(old_song, dict):
         merged["bpm"] = old_song.get("bpm", merged.get("bpm"))
         for field in ROLL_METADATA_FIELDS:
@@ -2355,6 +2355,13 @@ def sync_song_data_with_taiko_database():
         )
         sync_fumens_to_oss(other_fumen_result.get("downloaded_files", []))
 
+    # Incremental import: existing business fields remain authoritative.
+    try:
+        from .ourtaiko_catalog import refresh_catalog
+        merged = refresh_catalog(merged, root=ROOT_DIR)
+    except Exception:
+        logger.exception("OurTaiko 曲库刷新失败，保留现有曲目继续更新")
+
     # Replace upstream roll metadata with parser output only for songs and
     # courses that pass the audit. Blocked matches preserve their previous
     # values and are recorded for manual review.
@@ -2382,6 +2389,11 @@ def sync_song_data_with_taiko_database():
             len(song_tja_mapping),
             exc,
         )
+    # Keep locally resolved platform songs when the upstream Nijiiro mapping
+    # is refreshed; the catalog is the authority for these additional paths.
+    song_tja_mapping.update({int(song["id"]): song["tja_path"] for song in merged if song.get("tja_path")})
+    from .song_tja_mapping import write_song_tja_mapping
+    write_song_tja_mapping(SONG_TJA_MAPPING_PATH, song_tja_mapping)
     tja_audit = audit_song_data(
         merged,
         song_tja_mapping=song_tja_mapping,
@@ -2436,7 +2448,7 @@ def sync_song_data_with_taiko_database():
         f"rows={rebuilt_count}, matched={matched_count}"
     )
     if audio_sync_failure:
-        raise RuntimeError(f"[AUDIO][ESE] 自动补齐未完成: {audio_sync_failure}")
+        logger.warning("音频补齐部分失败，曲库及定数更新继续: %s", audio_sync_failure)
 
 
 def _sync_audio_and_chart_config(song_data, song_tja_mapping):
@@ -2528,6 +2540,23 @@ def update_taiko_music(interactive=True):
         json.dump(merged, f, ensure_ascii=False, indent=4)
 
     sync_song_data_with_taiko_database()
+    # Fill only missing V2 constants. Individual unavailable charts are
+    # reported by the calculator and never prevent catalog publication.
+    try:
+        from .catalog_constants import fill_constants
+        from .ourtaiko_catalog import atomic_json
+        calculator = Path(os.environ.get("TAIKO_CONSTANTS_CALCULATOR") or str(ROOT_DIR / "taiko-forum/taiko_viewer/.tja-runtime/calculate.py"))
+        if calculator.is_file():
+            catalog = json.loads(SONG_DATA_PATH.read_text(encoding="utf-8"))
+            constants_report = fill_constants(
+                catalog, output=ROOT_DIR / "songs/catalog_constants.json",
+                csv_path=ROOT_DIR / "songs/constants_id_v2.csv",
+                calculator=calculator, tja_root=ESE_SYNC_REPO_PATH,
+            )
+            atomic_json(SONG_DATA_PATH, catalog)
+            logger.info("曲库定数增量补算完成: %s", constants_report)
+    except Exception:
+        logger.exception("曲库定数补算失败，保留已发布曲库")
     title_items = refresh_title_catalog_cache()
     if not title_items:
         raise ValueError("称号目录缓存刷新失败：all/title 未返回有效数据")

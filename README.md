@@ -111,4 +111,16 @@ python bot.py
 
 升级时停止 Bot，执行 `git pull` 和 `python -m pip install -r requirements.txt`，再启动。保留自己的 `.env`、`storage/`、`songs/` 和 `assets/`。
 
+## 中心曲库维护
+
+每日歌曲任务会将 OurTaiko 分页曲库增量合入中心 `songs/song_data.json`，Bot 和 Viewer 共同读取这一份数据。已有曲目的业务字段不由 OurTaiko 覆盖；仅补充 `official_id`、`ourtaiko_ids` 和缺失的 ESE 路径。虹 ID 直接使用 `id`，无虹 ID 的曲目沿用 `100000` 起的其他平台编号，重复导入保留已分配 ID。官方 ID 仅供记录。
+
+分类沿用 `shelf_status`：0 国行上架、1 未上架、2 其他平台。新虹 ID 默认未上架，实际国行状态以现有国行曲库为准。TJA、音频或某一谱面缺失不阻塞其余曲目。
+
+维护者可用 `python -I -m taiko_bot.offline.catalog_import --root /path/to/staging` 预览；`--cached` 使用完整抓取缓存，`--write` 原子发布曲库并备份旧文件。暂存目录需准备现有 `songs/song_data.json`、`song_id2tjapath.json`。分页不完整时保留上次完整缓存。
+
+`python -I -m taiko_bot.offline.catalog_constants --root /path/to/staging` 使用 Viewer 已准备的固定版本 `.tja-runtime/calculate.py`，只补 CSV 中缺少的单人谱定数，保存 `catalog_constants.json` 的物量/星级校验证据。`--limit N` 可分批续算。既有定数行保持原值；双打、物量不一致和解析失败的谱面留空并记入报告。每日任务也会增量补算，可通过 `TAIKO_CONSTANTS_CALCULATOR` 指定同一计算器路径。
+
+开发验证和构建仍须使用现有内存隔离 wrapper，业务数据及生成结果不提交到源码仓库。
+
 许可：[GPL-2.0-only](LICENSE)。
