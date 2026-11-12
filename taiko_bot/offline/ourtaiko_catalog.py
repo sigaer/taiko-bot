@@ -155,7 +155,10 @@ def merge_catalog(songs, charts, *, mainland_ids=None):
         if int(song["id"]) >= OTHER_ID_START:
             for title in {title_key(song.get("song_name")), title_key(song.get("song_name_jp"))} - {""}:
                 other_titles[title].append(song)
-    next_id = max([OTHER_ID_START - 1, *(sid for sid in by_id if sid >= OTHER_ID_START)])
+    # Merged IDs remain reserved forever: reusing a former platform ID would
+    # make immutable history point at a different song after a later import.
+    next_id = max([OTHER_ID_START - 1, *by_id,
+                   *(int(old) for song in merged for old in song.get("legacy_ids", []))])
     report = {"upstreamCharts": len(charts), "added": 0, "matched": 0, "issues": []}
     assignments = {}
     for chart in sorted(charts, key=lambda row: (int(row.get("numberId") or 0), row["id"])):

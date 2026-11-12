@@ -2313,7 +2313,8 @@ def sync_song_data_with_taiko_database():
 
     # Merge "other songs" (taiko.wiki entries whose songNo is not numeric).
     assigned_other_songnos = {str(no) for song in old_data for no in song.get("wiki_song_nos", [])}
-    max_other_id = OTHER_SONG_ID_START - 1
+    max_other_id = max([OTHER_SONG_ID_START - 1,
+                        *(int(old) for song in old_data for old in song.get("legacy_ids", []))])
     for song in old_other_songs:
         try:
             sid = int(song.get("id"))

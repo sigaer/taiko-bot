@@ -64,6 +64,13 @@ def test_arcade_removal_moves_source_identity_to_platform_namespace():
     assert report['redirects']=={7:100000}
 
 
+def test_other_id_allocator_never_reuses_merged_historical_ids():
+    old=[{'id':1530,'shelf_status':1,'legacy_ids':[101999]}]
+    songs,assignments,_=merge_catalog(old,[{'id':'new','numberId':1,'nijiiroId':None,'title':'New'}])
+    assert assignments['new']==102000
+    assert identity_map(songs)=={101999:1530}
+
+
 def test_public_reference_migration_preserves_canonical_values_and_is_idempotent(tmp_path):
     songs=tmp_path/'songs'; songs.mkdir()
     payloads={'song_alias.json':[{'id':100138,'aliases':['niv']}],
