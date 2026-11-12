@@ -24,6 +24,17 @@ FIELDS = ("id", "title", "difficulty", "totalNotes", "sub_constant_1", "main_con
 DIFFICULTIES = {"hard": 3, "oni": 4, "edit": 5}
 
 
+def fill_missing_note_counts(song, charts, levels):
+    """Fill verified single-chart gaps in both maintained and imported songs."""
+    combos = list(song.get("max_combo") or ["-"] * 5)
+    for chart in charts:
+        course = chart.get("course")
+        index = {"easy": 1, "normal": 2, **DIFFICULTIES}.get(course.removesuffix("_single") if isinstance(course, str) else "")
+        if index and chart.get("branch") in ("master", "unbranched") and levels.get(index) == positive_id(song.get(f"level_{index}")) and not positive_id(combos[index-1]):
+            combos[index-1] = chart["totalNotes"]
+    song["max_combo"] = combos
+
+
 def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
     spec = importlib.util.spec_from_file_location("catalog_pinned_calculator", calculator)
     module = importlib.util.module_from_spec(spec)
@@ -84,14 +95,7 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
                 existing.add((int(sid), difficulty))
                 generated += 1
             # Only fill empty note counts. Existing catalog values stay intact.
-            combos = list(song.get("max_combo") or ["-"] * 5)
-            for chart in charts:
-                course = chart.get("course")
-                index = {"easy": 1, "normal": 2, **DIFFICULTIES}.get(course.removesuffix("_single") if isinstance(course, str) else "")
-                if index and chart.get("branch") in ("master", "unbranched") and levels.get(index) == positive_id(song.get(f"level_{index}")) and not positive_id(combos[index-1]):
-                    combos[index-1] = chart["totalNotes"]
-            if song.get("catalog_source") == "ourtaiko":
-                song["max_combo"] = combos
+            fill_missing_note_counts(song, charts, levels)
             attempts[sid] = signature
         except Exception as exc:
             issues.append({"id": int(sid), "reason": str(exc)[:120] or type(exc).__name__})

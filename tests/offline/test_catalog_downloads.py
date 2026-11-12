@@ -91,3 +91,14 @@ def test_optional_static_mirror_failure_does_not_block_catalog(monkeypatch, tmp_
         raise subprocess.CalledProcessError(1,['ossutil'])
     monkeypatch.setattr(catalog_publication.subprocess,'run',failed)
     assert catalog_publication.sync_public_mirror(tmp_path/'song_data.json','oss://synthetic/song_data.json') is False
+
+
+def test_missing_note_counts_fill_maintained_songs_without_overwriting_values():
+    from taiko_bot.offline.catalog_constants import fill_missing_note_counts
+    song={'id':1500,'level_3':7,'level_4':9,'level_5':'-','max_combo':['-','-','-',728,'-']}
+    charts=[{'course':'hard_single','branch':'unbranched','totalNotes':462},
+            {'course':'oni','branch':'unbranched','totalNotes':999},
+            {'course':'edit','branch':'master','totalNotes':1000},
+            {'course':'normal_p1','branch':'unbranched','totalNotes':123}]
+    fill_missing_note_counts(song,charts,{3:7,4:9,5:10})
+    assert song['max_combo']==['-','-',462,728,'-']
