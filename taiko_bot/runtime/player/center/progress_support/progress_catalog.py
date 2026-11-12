@@ -6,6 +6,7 @@ from taiko_application.query import ProgressQueryContext
 from taiko_application.query import progress as application_progress
 
 from sakura_taiko_core.chart import progress_catalog as domain_progress
+from taiko_bot.progress_visibility import is_progress_song_available
 
 import json
 
@@ -33,7 +34,8 @@ def load_song_index() -> Dict[int, Dict[str, Any]]:
 
 @lru_cache(maxsize=1)
 def load_active_song_ids():
-    return domain_progress.active_song_ids_from_index(load_song_index())
+    return {song_id for song_id, song in load_song_index().items()
+            if is_progress_song_available(song)}
 
 @lru_cache(maxsize=1)
 def _load_rating_entries() -> List[Dict[str, Any]]:
@@ -92,13 +94,18 @@ def query_progress_items_by_star(star_value: int):
         )
     )
 
+def _load_progress_chart_keys():
+    active_song_ids = load_active_song_ids()
+    return {key for key in load_cn_available_chart_keys(SONG_DATA_PATH)
+            if key[0] in active_song_ids}
+
 def _progress_inputs(*fields):
     providers={
         "song_index":load_song_index,
         "active_song_ids":load_active_song_ids,
         "rating_entries":_load_rating_entries,
         "static_progress_map":_load_static_progress_map,
-        "cn_available_chart_keys":lambda:load_cn_available_chart_keys(SONG_DATA_PATH),
+        "cn_available_chart_keys":_load_progress_chart_keys,
     }
     return domain_progress.ProgressCatalogInputs(**{name:providers[name]() for name in fields})
 

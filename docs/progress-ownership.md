@@ -36,3 +36,22 @@ Sakura 统计注册到新 progress matcher，保留其他账号 mention 的不�
 安装 wheel 后双端 pip check 通过。最终补验耗时 210.13 秒，子进程峰值 RSS 218384 KiB，在受限 QA cgroup 中串行完成。公开/已有用例只跑代表性回归，未重跑完整存储协议验收。
 
 日志：`final-parity-center.log`、`final-parity-client.log`、`history-center.log`、`security-center.log`、`security-client.log`、`limited.log`、`units-center.log`、`units-client.log`、`final-verify.log` 和 `scope.json`，均位于上述隔离目录。
+
+## 0.21.4 进度曲目范围修复（2026-11-12）
+
+中心原有筛选只识别 `shelf_status`，遗漏了客户端已有的国行下架补充名单。
+例如“限界突破×Survivor”（231）的鬼谱为 3 星，Wahlap 合并库与原始库仍给出
+`shelf_status=0`，导致它进入 3 星进度。
+
+`taiko_bot.progress_visibility` 统一约束双端进度：仅接受在架状态，排除中日文名中的
+双打标记，以及现有补充名单 231、678、987、1167、1200。中心星级目录在原始库
+实装谱面筛选后应用同一范围；星级汇总、定数、过关和自定义进度的列表及成绩筛选
+均复用该范围。客户端另保留既有公开可见性限制。段位进度不属于本次曲目目录修改。
+
+合成回归位于 `tests/legacy_host/test_progress_visibility.py`，覆盖所有补充 ID、
+数字/字符串下架状态、双打中日文标记、国行未上架状态、四类 renderer 的输入列表
+与总数、汇总对越界成绩的排除。原星级回归也保留；验证在既有内存 QA 包装器下执行。
+
+安装后的 0.21.4 中心端 24 项、客户端 18 项通过，`pip check` 通过；证据为
+`qa-3acd13970347`。只读当前公共曲库复核（`qa-3dc8bb8739e2`）：3 星从 4 张谱面
+降为 3 张，排除 231 鬼谱；1～10 星所有目录通过可用性检查。未读取玩家私人数据。

@@ -10,6 +10,7 @@ from functools import lru_cache
 from typing import Any, Dict, List, Set
 
 from taiko_bot.settings import get_settings
+from taiko_bot.progress_visibility import is_progress_song_available
 
 from ..recommendation_support.song_visibility import is_song_publicly_visible
 
@@ -29,7 +30,7 @@ def load_song_index() -> Dict[int, Dict[str, Any]]:
 
 def is_song_on_shelf(song: Dict[str, Any]) -> bool:
     """与 score_calculator / 曲库其它模块保持一致的对外可见判定。"""
-    return is_song_publicly_visible(song)
+    return is_song_publicly_visible(song) and is_progress_song_available(song)
 
 @lru_cache(maxsize=1)
 def load_active_song_ids() -> Set[int]:
