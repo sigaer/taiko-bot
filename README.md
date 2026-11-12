@@ -123,6 +123,10 @@ python bot.py
 
 `python -I -m taiko_bot.offline.catalog_constants --root /path/to/staging` 使用 Viewer 已准备的固定版本 `.tja-runtime/calculate.py`，只补 CSV 中缺少的单人谱定数，保存 `catalog_constants.json` 的物量/星级校验证据。`--limit N` 可分批续算。既有定数行保持原值；双打、物量不一致和解析失败的谱面留空并记入报告。每日任务也会增量补算，可通过 `TAIKO_CONSTANTS_CALCULATOR` 指定同一计算器路径。
 
-开发验证和构建仍须使用现有内存隔离 wrapper，业务数据及生成结果不提交到源码仓库。
+本地 ESE 找不到的谱面，从对应 OurTaiko 持久 ID 的 `/resources` 接口取得下载清单，流式校验 SHA-256、大小和课程星级后写入 `assets/catalog_sources/ourtaiko`。这些曲目以 `resource_source: ourtaiko` 标明路径根目录；不改动 ESE 仓库，也不替换已有可用文件。TJA 与 WAVE 音频一起校验，Viewer 下载和定数计算使用同一资源解析规则。
+
+`python -I -m taiko_bot.offline.catalog_images` 按固定版本 [WHMHammer/tja-tools](https://github.com/WHMHammer/tja-tools) 生成缺失的 PNG；每日更新也执行增量补图。标题优先使用曲库中文名，无中文名时使用原名，不附加水印，不修改源 TJA。生成前校验难度、单双打和已有物量，P1/P2 分别输出，保留已有图片。单浏览器、单页面、逐图处理，图像尺寸、单图时长和文件大小有上限；异常谱面记录在 `logs/catalog_image_report.json`。维护回填通过现有内存隔离 wrapper 分批执行，资源总包更新后再供客户端同步；客户端按流计算大资源包哈希。定数计算继续使用原固定版本计算器。
+
+每日补图后自动执行标准资源包脚本的 `fumens` 范围，更新谱面包和总包；失败会保留重试标记。维护时可用 `scripts/build_open_resource_archives.sh fumens` 单独发布图片。开发验证和构建仍须使用现有内存隔离 wrapper，业务数据及生成结果不提交到源码仓库。
 
 许可：[GPL-2.0-only](LICENSE)。

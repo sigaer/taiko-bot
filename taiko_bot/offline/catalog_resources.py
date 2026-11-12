@@ -28,6 +28,9 @@ def single_levels(text):
             key, value = key.strip().lower(), value.strip().lower()
             if key == "course":
                 course = int(value) + 1 if value.isdigit() else COURSES.get(value)
+                # STYLE is scoped to a course. Earlier double blocks must not
+                # hide a following course whose #START has no player suffix.
+                style, level = "single", None
             elif key == "level":
                 level = positive_id(value)
             elif key == "style":
@@ -37,7 +40,7 @@ def single_levels(text):
     return levels
 
 
-def enrich_resources(songs, charts, assignments, root, mapping):
+def enrich_resources(songs, charts, assignments, root, mapping, *, runtime_root=None, download_missing=False):
     by_id = {int(s["id"]): s for s in songs}
     filenames = defaultdict(list)
     for path in sorted(root.rglob("*.tja")):
@@ -50,6 +53,13 @@ def enrich_resources(songs, charts, assignments, root, mapping):
             continue
         song = by_id[sid]
         try:
+            from .catalog_downloads import catalog_resource_root, download_chart_resources
+            current_root = catalog_resource_root(song, root, runtime_root=runtime_root)
+            if song.get("resource_source") == "ourtaiko" and safe_resource(current_root, song.get("tja_path")):
+                report["matched"] += 1
+                report["audio"] += bool(safe_resource(current_root, song.get("audio_path")))
+                seen.add(sid)
+                continue
             path = safe_resource(root, mapping.get(str(sid)) or mapping.get(sid))
             if path is None:
                 matches = []
@@ -63,6 +73,14 @@ def enrich_resources(songs, charts, assignments, root, mapping):
                 if len(matches) == 1:
                     path = matches[0]
             if path is None:
+                if download_missing and runtime_root is not None and chart.get("hasFiles"):
+                    try:
+                        song.update(download_chart_resources(chart, runtime_root))
+                        report["matched"] += 1; report["audio"] += 1
+                        seen.add(sid)
+                        continue
+                    except Exception as exc:
+                        report["issues"].append({"id": sid, "reason": str(exc)[:160]})
                 song.setdefault("tja_path", "")
                 song.setdefault("audio_path", "")
                 report["missing"] += 1

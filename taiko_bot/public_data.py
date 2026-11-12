@@ -91,6 +91,14 @@ def _sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def _write_bytes(path: Path, payload: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp_path = path.with_suffix(f"{path.suffix}.tmp")
@@ -349,7 +357,8 @@ def _resolve_manifest_resource_spec(
 def _download_resource_archive(
     target_path: Path,
     url: str,
-) -> bytes:
+) -> str:
+    digest = hashlib.sha256()
     try:
         with httpx.Client(timeout=300.0, trust_env=False, follow_redirects=True) as client:
             with client.stream("GET", url) as response:
@@ -359,9 +368,10 @@ def _download_resource_archive(
                     for chunk in response.iter_bytes():
                         if chunk:
                             handle.write(chunk)
+                            digest.update(chunk)
     except Exception as exc:
         raise PublicDataSyncError(f"下载资源包失败：{exc}") from exc
-    return target_path.read_bytes()
+    return digest.hexdigest()
 
 
 def _replace_asset_path(source_path: Path, target_path: Path) -> None:
@@ -465,7 +475,7 @@ def sync_asset_bundle(settings: Settings | None = None) -> Dict[str, Any]:
 
     try:
         download_result = download_asset_bundle(archive_path, cfg)
-        archive_sha = _sha256_bytes(archive_path.read_bytes())
+        archive_sha = _sha256_file(archive_path)
         expected_sha = str(download_result.get("sha256") or remote_sha).strip().lower()
         if expected_sha and archive_sha != expected_sha:
             raise PublicDataSyncError("资源包校验失败。")
@@ -604,8 +614,7 @@ def sync_asset_resource(
     temp_root = Path(tempfile.mkdtemp(prefix="taiko-resource-", dir=str(cfg.storage_dir)))
     archive_path = temp_root / f"{resource_name}.zip"
     try:
-        payload = _download_resource_archive(archive_path, url)
-        archive_sha = _sha256_bytes(payload)
+        archive_sha = _download_resource_archive(archive_path, url)
         if remote_sha and archive_sha != remote_sha:
             raise PublicDataSyncError(f"资源包 {resource_name} 校验失败。")
         _extract_resource_archive(archive_path, resource_name, cfg)

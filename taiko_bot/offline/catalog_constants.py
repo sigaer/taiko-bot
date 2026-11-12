@@ -45,7 +45,9 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
             continue
         sid = str(song["id"])
         wanted = {d: i for d, i in DIFFICULTIES.items() if positive_id(song.get(f"level_{i}")) and (int(sid), d) not in existing}
-        path = safe_resource(tja_root, song.get("tja_path"))
+        from .catalog_downloads import catalog_resource_root
+        source_root = catalog_resource_root(song, tja_root, runtime_root=output.parent.parent)
+        path = safe_resource(source_root, song.get("tja_path"))
         if not wanted or path is None:
             continue
         data = path.read_bytes()

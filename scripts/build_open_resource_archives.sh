@@ -5,7 +5,7 @@ SOURCE_ROOT="${TAIKO_SOURCE_ROOT:-/home/sigaer/taiko}"
 ASSETS_DIR="${SOURCE_ROOT}/assets"
 OUTPUT_DIR="${TAIKO_OPEN_RESOURCE_DIR:-/home/sigaer/taiko-open-resources}"
 SCOPE="${1:-all}"
-[[ "$SCOPE" == all || "$SCOPE" == dress || "$SCOPE" == nameplate ]] || { echo 'Usage: build_open_resource_archives.sh [all|dress|nameplate]' >&2; exit 2; }
+[[ "$SCOPE" == all || "$SCOPE" == dress || "$SCOPE" == nameplate || "$SCOPE" == fumens ]] || { echo 'Usage: build_open_resource_archives.sh [all|dress|nameplate|fumens]' >&2; exit 2; }
 
 mkdir -p "$OUTPUT_DIR"
 STAGING_DIR="$(mktemp -d "$OUTPUT_DIR/.resource-build.XXXXXX")"
@@ -56,6 +56,8 @@ fi
 if [[ "$SCOPE" == all ]]; then
   build_zip "taiko-bot-core-assets.zip" "${CORE_ITEMS[@]}"
   build_zip "taiko-bot-cover-assets.zip" "${COVER_ITEMS[@]}"
+fi
+if [[ "$SCOPE" == all || "$SCOPE" == fumens ]]; then
   build_zip "taiko-bot-fumens-assets.zip" "${FUMENS_ITEMS[@]}"
   build_zip "taiko-bot-fumens-renamed.zip" "${FUMENS_ITEMS[@]}"
 fi

@@ -30,7 +30,7 @@ def merge_song_fields(target, previous):
     # Source IDs and paths belong to the chosen OurTaiko chart, especially when
     # filenames coincide across game/pop categories or old/new audio versions.
     protected = {"id", "sort", "shelf_status", "catalog_source", "ourtaiko_ids", "nijiiro_id",
-                 "official_id", "tja_path", "audio_path", "legacy_ids", "songNo", "wiki_song_nos"}
+                 "official_id", "tja_path", "audio_path", "resource_source", "tja_sha256", "audio_sha256", "legacy_ids", "songNo", "wiki_song_nos"}
     for key, value in previous.items():
         if key in protected:
             continue

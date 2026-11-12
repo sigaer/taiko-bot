@@ -194,6 +194,12 @@ def merge_catalog(songs, charts, *, mainland_ids=None):
             if key not in {"id", "sort", "shelf_status", "catalog_source"} and song.get(key) in (None, "", "-", []):
                 song[key] = value
         assignments[chart["id"]] = sid
+        song["ourtaiko_difficulties"] = [
+            {"level": positive_id(d.get("level")), "difficulty": COURSES[str(d.get("course", "")).lower()],
+             "side": str(d.get("side", "single")).lower()}
+            for d in chart.get("difficulties", [])
+            if str(d.get("course", "")).lower() in COURSES and positive_id(d.get("level"))
+            and str(d.get("side", "single")).lower() in ("single", "p1", "p2")]
         by_source[chart["id"]] = song
         song["ourtaiko_ids"] = sorted(set(song.get("ourtaiko_ids", [])) | {chart["id"]})
         official = str(chart.get("officialId") or "").strip()
@@ -236,7 +242,8 @@ def refresh_catalog(songs, *, root: Path, fetch=True, persist=True):
     from .catalog_resources import enrich_resources
     mapping_path = root / "songs/song_id2tjapath.json"
     mapping = json.loads(mapping_path.read_text(encoding="utf-8")) if mapping_path.is_file() else {}
-    report["resources"] = enrich_resources(merged, charts, assignments, Path("/home/sigaer/git/ESE_autosync"), mapping)
+    report["resources"] = enrich_resources(merged, charts, assignments, Path("/home/sigaer/git/ESE_autosync"), mapping,
+                                          runtime_root=root, download_missing=fetch)
     from .catalog_reconcile import reconcile_catalog, load_legacy_provenance
     merged, report["reconciliation"] = reconcile_catalog(
         merged, charts, assignments, mapping=mapping,

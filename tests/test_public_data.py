@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import hashlib
 from zipfile import ZipFile
 
 from taiko_bot import public_data
@@ -85,9 +86,9 @@ def test_sync_asset_resource_installs_split_archive(tmp_path, monkeypatch):
             }
         }
 
-    def fake_download(target_path: Path, _url: str) -> bytes:
+    def fake_download(target_path: Path, _url: str) -> str:
         target_path.write_bytes(archive_path.read_bytes())
-        return archive_path.read_bytes()
+        return sha256
 
     monkeypatch.setattr(public_data, "load_manifest", fake_manifest)
     monkeypatch.setattr(public_data, "_download_resource_archive", fake_download)
@@ -183,3 +184,30 @@ def test_sync_asset_resource_falls_back_to_legacy_bundle(tmp_path, monkeypatch):
 
 def test_public_data_files_include_v2_constants_csv():
     assert PUBLIC_DATA_FILES["constants_id_v2"] == "constants_id_v2.csv"
+
+
+def test_resource_archive_hashes_stream_without_whole_file_read(tmp_path, monkeypatch):
+    chunks = [b"a" * (1024 * 1024), b"b" * 17]
+    expected = hashlib.sha256(b"".join(chunks)).hexdigest()
+
+    class Response:
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        def raise_for_status(self): pass
+        def iter_bytes(self): yield from chunks
+
+    class Client:
+        def __init__(self, **kwargs): pass
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+        def stream(self, method, url): return Response()
+
+    def reject_read_bytes(self):
+        raise AssertionError("Resource archives must use bounded streaming reads")
+
+    monkeypatch.setattr(public_data.httpx, "Client", Client)
+    monkeypatch.setattr(Path, "read_bytes", reject_read_bytes)
+    target = tmp_path / "resource.zip"
+    assert public_data._download_resource_archive(target, "https://example.com/resource.zip") == expected
+    assert public_data._sha256_file(target) == expected
+    assert target.stat().st_size == sum(map(len, chunks))

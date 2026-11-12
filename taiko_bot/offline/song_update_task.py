@@ -1362,22 +1362,9 @@ def sync_rating_structured_with_song_data(song_data):
         f"preserved_stale_local={preserved_stale_local}, failed={failed}"
     )
 
-    subprocess.run(
-        [
-            "ossutil",
-            "cp",
-            "-f",
-            str(RATING_STRUCTURED_WITH_IDS_PATH),
-            OSS_RATING_STRUCTURED_WITH_IDS_PATH,
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    print(
-        f"[RATING][OSS] 已同步: {RATING_STRUCTURED_WITH_IDS_PATH} -> "
-        f"{OSS_RATING_STRUCTURED_WITH_IDS_PATH}"
-    )
+    from .catalog_publication import sync_public_mirror
+    if sync_public_mirror(RATING_STRUCTURED_WITH_IDS_PATH, OSS_RATING_STRUCTURED_WITH_IDS_PATH):
+        print(f"[RATING][OSS] 已同步: {RATING_STRUCTURED_WITH_IDS_PATH}")
 
 
 def _score_title_base(text):
@@ -2399,7 +2386,7 @@ def sync_song_data_with_taiko_database():
         )
     # Keep locally resolved platform songs when the upstream Nijiiro mapping
     # is refreshed; the catalog is the authority for these additional paths.
-    song_tja_mapping.update({int(song["id"]): song["tja_path"] for song in merged if song.get("tja_path")})
+    song_tja_mapping.update({int(song["id"]): song["tja_path"] for song in merged if song.get("tja_path") and song.get("resource_source") != "ourtaiko"})
     active_ids = {int(song["id"]) for song in merged}
     song_tja_mapping = {int(sid): path for sid, path in song_tja_mapping.items() if int(sid) in active_ids}
     from .song_tja_mapping import write_song_tja_mapping
@@ -2431,25 +2418,10 @@ def sync_song_data_with_taiko_database():
         print(f"[AUDIO][ESE][WARN] {audio_sync_failure}")
     check_missing_audio_for_song_data(merged)
 
-    subprocess.run(
-        ["ossutil", "cp", "-f", str(SONG_DATA_PATH), OSS_SONG_DATA_PATH],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
+    from .catalog_publication import sync_public_mirror
+    sync_public_mirror(SONG_DATA_PATH, OSS_SONG_DATA_PATH)
     if not audio_sync_failure:
-        subprocess.run(
-            [
-                "ossutil",
-                "cp",
-                "-f",
-                str(BRANCH_AUDIO_MANIFEST_PATH),
-                OSS_BRANCH_AUDIO_MANIFEST_PATH,
-            ],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+        sync_public_mirror(BRANCH_AUDIO_MANIFEST_PATH, OSS_BRANCH_AUDIO_MANIFEST_PATH)
     sync_rating_structured_with_song_data(merged)
     sync_song_score_with_wiki(merged)
     rebuilt_count, matched_count = rebuild_scoreline_dataset(SCORELINE_DATA_PATH)
@@ -2575,6 +2547,19 @@ def update_taiko_music(interactive=True):
             logger.info("曲库定数增量补算完成: %s", constants_report)
     except Exception:
         logger.exception("曲库定数补算失败，保留已发布曲库")
+    try:
+        from .catalog_images import backfill_images
+        catalog = json.loads(SONG_DATA_PATH.read_text(encoding="utf-8"))
+        image_report = backfill_images(catalog, root=ROOT_DIR, ese_root=ESE_SYNC_REPO_PATH)
+        logger.info("谱面图片增量补齐: generated=%d issues=%d", len(image_report["generated"]), len(image_report["issues"]))
+    except Exception:
+        logger.exception("谱面图片补齐部分失败，保留已有图片继续更新")
+    try:
+        from .catalog_images import publish_image_archives
+        if publish_image_archives(root=ROOT_DIR):
+            logger.info("谱面图片资源包已更新")
+    except Exception:
+        logger.exception("谱面资源包更新失败，保留重试标记继续更新")
     title_items = refresh_title_catalog_cache()
     if not title_items:
         raise ValueError("称号目录缓存刷新失败：all/title 未返回有效数据")
