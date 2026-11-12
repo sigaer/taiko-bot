@@ -7,6 +7,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 from taiko_application.score.cancellation import render_stop, check_cancelled
+from ..request_timing import phase
 
 
 class RenderBusy(RuntimeError):
@@ -52,7 +53,8 @@ class RenderExecutor:
         return slots, deadline
 
     async def run(self, function, *, timeout=60):
-        slots, deadline = await self._reserve(timeout)
+        with phase("render.queue"):
+            slots, deadline = await self._reserve(timeout)
         loop = asyncio.get_running_loop()
         stop = Event()
         def work():
@@ -84,7 +86,8 @@ class RenderExecutor:
 
     async def run_on_host(self, function, *, timeout=60):
         # pyplot stays on the host thread, but consumes the same render budget.
-        slots, _ = await self._reserve(timeout)
+        with phase("render.queue"):
+            slots, _ = await self._reserve(timeout)
         try:
             return function()
         finally:

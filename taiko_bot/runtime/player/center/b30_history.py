@@ -11,6 +11,7 @@ from .b30_support import taikob_v2 as v2
 from .snapshot_history import parse_snapshot_time
 from .history_time import admit_history_snapshot, history_time_ceiling, is_future_history_time
 from taiko_application.score.cancellation import check_cancelled
+from ...request_timing import measured, phase
 TrendPoint = Tuple[datetime.datetime, Dict[str,float], float]
 TrendImageStatus = str
 def _song_key(song: Dict[str, Any]) -> tuple:
@@ -36,6 +37,7 @@ def _history_snapshot_inputs(view):
         if snapshot is not None:
             yield timestamp, snapshot
 
+@measured("history.reconstruct")
 def _reconstruct_user_snapshots(inputs, *, max_days=None):
     inputs = list(inputs)
     cutoff = inputs[-1][0].date() - datetime.timedelta(days=max_days-1) if inputs and max_days else None
@@ -101,6 +103,7 @@ def _limit_trend_points_to_recent_days(
     cutoff_date = latest_date - datetime.timedelta(days=max_days - 1)
     return [point for point in points if point[0].date() >= cutoff_date]
 
+@measured("history.rating_points")
 def _build_daily_rating_points_from_view(
     user_id: int,
     N: int = 20,
@@ -195,6 +198,7 @@ def _build_daily_rating_points_from_view(
     daily_points = sorted(daily.values(), key=lambda x: x[0])
     return "ok", _limit_trend_points_to_recent_days(daily_points, max_days)
 
+@measured("history.capture")
 def capture(provider, view, store, command, current):
     N,args,use_v2,dynamic,dim=command
     try:
@@ -212,7 +216,8 @@ def capture(provider, view, store, command, current):
     summary=(use_v2 and not dynamic and v2_dim is None and not unknown) or (not use_v2 and not args)
     if not summary or current is None:
         return ()
-    timed=list(_history_snapshot_inputs(view))
+    with phase("history.read"):
+        timed=list(_history_snapshot_inputs(view))
     history=[dict(capturedAt=dt.isoformat(),payload=payload) for dt,payload in timed]
     provider.verify_initial()
     # The legacy B30 renderer supplies custom aggregation functions (including

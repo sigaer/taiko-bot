@@ -32,6 +32,7 @@ from types import MappingProxyType
 from typing import Any, Dict, Mapping, Tuple
 
 import requests
+from ...request_timing import measured
 
 ROOT_DIR = Path(os.getenv("TAIKO_CENTER_ROOT", "/home/sigaer/taiko"))
 V2_DATASET_URL = "https://viewer.sakura-bot.cn/api/taiko/data/constants_id_v2"
@@ -143,6 +144,7 @@ def _start_background_refresh_locked(now: float) -> None:
     ).start()
 
 
+@measured("catalog.v2_snapshot")
 def load_v2_snapshot(*, force_refresh: bool = False) -> V2DataSnapshot:
     global _retry_after_monotonic, _snapshot, _fallback_revision
 

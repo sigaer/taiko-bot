@@ -5,7 +5,7 @@ from pathlib import Path
 
 def create_app():
     import nonebot
-    from nonebot.adapters.qq import Adapter as QQAdapter
+    from .runtime.qq_adapter import Adapter as QQAdapter
     from onebot_runtime.adapter import Adapter as OneBotAdapter
 
     profile = os.environ.get("TAIKO_SONG_PROFILE", "client")

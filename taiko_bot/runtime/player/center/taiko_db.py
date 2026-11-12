@@ -5,6 +5,7 @@ from typing import Any, Dict
 
 import pymysql
 from .runtime_env import load_runtime_environment
+from ...request_timing import measured
 
 load_runtime_environment()
 
@@ -25,5 +26,6 @@ def _db_config() -> Dict[str, Any]:
     }
 
 
+@measured("db.connect")
 def get_taiko_db_connection():
     return pymysql.connect(**_db_config())

@@ -11,6 +11,7 @@ from nonebot.adapters.onebot.v11.utils import log
 from nonebot.drivers import WebSocket
 from nonebot.exception import WebSocketClosed
 from nonebot.utils import escape_tag
+from taiko_bot.runtime.request_timing import event_dispatch
 
 try:
     from nonebot.adapters.onebot.reverse_ws_stats import reverse_ws_stats
@@ -134,7 +135,8 @@ class Adapter(BaseAdapter):
                 data = await websocket.receive()
                 json_data = json.loads(data)
                 if event := self.json_to_event(json_data):
-                    task = asyncio.create_task(bot.handle_event(event))
+                    with event_dispatch("onebot_adapter_dispatch"):
+                        task = asyncio.create_task(bot.handle_event(event))
                     task.add_done_callback(self.tasks.discard)
                     self.tasks.add(task)
         except WebSocketClosed:

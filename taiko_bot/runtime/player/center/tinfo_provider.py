@@ -19,6 +19,7 @@ from taiko_store.merged_read import MAX_BYTES, merge_rule_revision
 from .bot_binding_authority import normalize_bot_principal
 from .bot_binding_mutation import _read, _entry
 from .materialization import materialize_merged_bind_userdata, MergedBindError
+from ...request_timing import measured, phase
 
 
 
@@ -41,6 +42,7 @@ class TinfoHostProvider:
             raise TinfoUnavailable()
         return min(remaining, 30)
 
+    @measured("authority.snapshot")
     def _snapshot(self, actor, principal):
         self._remaining()
         actor, principal = normalize_bot_principal(actor), normalize_bot_principal(principal)
@@ -48,9 +50,10 @@ class TinfoHostProvider:
         cursor = None
         try:
             cursor = connection.cursor()
-            rows, virtual = _read(cursor, principal, locked=False)
-            # Finish the read transaction before waiting for any file lease.
-            connection.commit()
+            with phase("db.read"):
+                rows, virtual = _read(cursor, principal, locked=False)
+                # Finish the read transaction before waiting for any file lease.
+                connection.commit()
         finally:
             if cursor is not None:
                 cursor.close()
@@ -63,12 +66,14 @@ class TinfoHostProvider:
         observation = _digest({"rows": [asdict(row) for row in rows], "virtual": virtual})
         return rows, _entry(rows, virtual), observation
 
+    @measured("authority.verify")
     def verify(self, prepared):
         target = prepared.authorized_target
         _, _, observation = self._snapshot(target.actor, target.principal)
         if observation != target.binding_observation:
             raise TinfoDenied()
 
+    @measured("authority.verify_initial")
     def verify_initial(self):
         actor, principal, observation = self._initial
         if self._snapshot(actor, principal)[2] != observation:
@@ -129,8 +134,9 @@ class TinfoHostProvider:
                 failure = None
                 raw = b""
                 try:
-                    raw = view.current_raw()
-                    current = view.decoded()
+                    with phase("data.current"):
+                        raw = view.current_raw()
+                        current = view.decoded()
                     if summary_command:
                         from datetime import datetime
                         self.summary_utime = str(datetime.fromtimestamp(round(view.file_times("current")["ctime"])))
