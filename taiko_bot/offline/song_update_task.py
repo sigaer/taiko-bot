@@ -293,6 +293,7 @@ def _safe_int(value, default=0):
 def _merge_wahlap_song_without_roll_metadata(new_song, old_song=None):
     """Keep local parser results while refreshing the remaining Wahlap fields."""
     merged = {**(old_song or {}), **new_song}
+    merged["shelf_status"] = SHELF_STATUS_UP
     if isinstance(old_song, dict):
         merged["bpm"] = old_song.get("bpm", merged.get("bpm"))
         for field in ROLL_METADATA_FIELDS:
@@ -432,22 +433,34 @@ def _build_other_song(db_song, song_id):
 
 
 def _load_db_bpm_map():
+    # National additions need no second wiki request. The shared catalog is
+    # enriched later in this job from OurTaiko plus optional wiki metadata.
     try:
-        resp = requests.get(TAIKO_WIKI_SONG_URL, timeout=30)
-        resp.raise_for_status()
-        database_data = resp.json()
-    except Exception:
-        database_data = []
+        songs = json.loads(SONG_DATA_PATH.read_text(encoding="utf-8"))
+        return {int(song["id"]): str(song["bpm"]) for song in songs
+                if song.get("bpm") not in (None, "", "-")}
+    except (OSError, ValueError, KeyError):
+        return {}
 
-    bpm_map = {}
-    for song in database_data:
-        song_no = song.get("songNo")
-        if not (isinstance(song_no, str) and song_no.isdigit()):
-            continue
-        bpm_text = _build_bpm_text(song)
-        if bpm_text != "-":
-            bpm_map[int(song_no)] = bpm_text
-    return bpm_map
+
+def _load_optional_wiki_database():
+    """Wiki extends OurTaiko; an outage must not prevent catalog updates."""
+    from .ourtaiko_catalog import atomic_json
+    try:
+        response = requests.get(TAIKO_WIKI_SONG_URL, timeout=30)
+        response.raise_for_status()
+        songs = response.json()
+        if not isinstance(songs, list) or not songs or not all(isinstance(s, dict) for s in songs):
+            raise ValueError("Invalid TaikoWiki song catalog")
+        atomic_json(TAIKO_SONG_DATABASE_PATH, songs)
+        return songs
+    except (requests.RequestException, ValueError):
+        logger.warning("TaikoWiki 补充源不可用，继续 OurTaiko 曲库更新", exc_info=True)
+        try:
+            songs = json.loads(TAIKO_SONG_DATABASE_PATH.read_text(encoding="utf-8"))
+            return songs if isinstance(songs, list) and all(isinstance(s, dict) for s in songs) else []
+        except (OSError, ValueError):
+            return []
 
 
 def _normalize_fumen_url(raw_url):
@@ -2147,14 +2160,7 @@ def sync_song_score_with_wiki(song_data):
 
 
 def sync_song_data_with_taiko_database():
-    resp = requests.get(TAIKO_WIKI_SONG_URL, timeout=30)
-    resp.raise_for_status()
-    database_data = resp.json()
-    with open(TAIKO_SONG_DATABASE_PATH, "w", encoding="utf-8") as f:
-        json.dump(database_data, f, ensure_ascii=False, indent=4)
-
-    if not isinstance(database_data, list):
-        raise ValueError("taiko.wiki 返回结果不是列表")
+    database_data = _load_optional_wiki_database()
 
     filtered_database = []
     for song in database_data:
@@ -2186,7 +2192,6 @@ def sync_song_data_with_taiko_database():
         song_id = song.get("id")
         is_other = (
             song.get("shelf_status") == SHELF_STATUS_OTHER
-            or song.get("songNo") is not None
             or (isinstance(song_id, int) and song_id >= OTHER_SONG_ID_START)
         )
         if is_other:
@@ -2195,7 +2200,9 @@ def sync_song_data_with_taiko_database():
             old_main_songs.append(song)
 
     old_by_id = {song.get("id"): song for song in old_main_songs if isinstance(song, dict)}
-    db_by_id = {int(song["songNo"]): song for song in filtered_database}
+    from taiko_bot.catalog_identity import identity_map
+    legacy_ids = identity_map(old_data)
+    db_by_id = {int(song["songNo"]): song for song in filtered_database if int(song["songNo"]) not in legacy_ids}
     previous_down_shelf_ids = set()
     for song in old_main_songs:
         if not isinstance(song, dict):
@@ -2305,7 +2312,7 @@ def sync_song_data_with_taiko_database():
         merged.append(appended_song)
 
     # Merge "other songs" (taiko.wiki entries whose songNo is not numeric).
-    assigned_other_songnos = set()
+    assigned_other_songnos = {str(no) for song in old_data for no in song.get("wiki_song_nos", [])}
     max_other_id = OTHER_SONG_ID_START - 1
     for song in old_other_songs:
         try:
@@ -2392,6 +2399,8 @@ def sync_song_data_with_taiko_database():
     # Keep locally resolved platform songs when the upstream Nijiiro mapping
     # is refreshed; the catalog is the authority for these additional paths.
     song_tja_mapping.update({int(song["id"]): song["tja_path"] for song in merged if song.get("tja_path")})
+    active_ids = {int(song["id"]) for song in merged}
+    song_tja_mapping = {int(sid): path for sid, path in song_tja_mapping.items() if int(sid) in active_ids}
     from .song_tja_mapping import write_song_tja_mapping
     write_song_tja_mapping(SONG_TJA_MAPPING_PATH, song_tja_mapping)
     tja_audit = audit_song_data(
@@ -2491,6 +2500,12 @@ def update_taiko_music(interactive=True):
     response = requests.post(url, json=data, headers=headers, timeout=30)
     response.raise_for_status()
     song_data = response.json()["data"]["list"]
+    if not isinstance(song_data, list) or not song_data or any(not isinstance(s, dict) or not s.get("id") for s in song_data):
+        raise ValueError("华立曲库响应无效，保留原有国行上架状态")
+    old_data = json.load(open(SONG_DATA_PATH, "r", encoding="utf-8"))
+    from taiko_bot.catalog_identity import identity_map, canonical_song_id
+    legacy_ids = identity_map(old_data)
+    song_data = [{**music, "id": canonical_song_id(music["id"], legacy_ids)} for music in song_data]
     # Use this exact national response, including every category occurrence,
     # before deduplication or retention of historical catalog rows.
     refresh_positions_safely(song_data, output_path=ROOT_DIR / 'songs' / 'cn_song_positions.json')
@@ -2501,7 +2516,6 @@ def update_taiko_music(interactive=True):
             id_list.append(music["id"])
             new_data.append(music)
 
-    old_data = json.load(open(SONG_DATA_PATH, "r", encoding="utf-8"))
     new_by_id = {music["id"]: music for music in new_data}
     old_by_id = {music["id"]: music for music in old_data}
     db_bpm_map = _load_db_bpm_map()
@@ -2514,7 +2528,10 @@ def update_taiko_music(interactive=True):
                 _merge_wahlap_song_without_roll_metadata(new_music, old_music)
             )
         else:
-            merged.append(old_music)
+            retained = dict(old_music)
+            if int(retained["id"]) < OTHER_SONG_ID_START:
+                retained["shelf_status"] = SHELF_STATUS_DOWN
+            merged.append(retained)
 
     for music in new_data:
         if music["id"] not in old_by_id:
@@ -2533,7 +2550,7 @@ def update_taiko_music(interactive=True):
 
     with open(SONG_DATA_RAW_PATH, "w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=4)
-    # 先以 wahlap 全量结果更新 song_data，再基于 taiko.wiki 做字段补全/纠正
+    # 华立负责国行状态；OurTaiko 全量曲库与 TaikoWiki 补充源取并集。
     for song in merged:
         apply_chart_roll_metadata_overrides(song)
     with open(SONG_DATA_PATH, "w", encoding="utf-8") as f:

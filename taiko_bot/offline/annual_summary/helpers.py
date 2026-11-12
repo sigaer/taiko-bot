@@ -57,7 +57,16 @@ def format_dan_grade(value: Any) -> Optional[str]:
 
 def load_json(path: str | Path) -> Any:
     with Path(path).open("r", encoding="utf-8") as file:
-        return json.load(file)
+        payload = json.load(file)
+    return canonical_score_payload(payload)
+
+
+def canonical_score_payload(payload):
+    from taiko_bot.catalog_identity import load_identity_map, normalize_score_payload
+    from taiko_bot.offline.paths import root
+    if not isinstance(payload, dict) or not isinstance(payload.get("songs"), list):
+        return payload
+    return normalize_score_payload(payload, load_identity_map(root() / "songs/song_data.json"))
 
 
 def canonical_json_bytes(payload: Any) -> bytes:

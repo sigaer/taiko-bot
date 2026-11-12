@@ -130,7 +130,7 @@ class TinfoHostProvider:
                 raw = b""
                 try:
                     raw = view.current_raw()
-                    current = json.loads(raw.decode("utf-8"))
+                    current = view.decoded()
                     if summary_command:
                         from datetime import datetime
                         self.summary_utime = str(datetime.fromtimestamp(round(view.file_times("current")["ctime"])))
@@ -152,7 +152,7 @@ class TinfoHostProvider:
                         for name in sorted(view.history_names(), reverse=True):
                             self._remaining()
                             try:
-                                payload = json.loads(view.history_raw(name).decode('utf-8'))
+                                payload = view.decoded("history/" + name)
                             except (FileNotFoundError, UnicodeError, ValueError):
                                 continue  # Frozen Dani skips unreadable JSON snapshots.
                             if not isinstance(payload, dict) or 'dojo' not in payload:

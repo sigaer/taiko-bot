@@ -482,7 +482,7 @@ def _load_previous_song_map(
     current_songs: List[Dict[str, Any]] = []
     for history_file in history_files:
         try:
-            payload = json.loads(score_view.history_raw(history_file).decode("utf-8"))
+            payload = score_view.decoded("history/" + history_file)
         except (ValueError, UnicodeError):
             continue
         if not isinstance(payload, dict):
@@ -526,7 +526,7 @@ def _load_previous_dojo_state(user_id: int, *, score_view=None) -> Optional[Dict
     current_dojo: Optional[Dict[str, Any]] = None
     for history_file in history_files:
         try:
-            payload = json.loads(score_view.history_raw(history_file).decode("utf-8"))
+            payload = score_view.decoded("history/" + history_file)
         except (ValueError, UnicodeError):
             continue
         if not isinstance(payload, dict):
@@ -1214,7 +1214,7 @@ def _crop_with_pad(
 def build_dress_image(user_id: int) -> Image.Image:
     from taiko_bot.runtime.player.dress_renderer import render_dress
     with score_read_view(os.getenv("TAIKO_USERDATA_DIR") or USERDATA_DIR, str(user_id)) as view:
-        userdata = json.loads(view.current_raw().decode("utf-8"))
+        userdata = view.decoded()
     return render_dress(userdata, ASSETS_DIR)
 
 
@@ -2090,7 +2090,7 @@ def render_update_changes_image(
     if score_view is None:
         with score_read_view(os.getenv("TAIKO_USERDATA_DIR") or USERDATA_DIR, str(user_id)) as view:
             return render_update_changes_image(user_id, save_path=save_path, show_all=show_all, score_view=view)
-    userdata = json.loads(score_view.current_raw().decode("utf-8"))
+    userdata = score_view.decoded()
 
     left_sections: List[Dict[str, Any]] = []
     right_sections: List[Dict[str, Any]] = []
@@ -2383,7 +2383,7 @@ def render_my_don_image(
     if score_view is None:
         with score_read_view(os.getenv("TAIKO_USERDATA_DIR") or USERDATA_DIR, str(user_id)) as view:
             return render_my_don_image(user_id, save_path=save_path, title_overrides=title_overrides, showcase_layout=showcase_layout, score_view=view)
-    userdata = json.loads(score_view.current_raw().decode("utf-8"))
+    userdata = score_view.decoded()
 
     final_img = _render_my_don_base_panel(
         user_id,

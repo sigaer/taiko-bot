@@ -143,7 +143,7 @@ def _userdata_root() -> Path:
 def _load_local_userdata(taiko_id: str, *, publication_store=None) -> Dict[str, Any]:
     def load(view):
         try:
-            return json.loads(view.current_raw().decode("utf-8"))
+            return view.decoded()
         except FileNotFoundError:
             if view.manifest is not None and "current" in view.manifest["files"]:
                 raise PublicationError("Canonical token score is unavailable") from None

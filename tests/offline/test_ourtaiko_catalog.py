@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import pytest
 
-from taiko_bot.offline.ourtaiko_catalog import fetch_charts, merge_catalog
+from taiko_bot.offline.ourtaiko_catalog import fetch_charts, fetch_paginated_charts, merge_catalog
 from taiko_bot.offline.catalog_resources import enrich_resources, safe_resource
 
 
@@ -45,13 +45,44 @@ def test_pagination_rejects_partial_and_duplicate_pages(monkeypatch):
     pages = {1: {"page": 1, "pageSize": 1, "total": 2, "items": [{"id": "a"}]},
              2: {"page": 2, "pageSize": 1, "total": 2, "items": [{"id": "b"}]}}
     monkeypatch.setattr("taiko_bot.offline.ourtaiko_catalog.requests.get", lambda *a, params, **kw: Response(pages[params["page"]]))
-    assert len(fetch_charts()) == 2
+    assert len(fetch_paginated_charts()) == 2
     pages[2]["items"] = [{"id": "a"}]
     with pytest.raises(ValueError, match="duplicate"):
-        fetch_charts()
+        fetch_paginated_charts()
     pages[2]["items"] = []
     with pytest.raises(ValueError, match="Incomplete"):
-        fetch_charts()
+        fetch_paginated_charts()
+
+
+def test_full_catalog_unions_fileless_and_checks_complete_coverage(monkeypatch):
+    calls = []
+    class Response:
+        def __init__(self, value): self.value = value
+        def raise_for_status(self): pass
+        def json(self): return self.value
+    def get(url, params=None, **kwargs):
+        calls.append((url, params))
+        if url.endswith('/game/catalog'):
+            return Response({'charts': [chart('a', 1)], 'chartCount': 1})
+        return Response({'page': 1, 'pageSize': 24, 'total': 1 if params.get('files') else 2,
+                         'items': [chart('b', 2)] if params.get('files') else [chart('a', 1),chart('b', 2)]})
+    monkeypatch.setattr('taiko_bot.offline.ourtaiko_catalog.requests.get', get)
+    assert [c['id'] for c in fetch_charts()] == ['a', 'b']
+    assert len(calls) == 3
+
+
+def test_full_catalog_falls_back_when_uncategorized_song_is_missing(monkeypatch):
+    class Response:
+        def __init__(self, value): self.value = value
+        def raise_for_status(self): pass
+        def json(self): return self.value
+    def get(url, params=None, **kwargs):
+        if url.endswith('/game/catalog'):
+            return Response({'charts': [chart('a', 1)], 'chartCount': 1})
+        rows = [] if params.get('files') else [chart('a',1),chart('b',2)]
+        return Response({'page':1,'pageSize':24,'total':len(rows),'items':rows})
+    monkeypatch.setattr('taiko_bot.offline.ourtaiko_catalog.requests.get', get)
+    assert [c['id'] for c in fetch_charts()] == ['a','b']
 
 
 def test_resource_gaps_do_not_block_other_songs_or_escape_root(tmp_path):

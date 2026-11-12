@@ -19,13 +19,20 @@ def main():
     args = parser.parse_args()
     catalog = args.root / "songs/song_data.json"
     songs = json.loads(catalog.read_text(encoding="utf-8"))
-    merged = refresh_catalog(songs, root=args.root, fetch=not args.cached)
-    target = catalog if args.write else args.root / "songs/song_data.ourtaiko-staged.json"
     if args.write:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        backup = args.root / "songs/recovery_backups" / f"ourtaiko-{stamp}.json"
-        backup.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(catalog, backup)
+        backup = args.root / "songs/recovery_backups" / f"ourtaiko-{stamp}"
+        backup.mkdir(parents=True, exist_ok=False)
+        for name in ("song_data.json", "song_data_raw.json", "song_id2tjapath.json", "ourtaiko_charts.json",
+                     "song_alias.json", "song_alias_new.json", "song_score.json", "taiko_goku_onis.json",
+                     "rating_structured_with_ids.json", "catalog_constants.json", "constants_id_v2.csv",
+                     "branch_audio_manifest.json", "song_difficulty.json", "cn_song_positions.json",
+                     "analyze_result_filtered.json"):
+            source = catalog.parent / name
+            if source.is_file():
+                shutil.copy2(source, backup / name)
+    merged = refresh_catalog(songs, root=args.root, fetch=not args.cached, persist=args.write)
+    target = catalog if args.write else args.root / "songs/song_data.ourtaiko-staged.json"
     atomic_json(target, merged)
     print(json.dumps({"songs": len(merged), "output": str(target)}, ensure_ascii=False))
 

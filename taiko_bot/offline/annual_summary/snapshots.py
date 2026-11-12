@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, List, Optional
 from taiko_bot.runtime.player.center.snapshot_history import list_snapshot_files, parse_snapshot_time
 from .cache import read_normalized_snapshot, write_normalized_snapshot
 from .constants import FULL_SNAPSHOT_MIN_SONGS, MANUAL_SOURCES, USERDATA_DIR
-from .helpers import canonical_json_bytes, file_sha256, load_json, parse_datetime, safe_int, song_key
+from .helpers import canonical_json_bytes, file_sha256, load_json, parse_datetime, safe_int, song_key, canonical_score_payload
 from .model import RebuiltSnapshot, SnapshotHistory, SnapshotPlanEntry, WindowSelection
 from .profiling import mark_profile_stage, observe_profile_objects, profiling_enabled
 
@@ -110,6 +110,7 @@ def _read_snapshot_plan_entry(path: Path) -> Optional[SnapshotPlanEntry]:
         return None
     if not isinstance(payload, dict):
         return None
+    payload = canonical_score_payload(payload)
     observe_profile_objects(raw_payload_count=1, raw_payload_estimated_bytes=size)
     meta = payload.get("_meta") if isinstance(payload.get("_meta"), dict) else {}
     # Web edits inherit the last sync metadata; their own timestamp is authoritative.

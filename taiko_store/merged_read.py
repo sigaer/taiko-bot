@@ -31,9 +31,8 @@ def merge_rule_revision():
 
 
 def _object(view, key):
-    raw = view.raw(key)
     try:
-        payload = json.loads(raw)
+        payload = view.decoded(key)
     except (ValueError, UnicodeError):
         if key == "current":
             raise PublicationError("Merged current is invalid") from None

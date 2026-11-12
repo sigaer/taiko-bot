@@ -72,8 +72,18 @@ class AcquisitionPublicationTests(unittest.TestCase):
 
     def configure(self, module, directory):
         module.TAIKO_SONG_DIR = str(directory)
+        module._runtime_root = lambda: self.root
         module.datetime = FrozenClock
         module._load_locked_song_keys = lambda _identity: {(1, 4)}
+
+    def test_canonical_lock_preserves_historical_record_across_sync(self):
+        self.configure(self.actual, self.root / 'userdata')
+        (self.root / 'songs').mkdir()
+        (self.root / 'songs/song_data.json').write_text(json.dumps([{'id':1530,'legacy_ids':[100138]}]))
+        self.actual._load_locked_song_keys = lambda _: {(1530,4)}
+        previous = payload([song(100138,1,900000)])
+        incoming = [song(1530,2,800000)]
+        self.assertEqual(self.actual.merge_locked_songs('synthetic',previous,incoming),previous['songs'])
 
     def test_actual_acquisition_current_and_full_delta_equal_legacy(self):
         cases = [payload([song(1, 1, 800_000), song(2, 1, 600_000)]),

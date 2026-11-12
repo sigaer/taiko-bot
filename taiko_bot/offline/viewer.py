@@ -39,7 +39,7 @@ def render_update_changes_image(user_id, **kwargs):
 def render_tcloud_image(user_id, **kwargs):
     from taiko_bot.runtime.player.center.display_support.tcloud import render_tcloud_image as render
     with score_read_view(_userdata_root(), str(user_id)) as view:
-        userdata = json.loads(view.current_raw())
+        userdata = view.decoded()
         image = render_my_don_image(user_id, score_view=view)
         return render(userdata, my_don_img=image, **kwargs)
 
@@ -73,7 +73,7 @@ def render_dani_progress_image_bytes(user_id, *args, **kwargs):
         history = []
         for name in view.history_names():
             try:
-                payload = json.loads(view.history_raw(name).decode("utf-8"))
+                payload = view.decoded("history/" + name)
             except (OSError, UnicodeError):
                 if view.manifest is not None:
                     raise PublicationError("Canonical history is unavailable") from None
@@ -82,7 +82,7 @@ def render_dani_progress_image_bytes(user_id, *args, **kwargs):
                 # Keep the existing exclusion of malformed historical JSON.
                 continue
             history.append(dict(fileName=name, payload=payload))
-        return render(user_id, *args, userdata=json.loads(view.current_raw()), history_snapshots=history, **kwargs)
+        return render(user_id, *args, userdata=view.decoded(), history_snapshots=history, **kwargs)
 
 
 def generate_dim_top_image(results, N, dim, user_id=None, **kwargs):
@@ -126,5 +126,5 @@ def render_b30_image(user_id, N=30, **kwargs):
             aggregate_topn_value_fn=aggregate_topN_value, compute_dim_topn_means_fn=compute_dim_topN_means,
             _publication_store=view.store, snapshots=_reconstruct_user_snapshots(timed))
         observed = str(datetime.datetime.fromtimestamp(round(view.file_times('current')['ctime'])))
-        return render(user_id, N, userdata=json.loads(view.current_raw()), history_snapshots=history,
+        return render(user_id, N, userdata=view.decoded(), history_snapshots=history,
                       daily_points=points, observed_at=observed, **kwargs)

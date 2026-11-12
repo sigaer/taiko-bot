@@ -54,6 +54,17 @@ class ScoreReadView:
     def current_raw(self):
         return self.raw("current")
 
+    def decoded(self, key="current"):
+        """Interpret old chart IDs using the current public catalog only.
+
+        raw()/current_raw() retain the original verified bytes, hashes and
+        publication lineage. No stored score or history object is rewritten.
+        """
+        from taiko_bot.catalog_identity import load_identity_map, normalize_score_payload
+        payload = json.loads(self.raw(key))
+        catalog = self.store.root.parent / "songs/song_data.json"
+        return normalize_score_payload(payload, load_identity_map(catalog))
+
     def history_raw(self, name):
         return self.raw("history/" + _history_name(name))
 
@@ -129,7 +140,7 @@ def read_current_json(root, identity):
     """
     with score_read_view(root, identity) as view:
         try:
-            return json.loads(view.current_raw().decode("utf-8"))
+            return view.decoded()
         except (OSError, UnicodeError, json.JSONDecodeError):
             if view.manifest is not None and "current" in view.manifest["files"]:
                 raise PublicationError("Canonical current is unavailable") from None

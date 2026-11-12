@@ -23,7 +23,7 @@ def _history_snapshot_inputs(view):
         if is_future_history_time(timestamp, ceiling):
             continue
         try:
-            snapshot = json.loads(view.history_raw(name).decode("utf-8"))
+            snapshot = view.decoded("history/" + name)
         except (OSError, UnicodeError):
             if view.manifest is not None:
                 raise PublicationError("Canonical history is unavailable") from None

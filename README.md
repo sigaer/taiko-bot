@@ -113,9 +113,11 @@ python bot.py
 
 ## 中心曲库维护
 
-每日歌曲任务会将 OurTaiko 分页曲库增量合入中心 `songs/song_data.json`，Bot 和 Viewer 共同读取这一份数据。已有曲目的业务字段不由 OurTaiko 覆盖；仅补充 `official_id`、`ourtaiko_ids` 和缺失的 ESE 路径。虹 ID 直接使用 `id`，无虹 ID 的曲目沿用 `100000` 起的其他平台编号，重复导入保留已分配 ID。官方 ID 仅供记录。
+每日歌曲任务将 OurTaiko 与 TaikoWiki 取并集，合入中心 `songs/song_data.json`，Bot 和 Viewer 共同读取。主要来源是 OurTaiko 的 `/api/v1/game/catalog`，加上 `/api/v1/charts?files=no` 的无文件条目；合并总数必须与数据库总数一致，否则回退完整分页。TaikoWiki 作为歌曲和元数据补充源，故障时使用最近有效缓存，不阻断 OurTaiko 更新。已有字段保留，仅补充缺失字段、`official_id`、`ourtaiko_ids` 和 ESE 路径。
 
-分类沿用 `shelf_status`：0 国行上架、1 未上架、2 其他平台。新虹 ID 默认未上架，实际国行状态以现有国行曲库为准。TJA、音频或某一谱面缺失不阻塞其余曲目。
+虹 ID 直接使用 `id`，无虹 ID 的曲目沿用 `100000` 起的其他平台编号。平台转入街机、虹 ID 变更或重复曲目按上游持久 ID、完整 TJA 路径、唯一同名同难度证据归并。旧 ID 统一记录在新曲目的 `legacy_ids`；公共引用、旧歌曲链接与历史成绩读取使用这一份映射。原始成绩、历史字节及发布哈希保持不变，重复成绩保留分数最高的实际记录，不叠加游玩次数。官方 ID 仅供记录。
+
+分类沿用 `shelf_status`：0 国行上架、1 未上架、2 其他平台。虹 ID 曲目按最新成功华立列表区分上架、未上架；无虹 ID 的曲目归入其他平台。TJA、音频或某一谱面缺失不阻塞其余曲目。
 
 维护者可用 `python -I -m taiko_bot.offline.catalog_import --root /path/to/staging` 预览；`--cached` 使用完整抓取缓存，`--write` 原子发布曲库并备份旧文件。暂存目录需准备现有 `songs/song_data.json`、`song_id2tjapath.json`。分页不完整时保留上次完整缓存。
 

@@ -69,15 +69,24 @@ def merge_locked_songs(user_id: str, previous_payload: Any, latest_songs: list) 
     if not locked_keys:
         return latest_songs
 
+    # Locks use the canonical catalog ID, while incoming and immutable stored
+    # publications may still carry a historical ID. Compare their identity
+    # without rewriting the score records themselves.
+    from taiko_bot.catalog_identity import load_identity_map, canonical_song_id
+    aliases = load_identity_map(_runtime_root() / "songs/song_data.json")
+    def chart_key(song):
+        return (canonical_song_id(song.get("song_no", 0), aliases), int(song.get("level", 0)))
+    locked_keys = {(canonical_song_id(sid, aliases), level) for sid, level in locked_keys}
+
     prev_songs = previous_payload.get("songs", [])
     prev_map = {
-        (int(song.get("song_no", 0)), int(song.get("level", 0))): song
+        chart_key(song): song
         for song in prev_songs
     }
     merged = []
     seen = set()
     for song in latest_songs:
-        key = (int(song.get("song_no", 0)), int(song.get("level", 0)))
+        key = chart_key(song)
         if key in locked_keys and key in prev_map:
             merged.append(prev_map[key])
         else:
