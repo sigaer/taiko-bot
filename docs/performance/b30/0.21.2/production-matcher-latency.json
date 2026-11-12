@@ -1,0 +1,49 @@
+{
+  "source": "production journald ingestion timestamps",
+  "release": "0.21.2",
+  "since_cst": "2026-11-12T16:11:29+08:00",
+  "scope": "B30 Matcher start to running-complete; includes real provider preparation and awaited delivery; not exact gateway reception/send ACK timing; different live users/commands are not classified",
+  "privacy": "Only timestamps and aggregate durations retained; no account IDs, messages, scores or image contents",
+  "samples": [
+    {
+      "started_at_cst": "2026-11-12T16:23:25.312750+08:00",
+      "wall_seconds": 6.645981
+    },
+    {
+      "started_at_cst": "2026-11-12T16:27:55.080871+08:00",
+      "wall_seconds": 7.66683
+    },
+    {
+      "started_at_cst": "2026-11-12T16:28:38.249984+08:00",
+      "wall_seconds": 6.533185
+    },
+    {
+      "started_at_cst": "2026-11-12T16:29:15.582643+08:00",
+      "wall_seconds": 8.353036
+    },
+    {
+      "started_at_cst": "2026-11-12T16:35:03.513540+08:00",
+      "wall_seconds": 6.478843
+    }
+  ],
+  "statistics": {
+    "count": 5,
+    "p50_seconds": 6.645981,
+    "p95_seconds_nearest_rank": 8.353036,
+    "min_seconds": 6.478843,
+    "max_seconds": 8.353036
+  },
+  "observation_window_end_cst": "2026-11-12T16:35:10+08:00",
+  "user_report": {
+    "entry": "QQ official bot",
+    "command": "taikob20",
+    "observed_seconds": [
+      7,
+      9
+    ],
+    "previous_approximate_seconds": 20,
+    "measurement_kind": "user-observed; not a controlled benchmark"
+  },
+  "known_send_path": "QQ file_image -> post_group_files/post_c2c_files (media upload) -> post_group_messages/post_c2c_messages (send); stages awaited serially by installed adapter",
+  "limitation": "No per-request upload/send or real SQL stage measurements exist in this release. Do not attribute the remaining duration to a particular phase without additional instrumentation."
+}
