@@ -24,7 +24,7 @@ def main():
     args = parser.parse_args()
     rows, groups = [], defaultdict(list)
     process = subprocess.Popen(['journalctl', '-u', 'taiko-bot.service', '--since', args.since,
-                                '-o', 'json', '--no-pager'], stdout=subprocess.PIPE, text=True)
+                                '-o', 'json', '--all', '--no-pager'], stdout=subprocess.PIPE, text=True)
     for line in process.stdout:
         try:
             entry = json.loads(line)
@@ -33,7 +33,8 @@ def main():
                 continue
             message = re.sub(r'\x1b\[[0-9;]*m', '', message)
             prefix, separator, body = message.partition(' | ')
-            if not separator or 'taiko_bot.runtime.request_timing' not in prefix or not body.startswith('Taiko B30 timing: '):
+            namespace = prefix.rsplit(' ', 1)[-1]
+            if not separator or namespace not in ('taiko_bot', 'taiko_bot.runtime.request_timing') or not body.startswith('Taiko B30 timing: '):
                 continue  # A user's message containing the marker is not telemetry.
             row = json.loads(body.removeprefix('Taiko B30 timing: '))
             if not isinstance(row, dict) or row.get('schema') != 1:

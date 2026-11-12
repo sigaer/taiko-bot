@@ -8,6 +8,21 @@ import pytest
 from taiko_bot.runtime import request_timing as timing
 
 
+def test_default_log_sink_emits_the_complete_structured_record():
+    from nonebot.log import logger
+    messages = []
+    sink = logger.add(lambda message: messages.append(message.record['message']), level='INFO')
+    try:
+        with timing.RequestTrace(platform='qq_official', profile='center').scope():
+            pass
+    finally:
+        logger.remove(sink)
+    records = [json.loads(m.removeprefix('Taiko B30 timing: ')) for m in messages
+               if m.startswith('Taiko B30 timing: ')]
+    assert len(records) == 1 and records[0]['status'] == 'completed'
+    assert records[0]['platform'] == 'qq_official'
+
+
 def test_dispatch_clock_survives_scheduling_without_leaking_to_next_event():
     async def scenario():
         from taiko_bot.runtime.qq_adapter import Adapter
