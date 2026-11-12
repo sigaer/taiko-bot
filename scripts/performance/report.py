@@ -78,6 +78,7 @@ def main():
         fixture_manifest_sha256=hashlib.sha256((a.work/'fixture/fixture-manifest.json').read_bytes()).hexdigest(),
         fixtures=manifest,extra_fixtures=edge,system_fonts=(root/'system-fonts.sha256').read_text(),
         dependencies=json.loads((root/'dependency-parity.json').read_text()),
+        acceptance=json.loads((root/'acceptance.json').read_text()),
         installed_source=json.loads((root/'installed-source-parity.json').read_text()),
         baseline_freeze=(root/'production-freeze.txt').read_text())
     for data in [before,after]:
@@ -97,12 +98,12 @@ def main():
       '', '|样本|覆盖|成绩数|历史快照数|','|---|---|---:|---:|']
     for u in manifest['users']:lines.append(f"|{u['id']}|{u['description']}|{u['records']}|{u['snapshots']}|")
     lines += ['', 'U09 包含重复谱面与旧版本 ID；U13 包含两个合成账号的 u0 合并；U14 使用实际公共多语言长曲名和合成装扮。额外 E01 仅 easy/normal/hard、E02 五难度混合、E03 全部低于 75% 精度，验证无可计分结果和非鬼谱语义。',
-      '', '中心端每个 U 样本覆盖 13 条命令：`taikob`、`taikob20 v2`、`taikob30 v2`、`taikob20 v1`、`taikob30 v1`、`taikob50 v1`、`taikob20 v2 精度`、`taikob30 v1 精度`、`taikob20 v2 体力`、`taikob20 v1 节奏`，以及 nonsense、-r、v1/v2 冲突。客户端每个 U 覆盖 `taikob20/30/50`、`taikob20 v2`、v2 精度/体力、非法 v2 Top30、非法维度；另有 48 个尺寸、维度别名、缺参、版本、空结果边界。完整命令逐条保存在 JSON。',
-      '', '中心默认 `taikob` 保持 v2 Top20，原版已不经过完整 v1 计算；客户端默认仍为 v1，v2 仅支持 Top20，其布局、重复版本策略和错误提示均保留。`taikob30 v1` 经 Application execute → 中心 B30 adapter → Application B30Renderer → 30 张 Single 卡片。客户端经自身 legacy renderer。',
+      '', '中心端每个 U 样本覆盖 13 条命令：`taikob`、`taikob20 v2`、`taikob30 v2`、`taikob20 v1`、`taikob30 v1`、`taikob50 v1`、`taikob20 v2 精度`、`taikob30 v1 精度`、`taikob20 v2 体力`、`taikob20 v1 节奏`，以及 nonsense、-r、v1/v2 冲突。客户端每个 U 覆盖 `taikob20/30/50`、`taikob20 v2`、v2 精度/体力、非法 v2 Top30、非法维度；另有 48 个尺寸、维度别名、缺参、版本、空结果边界。完整命令逐条保存在 JSON。矩阵测 Application 参数端口；裸客户端 taikob 等不匹配 Matcher 的输入是参数边界探针，不代表生产会回复消息，真实 Matcher 覆盖另列。',
+      '', '中心默认 `taikob` 保持 v2 Top20，原版已不经过完整 v1 计算；客户端必须带 TopN（如 taikob20），省略评分版本时为 v1，裸 taikob 不匹配客户端 Matcher；v2 仅支持 Top20，其布局、重复版本策略和错误提示均保留。`taikob30 v1` 经 Application execute → 中心 B30 adapter → Application B30Renderer → 30 张 Single 卡片。客户端经自身 legacy renderer。',
       '', '## 测量口径','',
       '六个主要场景各新进程 5 次；热缓存预热 3 次、正式 20 次。query 包括真实 PublicationStore 当前/历史对象读取、完整性验证、历史重建、计算和生产 JPEG 路径；身份为固定模拟端口，A 阶段还含合成 fixture 载入开销（两版一致）；真实 Matcher 指标另表列出。compute 使用预先读取的输入，每次仍新建请求级私人计算缓存；draw 使用固定 ScoreContext，测默认 PNG API 绘图及原编码包装，便于比较 API 本身。网络、平台发送和远端 SQL 延迟均不计入。',
       '', '另以真实 NoneBot Matcher/Provider、只读合成 SQL authority 和真实 PublicationStore 测量完整 handler（4 个场景各 3+20 次）；包含授权算法及发送前复核，发送端仅记录图像哈希。没有通过真实 Bot 账号制造流量。',
-      '', '另有 phase-detail 六场景各 3+20 次，额外细分读取、曲库索引、六维/综合聚合、PNG 解码；其插桩开销不混入主要提速数字。阶段 A–F 使用 perf_counter_ns，保留父子关系。inclusive 为含子阶段累计值，exclusive 为扣除直接子阶段后的独占值，不能把各层 inclusive 相加。CPU 为 process_time_ns；峰值 RSS 为进程累计高水位，不能当作每请求净分配。P95 使用 nearest-rank。冷进程 query 表示新 Python 进程内首个查询，导入 startup 和外部进程总时长另存，后者还含隔离 fixture 初始化。',
+      '', '另有 phase-detail 六场景各 3+20 次，额外细分读取、曲库索引、六维/综合聚合、PNG 解码；其插桩开销不混入主要提速数字。阶段 A–F 使用 perf_counter_ns，保留父子关系。inclusive 为含子阶段累计值，exclusive 为扣除直接子阶段后的独占值，不能把各层 inclusive 相加。CPU 为 process_time_ns；峰值 RSS 为进程累计高水位，不能当作每请求净分配。P95 使用 nearest-rank。为固定离线数据，initialize 预载冻结 V2 CSV，其读取/解析计入 startup；冷进程 query 表示新 Python 进程内初始化后的首个查询，不含公网刷新，导入 startup 和外部进程总时长另存，后者还含隔离 fixture 初始化。',
       '', '## 热缓存完整查询（秒）','', '|样本/命令|旧 P50|新 P50|旧 P95|新 P95|P50 加速|降幅|','|---|---:|---:|---:|---:|---:|---:|']
     def values(data,cohort,key,field='wall_ns'):
         return [r[field] for r in data['cohorts'][cohort] if (r['user'],r['command'])==key]
@@ -157,6 +158,12 @@ def main():
     for data in [before,after]:
         m=data['stress']['memory'];rss={r['iteration']:r['rss_kib']/1024 for r in m['rss']};cache=m['cache'];cachetext=f'{cache["bytes"]/1048576:.2f} / {cache["limit"]/1048576:.0f}' if isinstance(cache,dict) else '无进程图片缓存'
         lines.append(f'|{data["variant"]}|{rss[0]:.1f}|{rss[50]:.1f}|{rss[100]:.1f}|{rss[128]:.1f}|{cachetext}|')
+    lines+=['', '|连续绘图分组|旧 P50 秒|新 P50 秒|','|---|---:|---:|']
+    for i in range(0,100,10):
+        medians=[statistics.median(r['wall_ns'] for r in data['stress']['memory']['requests'][i:i+10])/1e9 for data in [before,after]]
+        lines.append(f'|{i+1}–{i+10}|{medians[0]:.3f}|{medians[1]:.3f}|')
+    memory_check=provenance['acceptance']['memory']['after']
+    lines+=['',f'新版末20次 P50 / 初20次 P50 = {memory_check["late_to_early_ratio"]:.3f}，该轮后段存在短时耗时波动，上表不呈持续单调变慢；未把这一波动解释为优化收益。RSS 后半程保持平台，完整逐次数据保留。']
     lines+=['', '连续同用户100次、不同用户轮换28次与混合并发均完成，无 OOM；逐次原始 RSS、耗时及周期采样在 JSON 中。三次实际第三卡异常验证所有请求拥有的 Pillow 图片关闭，后续请求恢复；新执行器重复完整启动/关闭3次，最终无 active/admitted。资源缓存有界且失效测试通过。',
       '', '## 阶段证据（独立详细采样，热查询均值毫秒）','', '|场景/阶段|旧累计|新累计|旧独占|新独占|','|---|---:|---:|---:|---:|']
     for key in MAIN[:2]:

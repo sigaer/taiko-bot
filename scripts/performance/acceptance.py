@@ -12,6 +12,9 @@ from report import load, validate
 
 p=argparse.ArgumentParser();p.add_argument('--work',type=Path,required=True);a=p.parse_args()
 assert verify(a.work/'fixture')['status']=='PASS'
+for line in (a.work/'results/system-fonts.sha256').read_text().splitlines():
+    digest, filename = line.split(None, 1)
+    assert hashlib.sha256(Path(filename).read_bytes()).hexdigest()==digest, filename
 before=load(a.work/'results','before');after=load(a.work/'results','after')
 correctness=validate(before,after)
 manifest=hashlib.sha256((a.work/'fixture/fixture-manifest.json').read_bytes()).hexdigest()

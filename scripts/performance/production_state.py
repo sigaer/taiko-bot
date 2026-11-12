@@ -2,6 +2,7 @@
 import argparse
 import ast
 import datetime
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -33,7 +34,9 @@ def snapshot():
             ports[str(port)]=connection.connect_ex(('127.0.0.1',port))==0
     return dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 release=str(Path('/opt/taiko-bot/current').resolve()),services=services,ports=ports,
-                connected_bot_count=int(metrics['count']),actual_process_inventory=inventory)
+                connected_bot_count=int(metrics['count']),
+                connected_bot_set_sha256=hashlib.sha256(json.dumps(sorted(map(str,metrics['connected_self_ids']))).encode()).hexdigest(),
+                actual_process_inventory=inventory)
 
 
 if __name__=='__main__':
