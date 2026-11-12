@@ -68,7 +68,18 @@ def materialize_merged_bind_userdata(
     virtual_id = build_virtual_user_id(identity_key)
     root = Path(userdata_dir) if userdata_dir is not None else Path(os.getenv("TAIKO_USERDATA_DIR") or USERDATA_DIR)
     try:
-        return materialize(root, identity_key, ids, ids[index], virtual_id)
+        from taiko_bot.runtime.player.center.daily_ability import capture_snapshot
+        from taiko_bot.runtime.player.bxx_summary import score_digest
+        def measured(store, current, captured):
+            try:
+                capture_snapshot(virtual_id, current.get('songs', []), captured,
+                                 userdata_dir=store.root, publication_store=store,
+                                 context=score_digest([ids, ids[index]]))
+            except Exception as error:
+                import logging
+                logging.getLogger(__name__).warning('Merged daily measurement failed (%s)', type(error).__name__)
+        return materialize(root, identity_key, ids, ids[index], virtual_id,
+                           on_current=measured)
     except (PublicationError, OSError, ValueError):
         raise MergedBindError("合并账户数据暂不可用，请更新真实账号后重试。") from None
 

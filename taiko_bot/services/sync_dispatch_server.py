@@ -290,11 +290,23 @@ def write_local_snapshot(userid: str, parsed: dict[str, Any], *, publication_sto
             raise PublicationError("Snapshot Source does not match its lease")
         view = store.reader()
         snapshot_ts = get_snapshot_timestamp()
-        delta = _build_delta_from_state(_previous_in_view(view), _has_full_in_view(view), parsed, snapshot_ts)
+        previous = _previous_in_view(view)
+        delta = _build_delta_from_state(previous, _has_full_in_view(view), parsed, snapshot_ts)
         sequence = (view.publication or {}).get("sequence", 0) + 1
         name = "data_" + snapshot_ts + "_" + str(sequence).zfill(20) + "_" + uuid.uuid4().hex + ".json"
         store.commit({"current": (json.dumps(parsed, ensure_ascii=False, indent=4) + "\n").encode("utf-8"),
                       "history/" + name: (json.dumps(delta, ensure_ascii=False, indent=4) + "\n").encode("utf-8")})
+        # Reuse the existing update-time measurement owner. A second dispatch
+        # of a just-acquired payload must preserve that update's previous row.
+        try:
+            from taiko_bot.runtime.player.center.daily_ability import capture_snapshot
+            from datetime import datetime
+            capture_snapshot(userid, parsed.get('songs', []), datetime.now(),
+                userdata_dir=store.root, publication_store=store,
+                repeated=previous == parsed)
+        except Exception as error:
+            import logging
+            logging.getLogger(__name__).warning('Daily ability capture failed (%s)', type(error).__name__)
     if publication_store is not None:
         write()
     else:

@@ -9,6 +9,8 @@ import argparse
 import json
 import signal
 import sys
+from contextlib import redirect_stdout
+from datetime import datetime
 
 from .publication import PublicationStore, PublicationError
 
@@ -25,6 +27,23 @@ def send(value):
 
 def deadline(_signum, _frame):
     raise TimeoutError("Publication bridge lifetime exceeded")
+
+
+def capture_current_measurement(store):
+    """The installed non-Python writer uses the same daily measurement owner.
+
+    Keep scoring out of PublicationStore itself. A derived measurement failure
+    must not turn an already committed source mutation into a failed retry.
+    """
+    try:
+        from taiko_bot.runtime.player.center.daily_ability import capture_snapshot
+        with redirect_stdout(sys.stderr):
+            current = store.reader().decoded()
+            capture_snapshot(store.identity, current.get('songs', []), datetime.now(),
+                             userdata_dir=store.root, publication_store=store)
+    except Exception as error:
+        # No payload, identity, exception text or traceback enters the pipe.
+        sys.stderr.write('Daily measurement unavailable (' + type(error).__name__ + ')\n')
 
 
 def main():
@@ -87,9 +106,13 @@ def main():
                     staged[key] = None
                     send({"staged": True})
                 elif method == "publish":
+                    before = store.view()
+                    has_current = staged.get('current') is not None
                     view = store.publish(staged, replace_history=message.get("replaceHistory") is True,
                                          transaction_id=message.get("transactionId"))
                     staged.clear()
+                    if has_current and (before is None or before['commitId'] != view['commitId']):
+                        capture_current_measurement(store)
                     send({"published": True, "view": view})
                 elif method == "backup":
                     if staged:

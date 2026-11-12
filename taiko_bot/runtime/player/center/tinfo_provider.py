@@ -106,7 +106,8 @@ class TinfoHostProvider:
                 if virtual:
                     ensure_registered(self._store(build_virtual_user_id(principal), merged=True), self.verify_initial)
             if virtual:
-                materialized = materialize_merged_bind_userdata(principal, entry, userdata_dir=self._root)
+                options = {"current_only": True} if b30_command is not None else {}
+                materialized = materialize_merged_bind_userdata(principal, entry, userdata_dir=self._root, **options)
                 identity = materialized.virtual_user_id
             else:
                 identity = ids[0]
@@ -169,6 +170,8 @@ class TinfoHostProvider:
                                 break
                     history = tuple(history)
                 if b30_command is not None:
+                    from ..bxx_summary import score_digest
+                    self.b30_context = score_digest([list(ids), profile]) if virtual else None
                     from .b30_history import capture
                     try:
                         history = capture(self,view,store,b30_command,current)

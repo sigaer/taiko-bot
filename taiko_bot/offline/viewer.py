@@ -114,17 +114,20 @@ def generate_rating_trend_image(user_id, N=20, json_path='./songs/rating_structu
 
 
 def render_b30_image(user_id, N=30, **kwargs):
-    from taiko_bot.runtime.player.center.b30_history import _history_snapshot_inputs, _reconstruct_user_snapshots, _build_daily_rating_points_from_view
+    from taiko_bot.runtime.player.center.daily_ability import archive, SHANGHAI
+    from taiko_bot.runtime.player.bxx_summary import comparison
     from taiko_bot.runtime.player.center.b30_support.b30_render import render_b30_image as render
-    from sakura_taiko_core.rating.v1 import aggregate_topN_value, compute_dim_topN_means
     with score_read_view(_userdata_root(), str(user_id)) as view:
-        timed = list(_history_snapshot_inputs(view))
-        history = [dict(capturedAt=at.isoformat(), payload=data) for at, data in timed]
-        _, points = _build_daily_rating_points_from_view(user_id, N,
-            json_path=str(kwargs.get('rating_json_path') or root()/'songs/rating_structured_with_ids.json'),
-            collapse_duplicate_versions=kwargs.get('collapse_duplicate_versions', False),
-            aggregate_topn_value_fn=aggregate_topN_value, compute_dim_topn_means_fn=compute_dim_topN_means,
-            _publication_store=view.store, snapshots=_reconstruct_user_snapshots(timed))
+        current = view.decoded()
+        prepared = {}
+        try:
+            with archive(user_id, 'v1-top20', userdata_dir=view.store.root,
+                         publication_store=view.store, writable=False) as days:
+                prepared = comparison(days, records=current.get('songs', []), count=N,
+                    version='v1' if kwargs.get('collapse_duplicate_versions', False) else 'v1-unmerged',
+                    captured=datetime.datetime.now(SHANGHAI).isoformat(),
+                    source_ref=view.manifest['files']['current']['sha256'] if view.manifest else None)
+        except (TypeError, ValueError, KeyError, IndexError, AttributeError, PublicationError, OSError):
+            pass
         observed = str(datetime.datetime.fromtimestamp(round(view.file_times('current')['ctime'])))
-        return render(user_id, N, userdata=view.decoded(), history_snapshots=history,
-                      daily_points=points, observed_at=observed, **kwargs)
+        return render(user_id, N, userdata=current, comparison=prepared, observed_at=observed, **kwargs)

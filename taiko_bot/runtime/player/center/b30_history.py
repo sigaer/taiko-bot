@@ -1,7 +1,6 @@
 """Host preparation under the captured publication lease; no renderer I/O."""
 from __future__ import annotations
-import datetime, json
-from functools import partial
+import datetime
 from pathlib import Path
 from typing import *
 from taiko_store import PublicationError
@@ -200,53 +199,33 @@ def _build_daily_rating_points_from_view(
 
 @measured("history.capture")
 def capture(provider, view, store, command, current):
-    N,args,use_v2,dynamic,dim=command
+    """Capture only current score measurements. BXX never opens history."""
+    from ..bxx_summary import comparison
+    from .b30_daily import archive, SHANGHAI
+    N, args, use_v2, dynamic, dim = command
     try:
-        observed=str(datetime.datetime.fromtimestamp(round(view.file_times('current')['ctime'])))
+        observed = str(datetime.datetime.fromtimestamp(round(view.file_times('current')['ctime'])))
     except FileNotFoundError:
-        observed=None
-    provider.b30_observed_at=observed
-    provider.b30_inputs=dict(observed_at=observed, history_snapshots=(), daily_points=[])
+        observed = None
+    provider.b30_observed_at = observed
+    provider.b30_inputs = dict(observed_at=observed, comparison={})
     from .b30_support.parsing import _parse_taikob_dim_arg
-    v2_dim,unknown=_parse_taikob_dim_arg(args,v2.V2_TAIKOB_DIM_ALIASES)
+    v2_dim, unknown = _parse_taikob_dim_arg(args, v2.V2_TAIKOB_DIM_ALIASES)
     if use_v2 and not dynamic and not unknown and current is not None:
         from .taikob_v2_data import load_v2_snapshot
-        provider.b30_snapshot=load_v2_snapshot()
-    # Invalid v2 requests and single dimensions never prepare history.
-    summary=(use_v2 and not dynamic and v2_dim is None and not unknown) or (not use_v2 and not args)
-    if not summary or current is None:
-        return ()
-    with phase("history.read"):
-        timed=list(_history_snapshot_inputs(view))
-    history=[dict(capturedAt=dt.isoformat(),payload=payload) for dt,payload in timed]
-    provider.verify_initial()
-    # The legacy B30 renderer supplies custom aggregation functions (including
-    # v1 defaults), so its namespace is None. Preserve this distinction from
-    # explicit daily trend commands, whose named archives persist measurements.
-    from taiko_bot.runtime.player.rating_memo import RequestRatingMemo
-    from taiko_bot.public_catalog_cache import revision
-    base = __import__('taiko_bot.runtime.public.config',fromlist=['root']).root()
-    snapshot = provider.b30_snapshot if use_v2 else None
-    calculate = (lambda records:v2.compute_all_v2_from_userdata_records(records,song_map=snapshot.song_map)) if use_v2 else (lambda records:compute_all_from_userdata_records(records,json_path=base/'songs/rating_structured_with_ids.json',collapse_duplicate_versions=True))
-    version = lambda:(revision(base/'songs/song_data.json'), snapshot.revision if snapshot else revision(base/'songs/rating_structured_with_ids.json'), 'v2-center-20261010' if use_v2 else 'v1-merged')
-    calculate = RequestRatingMemo(calculate, version)
-    provider.b30_results_from_records = calculate
-    aggregate = calculate.aggregate('rating', partial(v2.aggregate_topN_value_v2,snapshot=snapshot) if use_v2 else aggregate_topN_value)
-    dimensions = calculate.aggregate('dimensions', partial(v2.compute_dim_topN_means_v2,snapshot=snapshot) if use_v2 else compute_dim_topN_means)
-    identity = str(store.identity)
-    points = None
-    def prepare_points():
-        # Captured values only. This closure has no provider, view, lease or DB.
-        nonlocal points
-        if points is None:
-            snapshots = _reconstruct_user_snapshots(timed, max_days=30)
-            _, points = _build_daily_rating_points_from_view(identity, N,
-                json_path=base/'songs/rating_structured_with_ids.json',
-                collapse_duplicate_versions=not use_v2,
-                aggregate_topn_value_fn=aggregate,
-                compute_dim_topn_means_fn=dimensions,
-                results_from_records_fn=calculate, _publication_store=None, snapshots=snapshots)
-        return points
-    provider.b30_inputs.update(history_snapshots=history,daily_points=prepare_points,results_from_records_fn=calculate,
-                              aggregate_topn_value_fn=aggregate,compute_dim_topn_means_fn=dimensions)
-    return history
+        provider.b30_snapshot = load_v2_snapshot()
+    summary = (use_v2 and not dynamic and v2_dim is None and not unknown) or (not use_v2 and not args)
+    if summary and current is not None:
+        try:
+            version = 'v2' if use_v2 else 'v1'
+            with archive(store.identity, f'{version}-top20', userdata_dir=store.root,
+                         publication_store=store, writable=False) as days:
+                provider.b30_inputs['comparison'] = comparison(days, records=current.get('songs', []),
+                    version=version, count=N, captured=datetime.datetime.now(SHANGHAI).isoformat(),
+                    context=getattr(provider, 'b30_context', None),
+                    source_ref=view.manifest.get('files', {}).get('current', {}).get('sha256') if view.manifest else None)
+        except (TypeError, ValueError, KeyError, IndexError, AttributeError, PublicationError, OSError):
+            # A missing/incompatible derived summary never triggers historical
+            # repair or fabricates a NEW/delta. The next update replaces it.
+            provider.b30_inputs['comparison'] = {}
+    return ()

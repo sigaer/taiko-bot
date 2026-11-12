@@ -270,12 +270,12 @@ class B30Renderer(RenderResources):
         font_label = self._load_font(self.FONT_DD_PATH, 17)
         font_value = self._load_font(self.FONT_DD_PATH, 16)
         self._draw_centered_text(
-            draw, (width / 2, 16), "近30日区间", font_title, (17, 24, 39, 255)
+            draw, (width / 2, 16), "近30日增长", font_title, (17, 24, 39, 255)
         )
         self._draw_centered_text(
             draw, (width / 2, 38), f"Top{N} 均值变化", font_sub, (75, 85, 99, 255)
         )
-        max_delta = max([row["delta"] for row in rows] + [0.01])
+        max_delta = max([abs(row["delta"]) for row in rows] + [0.01])
         top = 56
         bottom_pad = 6
         row_h = max(1.0, (height - top - bottom_pad) / len(rows))
@@ -303,6 +303,8 @@ class B30Renderer(RenderResources):
             label = str(row["label"])
             delta = float(row["delta"])
             color = row["color"]
+            if delta < 0:
+                color = (190, 70, 70, 255)
             category = str(row.get("category") or "")
             icon = self._load_dim_icon(category, icon_size)
             if icon is not None:
@@ -323,8 +325,8 @@ class B30Renderer(RenderResources):
             self._draw_rounded_rect(
                 draw, track, radius=track_radius, fill=(229, 231, 235, 255)
             )
-            fill_w = int(round(bar_w * (delta / max_delta))) if max_delta > 0 else 0
-            if delta > 0:
+            fill_w = int(round(bar_w * (abs(delta) / max_delta))) if max_delta > 0 else 0
+            if delta != 0:
                 fill_w = max(4, fill_w)
             if fill_w > 0:
                 self._draw_rounded_rect(

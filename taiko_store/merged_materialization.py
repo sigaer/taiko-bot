@@ -34,7 +34,7 @@ def _comparable(payload):
     return value
 
 
-def materialize(root, identity_key, ids, profile_id, virtual_id):
+def materialize(root, identity_key, ids, profile_id, virtual_id, *, on_current=None, current_only=False):
     from taiko_application.merged_bind import (
         MaterializedMergedBind, MissingBindUserdata, MergedBindMissingUserdataError,
         _merge_payloads,
@@ -112,11 +112,22 @@ def materialize(root, identity_key, ids, profile_id, virtual_id):
                     # An unchanged current still commits its new dependency
                     # receipt, without manufacturing a score observation.
                 else:
+                    stamp = max(datetime.fromtimestamp(views[identity].file_times("current")["mtime"])
+                                for identity in ids)
                     staged["current"] = store.stage(_encode(merged))
-                    history = derive_merged_read(views, ids, profile_id, "history", raw_history=True)
-                    for item in history["snapshots"]:
-                        staged["history/" + item["fileName"]] = store.stage(_encode(item["payload"]))
-                store.publish(staged, replace_history=not incremental, dependency_hash=dependency_hash)
+                    if current_only:
+                        # BXX seeds a new observation from member currents. Do
+                        # not reconstruct member histories or delete existing
+                        # merged business history for a presentation request.
+                        name = "history/data_" + stamp.strftime("%Y%m%d_%H%M%S_%f") + "_merged-bind.json"
+                        staged[name] = store.stage(_encode(merged))
+                    else:
+                        history = derive_merged_read(views, ids, profile_id, "history", raw_history=True)
+                        for item in history["snapshots"]:
+                            staged["history/" + item["fileName"]] = store.stage(_encode(item["payload"]))
+                store.publish(staged, replace_history=not incremental and not current_only, dependency_hash=dependency_hash)
+                if on_current is not None and 'current' in staged:
+                    on_current(store, merged, stamp)
             return MaterializedMergedBind(virtual_id, root / (virtual_id + "data.json"),
                                           root / virtual_id, tuple(ids), profile_id)
     finally:

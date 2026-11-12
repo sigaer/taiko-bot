@@ -47,7 +47,10 @@ def test_legacy_merge_adapter_uses_owned_writer_and_keeps_errors(tmp_path,monkey
     from taiko_bot.offline import merged_bind
     from taiko_store import merged_materialization
     calls=[]
-    def materialize(*args):calls.append(args);return 'synthetic-publication'
+    def materialize(*args, **kwargs):
+        assert callable(kwargs['on_current'])
+        calls.append(args)
+        return 'synthetic-publication'
     monkeypatch.setattr(merged_materialization,'materialize',materialize)
     entry={'ids':['111','222'],'current_index':1}
     assert merged_bind.materialize_merged_bind_userdata('onebot_v11:7',entry,userdata_dir=tmp_path)=='synthetic-publication'

@@ -39,7 +39,8 @@ def build_ports(private=None, *, provider=None):
     parsing, score, dimension, summary, v2 = modules()
     current = thaw(private.current) if private else None
     prepared_inputs = dict(getattr(provider,"b30_inputs",{}))
-    if private is not None:prepared_inputs["history_snapshots"] = thaw(private.history) or ()
+    if private is not None and PROFILE == 'client':
+        prepared_inputs["history_snapshots"] = thaw(private.history) or ()
     snapshot = getattr(provider,"b30_snapshot",None)
     preparation_error = getattr(provider,"b30_preparation_error",None)
     prepared_calculate = getattr(provider, 'b30_results_from_records', None)

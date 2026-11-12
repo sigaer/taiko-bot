@@ -3,19 +3,17 @@ from __future__ import annotations
 
 import datetime
 
-import json
-
 from pathlib import Path
 
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from PIL import Image, ImageDraw
 
-from .b30_single import _compute_rating_for_entry, _load_rating_resources, build_song_index
+from .b30_single import _compute_rating_for_entry, _load_rating_resources
 
-from .draw_dress import TITLE_FONT_PATH, draw_player_info, _crop_with_pad, _get_font, _get_font_by_path, _load_previous_song_map, build_dress_image
+from .draw_dress import TITLE_FONT_PATH, draw_player_info, _crop_with_pad, _get_font, _get_font_by_path, build_dress_image
 
-from .score_calculator import TREND_COLORS, TREND_DIM_COLUMNS, TREND_SHORT_LABELS, _compute_results_from_userdata_records, aggregate_topN_value, compute_all_from_userdata_records, compute_dim_topN_means, load_rating_config
+from .score_calculator import TREND_COLORS, TREND_DIM_COLUMNS, TREND_SHORT_LABELS, aggregate_topN_value, compute_all_from_userdata_records, compute_dim_topN_means
 from .duplicate_versions import build_duplicate_song_groups
 
 ROOT_DIR = __import__("taiko_bot.runtime.public.config", fromlist=["root"]).root()
@@ -28,170 +26,27 @@ SONG_DB_DEFAULT = ROOT_DIR / "songs" / "song_data.json"
 
 RATING_JSON_DEFAULT = ROOT_DIR / "songs" / "rating_structured_with_ids.json"
 
-B30_DELTA_EPSILON = 1e-9
-
 from taiko_application.score import ScorePresentationContext, B30Renderer
 from taiko_bot.runtime.player.prepared_rating import reusable_v1_results
 
-from taiko_bot.public_catalog_cache import load_public_json as _load_json, song_index as cached_song_index
+from taiko_bot.public_catalog_cache import song_index as cached_song_index
 
-def _trend_series_value(
-    point: Tuple[datetime.datetime, Dict[str, float], float], name: str
-) -> float:
-    if name == "综合Rating":
-        return float(point[2])
-    return float(point[1].get(name, 0.0))
+def compute_b30_update_diff(current_top_entries, current_results, N, comparison,
+                            aggregate_topn_value_fn, compute_dim_topn_means_fn):
+    from ...bxx_summary import update_diff
+    return update_diff(current_top_entries, compute_dim_topn_means_fn(current_results, N),
+                       aggregate_topn_value_fn(current_results, "AI_rating", N), comparison)
 
-def _load_trend_ranges_with_options(
-    user_id: int,
-    N: int,
-    *,
-    daily_points,
-    max_days: int = 30,
-    collapse_duplicate_versions: bool = False,
-    aggregate_topn_value_fn: Callable[
-        [List[Any], str, int], float
-    ] = aggregate_topN_value,
-    compute_dim_topn_means_fn: Callable[
-        [List[Any], int], Dict[str, float]
-    ] = compute_dim_topN_means,
-    results_from_records_fn: Optional[
-        Callable[[List[Dict[str, Any]]], List[Any]]
-    ] = None,
-    trend_dim_columns: Optional[List[str]] = None,
-    trend_short_labels: Optional[Dict[str, str]] = None,
-    trend_colors: Optional[Dict[str, str]] = None,
-) -> List[Dict[str, Any]]:
-    trend_dim_columns = trend_dim_columns or list(TREND_DIM_COLUMNS)
-    trend_short_labels = trend_short_labels or TREND_SHORT_LABELS
-    trend_colors = trend_colors or TREND_COLORS
-    if not daily_points:
+
+def _growth_rows(results, N, comparison, aggregate, dimensions, labels, colors):
+    from ...bxx_summary import growth
+    values = growth(dimensions(results, N), aggregate(results, "AI_rating", N), comparison)
+    if values is None:
         return []
+    return [dict(category=name, label=labels.get(name, name), delta=value,
+                 color=_hex_to_rgba(colors.get(name, "#4E79A7")))
+            for name, value in values.items()]
 
-    rows: List[Dict[str, Any]] = []
-    for category in [*trend_dim_columns, "综合Rating"]:
-        values = [_trend_series_value(point, category) for point in daily_points]
-        if not values:
-            continue
-        vmin = min(values)
-        vmax = max(values)
-        rows.append(
-            {
-                "category": category,
-                "label": trend_short_labels.get(category, category),
-                "delta": max(0.0, vmax - vmin),
-                "latest": values[-1],
-                "color": _hex_to_rgba(trend_colors.get(category, "#4E79A7")),
-            }
-        )
-    return rows
-
-def _topn_entry_keys(
-    top_entries: List[Tuple[float, Dict[str, Any]]],
-) -> Set[Tuple[int, int]]:
-    keys: Set[Tuple[int, int]] = set()
-    for _, entry in top_entries:
-        try:
-            keys.add((int(entry.get("song_no", 0)), int(entry.get("level", 0))))
-        except (TypeError, ValueError):
-            continue
-    return keys
-
-def _entry_key(entry: Dict[str, Any]) -> Optional[Tuple[int, int]]:
-    try:
-        return int(entry.get("song_no", 0)), int(entry.get("level", 0))
-    except (TypeError, ValueError):
-        return None
-
-def compute_b30_update_diff(
-    user_id: int,
-    N: int,
-    *,
-    current_results: List[Any],
-    rating_index: Dict[Tuple[int, int], dict],
-    const_table: List[tuple],
-    current_top_entries: List[Tuple[float, Dict[str, Any]]],
-    collapse_duplicate_versions: bool = False,
-    compute_dim_topn_means_fn: Callable[
-        [List[Any], int], Dict[str, float]
-    ] = compute_dim_topN_means,
-    aggregate_topn_value_fn: Callable[
-        [List[Any], str, int], float
-    ] = aggregate_topN_value,
-    results_from_records_fn: Optional[
-        Callable[[List[Dict[str, Any]]], List[Any]]
-    ] = None,
-    trend_dim_columns: Optional[List[str]] = None,
-    entry_rating_getter: Optional[Callable[[Dict[str, Any]], Optional[float]]] = None,
-    min_level: int = 4,
-    history_snapshots=(),
-) -> Tuple[
-    Set[Tuple[int, int]],
-    Dict[Tuple[int, int], float],
-    Dict[str, float],
-    float,
-]:
-    trend_dim_columns = trend_dim_columns or list(TREND_DIM_COLUMNS)
-    prev_map = _load_previous_song_map(user_id, history_snapshots=history_snapshots)
-    if not prev_map:
-        return set(), {}, {}, 0.0
-
-    prev_top_entries = _pick_top_entries(
-        list(prev_map.values()),
-        rating_index,
-        const_table,
-        N,
-        collapse_duplicate_versions=collapse_duplicate_versions,
-        entry_rating_getter=entry_rating_getter,
-        min_level=min_level,
-    )
-    prev_keys = _topn_entry_keys(prev_top_entries)
-    curr_keys = _topn_entry_keys(current_top_entries)
-    new_keys = curr_keys - prev_keys
-    prev_rating_by_key = {
-        key: float(rating)
-        for rating, entry in prev_top_entries
-        if (key := _entry_key(entry)) is not None
-    }
-    current_rating_by_key = {
-        key: float(rating)
-        for rating, entry in current_top_entries
-        if (key := _entry_key(entry)) is not None
-    }
-    improved_rating_deltas = {
-        key: current_rating_by_key[key] - prev_rating_by_key[key]
-        for key in curr_keys & prev_keys
-        if current_rating_by_key[key] - prev_rating_by_key[key] > B30_DELTA_EPSILON
-    }
-
-    if results_from_records_fn is not None:
-        prev_results = results_from_records_fn(list(prev_map.values()))
-    else:
-        cfg = load_rating_config(RATING_JSON_DEFAULT)
-        prev_results = _compute_results_from_userdata_records(
-            list(prev_map.values()),
-            cfg,
-            const_table,
-            collapse_duplicate_versions=collapse_duplicate_versions,
-        )
-    if not prev_results or not current_results:
-        return new_keys, improved_rating_deltas, {}, 0.0
-
-    prev_means = compute_dim_topn_means_fn(prev_results, N)
-    curr_means = compute_dim_topn_means_fn(current_results, N)
-    dim_deltas: Dict[str, float] = {}
-    for category in trend_dim_columns:
-        delta = float(curr_means.get(category, 0.0)) - float(
-            prev_means.get(category, 0.0)
-        )
-        if abs(delta) > B30_DELTA_EPSILON:
-            dim_deltas[category] = delta
-    total_delta = float(
-        aggregate_topn_value_fn(current_results, "AI_rating", N)
-    ) - float(aggregate_topn_value_fn(prev_results, "AI_rating", N))
-    if abs(total_delta) <= B30_DELTA_EPSILON:
-        total_delta = 0.0
-    return new_keys, improved_rating_deltas, dim_deltas, total_delta
 
 def _format_update_date(observed_at) -> str:
     ts = observed_at
@@ -288,16 +143,13 @@ def render_b30_image(
     ] = compute_dim_topN_means,
     rating_label: Optional[str] = None,
     results_from_userdata_fn: Optional[Callable[[int], List[Any]]] = None,
-    results_from_records_fn: Optional[
-        Callable[[List[Dict[str, Any]]], List[Any]]
-    ] = None,
     trend_dim_columns: Optional[List[str]] = None,
     trend_short_labels: Optional[Dict[str, str]] = None,
     trend_colors: Optional[Dict[str, str]] = None,
     entry_rating_getter: Optional[Callable[[Dict[str, Any]], Optional[float]]] = None,
     card_rating_resolver: Optional[Callable[[Dict[str, Any]], Optional[float]]] = None,
     min_level: int = 4,
-    userdata, history_snapshots, daily_points, observed_at,
+    userdata, comparison, observed_at,
     precomputed_results=None,
     as_png_bytes=True,
 ) -> bytes:
@@ -309,8 +161,6 @@ def render_b30_image(
     # Validate the required resource before acquiring score inputs.
     with Image.open(template_path):
         pass
-    if callable(daily_points):
-        daily_points = daily_points()
 
     entries = userdata.get("songs", []) if isinstance(userdata, dict) else []
 
@@ -338,35 +188,9 @@ def render_b30_image(
         results = results_from_userdata_fn(user_id)
     overall = aggregate_topn_value_fn(results, "AI_rating", N)
     new_keys, improved_rating_deltas, dim_deltas, total_delta = compute_b30_update_diff(
-        user_id,
-        N,
-        current_results=results,
-        rating_index=rating_index,
-        const_table=const_table,
-        current_top_entries=top_entries,
-        collapse_duplicate_versions=collapse_duplicate_versions,
-        compute_dim_topn_means_fn=compute_dim_topn_means_fn,
-        aggregate_topn_value_fn=aggregate_topn_value_fn,
-        results_from_records_fn=results_from_records_fn,
-        trend_dim_columns=trend_dim_columns,
-        entry_rating_getter=entry_rating_getter,
-        min_level=min_level,
-        history_snapshots=history_snapshots,
-    )
-
-    trend_rows = _load_trend_ranges_with_options(
-        user_id,
-        N,
-        daily_points=daily_points,
-        max_days=30,
-        collapse_duplicate_versions=collapse_duplicate_versions,
-        aggregate_topn_value_fn=aggregate_topn_value_fn,
-        compute_dim_topn_means_fn=compute_dim_topn_means_fn,
-        results_from_records_fn=results_from_records_fn,
-        trend_dim_columns=trend_dim_columns,
-        trend_short_labels=trend_short_labels,
-        trend_colors=trend_colors,
-    )
+        top_entries, results, N, comparison, aggregate_topn_value_fn, compute_dim_topn_means_fn)
+    trend_rows = _growth_rows(results, N, comparison, aggregate_topn_value_fn,
+                             compute_dim_topn_means_fn, trend_short_labels, trend_colors)
     dress_img = build_dress_image(userdata)
     info_canvas = Image.new("RGBA", (499, 1600), (0, 0, 0, 0))
     try:
