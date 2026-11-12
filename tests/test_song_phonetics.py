@@ -49,6 +49,12 @@ def test_exact_names_aliases_and_ids_still_win():
     assert query('哥', songs=songs) == ([[2, '哥']], 'exact_name')
 
 
+def test_full_pronunciation_outranks_a_fragment_of_a_long_title():
+    songs = SONGS + [{'id': 2, 'song_name_jp': '晚餐歌'}]
+    assert query('歌', songs=songs)[0] == [[993, '彁', 90]]
+    assert query('歌', songs=songs, allow_fuzzy=False) == ([[2, '晚餐歌']], 'partial_name')
+
+
 def test_homophone_aliases_are_searchable_and_ambiguous_songs_are_preserved():
     assert query('表歌')[0][0][0] == 993
     songs = SONGS + [{'id': 2, 'song_name_jp': '戈'}]
