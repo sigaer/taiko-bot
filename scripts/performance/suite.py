@@ -6,19 +6,22 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 from benchmark import MAIN,CENTER,CLIENT
 
 p=argparse.ArgumentParser()
 p.add_argument('--source',type=Path,required=True)
 p.add_argument('--fixture',type=Path,required=True)
 p.add_argument('--output',type=Path,required=True)
-p.add_argument('--cohort',required=True,choices=['smoke','warm-query','warm-compute','warm-draw','cold','matrix-center','matrix-client','edges-center','edges-client','local'])
+p.add_argument('--cohort',required=True,choices=['smoke','warm-query','warm-compute','warm-draw','cold','matrix-center','matrix-client','edges-center','edges-client','local','phase-detail'])
 a=p.parse_args()
 assert os.environ.get('QA_RUN_ID'), 'Use the existing memory QA wrapper'
 a.output.parent.mkdir(parents=True,exist_ok=True)
 base=[sys.executable,str(Path(__file__).with_name('benchmark.py')),'--source',str(a.source),
       '--fixture',str(a.fixture),'--output',str(a.output)]
-if a.cohort.startswith('warm-'):
+if a.cohort=='phase-detail':
+    subprocess.run(base+['--scope','query','--detail-phases'],check=True)
+elif a.cohort.startswith('warm-'):
     subprocess.run(base+['--scope',a.cohort[5:]],check=True)
 elif a.cohort=='cold':
     for case in MAIN:

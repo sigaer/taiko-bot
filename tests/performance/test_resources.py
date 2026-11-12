@@ -132,3 +132,52 @@ def test_precomputed_v1_requires_matching_profile_deduplication_and_catalog(tmp_
     assert not reusable([1,2])
     song.write_text('[1]')
     assert not reusable()
+
+
+def test_summary_explicitly_closes_plain_card_images_on_success_and_failure(tmp_path,monkeypatch):
+    from taiko_application.score import B30Renderer,B30SingleRenderer,ScorePresentationContext
+    templates=tmp_path/'templates';templates.mkdir()
+    for name,size in [('b30_template.png',(1080,3000)),('b30_single.png',(595,384))]:
+        image=Image.new('RGBA',size,'white')
+        try:image.save(templates/name)
+        finally:image.close()
+    entries=[(1.0,dict(song_no=i,level=4)) for i in range(1,4)]
+    borrowed=Image.new('RGBA',(13,17),'green')
+    context=ScorePresentationContext(tmp_path,count=3,top_entries=entries,
+        song_index={i:{'id':i} for i in range(1,4)},card_ratings={(i,4):1.0 for i in range(1,4)},
+        dress_image=borrowed,title_image=borrowed)
+    for failure in [False,True]:
+        cards=[];calls=[0]
+        def render_card(renderer,**kwargs):
+            calls[0]+=1
+            if failure and calls[0]==3:raise ValueError('third card')
+            image=renderer._own(Image.new('RGBA',(595,384),'blue'));cards.append(image)
+            return image
+        monkeypatch.setattr(B30SingleRenderer,'_render',render_card)
+        if failure:
+            with pytest.raises(ValueError,match='third card'):B30Renderer(context).render()
+        else:assert isinstance(B30Renderer(context).render(),bytes)
+        assert len(cards)==(2 if failure else 3)
+        for image in cards:
+            with pytest.raises(ValueError):image.getpixel((0,0))
+    assert borrowed.getpixel((0,0))==(0,128,0,255)
+    borrowed.close()
+
+
+def test_encoder_closes_owned_alpha_and_decoded_png(monkeypatch):
+    from io import BytesIO
+    decoded=[];channels=[]
+    original_open=Image.open;original_channel=Image.Image.getchannel
+    def opened(*args,**kwargs):
+        image=original_open(*args,**kwargs);decoded.append(image);return image
+    def channel(*args,**kwargs):
+        image=original_channel(*args,**kwargs);channels.append(image);return image
+    monkeypatch.setattr(Image,'open',opened);monkeypatch.setattr(Image.Image,'getchannel',channel)
+    caller=Image.new('RGBA',(13,17),(1,2,3,128))
+    try:
+        output=BytesIO();caller.save(output,format='PNG')
+        assert to_jpeg_bytes(output.getvalue())==to_jpeg_bytes(caller)
+        assert caller.getpixel((0,0))==(1,2,3,128)
+        for image in decoded+channels:
+            with pytest.raises(ValueError):image.getpixel((0,0))
+    finally:caller.close()

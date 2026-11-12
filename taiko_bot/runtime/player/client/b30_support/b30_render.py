@@ -878,15 +878,17 @@ def render_b30_image(
         song_info = song_index.get(song_no)
         if not song_info:
             continue
-        card_img = render_b30_single_card(
+        single = render_b30_single_card(
             entry,
             song_info,
             assets_base=assets_base,
             as_png_bytes=False,
             show_new=get_song_chart_identity_key(song_no, level) in new_keys,
         )
-        with card_img as single:
+        try:
             card_img = single.resize((card_w, card_h), Image.LANCZOS)
+        finally:
+            single.close()
         row = idx // grid_cols
         col = idx % grid_cols
         row_start = row * grid_cols

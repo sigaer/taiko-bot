@@ -29,7 +29,7 @@ Run each release with its own installed interpreter and a fresh output prefix:
   --source /opt/taiko-bot/releases/0.21.1/lib/python3.11/site-packages \
   --fixture /var/tmp/taiko-b30-performance/fixture \
   --output /var/tmp/taiko-b30-performance/results --prefix replay-before \
-  --cohorts warm-query warm-compute warm-draw cold matrix-center matrix-client edges-center edges-client
+  --cohorts warm-query warm-compute warm-draw cold matrix-center matrix-client edges-center edges-client phase-detail
 ```
 
 Repeat with 0.21.2 and a different prefix. Client profile uses the separately
@@ -59,3 +59,9 @@ payloads, excluding only the two changed distributions.
 `build_candidate.sh` builds in QA scratch and installs an unactivated release;
 it refuses to reinstall an active release. Runtime activation stays owned by the
 standard `scripts/deploy_taiko.sh`, with `TAIKO_DEPLOY_BOT_ONLY=1` for this task.
+
+`phase-detail` runs the same six cases with extra attribution (read, catalog,
+aggregation and PNG decode). Its overhead is deliberately excluded from primary
+metrics. After all cohorts, `acceptance.py --work WORK` verifies the frozen
+corpus, image/algorithm equality, stress equality, RSS/latency plateau, cache
+budget and executor cleanup. This must pass before deployment.

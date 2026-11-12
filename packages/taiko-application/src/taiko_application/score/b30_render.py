@@ -751,8 +751,11 @@ class B30Renderer(RenderResources):
             )
             # The single-card API still defaults to PNG for external callers.
             # B30 owns this returned canvas and releases it before the next card.
-            with B30SingleRenderer(single_context, resources=self._resources).render(as_png_bytes=False) as single:
+            single = B30SingleRenderer(single_context, resources=self._resources).render(as_png_bytes=False)
+            try:
                 card_img = single.resize((card_w, card_h), Image.LANCZOS)
+            finally:
+                single.close()
             row = idx // grid_cols
             col = idx % grid_cols
             row_start = row * grid_cols

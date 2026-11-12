@@ -9,11 +9,12 @@ import resource
 import sys
 import time
 from unittest.mock import patch
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 from benchmark import initialize, prepare_inputs, ports_for, output_digest, environment
 
 p=argparse.ArgumentParser()
 p.add_argument('--source',type=Path,required=True);p.add_argument('--fixture',type=Path,required=True)
-p.add_argument('--output',type=Path,required=True);p.add_argument('--mode',choices=['memory','concurrency'],required=True)
+p.add_argument('--output',type=Path,required=True);p.add_argument('--mode',choices=['memory','concurrency','lifecycle'],required=True)
 a=p.parse_args();a.profile='center';a.verify=False;a.artifacts={};a.scope='query'
 mods=initialize(a)
 from taiko_application.commands import CommandContext,CommandResult,prepare_b30,execute_b30
@@ -53,14 +54,14 @@ async def main():
         return row
     await query('U05','taikob30 v1',record=False)
     await query('U05','taikob',record=False)
-    if a.mode=='memory':
+    if a.mode in ('memory','lifecycle'):
         gc.collect();report['rss'].append(dict(iteration=0,rss_kib=rss()))
-        for i in range(100):
+        for i in range(100 if a.mode=='memory' else 0):
             await query('U05','taikob30 v1')
             if (i+1)%10==0:
                 gc.collect();report['rss'].append(dict(iteration=i+1,rss_kib=rss()))
                 print('repeated',i+1,report['rss'][-1],flush=True)
-        for i in range(28):await query(f'U{i%14+1:02}','taikob' if i%2 else 'taikob30 v1')
+        for i in range(28 if a.mode=='memory' else 0):await query(f'U{i%14+1:02}','taikob' if i%2 else 'taikob30 v1')
         report['rss'].append(dict(iteration=128,rss_kib=rss()))
         # A real third-card failure must close every renderer-owned temporary.
         original_own=RenderResources._own;original_render=B30SingleRenderer._render

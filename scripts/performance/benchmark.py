@@ -109,6 +109,47 @@ def instrument(t,mods):
     Image.Image.save=save
 
 
+def instrument_detail(t, mods):
+    """Extra attribution only; do not mix its overhead into primary timings."""
+    replacements = {}
+    for module in mods.values():
+        for name in ('aggregate_topN_value', 'compute_dim_topN_means',
+                     'aggregate_topN_value_v2', 'compute_dim_topN_means_v2'):
+            if callable(getattr(module, name, None)):
+                original = getattr(module, name)
+                t.wrap(module, name, 'C.aggregate.' + name)
+                replacements[original] = getattr(module, name)
+        for name in ('load_rating_config', '_load_rating_resources',
+                     'build_song_index', 'build_const_table', 'build_duplicate_song_groups'):
+            if callable(getattr(module, name, None)):
+                t.wrap(module, name, 'D.catalog.' + name)
+    # Legacy adapters bind aggregation callables in keyword defaults. Replace
+    # those references too so attribution includes the unchanged default path.
+    for module in mods.values():
+        if not isinstance(module, types.ModuleType):
+            continue
+        for function in list(vars(module).values()):
+            function = getattr(function, '__wrapped__', function)
+            if not isinstance(function, types.FunctionType):
+                continue
+            def replace(value):
+                return replacements.get(value, value) if callable(value) else value
+            if function.__defaults__:
+                function.__defaults__ = tuple(replace(v) for v in function.__defaults__)
+            if function.__kwdefaults__:
+                function.__kwdefaults__ = {k:replace(v) for k,v in function.__kwdefaults__.items()}
+    if 'data' in mods:
+        t.wrap(mods['data'], 'load_v2_snapshot', 'B.v2_snapshot')
+    from taiko_store.reader import ScoreReadView
+    original = ScoreReadView.decoded
+    def decoded(view, key='current'):
+        with t.phase('B.read_current' if key == 'current' else 'B.read_history'):
+            return original(view, key)
+    ScoreReadView.decoded = decoded
+    from PIL.PngImagePlugin import PngImageFile
+    t.wrap(PngImageFile, 'load', 'E.decode.PNG')
+
+
 def ports_for(a,mods,fixture,prepared_inputs):
     from taiko_application.commands import B30Ports
     p,s,d,b,v=[mods[n] for n in ['parsing','score_calculator','dimension','b30_render','taikob_v2']]
@@ -226,7 +267,9 @@ def run(a):
     started=time.perf_counter_ns();mods=initialize(a);startup=time.perf_counter_ns()-started
     from taiko_application.commands import CommandContext,CommandResult,prepare_b30,execute_b30
     from taiko_application.score import B30Renderer
-    t=Timings();instrument(t,mods);env=environment();a.artifacts={}
+    t=Timings();instrument(t,mods)
+    if a.detail_phases:instrument_detail(t,mods)
+    env=environment();a.artifacts={}
     pattern=re.compile(r'^/?taikob(?:\s*(50|[1-4]\d|[1-9]))?(?:\s*(.*))?$' if a.profile=='center' else r'^/?taikob\s*(50|[1-4]\d|[1-9])(?:\s*(.*))?$',re.I)
     rows=[]
     for uid,command in json.loads(a.cases):
@@ -322,4 +365,5 @@ if __name__=='__main__':
     p.add_argument('--cases',default=json.dumps(MAIN));p.add_argument('--warmup',type=int,default=3)
     p.add_argument('--repeats',type=int,default=20)
     p.add_argument('--verify',action='store_true')
+    p.add_argument('--detail-phases',action='store_true')
     run(p.parse_args())

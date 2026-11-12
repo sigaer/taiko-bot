@@ -103,8 +103,11 @@ class RequestResources:
             return self._images[key]
 
         def load():
-            with Image.open(path) as source:
+            source = Image.open(path)
+            try:
                 image = source.convert('RGBA')
+            finally:
+                source.close()
             try:
                 if square:
                     w, h = image.size

@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 import statistics
 
-COHORTS=['warm-query','warm-compute','warm-draw','cold','matrix-center','matrix-client','edges-center','edges-client','handler']
+COHORTS=['warm-query','warm-compute','warm-draw','cold','matrix-center','matrix-client','edges-center','edges-client','handler','phase-detail']
 MAIN=[('U05','taikob30 v1'),('U05','taikob'),('U08','taikob30 v1'),('U08','taikob'),('U11','taikob'),('U12','taikob')]
 
 
@@ -31,7 +31,7 @@ def summary(rows):
 
 def load(root,label):
     cohorts={name:[json.loads(l) for l in (root/f"{label+'-confirmed' if label=='before' and name in COHORTS[:4] else label}-{name}.jsonl").read_text().splitlines()] for name in COHORTS}
-    assert [len(cohorts[c]) for c in COHORTS]==[120,120,120,30,182,112,28,20,80]
+    assert [len(cohorts[c]) for c in COHORTS]==[120,120,120,30,182,112,28,20,80,120]
     stress={name:json.loads((root/f'{label}-{name}.json').read_text()) for name in ['memory','concurrency']}
     assert all(r['status']=='PASS' for r in stress.values())
     return dict(schema='taiko-b30-performance-v1',variant=label,
@@ -56,13 +56,14 @@ def validate(before,after):
                 if field in x:counts[field]+=1
             png=x.get('default_png') or (x.get('encoder_input') if 'sha256' in x.get('encoder_input',{}) else None)
             if png:
-                assert png==y.get('default_png'),(key,'default PNG API')
+                new_png=y.get('default_png') or (y.get('encoder_input') if 'sha256' in y.get('encoder_input',{}) else None)
+                assert png==new_png,(key,'default PNG API')
                 counts['png']+=1
             if 'encoder_input' in x:
                 for field in ['size','pixels','rgb_pixels']:
                     assert x['encoder_input'][field]==y['encoder_input'][field],(key,'encoder RGB',field)
                 counts['encoder_pixels']+=1
-    for cohort in ['warm-query','warm-compute','warm-draw','cold','handler']:
+    for cohort in ['warm-query','warm-compute','warm-draw','cold','handler','phase-detail']:
         assert [(r['user'],r['command'],r['output']) for r in before['cohorts'][cohort]]==[(r['user'],r['command'],r['output']) for r in after['cohorts'][cohort]],cohort
     return dict(status='PASS',**counts)
 
@@ -77,12 +78,13 @@ def main():
         fixture_manifest_sha256=hashlib.sha256((a.work/'fixture/fixture-manifest.json').read_bytes()).hexdigest(),
         fixtures=manifest,extra_fixtures=edge,system_fonts=(root/'system-fonts.sha256').read_text(),
         dependencies=json.loads((root/'dependency-parity.json').read_text()),
+        installed_source=json.loads((root/'installed-source-parity.json').read_text()),
         baseline_freeze=(root/'production-freeze.txt').read_text())
     for data in [before,after]:
         data['provenance']=provenance
         (a.output/f"benchmark-{data['variant']}.json").write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
-    parity=json.loads((a.work/'phase2b-installed/parity.json').read_text());assert parity['status']=='PASS'
-    authority={name:json.loads((a.work/f'host-{name}/host-events.json').read_text()) for name in ['center','client']}
+    parity=json.loads((a.work/'phase2b-final/parity.json').read_text());assert parity['status']=='PASS'
+    authority={name:json.loads((a.work/f'host-{name}-final/host-events.json').read_text()) for name in ['center','client']}
     assert all(x['status']=='PASS' for x in authority.values())
     deployment=json.loads(a.deployment.read_text())
     lines=['# B30 全链路性能报告：Taiko Bot 0.21.2','',
@@ -98,9 +100,9 @@ def main():
       '', '中心端每个 U 样本覆盖 13 条命令：`taikob`、`taikob20 v2`、`taikob30 v2`、`taikob20 v1`、`taikob30 v1`、`taikob50 v1`、`taikob20 v2 精度`、`taikob30 v1 精度`、`taikob20 v2 体力`、`taikob20 v1 节奏`，以及 nonsense、-r、v1/v2 冲突。客户端每个 U 覆盖 `taikob20/30/50`、`taikob20 v2`、v2 精度/体力、非法 v2 Top30、非法维度；另有 48 个尺寸、维度别名、缺参、版本、空结果边界。完整命令逐条保存在 JSON。',
       '', '中心默认 `taikob` 保持 v2 Top20，原版已不经过完整 v1 计算；客户端默认仍为 v1，v2 仅支持 Top20，其布局、重复版本策略和错误提示均保留。`taikob30 v1` 经 Application execute → 中心 B30 adapter → Application B30Renderer → 30 张 Single 卡片。客户端经自身 legacy renderer。',
       '', '## 测量口径','',
-      '六个主要场景各新进程 5 次；热缓存预热 3 次、正式 20 次。query 包括真实 PublicationStore 当前/历史对象读取、完整性验证、历史重建、计算和生产 JPEG 路径；身份为固定模拟端口。compute 使用预先读取的输入，每次仍新建请求级私人计算缓存；draw 使用固定 ScoreContext，测默认 PNG API 绘图及原编码包装，便于比较 API 本身。网络、平台发送和远端 SQL 延迟均不计入。',
+      '六个主要场景各新进程 5 次；热缓存预热 3 次、正式 20 次。query 包括真实 PublicationStore 当前/历史对象读取、完整性验证、历史重建、计算和生产 JPEG 路径；身份为固定模拟端口，A 阶段还含合成 fixture 载入开销（两版一致）；真实 Matcher 指标另表列出。compute 使用预先读取的输入，每次仍新建请求级私人计算缓存；draw 使用固定 ScoreContext，测默认 PNG API 绘图及原编码包装，便于比较 API 本身。网络、平台发送和远端 SQL 延迟均不计入。',
       '', '另以真实 NoneBot Matcher/Provider、只读合成 SQL authority 和真实 PublicationStore 测量完整 handler（4 个场景各 3+20 次）；包含授权算法及发送前复核，发送端仅记录图像哈希。没有通过真实 Bot 账号制造流量。',
-      '', '阶段 A–F 使用 perf_counter_ns，保留父子关系。inclusive 为含子阶段累计值，exclusive 为扣除直接子阶段后的独占值，不能把各层 inclusive 相加。CPU 为 process_time_ns；峰值 RSS 为进程累计高水位，不能当作每请求净分配。P95 使用 nearest-rank。冷进程 query 表示新 Python 进程内首个查询，导入 startup 和外部进程总时长另存，后者还含隔离 fixture 初始化。',
+      '', '另有 phase-detail 六场景各 3+20 次，额外细分读取、曲库索引、六维/综合聚合、PNG 解码；其插桩开销不混入主要提速数字。阶段 A–F 使用 perf_counter_ns，保留父子关系。inclusive 为含子阶段累计值，exclusive 为扣除直接子阶段后的独占值，不能把各层 inclusive 相加。CPU 为 process_time_ns；峰值 RSS 为进程累计高水位，不能当作每请求净分配。P95 使用 nearest-rank。冷进程 query 表示新 Python 进程内首个查询，导入 startup 和外部进程总时长另存，后者还含隔离 fixture 初始化。',
       '', '## 热缓存完整查询（秒）','', '|样本/命令|旧 P50|新 P50|旧 P95|新 P95|P50 加速|降幅|','|---|---:|---:|---:|---:|---:|---:|']
     def values(data,cohort,key,field='wall_ns'):
         return [r[field] for r in data['cohorts'][cohort] if (r['user'],r['command'])==key]
@@ -113,6 +115,14 @@ def main():
     lines+=formatted_table('warm-query')
     for cohort,title in [('warm-compute','已准备数据后的完整计算与生产绘图'),('warm-draw','纯绘图：默认 PNG API 与编码'),('cold','冷进程内首个完整查询'),('handler','真实 Matcher 完整链路')]:
         lines+=['',f'## {title}（秒）','', '|样本/命令|旧 P50|新 P50|旧 P95|新 P95|P50 加速|降幅|','|---|---:|---:|---:|---:|---:|---:|']+formatted_table(cohort,MAIN if cohort!='handler' else [MAIN[0],MAIN[1],MAIN[3],MAIN[5]])
+    lines+=['', '## 冷进程初始化与外部总时长（秒）', '', '|样本/命令|旧初始化 P50/P95|新初始化 P50/P95|旧外部进程 P50/P95|新外部进程 P50/P95|','|---|---|---|---|---|']
+    for key in MAIN:
+        groups=[]
+        for field in ['startup_ns','process_wall_ns']:
+            for data in [before,after]:
+                v=stats(values(data,'cold',key,field));groups.append(f'{v["p50"]/1e9:.3f} / {v["p95"]/1e9:.3f}')
+        lines.append('|'+key[0]+' '+key[1]+'|'+'|'.join(groups)+'|')
+    lines+=['', '初始化为冻结输入下的模块/资源加载阶段；外部进程总时长还包含解释器、fixture PublicationStore 写入和测试脚手架，不作为生产请求耗时或提速目标。冷查询与热缓存指标分别报告。']
     lines+=['','## CPU、内存和输出','', '|样本/命令|旧 CPU P50 秒|新 CPU P50 秒|旧峰值 RSS MiB|新峰值 RSS MiB|尺寸|JPEG 字节|','|---|---:|---:|---:|---:|---|---:|']
     for key in MAIN:
         o=next(r for r in before['cohorts']['warm-query'] if (r['user'],r['command'])==key);n=next(r for r in after['cohorts']['warm-query'] if (r['user'],r['command'])==key)
@@ -121,19 +131,23 @@ def main():
     lines+=['','## 分项优化及局部复测','', '每步以相同六场景执行一次未预热的隔离查询。以下为实测毫秒及相对前一步倍数，仅用于定位来源，单次采样受冷资源和负载影响，正式结论以上方 20 次分布为准。历史聚合的最后一轮是在有界执行器接入后补测，未伪装成早期测量。', '', '|步骤|标准 v1|默认 v2|密集 v1|密集 v2|30 天历史|180 天历史|','|---|---:|---:|---:|---:|---:|---:|']
     steps=[('native-smoke','旧版'),('step1-direct-card','单卡直接 Image'),('step2-rating','同参数 Rating 复用'),('step3-resources','共享字体模板与封面'),('step4-jpeg','最终 JPEG 直出'),('step5-catalog','公共曲库及索引'),('step5b-revisions','修订失效完善'),('step6-history','历史窗口重建'),('step6b-dimensions','v2/维度图资源'),('step7-pillow','相同尺寸 resize 消除'),('step8-pure-boundary','纯计算线程边界'),('step6c-aggregation','相同输入历史六维复用')]
     previous=None;local=[]
+    reference_outputs=None
     for filename,title in steps:
         rows=[json.loads(l) for l in (root/f'{filename}.jsonl').read_text().splitlines()];mapping={(r['user'],r['command']):r for r in rows};current=[mapping[k]['wall_ns'] for k in MAIN]
+        outputs=[mapping[k]['output'] for k in MAIN]
+        if reference_outputs is None:reference_outputs=outputs
+        assert outputs==reference_outputs,(title,'local output changed')
         line=[title]+[f'{v/1e6:.1f}'+(f' ({previous[i]/v:.2f}×)' if previous else '') for i,v in enumerate(current)]
         lines.append('|'+'|'.join(line)+'|');local.append(dict(step=title,records=rows));previous=current
     (a.output/'optimization-steps.json').write_text(json.dumps(local,ensure_ascii=False,indent=2)+'\n')
-    lines+=['', '单卡不再做 30 次 PNG 编码/解码，使用相同 LANCZOS 与尺寸。请求级共享只读资源、先复制模板再写玩家内容；跨请求仅缓存公共图片，限额 64 MiB。字体请求限额 128、私人 Rating memo 32 项/32000 行、同输入聚合 64 项；不缓存最终私人图片。',
+    lines+=['', '早期局部记录尚未加入总 manifest SHA256 字段；其六个固定输入未变，各步最终 JPEG 哈希逐一相同。正式前后测试每行均包含最终冻结 manifest SHA256，不以局部单次采样替代正式验收。', '', '单卡不再做 30 次 PNG 编码/解码，使用相同 LANCZOS 与尺寸。请求级共享只读资源、先复制模板再写玩家内容；跨请求仅缓存公共图片，限额 64 MiB。字体请求限额 128、私人 Rating memo 32 项/32000 行、同输入聚合 64 项；不缓存最终私人图片。',
       '', 'v1 预计算仅在评分 profile、去重策略、用户、完整有序成绩摘要与曲库修订相同才复用。v2 使用自身结果；删除重复全量计算前保留了无可计分结果的旧判定语义。历史只保留需要的最近窗口，仍按原完整+增量序列重放；相同快照 Rating/六维在请求内复用，未启用跨玩家私人历史缓存，未改变每日归档行为。',
       '', '公共 JSON/Rating/index/重复版本/V2 CSV 按路径、mtime_ns、size、inode、ctime 修订失效。测试发现宿主 4ms 时间戳粒度可能让快速同尺寸写入别名，修复为新近文件校验内容摘要、图片新近更新暂不跨请求缓存；相关失败测试修复后原断言全部通过。没有降低图像质量或修改评分公式。',
       '', 'Pillow 操作仅删除可证明相同的操作；标题截断、布局搜索、雷达图和非等尺寸缩放保留原算法与滤镜。Matplotlib 分支保留主线程并占用相同并发预算，避免 pyplot 线程不安全；其本身仍可能短暂阻塞事件循环。局部步骤出现单次噪声/无收益时没有把其标成稳定加速；收益主要来自资源复用与编码消除。',
       '', '## 图片、算法及授权验收','',f'命令矩阵与扩展边界共 {correct["commands"]} 项，输出全部与旧版一致。{correct["all_results"]} 项全量 Rating 结果摘要、{correct["summary_algorithm"]} 项 TopN/综合/六维/趋势/历史差异/NEW 计算摘要一致；{correct["png"]} 项默认 PNG 字节 SHA256 与解码像素一致；{correct["encoder_pixels"]} 项生产编码前 RGB/原始像素与尺寸一致。最终 JPEG 字节、尺寸、像素和长度均一致（quality=85、optimize=True，透明区域原白底处理）。',
       '',f'原 Application Phase 2B 的 {len(parity["cases"])} 项图片/缺资源用例全部通过；使用原 provenance 与哈希，没有更新 golden 来适应新输出。安装包 standalone 4 项通过。中心/客户端真实 Matcher 各 {len(authority["center"]["cases"])} 项，覆盖 OneBot/QQ、普通/u0、准备后/渲染后/发送时撤权、成员/顺序/当前档案变更及解绑，SQL 与 PublicationStore lease 均留在主线程，无真实发送。',
-      '', '主回归 44 项、客户端 V2/可见性 7 项、已安装 wheel cache smoke 4 项均通过。执行器另测限额、队列拒绝、取消、超时、异常及启动关闭；取消后协作停止，实际工作结束前不归还占用，最多 2 个绘图和 1 个等待请求。',
-      '', '## 并发与资源生命周期','', '|并发|旧请求 P50/P95 秒|新请求 P50/P95 秒|P95 加速|旧/新吞吐 req/s|旧/新事件循环最大间隔 秒|','|---:|---|---|---:|---|---|']
+      '', '主回归 46 项、客户端 V2/可见性 7 项、已安装 wheel cache smoke 4 项均通过。执行器另测限额、队列拒绝、取消、超时、异常及启动关闭；取消后协作停止，实际工作结束前不归还占用，最多 2 个绘图和 1 个等待请求。',
+      '', '异常注入曾发现初版使用 Pillow Image 上下文管理器没有显式释放内存像素对象。生产未部署该包；改为明确关闭卡片、Alpha 通道及解码源，新增成功/异常关闭与借入图像保留测试。最终包的全套 after 测量重新执行，初版结果与失败日志另存 intermediate-with-pillow-context，不混入最终结论。', '', '## 并发与资源生命周期','', '|并发|旧请求 P50/P95 秒|新请求 P50/P95 秒|P95 加速|旧/新吞吐 req/s|旧/新事件循环最大间隔 秒|','|---:|---|---|---:|---|---|']
     for concurrency in [2,3]:
         os=[r for r in before['stress']['concurrency']['batches'] if r['concurrency']==concurrency];ns=[r for r in after['stress']['concurrency']['batches'] if r['concurrency']==concurrency]
         ov=stats([v for r in os for v in r['request_wall_ns']]);nv=stats([v for r in ns for v in r['request_wall_ns']])
@@ -144,9 +158,9 @@ def main():
         m=data['stress']['memory'];rss={r['iteration']:r['rss_kib']/1024 for r in m['rss']};cache=m['cache'];cachetext=f'{cache["bytes"]/1048576:.2f} / {cache["limit"]/1048576:.0f}' if isinstance(cache,dict) else '无进程图片缓存'
         lines.append(f'|{data["variant"]}|{rss[0]:.1f}|{rss[50]:.1f}|{rss[100]:.1f}|{rss[128]:.1f}|{cachetext}|')
     lines+=['', '连续同用户100次、不同用户轮换28次与混合并发均完成，无 OOM；逐次原始 RSS、耗时及周期采样在 JSON 中。三次实际第三卡异常验证所有请求拥有的 Pillow 图片关闭，后续请求恢复；新执行器重复完整启动/关闭3次，最终无 active/admitted。资源缓存有界且失效测试通过。',
-      '', '## 阶段证据（热查询均值毫秒）','', '|场景/阶段|旧累计|新累计|旧独占|新独占|','|---|---:|---:|---:|---:|']
+      '', '## 阶段证据（独立详细采样，热查询均值毫秒）','', '|场景/阶段|旧累计|新累计|旧独占|新独占|','|---|---:|---:|---:|---:|']
     for key in MAIN[:2]:
-        old=[r for r in before['cohorts']['warm-query'] if (r['user'],r['command'])==key];new=[r for r in after['cohorts']['warm-query'] if (r['user'],r['command'])==key]
+        old=[r for r in before['cohorts']['phase-detail'] if (r['user'],r['command'])==key];new=[r for r in after['cohorts']['phase-detail'] if (r['user'],r['command'])==key]
         names=sorted(set().union(*(r['stages'] for r in old+new)))
         for name in names:
             vals=[statistics.mean(r['stages'].get(name,{}).get(field,0) for r in group)/1e6 for field in ['inclusive_ns','exclusive_ns'] for group in [old,new]]
@@ -155,7 +169,7 @@ def main():
     lines+=['', '## 发布与剩余瓶颈','', '安装包版本和物理模块路径由生产进程启动日志中的 runtime inventory 核对。发布仅切换 taiko-bot.service，不重启 Viewer、同步接收器或其他游戏。原运行架构只有 37564 监听，37563 在基线即无监听；保持实际端口和既有连接方式，没有为迁就旧架构描述额外创建服务。', '', '部署证据：', '', '```json',json.dumps(deployment,ensure_ascii=False,indent=2),'```','',
       '旧 `/opt/taiko-bot/releases/0.21.1`、原依赖包及代码基线保留。回滚：`TAIKO_DEPLOY_BOT_ONLY=1 scripts/deploy_taiko.sh 0.21.1 0`。源代码与安装包发布来自本报告代码提交；报告自身的后续提交不改变已验收 wheel。',
       '', '剩余主要耗时为固定布局的文字/卡片合成、JPEG 编码及长期历史真实重建；密集成绩排序/Rating 仍遵守原算法。冷进程导入、系统字体初始化及文件系统读取不能由热缓存收益代替。网络、真实远端 SQL 和平台传输不在离线数字中；真实 handler 已验证本地算法/授权边界。没有改变生产玩家数据、授权、绑定、每日历史档案或其他服务。',
-      '', '复现：先用 fixtures.py 固定公共资源与合成输入；通过现有 run_qa.sh 分别以旧/新已安装解释器运行 run_cohorts.py、stress.py 和 host_events.py。每次使用相同冻结 fixture，完整命令与实施脚本位于 scripts/performance。测试及构建原始日志保留在 /home/sigaer/taiko/qa-vault/runs，隔离输入和步骤证据保留在 /var/tmp/taiko-b30-performance。','']
+      '', '最终基准中的旧版 query/compute/draw/cold 使用 before-confirmed 重测；最初直接返回固定 V2 snapshot 的初测保留在隔离证据目录，不混入最终统计。\n\n复现：先用 fixtures.py 固定公共资源与合成输入；通过现有 run_qa.sh 分别以旧/新已安装解释器运行 run_cohorts.py、stress.py 和 host_events.py。每次使用相同冻结 fixture，完整命令与实施脚本位于 scripts/performance。测试及构建原始日志保留在 /home/sigaer/taiko/qa-vault/runs，隔离输入和步骤证据保留在 /var/tmp/taiko-b30-performance。','']
     (a.output/'b30-performance-report.md').write_text('\n'.join(lines))
     (a.output/'correctness.json').write_text(json.dumps(correct,indent=2)+'\n')
     print(correct)
