@@ -41,6 +41,7 @@ class Client:
         self.session = requests.Session()
         self.session.headers['User-Agent'] = 'TaikoCoverUploader/1.0'
         if proxy:
+            self.session.trust_env = False
             self.session.proxies.update(http=proxy, https=proxy)
         self.interval, self.last_write = max(1.7, interval), 0
         self.csrf = ''

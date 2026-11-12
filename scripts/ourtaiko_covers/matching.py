@@ -62,6 +62,15 @@ def build_plan(charts_path, songs_path, covers):
         files = [Path(covers) / (sid + ext) for ext in ('.png', '.jpg', '.jpeg', '.webp')]
         files = [p for p in files if p.is_file()]
         if not files:
+            # Catalog reconciliation reserves these historical IDs for this song.
+            # Read the existing art in place; never copy/rename production assets.
+            files = [Path(covers) / (str(old) + ext)
+                     for old in by_id[sid].get('legacy_ids', []) if number(old)
+                     for ext in ('.png', '.jpg', '.jpeg', '.webp')]
+            files = [p for p in files if p.is_file()]
+            if files:
+                row['coverFromLegacyId'] = True
+        if not files:
             row['status'] = 'missing_cover'
             continue
         if len(files) != 1:

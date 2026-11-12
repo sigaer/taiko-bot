@@ -48,6 +48,8 @@ def main():
     parser.add_argument('--credentials-file', type=Path, help='Private JSON with username/password; never passed in argv')
     parser.add_argument('--proxy', help='Optional HTTP/SOCKS proxy; otherwise use the current environment')
     parser.add_argument('--limit', type=int, default=0, help='Max uploads this invocation; zero means all')
+    parser.add_argument('--local-id', type=int, action='append', default=[],
+                        help='Only process this canonical local song ID; repeat to select more')
     parser.add_argument('--interval', type=float, default=1.7, help='Minimum seconds between writes (>=1.7)')
     args = parser.parse_args()
     os.umask(0o077)
@@ -83,6 +85,8 @@ def main():
             with journal_path.open('a', encoding='utf-8') as journal:
                 for row in plan['rows']:
                     if row['status'] != 'ready':
+                        continue
+                    if args.local_id and int(row['localId']) not in args.local_id:
                         continue
                     cid, source = row['chartId'], row['sourceSha256']
                     prior = previous.get((cid, source))

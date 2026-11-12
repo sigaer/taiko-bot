@@ -58,6 +58,21 @@ class MatchingTests(unittest.TestCase):
         row = self.plan({'id': self.cid, 'title': 'Song'}, [{'id': 123, 'song_name': 'Song'}])
         self.assertEqual(row['status'], 'unmatched')
 
+    def test_reserved_legacy_cover_is_read_in_place(self):
+        (self.root / '123.png').rename(self.root / '456.png')
+        row = self.plan({'id': self.cid}, [{'id': 123, 'legacy_ids': [456], 'ourtaiko_ids': [self.cid]}])
+        self.assertEqual(row['status'], 'ready')
+        self.assertTrue(row['coverFromLegacyId'])
+        self.assertTrue(row['path'].endswith('/456.png'))
+        self.assertFalse((self.root / '123.png').exists())
+
+    def test_current_cover_takes_precedence_over_legacy_assets(self):
+        Image.new('RGB', (8, 8), 'blue').save(self.root / '456.png')
+        row = self.plan({'id': self.cid}, [{'id': 123, 'legacy_ids': [456], 'ourtaiko_ids': [self.cid]}])
+        self.assertEqual(row['status'], 'ready')
+        self.assertTrue(row['path'].endswith('/123.png'))
+        self.assertNotIn('coverFromLegacyId', row)
+
     def test_invalid_cover_and_missing_cover(self):
         (self.root / '123.png').write_bytes(b'not an image')
         row = self.plan({'id': self.cid, 'nijiiro_id': 123}, [{'id': 123}])
@@ -86,6 +101,12 @@ class MatchingTests(unittest.TestCase):
 
 
 class ClientTests(unittest.TestCase):
+    def test_explicit_proxy_is_not_overridden_by_environment(self):
+        client = Client(proxy='http://127.0.0.1:12345')
+        self.addCleanup(client.session.close)
+        self.assertFalse(client.session.trust_env)
+        self.assertEqual(client.session.proxies['https'], 'http://127.0.0.1:12345')
+
     def test_form_parser_selects_login_form_not_language_form(self):
         forms = Forms('<form><input name="next" value="wrong"></form><form>'
                       '<input name="password"><input name="next" value="/o/?a=1&amp;b=2"></form>').forms
