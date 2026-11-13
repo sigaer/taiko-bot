@@ -81,6 +81,20 @@
         "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
         "scripts/performance/qq_delivery_probe.py": "57524e55ad8ca5831f90605280861d283f6e1fd9cff397a411b2c4ea32138b60"
       }
+    },
+    "performance-3": {
+      "round_id": "performance-3",
+      "sha256": {
+        "scripts/performance/qq_delivery/__init__.py": "37bc1ea6469ae380f89eec151b93d9e72c9a33260f2114ac085b012f2e0329a1",
+        "scripts/performance/qq_delivery/config.py": "a59bb16d0ee609c8b3ba8b3541ba00eaa06e0636e070734fab9763aa2dbbfdf8",
+        "scripts/performance/qq_delivery/events.py": "2a328d169fcadc70d1cb58bbbc18ee3d22215834383ea17a3e5bd4ca0e501180",
+        "scripts/performance/qq_delivery/experiment.py": "14e88f32b9c980666de04a93688a7691288cd69ea2b25dbcf895dbcc7e55216c",
+        "scripts/performance/qq_delivery/images.py": "da2ede2c36a4fad9bf7fad6aad87e46959a147e9f5e9bf012ba763b460962dcb",
+        "scripts/performance/qq_delivery/report.py": "24428ee38ba2832eb3ad3c96dc20d87b49bf1ce0b9ac1eee042611480d498b53",
+        "scripts/performance/qq_delivery/state.py": "e651f83ffc96b01ea76262b5de83febdb6f9cd697f151364ef46588fa4020025",
+        "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
+        "scripts/performance/qq_delivery_probe.py": "57524e55ad8ca5831f90605280861d283f6e1fd9cff397a411b2c4ea32138b60"
+      }
     }
   },
   "source_snapshot_scope": "original archive hashes retained; resumed protocol and performance snapshots separately recorded"
@@ -93,20 +107,21 @@
 
 |模式|阶段/传输/连接/URL|尝试|API成功率|API调用合计 P50 ms|API调用合计 P95 ms|Android完整收图 P50 ms|
 |---|---|---:|---:|---:|---:|---:|
-|A-data|performance/traced_httpx/new_connection/None|2|100.0%|2864.559|2974.24|None|
+|A-data|performance/traced_httpx/new_connection/None|4|100.0%|2791.382|2974.24|None|
 |A-data|performance/traced_httpx/new_connection/None|1|100.0%|3169.547|3169.547|None|
 |A-data|protocol/adapter/unobservable/None|1|100.0%|2851.45|2851.45|None|
-|B-data|performance/traced_httpx/new_connection/None|2|100.0%|2500.552|2540.688|None|
+|B-data|performance/traced_httpx/new_connection/None|3|100.0%|2460.415|2540.688|None|
 |B-data|protocol/adapter/unobservable/None|1|100.0%|3216.981|3216.981|None|
 |B-url|performance/traced_httpx/new_connection/first_url|1|100.0%|2781.284|2781.284|None|
-|B-url|performance/traced_httpx/new_connection/repeated_url|1|100.0%|2451.075|2451.075|None|
+|B-url|performance/traced_httpx/new_connection/repeated_url|2|100.0%|2434.761|2451.075|None|
 |B-url|protocol/traced_httpx/new_connection/repeated_url|1|100.0%|2584.589|2584.589|None|
+|C|performance/traced_httpx/new_connection/first_url|1|100.0%|2381.444|2381.444|None|
 |C|performance/traced_httpx/new_connection/repeated_url|4|100.0%|1938.303|2338.442|None|
 |C|protocol/traced_httpx/new_connection/first_url|1|100.0%|3679.759|3679.759|None|
-|D|performance/traced_httpx/new_connection/None|1|100.0%|2145.231|2145.231|None|
+|D|performance/traced_httpx/new_connection/None|2|100.0%|2143.636|2145.231|None|
 |D|protocol/adapter/unobservable/None|1|100.0%|2339.197|2339.197|None|
 
-对照统计纳入 17 条记录；另有 4 条保留为审计证据，不纳入对照统计。
+对照统计纳入 23 条记录；另有 4 条保留为审计证据，不纳入对照统计。
 samples 保留全部 API 事实；comparison_eligible、cohort 和 trigger_source 标明统计范围与操作来源。管理员报告的额度下限单独保存，不当作实际扣减量。
 API调用合计为每条样本内QQ API调用完整耗时之和，排除静态URL验证和调用间隙；包含准备与持久化的整步耗时另见 operation_total。
 每模式成功率、最小/最大值、完整 API 子阶段、Windows 观察、重复发送、未知结果及主动额度见同目录 JSON。
@@ -118,6 +133,7 @@ API调用合计为每条样本内QQ API调用完整耗时之和，排除静态UR
 - active_quota_balance_change_unmeasured
 - same_URL_first_and_cached_client_comparison_unmeasured
 - small_unmatched_protocol_samples_are_not_performance_evidence
+- performance_target_10_samples_per_path_not_reached
 
 ## 生产决策
 
@@ -145,17 +161,23 @@ B 仅发送图片；C 测试资源为短时公开合成图片，这不构成发�
 |050f7ae2e022|B-url|excluded_after_initial_round|False|acknowledged|待观察|
 |ef89ae7fedaa|C|resumed_preflight|True|acknowledged|完整、无重复|
 |50326757fbde|B-url|resumed_preflight|True|acknowledged|完整、无重复|
-|e2d187ee1520|A-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|9ddf57a7c737|B-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|ecb70b97e182|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|e654254fa681|B-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|af29317a977c|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|91038a058bc8|A-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|b4ce981282e6|B-url|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|e6153c569b90|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|9450ac7b1fe5|A-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|bff7d618f110|D|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|e0bcfbb9a2ee|B-url|interleaved_performance|True|acknowledged|完整；重复数未确认|
-|ddbf3e6b3481|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|e2d187ee1520|A-data|interleaved_performance|True|acknowledged|完整、无重复|
+|9ddf57a7c737|B-data|interleaved_performance|True|acknowledged|完整、无重复|
+|ecb70b97e182|C|interleaved_performance|True|acknowledged|完整、无重复|
+|e654254fa681|B-data|interleaved_performance|True|acknowledged|完整、无重复|
+|af29317a977c|C|interleaved_performance|True|acknowledged|完整、无重复|
+|91038a058bc8|A-data|interleaved_performance|True|acknowledged|完整、无重复|
+|b4ce981282e6|B-url|interleaved_performance|True|acknowledged|完整、无重复|
+|e6153c569b90|C|interleaved_performance|True|acknowledged|完整、无重复|
+|9450ac7b1fe5|A-data|interleaved_performance|True|acknowledged|完整、无重复|
+|bff7d618f110|D|interleaved_performance|True|acknowledged|完整、无重复|
+|e0bcfbb9a2ee|B-url|interleaved_performance|True|acknowledged|完整、无重复|
+|ddbf3e6b3481|C|interleaved_performance|True|acknowledged|完整、无重复|
+|ea4e9f6ee522|C|interleaved_performance|True|acknowledged|完整、无重复|
+|ff4366ac092f|A-data|interleaved_performance|True|acknowledged|完整、无重复|
+|bf5c0fc7dc6d|B-data|interleaved_performance|True|acknowledged|完整、无重复|
+|6d1a56e7feee|A-data|interleaved_performance|True|acknowledged|完整、无重复|
+|6cf0a436de23|D|interleaved_performance|True|acknowledged|完整、无重复|
+|12eb681d09b1|B-url|interleaved_performance|True|acknowledged|完整、无重复|
 
 管理员报告剩余额度 900+，仅作为保守下限；实际主动额度扣减仍未知。生产 Bot 与发送策略未改变。

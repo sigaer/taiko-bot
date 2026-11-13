@@ -208,6 +208,66 @@
       "age_at_operation_seconds": 0.36,
       "comparison_eligible": true,
       "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "ea4e9f6ee522",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T02:43:32.228034+00:00",
+      "age_at_operation_seconds": 1.171,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "ff4366ac092f",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T02:44:07.000767+00:00",
+      "age_at_operation_seconds": 0.383,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "bf5c0fc7dc6d",
+      "mode": "B-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-data",
+      "event_time": "2026-11-13T02:44:39.799281+00:00",
+      "age_at_operation_seconds": 0.724,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "6d1a56e7feee",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T02:45:12.338934+00:00",
+      "age_at_operation_seconds": 1.058,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "6cf0a436de23",
+      "mode": "D",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe D",
+      "event_time": "2026-11-13T02:45:48.475341+00:00",
+      "age_at_operation_seconds": 0.575,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "12eb681d09b1",
+      "mode": "B-url",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-url",
+      "event_time": "2026-11-13T02:46:21.439638+00:00",
+      "age_at_operation_seconds": 0.49,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
     }
   ],
   "scope": "Native event evidence and operator actions are not proof of client delivery or administrator participation."

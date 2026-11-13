@@ -17,6 +17,7 @@
     "client_full_load_timing_unmeasured",
     "active_quota_balance_change_unmeasured",
     "same_URL_first_and_cached_client_comparison_unmeasured",
-    "small_unmatched_protocol_samples_are_not_performance_evidence"
+    "small_unmatched_protocol_samples_are_not_performance_evidence",
+    "performance_target_10_samples_per_path_not_reached"
   ]
 }
