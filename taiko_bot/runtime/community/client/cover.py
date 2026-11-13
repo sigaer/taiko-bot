@@ -69,17 +69,17 @@ async def handle_cover(bot: Bot, event: Event, reg_group=RegexGroup()):
         # 正常情况下 on_regex 能保证这里有值，这个分支理论上不会走到
         await cover_cmd.finish("请使用：cover数字 + 一张图片，例如：cover1234 + 图片")
 
-    song_id_str = reg_group[0]  # 第一个括号捕获的就是数字部分，例如 "1234"
+    song_id_str = str(int(reg_group[0]))
     async with serialized(("cover", song_id_str)):
         save_path = COVER_DIR / f"{song_id_str}.png"
-        db_data = json.load(open(SONG_DATA_PATH, "r", encoding="utf-8"))
+        with open(SONG_DATA_PATH, "r", encoding="utf-8") as catalog:
+            db_data = json.load(catalog)
         id_list = [song["id"] for song in db_data]
         if int(song_id_str) not in id_list:
             await cover_cmd.finish("歌曲ID不存在，请确认后再上传封面。")
         # 2. 检查文件是否已存在
         if save_path.exists():
-            uploaded, detail = await asyncio.to_thread(_upload_cover_to_oss, save_path)
-            await cover_cmd.finish(detail)
+            await cover_cmd.finish("该歌曲封面已存在，请勿重复上传。")
 
         # 3. 从消息中提取图片
         msg = event.get_message()
@@ -119,10 +119,9 @@ async def handle_cover(bot: Bot, event: Event, reg_group=RegexGroup()):
 
         # 5. 使用 Pillow 将图片强制压缩为 400×400 并保存
         try:
-            img = Image.open(BytesIO(img_bytes))
-            img = img.resize((400, 400), Image.Resampling.LANCZOS)
-
-            img.save(save_path, format="PNG")
+            with Image.open(BytesIO(img_bytes)) as original:
+                with original.resize((400, 400), Image.Resampling.LANCZOS) as img:
+                    img.save(save_path, format="PNG")
         except Exception as e:
             await cover_cmd.finish(f"处理或保存图片失败：{e}")
 

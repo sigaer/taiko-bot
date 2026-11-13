@@ -1,8 +1,29 @@
-"""Publish one existing PNG and its bounded Viewer derivatives. Retry is safe."""
+"""Upload a saved cover and its bounded Viewer derivatives to OSS."""
 from pathlib import Path
 import os
 import subprocess
 from PIL import Image
+
+
+def _upload_failure_reason(error: Exception) -> str:
+    """Expose known error categories only; OSS output can contain credentials."""
+    if isinstance(error, FileNotFoundError):
+        return '服务器未安装 OSS 上传工具'
+    if isinstance(error, subprocess.TimeoutExpired):
+        return 'OSS 连接超时'
+    if isinstance(error, subprocess.CalledProcessError):
+        output = b'\n'.join(
+            value.encode() if isinstance(value, str) else value
+            for value in (error.stdout, error.stderr) if value
+        )
+        for code, reason in (
+            (b'InvalidAccessKeyId', 'OSS 上传凭据无效，请联系管理员'),
+            (b'SignatureDoesNotMatch', 'OSS 上传凭据校验失败，请联系管理员'),
+            (b'AccessDenied', 'OSS 上传权限不足，请联系管理员'),
+        ):
+            if code in output:
+                return reason
+    return 'OSS 上传失败，请联系管理员'
 
 
 def upload_cover(cover_path: Path):
@@ -24,7 +45,7 @@ def upload_cover(cover_path: Path):
                 finally:
                     temp.unlink(missing_ok=True)
     except Exception:
-        return False, '缩略图生成失败；原图已保留，可用同一 cover 指令重试'
+        return False, '缩略图生成失败，请联系管理员'
     failed = []
     for path, key, media in [(cover_path, cover_path.name, 'image/png')] + [
         (cover_path.parent / 'thumb' / str(size) / (cover_path.stem + '.webp'),
@@ -34,9 +55,11 @@ def upload_cover(cover_path: Path):
             subprocess.run(['ossutil', 'cp', '-f', str(path), 'oss://sigaer/cover/' + key,
                             '--meta', 'Content-Type:' + media + '#Cache-Control:public, max-age=300'],
                            check=True, capture_output=True, timeout=40)
-        except Exception:
-            failed.append(key)
+        except Exception as error:
+            reason = _upload_failure_reason(error)
+            if key == cover_path.name:
+                return False, reason
+            failed.append(reason)
     if not failed:
         return True, '原图及 200/400 缩略图已同步'
-    original_ok = cover_path.name not in failed
-    return False, ('原图已同步，缩略图未全部同步' if original_ok else '原图未同步') + '；请用同一 cover 指令重试'
+    return False, '原图已上传到 OSS；缩略图上传失败：' + failed[0]

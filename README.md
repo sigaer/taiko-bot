@@ -93,6 +93,10 @@ QQ_MARKDOWN_IMAGE_BASE_URL=https://你的域名/qqbot-cache/taiko
 固定 URL 指向当前谱面，旧消息会随 Viewer 资源更新；不承诺永久保留旧版本。
 实测范围与结果见 [第二阶段性能报告](docs/performance/song-query/phase2/report.md)。
 
+0.24.2 修正 `cover数字 + 图片`：本地已有该歌曲封面时直接提示重复，不重新上传；
+首次保存后上传原图和 200/400 缩略图到 OSS。上传失败保留本地封面，说明失败原因，
+不再提示通过重复发送 `cover` 同步；OSS 凭据或权限错误需管理员处理。
+
 ## 4. 启动与验证
 
 ```bash
