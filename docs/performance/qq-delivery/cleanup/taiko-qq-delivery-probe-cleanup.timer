@@ -1,0 +1,11 @@
+[Unit]
+Description=Periodic cleanup of isolated synthetic QQ delivery probe assets
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+AccuracySec=5s
+Persistent=true
+Unit=taiko-qq-delivery-probe-cleanup.service
+
+[Install]
+WantedBy=timers.target

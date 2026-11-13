@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "errors": [
+    {
+      "sample": "5b2f465a8dba",
+      "mode": "C",
+      "status": "blocked_before_send",
+      "error": {
+        "category": "static_https_status_or_content_type",
+        "code": null,
+        "http_status": null,
+        "result_unknown": false
+      }
+    }
+  ],
+  "blockers": [
+    "protocol_only_not_10_to_20_sample_benchmark",
+    "client_full_load_timing_unmeasured",
+    "active_quota_balance_change_unmeasured",
+    "same_URL_first_and_cached_client_comparison_unmeasured"
+  ]
+}

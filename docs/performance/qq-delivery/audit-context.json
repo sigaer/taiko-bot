@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-11-13T01:30:50.967695+00:00",
+  "measurement_date": "2026-11-13",
+  "timezone": "Asia/Shanghai",
+  "status": "protocol_API_preflight_complete_client_and_performance_validation_pending",
+  "baseline": {
+    "main_at_start": "2efeff1",
+    "bot": "0.22.1",
+    "application": "0.9.1",
+    "production_pid_at_start": 2458833
+  },
+  "validation": {
+    "unit_checks": 35,
+    "unit_qa": "qa-4c87df360238",
+    "archive_statistics_and_privacy_qa": "qa-c9e200a54174",
+    "SDK_and_API_builders": "installed_0.22.1_environment",
+    "private_config_permissions": "0600",
+    "private_directory_permissions": "0700",
+    "production_player_images_used": false
+  },
+  "observations": {
+    "successful_delivery_steps": 6,
+    "qq_delivery_http_requests_excluding_auth": 8,
+    "proactive_API_requests": 2,
+    "proactive_quota_consumed": null,
+    "blocked_static_prechecks_before_QQ": 1,
+    "platform_error_codes": [],
+    "client_full_load_measurements": 0,
+    "first_vs_cached_URL_client_comparison": "not_measured"
+  },
+  "http_findings": {
+    "sample": "925bc641890a",
+    "api": "post_group_messages",
+    "http_complete_ms": 2182.421,
+    "response_header_wait_ms": 2154.738,
+    "response_header_wait_fraction": 0.987315,
+    "tcp_including_dns_ms": 9.398,
+    "tls_ms": 8.841,
+    "exact_TTFB": "unmeasurable",
+    "cause_inside_platform": "undetermined"
+  },
+  "environment_caveats": {
+    "authentication": "CLI uses isolated worker existing Bot config; not the production process auth object",
+    "caller_and_production_proxy_environment_equal": true,
+    "HTTP_connections": "per_request_client_not_a_reused_pool",
+    "sample_sizes": "1 per mode/transport except A has separate adapter and traced samples; no pooled A estimate"
+  },
+  "cleanup": {
+    "public_probe_jpegs_remaining": 0,
+    "last_test_URL_http_status_after_cleanup": 404,
+    "origin_assets_removed": true,
+    "janitor_timer_enabled_during_publication": true,
+    "janitor_timer_active_after_experiment": false,
+    "CDN_client_cache_caveat": "existing public cache headers may retain synthetic images up to about 30 minutes; no cache purge attempted"
+  },
+  "production_after": {
+    "MainPID": "2458833",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "ExecMainStartTimestamp": "Thu 2026-11-12 21:09:17 CST"
+  },
+  "runtime_strategy_changed": false,
+  "bot_deployed": false,
+  "limitations": [
+    "Only B-data Android delivery had been confirmed when this snapshot was written; other client observations remain pending.",
+    "No synchronized client video timings, no measured complete-image latency and no Windows cross-check.",
+    "Quota change is unknown; proactive request count is not a measured quota delta.",
+    "Static precheck failed under QA umask 077 (directory0700/JPEG0600); diagnostic HTTP404; fixed only synthetic directory0755/JPEG0644.",
+    "Protocol order was B-data,A-data,D,A-data,C-precheck,C,B-url, not the stage-two alternating performance schedule."
+  ]
+}

@@ -1,0 +1,10 @@
+[Unit]
+Description=Delete expired synthetic QQ delivery probe JPEGs only
+ConditionPathExists=/home/sigaer/taiko/output/qq_markdown_cache/qq-delivery-probe/.synthetic-only
+
+[Service]
+Type=oneshot
+ExecStart=/home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh /opt/taiko-bot/current/bin/python -I /home/sigaer/taiko-bot/scripts/performance/qq_delivery_probe.py cleanup --static-root /home/sigaer/taiko/output/qq_markdown_cache/qq-delivery-probe --ttl 300
+NoNewPrivileges=true
+PrivateTmp=true
+TimeoutStartSec=60
