@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "recorded_at": "2026-11-13T02:53:01.391339+00:00",
+  "recorded_at": "2026-11-13T03:00:01.840793+00:00",
   "measurement_date": "2026-11-13",
   "timezone": "Asia/Shanghai",
-  "status": "resumed_client_preflight_confirmed_interleaved_performance_in_progress",
+  "status": "five_round_checkpoint_client_timing_pending",
   "baseline": {
     "main_at_start": "2efeff1",
     "bot": "0.22.1",
@@ -17,27 +17,30 @@
     "SDK_and_API_builders": "installed_0.22.1_environment",
     "private_config_permissions": "0600",
     "private_directory_permissions": "0700",
-    "production_player_images_used": false
+    "production_player_images_used": false,
+    "five_round_statistics_qa": "qa-b98b5300e3d2",
+    "cleanup_qa": "qa-52915cf83b6f",
+    "five_round_archive_validation_qa": "qa-85650bf17c85"
   },
   "observations": {
-    "qq_delivery_http_requests_excluding_auth": 40,
-    "proactive_API_requests": 11,
+    "qq_delivery_http_requests_excluding_auth": 47,
+    "proactive_API_requests": 13,
     "proactive_quota_consumed": null,
     "blocked_static_prechecks_before_QQ": 1,
     "platform_error_codes": [],
     "client_full_load_measurements": 0,
     "first_vs_cached_URL_client_comparison": "not_measured",
-    "all_audit_records": 33,
-    "api_acknowledged_operations": 32,
-    "comparison_eligible_records": 29,
+    "all_audit_records": 39,
+    "api_acknowledged_operations": 38,
+    "comparison_eligible_records": 35,
     "comparison_excluded_records": 4,
-    "client_qualitatively_confirmed_records": 29,
+    "client_qualitatively_confirmed_records": 35,
     "performance_samples_by_mode": {
-      "A-data": 6,
-      "B-data": 4,
-      "B-url": 4,
-      "C": 6,
-      "D": 4
+      "A-data": 7,
+      "B-data": 5,
+      "B-url": 5,
+      "C": 7,
+      "D": 6
     }
   },
   "http_findings": {
@@ -69,8 +72,11 @@
       "CDN_client_cache_caveat": "existing public cache headers may retain synthetic images up to about 30 minutes; no cache purge attempted"
     },
     "experiment_finished": false,
-    "janitor_timer_active_at_snapshot": true,
-    "public_probe_jpegs_remaining_at_snapshot": 0
+    "janitor_timer_active_at_snapshot": false,
+    "public_probe_jpegs_remaining_at_snapshot": 0,
+    "checkpoint_closed": true,
+    "last_test_URL_http_status_after_cleanup": 404,
+    "CDN_client_cache_caveat": "origin empty and last public URL returned 404; no global CDN/client cache purge claimed"
   },
   "production_after": {
     "MainPID": "2458833",
@@ -85,7 +91,10 @@
     "Administrator reports 900+ remaining; this is a conservative lower bound, not an exact count or a measured decrement.",
     "Earlier uncontrolled real API calls remain archived but are excluded from comparison summaries.",
     "Static verification itself can warm CDN cache; URL reuse does not prove client cache state.",
-    "Performance data collected so far do not establish repeatable 20% improvement or the fastest actual client delivery."
+    "Performance data collected so far do not establish repeatable 20% improvement or the fastest actual client delivery.",
+    "Per-path performance sample counts are 5 to 7, below the planned approximately 10; P95 values are descriptive maxima in these samples.",
+    "The same synthetic JPEG was already used during preflight; first API/auth or first URL does not mean an image never seen by QQ/CDN/client.",
+    "Installed driver creates new HTTP sessions per request; token-warm results are not reused-HTTP-connection results."
   ],
   "user_scope_correction": {
     "instruction": "Only initial A/D were completed with the administrator; restart at C.",
@@ -111,6 +120,27 @@
     "qa-f96e42c37152",
     "qa-6f76a60a71d1",
     "qa-9469bf61cac1",
-    "qa-e78fe283db6d"
-  ]
+    "qa-e78fe283db6d",
+    "qa-408ea02c4427",
+    "qa-919420d15f1b",
+    "qa-7d4efe5d0955"
+  ],
+  "five_round_checkpoint": {
+    "valid_performance_samples": 30,
+    "performance_sample_counts": {
+      "A-data": 7,
+      "B-data": 5,
+      "B-url": 5,
+      "C": 7,
+      "D": 6
+    },
+    "client_complete_receipts": 30,
+    "observed_duplicates": 0,
+    "client_timing_unmeasured": true,
+    "further_live_sends_paused": true
+  },
+  "client_duplicate_confirmation": {
+    "scope": "administrator explicitly confirmed rounds 1 through 3 and then rounds 4 and 5",
+    "duplicates": 0
+  }
 }
