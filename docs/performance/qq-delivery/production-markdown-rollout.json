@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "verified_at": "2026-11-13T11:25:22.280721+08:00",
+  "production_release": "0.23.0",
+  "application": "0.9.1",
+  "QQ_adapter": "1.7.3",
+  "httpx": "0.28.1",
+  "service": {
+    "MainPID": "2886113",
+    "NRestarts": "0",
+    "ExecMainStartTimestamp": "Fri 2026-11-13 11:24:19 CST",
+    "ActiveState": "active"
+  },
+  "health_HTTP_status": 200,
+  "required_plugins_loaded": true,
+  "runtime_inventory_verified": true,
+  "cache_errors_since_startup": 0,
+  "selected_QQ_Bot_connected": true,
+  "real_QQ_test_messages_sent": 0,
+  "bot_only_deployment": true,
+  "source_commit": "930b44b",
+  "static_HTTPS": {
+    "status": "PASS",
+    "https_status": 200,
+    "content_type": "image/jpeg",
+    "verified_bytes": 517045,
+    "directory_listing": false,
+    "file_mode": "0o644",
+    "origin_ttl_seconds": 1800,
+    "cleanup_interval_seconds": 300,
+    "real_QQ_API_calls": 0,
+    "real_player_images": false,
+    "origin_test_image_removed": true
+  },
+  "wheel_sha256": "96c7450b833f88d4d8dc622d76f30509d7dbce7ebf357b20dafcf355606c52b9",
+  "installed_module_sha256": {
+    "taiko_bot/runtime/center_markdown_media.py": "2350cdd5e99a9ee473826498bbfeb00340838b5df61d084be800147aff9c061a",
+    "taiko_bot/runtime/center_platform_adapter.py": "c4eaeccb0627d3cc5005c5649cbffffe27daa69f6051d0cab3adf1ae36a96b19",
+    "taiko_bot/runtime/community/center/annual_report_command.py": "72e25e5aebec45a16d5b45b14423a8cd642c2c7b419f41c884a4d2c1bc57c861",
+    "taiko_bot/runtime/community/client/draw_guess.py": "ea3d226fab003d2e9cba766b5539525f3e228926cfb80a177f6148a165601b5c",
+    "taiko_bot/runtime/player/center/messages.py": "c4eaeccb0627d3cc5005c5649cbffffe27daa69f6051d0cab3adf1ae36a96b19",
+    "taiko_bot/runtime/player/center/query_cluster.py": "965f7183680a8a1d55576dc3271109d24d6d4887eb8f29a3745777ddec9be46a",
+    "taiko_bot/runtime/player/client/messages.py": "629cd2d5ddd9dbd0f20cd8098c9079af9bdfeec432f61a05e22dbc17ae9e5caf",
+    "taiko_bot/runtime/player/client/query_cluster.py": "ab62812628b82cdb8e018a4e6c10f5da0de9e67b56a548cb7568e789eacba94b",
+    "taiko_bot/runtime/public/center_messages.py": "8da8cac854f507be48eba701d483017d555d7039e6ca326ed205716c34b628df",
+    "taiko_bot/runtime/public/client_messages.py": "b1008b25385ee019b0e9425eb69b7308ea2000eaa866d573966e8a16113dcd1c",
+    "taiko_bot/runtime/public/delivery.py": "aee091d2e3fab6584a681079ecac084fcdb18f79a219543d48d2158d472fc513",
+    "taiko_bot/runtime/qq_images.py": "4d7a5f9fe9250664cef8f1c395197caa41da0ef8d84727da0e816fa9216cff21",
+    "taiko_runtime/platform_adapter.py": "9d8d116d0f67bf5f7f571c80fb67571c36fe6204fc2445227564389ba9c5cc79",
+    "taiko_runtime/qq_markdown_media.py": "05205663308c82f811dd49662f7d7a86fc4379aa399249fead2c6838e6abe53c"
+  },
+  "verification": {
+    "image_delivery_unit_checks": 11,
+    "cache_and_annual_report_checks": 7,
+    "BXX_authority_events": 80,
+    "public_command_events": 40,
+    "community_profiles": [
+      "center",
+      "client"
+    ],
+    "build_QA": "qa-c39a01528d03",
+    "image_and_BXX_QA": "qa-6f761b4a3a40",
+    "public_QA": "qa-aa2d8dc8d7fb",
+    "community_QA": "qa-6f984d011f44",
+    "static_QA": "qa-ac771920cee5",
+    "deploy_QA": "qa-da5d58e26e99",
+    "production_QA": "qa-dd749fd5e565"
+  },
+  "boundary": "No client video timing or new live QQ test sends in this rollout. Previous experiment did not measure complete-image latency.",
+  "business_data_migrated": false,
+  "Viewer_restarted": false
+}

@@ -40,10 +40,16 @@ OneBot 仍发送原图片消息，客户端你画我猜仍保留图片在说明�
 |40个公共事件与14个模块安装一致性|qa-aa2d8dc8d7fb|
 |中心/客户端社区图片|qa-6f984d011f44|
 |真实HTTPS合成图|qa-ac771920cee5|
+|标准Bot-only发布|qa-da5d58e26e99|
+|生产版本、插件、QQ连接与健康检查|qa-dd749fd5e565|
 
 ## 发布状态
 
-候选已验证，待执行标准 Bot-only 发布及生产健康检查。不会修改 Viewer、原端口、权限/绑定、成绩、Publication 或绘图模块；不重新生成业务数据。
+已使用 `TAIKO_DEPLOY_BOT_ONLY=1 scripts/deploy_taiko.sh 0.23.0 0` 发布，生产服务于2026-11-13 11:24:19（Asia/Shanghai）启动，11:25:22完成复核：Bot 0.23.0 / Application 0.9.1，PID2886113，active，自动重启0，原37564端口健康接口HTTP200，所选官方QQ Bot已连接，必要插件与启动版本清单验证通过，启动以来没有Markdown缓存错误。
+
+最终wheel SHA256：`96c7450b833f88d4d8dc622d76f30509d7dbce7ebf357b20dafcf355606c52b9`。代码提交 `930b44b`。机器可读发布证据见 `production-markdown-rollout.json`。
+
+本次没有向QQ发送额外验证消息，没有修改Viewer、原端口、权限/绑定、成绩、Publication或绘图模块，没有重新生成业务数据。只切换Bot安装环境并重启Bot；用户自己的web.conf和v1_test_report.md未纳入提交。
 
 ## 证据边界
 
