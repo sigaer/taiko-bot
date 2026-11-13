@@ -1,0 +1,22 @@
+{
+  "before": {
+    "cgroup": "/development.slice/development-qa.slice/taiko-qa-6ca9832c77a8.service",
+    "memory.current": "8232960",
+    "memory.peak": null,
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+    "memory.max": "3221225472",
+    "memory.high": "2147483648",
+    "cpu.max": "200000 100000"
+  },
+  "after": {
+    "cgroup": "/development.slice/development-qa.slice/taiko-qa-6ca9832c77a8.service",
+    "memory.current": "198868992",
+    "memory.peak": null,
+    "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+    "memory.max": "3221225472",
+    "memory.high": "2147483648",
+    "cpu.max": "200000 100000"
+  },
+  "max_rss_kib": 207692,
+  "cpu_seconds": 217.484155
+}

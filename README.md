@@ -85,9 +85,13 @@ QQ_MARKDOWN_IMAGE_BASE_URL=https://你的域名/qqbot-cache/taiko
 这也适用于真实玩家图片，请据此设置静态目录和缓存生命周期。可用 `QQ_MARKDOWN_IMAGE_TTL_SECONDS`、`QQ_MARKDOWN_IMAGE_CLEANUP_INTERVAL_SECONDS` 调整。
 仅在本地缓存写入失败时沿用富媒体回退；接口超时或未知结果不会自动重新上传补发。
 
-0.24.0 增加公共歌曲查询的可选静态谱面 Manifest 路径，默认关闭。
-仅对明确允许公开、经离线 HTTPS 内容校验的谱面复用内容哈希 URL；未命中仍使用现有图片路径。
-配置、发布顺序及生产前验收限制见 [静态谱面设计](docs/performance/song-query/phase2/design.md) 和 [第二阶段性能报告](docs/performance/song-query/phase2/report.md)。
+0.24.1 将官方 QQ 中心端「是什么歌」的可选路径简化为 Viewer 现有固定谱面 URL：
+`https://viewer.sakura-bot.cn/api/content/songs/{id}/chart-image?difficulty={1..5}`。
+设置 `TAIKO_QQ_FIXED_FUMEN_URL=1` 启用，默认关闭；无需 Manifest、额外资源发布或续期任务。
+仅检查本机谱面头部尺寸，缺失或不可读时在发送前沿用原图片路径；发送超时或结果未知不会补发。
+查询期间不请求 Viewer；部署前需确认 Viewer 的谱面与本机一致、HTTPS 可访问且 QQ 可用。
+固定 URL 指向当前谱面，旧消息会随 Viewer 资源更新；不承诺永久保留旧版本。
+实测范围与结果见 [第二阶段性能报告](docs/performance/song-query/phase2/report.md)。
 
 ## 4. 启动与验证
 

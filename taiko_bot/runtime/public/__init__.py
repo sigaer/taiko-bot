@@ -59,6 +59,3 @@ from . import public_commands  # noqa: E402,F401
 from . import catalog_commands  # noqa: E402,F401
 
 from . import event_commands  # noqa: E402,F401
-
-from . import warmup  # noqa: E402,F401
-warmup.register_startup()

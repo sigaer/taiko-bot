@@ -4,7 +4,7 @@ from nonebot.exception import MatcherException
 from . import provider
 from .config import profile, root
 from . import center_messages, client_messages
-from . import static_fumens
+from . import fumen_url
 
 
 def transport():
@@ -54,15 +54,15 @@ async def deliver(matcher, event, result):
         extra = provider.brief(song_id)
         if extra:
             hint += '\n' + extra
-    if transport().is_qq_official_event(event):
+    if profile() == 'center' and transport().is_qq_official_event(event):
         # Lookup/construction may fall back BEFORE any send. Once send is
         # attempted, timeout/unknown results must escape without a second reply.
-        entry = static_fumens.lookup(difficulty, song_id)
-        if entry is not None:
+        image_markdown = fumen_url.markdown_image(difficulty, song_id)
+        if image_markdown is not None:
             authorize_image_publication(matcher)
             try:
                 from nonebot.adapters.qq import Message, MessageSegment
-                content = hint + f'\n\n![img#{entry.width}px #{entry.height}px]({entry.url})'
+                content = hint + '\n\n' + image_markdown
                 prepared = Message(MessageSegment.markdown(content))
             except Exception:
                 prepared = None

@@ -1,0 +1,561 @@
+{
+  "schema": 1,
+  "qa_run_id": "qa-cc9b4fea22f4",
+  "preflight": {
+    "url": "https://viewer.sakura-bot.cn/api/content/songs/649/chart-image?difficulty=4",
+    "status": 200,
+    "bytes": 85957,
+    "sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748",
+    "https_verified": true,
+    "equal_to_local": true
+  },
+  "environment": {
+    "packages": {
+      "taiko-bot": "0.23.0",
+      "taiko-application": "0.9.1",
+      "nonebot2": "2.5.0",
+      "nonebot-adapter-qq": "1.7.3",
+      "httpx": "0.28.1",
+      "httpcore": "1.0.9",
+      "Pillow": "11.3.0"
+    },
+    "python": "3.11.4",
+    "installed_source_sha256": {
+      "qq_api_builders": "a4e85e6f112faa9d363ad1cbb6dd670119bd5042f2cea83e4c49f77659a53aab",
+      "httpx_driver_session": "37852b42ae377c070acd9e1a661f37395552bda02b6768044829a4d905a3d6ac"
+    },
+    "post_group_files": "(self, *, group_openid: str, file_type: Optional[Literal[1, 2, 3, 4]] = None, url: str | None = None, srv_send_msg: bool = True, file_data: str | bytes | None = None, upload_id: str | None = None) -> nonebot.adapters.qq.models.qq.PostGroupFilesReturn",
+    "post_group_messages": "(self, *, group_openid: str, msg_type: Literal[0, 1, 2, 3, 4, 7], content: str | None = None, markdown: nonebot.adapters.qq.models.common.MessageMarkdown | None = None, keyboard: nonebot.adapters.qq.models.common.MessageKeyboard | None = None, media: nonebot.adapters.qq.models.qq.Media | None = None, ark: nonebot.adapters.qq.models.common.MessageArk | None = None, embed: nonebot.adapters.qq.models.common.MessageEmbed | None = None, image: None = None, message_reference: nonebot.adapters.qq.models.common.MessageReference | None = None, event_id: str | None = None, msg_id: str | None = None, msg_seq: int | None = None, timestamp: int | datetime.datetime | None = None) -> nonebot.adapters.qq.models.qq.PostGroupMessagesReturn",
+    "source": "installed_environment",
+    "adapter_httpx_connection_policy": "installed driver creates one Session/AsyncClient per request; no shared HTTP pool",
+    "file_data": "accepted by installed signature; platform support requires live preflight",
+    "upload_response_id": "installed PostGroupFilesReturn omits id; probe inspects raw response for presence only"
+  },
+  "auth_warmed_before_samples": true,
+  "service_changed": false,
+  "passive_only": true,
+  "samples": [
+    {
+      "sample": "ddb86c7a818c",
+      "variant": "native",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_files",
+          "status": "acknowledged",
+          "started_at": 1794554108.300597,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.029,
+            "client_creation_ms": 5.871,
+            "request_build_ms": 1.298,
+            "http_complete_ms": 554.503,
+            "json_decode_ms": 0.024
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 14.443,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 12.292,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.199,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 20.448,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 497.577,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.249,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 564.078,
+          "finished_at": 1794554108.864675
+        },
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794554108.8734846,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.156,
+            "request_build_ms": 0.263,
+            "http_complete_ms": 2076.543,
+            "json_decode_ms": 0.021
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 13.571,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 12.6,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.245,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.15,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2042.339,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.16,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2084.952,
+          "finished_at": 1794554110.9584374
+        }
+      ],
+      "error": null,
+      "api_total_ms": 2649.03,
+      "local_prepare_ms": 0.06303191184997559,
+      "finished_at": 1794554110.963545,
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748"
+    },
+    {
+      "sample": "0cef97a867eb",
+      "variant": "random",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794554144.9016063,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.316,
+            "request_build_ms": 0.264,
+            "http_complete_ms": 1594.244,
+            "json_decode_ms": 0.022
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 12.057,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 9.915,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.175,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.103,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1564.402,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.172,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1603.368,
+          "finished_at": 1794554146.5049756
+        }
+      ],
+      "error": null,
+      "api_total_ms": 1603.368,
+      "local_prepare_ms": 0.9375549852848053,
+      "finished_at": 1794554146.512956,
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748"
+    },
+    {
+      "sample": "08971d040a82",
+      "variant": "fixed",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794554188.664518,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.217,
+            "request_build_ms": 0.252,
+            "http_complete_ms": 3185.723,
+            "json_decode_ms": 0.022
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 10.301,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 9.683,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.169,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.096,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 3158.008,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.159,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 3195.988,
+          "finished_at": 1794554191.8605077
+        }
+      ],
+      "error": null,
+      "api_total_ms": 3195.988,
+      "local_prepare_ms": 0.2950504422187805,
+      "finished_at": 1794554191.8660245,
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748"
+    },
+    {
+      "sample": "4b90562488cf",
+      "variant": "fixed",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794554222.6572795,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.236,
+            "request_build_ms": 0.237,
+            "http_complete_ms": 1651.115,
+            "json_decode_ms": 0.025
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 9.183,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 8.522,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.25,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.169,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1625.078,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.454,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1661.948,
+          "finished_at": 1794554224.319227
+        }
+      ],
+      "error": null,
+      "api_total_ms": 1661.948,
+      "local_prepare_ms": 0.3255121409893036,
+      "finished_at": 1794554224.3238084,
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748"
+    },
+    {
+      "sample": "e9d7a2961bc1",
+      "variant": "random",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794554268.5271904,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.432,
+            "request_build_ms": 0.287,
+            "http_complete_ms": 1858.132,
+            "json_decode_ms": 0.02
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 11.873,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 10.814,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.171,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.1,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1827.441,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.141,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1874.599,
+          "finished_at": 1794554270.4017906
+        }
+      ],
+      "error": null,
+      "api_total_ms": 1874.599,
+      "local_prepare_ms": 0.7407665252685547,
+      "finished_at": 1794554270.408168,
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748"
+    },
+    {
+      "sample": "b9e80ebdac81",
+      "variant": "native",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_files",
+          "status": "acknowledged",
+          "started_at": 1794554349.4858835,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.046,
+            "client_creation_ms": 5.529,
+            "request_build_ms": 1.187,
+            "http_complete_ms": 548.637,
+            "json_decode_ms": 0.024
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 11.991,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 10.776,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.212,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 9.391,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 507.072,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.28,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 562.299,
+          "finished_at": 1794554350.048184
+        },
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794554350.0625079,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.012,
+            "client_creation_ms": 5.097,
+            "request_build_ms": 0.275,
+            "http_complete_ms": 1703.229,
+            "json_decode_ms": 0.02
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 9.645,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 9.208,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.196,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.113,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1676.823,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.14,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1717.65,
+          "finished_at": 1794554351.7801588
+        }
+      ],
+      "error": null,
+      "api_total_ms": 2279.949,
+      "local_prepare_ms": 0.10526925325393677,
+      "finished_at": 1794554351.7878342,
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748"
+    }
+  ],
+  "scope": "Official QQ API only; client display, client profile, OneBot OUT OF SCOPE",
+  "note": "Interleaved exploratory samples; no automatic retry; native total includes upload and message API."
+}
