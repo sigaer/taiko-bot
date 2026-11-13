@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-11-13T02:47:17.351294+00:00",
+  "generated_at": "2026-11-13T02:53:01.391339+00:00",
   "status": "partial_observation",
   "environment": {
     "packages": {
@@ -81,6 +81,20 @@
       },
       "performance-3": {
         "round_id": "performance-3",
+        "sha256": {
+          "scripts/performance/qq_delivery/__init__.py": "37bc1ea6469ae380f89eec151b93d9e72c9a33260f2114ac085b012f2e0329a1",
+          "scripts/performance/qq_delivery/config.py": "a59bb16d0ee609c8b3ba8b3541ba00eaa06e0636e070734fab9763aa2dbbfdf8",
+          "scripts/performance/qq_delivery/events.py": "2a328d169fcadc70d1cb58bbbc18ee3d22215834383ea17a3e5bd4ca0e501180",
+          "scripts/performance/qq_delivery/experiment.py": "14e88f32b9c980666de04a93688a7691288cd69ea2b25dbcf895dbcc7e55216c",
+          "scripts/performance/qq_delivery/images.py": "da2ede2c36a4fad9bf7fad6aad87e46959a147e9f5e9bf012ba763b460962dcb",
+          "scripts/performance/qq_delivery/report.py": "24428ee38ba2832eb3ad3c96dc20d87b49bf1ce0b9ac1eee042611480d498b53",
+          "scripts/performance/qq_delivery/state.py": "e651f83ffc96b01ea76262b5de83febdb6f9cd697f151364ef46588fa4020025",
+          "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
+          "scripts/performance/qq_delivery_probe.py": "57524e55ad8ca5831f90605280861d283f6e1fd9cff397a411b2c4ea32138b60"
+        }
+      },
+      "performance-4": {
+        "round_id": "performance-4",
         "sha256": {
           "scripts/performance/qq_delivery/__init__.py": "37bc1ea6469ae380f89eec151b93d9e72c9a33260f2114ac085b012f2e0329a1",
           "scripts/performance/qq_delivery/config.py": "a59bb16d0ee609c8b3ba8b3541ba00eaa06e0636e070734fab9763aa2dbbfdf8",
@@ -2813,6 +2827,619 @@
       "upload_receipt_id_present": true,
       "url_access": "repeated_url",
       "round_index": 8
+    },
+    {
+      "active_quota_after": null,
+      "active_quota_before": null,
+      "auth_source": "isolated_bot_existing_config",
+      "calls": [
+        {
+          "api": "post_group_files",
+          "status": "acknowledged",
+          "started_at": 1794538106.2481477,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 212.932,
+            "client_creation_ms": 5.313,
+            "request_build_ms": 5.776,
+            "http_complete_ms": 2473.318,
+            "json_decode_ms": 0.025
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 11.474,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 10.701,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.206,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 37.367,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2400.358,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.217,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": true,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2706.72,
+          "finished_at": 1794538108.9548683
+        }
+      ],
+      "cohort": "interleaved_performance",
+      "comparison_eligible": true,
+      "error": null,
+      "finished_at": 1794538108.9638495,
+      "image_bytes": 517045,
+      "image_sha256": "bf7de374eb1d6f95980429a1c0f4b87279ab4c1db1cd2227f2ec1eb68f329bfc",
+      "mode": "B-data",
+      "msg_seq": null,
+      "observations": [
+        {
+          "device": "android",
+          "received": true,
+          "render_ok": true,
+          "clock_synced": false,
+          "duplicates": 0
+        }
+      ],
+      "phase": "performance",
+      "receipt_id_present": true,
+      "sample": "7cf902ef0329",
+      "started_at": 1794538106.2311513,
+      "status": "acknowledged",
+      "total_ms": 2725.519,
+      "transport": "traced_httpx",
+      "trigger_source": "native_QQ_group_event",
+      "ttl_seconds": 86400,
+      "upload_receipt_id_present": true,
+      "url_access": null,
+      "round_index": 9
+    },
+    {
+      "active_quota_after": null,
+      "active_quota_before": null,
+      "auth_source": "isolated_bot_existing_config",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794538141.7721965,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.014,
+            "client_creation_ms": 5.285,
+            "request_build_ms": 0.269,
+            "http_complete_ms": 1751.806,
+            "json_decode_ms": 0.022
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 12.507,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 11.534,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.188,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.105,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1719.949,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.158,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1771.51,
+          "finished_at": 1794538143.543708
+        }
+      ],
+      "cohort": "interleaved_performance",
+      "comparison_eligible": true,
+      "error": null,
+      "external_verification": "independent_proxy_fetch",
+      "finished_at": 1794538143.553278,
+      "image_bytes": 517045,
+      "image_sha256": "bf7de374eb1d6f95980429a1c0f4b87279ab4c1db1cd2227f2ec1eb68f329bfc",
+      "jpeg_verified": true,
+      "mode": "C",
+      "msg_seq": 1,
+      "observations": [
+        {
+          "device": "android",
+          "received": true,
+          "render_ok": true,
+          "clock_synced": false,
+          "duplicates": 0
+        }
+      ],
+      "phase": "performance",
+      "receipt_id_present": true,
+      "sample": "58409bf9722b",
+      "started_at": 1794538141.642745,
+      "static_verify_ms": 68.839,
+      "static_write_ms": 37.577,
+      "status": "acknowledged",
+      "total_ms": 1901.703,
+      "transport": "traced_httpx",
+      "trigger_source": "native_QQ_group_event",
+      "ttl_seconds": null,
+      "url_access": "repeated_url",
+      "round_index": 9
+    },
+    {
+      "active_quota_after": null,
+      "active_quota_before": null,
+      "auth_source": "isolated_bot_existing_config",
+      "calls": [
+        {
+          "api": "post_group_files",
+          "status": "acknowledged",
+          "started_at": 1794538182.8216176,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.017,
+            "client_creation_ms": 5.289,
+            "request_build_ms": 5.948,
+            "http_complete_ms": 798.227,
+            "json_decode_ms": 0.023
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 10.568,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 9.708,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.177,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 33.091,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 731.007,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.336,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 817.95,
+          "finished_at": 1794538183.6395686
+        },
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794538183.6576324,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.159,
+            "request_build_ms": 0.257,
+            "http_complete_ms": 1937.566,
+            "json_decode_ms": 0.022
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 9.962,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 9.001,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.164,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.111,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1911.135,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.141,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1963.079,
+          "finished_at": 1794538185.620713
+        }
+      ],
+      "cohort": "interleaved_performance",
+      "comparison_eligible": true,
+      "error": null,
+      "finished_at": 1794538185.632398,
+      "image_bytes": 517045,
+      "image_sha256": "bf7de374eb1d6f95980429a1c0f4b87279ab4c1db1cd2227f2ec1eb68f329bfc",
+      "mode": "A-data",
+      "msg_seq": 1,
+      "observations": [
+        {
+          "device": "android",
+          "received": true,
+          "render_ok": true,
+          "clock_synced": false,
+          "duplicates": 0
+        }
+      ],
+      "phase": "performance",
+      "receipt_id_present": true,
+      "sample": "a6d3d00bf403",
+      "started_at": 1794538182.8008113,
+      "status": "acknowledged",
+      "total_ms": 2823.177,
+      "transport": "traced_httpx",
+      "trigger_source": "native_QQ_group_event",
+      "ttl_seconds": 86400,
+      "upload_receipt_id_present": false,
+      "url_access": null,
+      "round_index": 9
+    },
+    {
+      "active_quota_after": null,
+      "active_quota_before": null,
+      "auth_source": "isolated_bot_existing_config",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794538223.7512608,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.012,
+            "client_creation_ms": 5.297,
+            "request_build_ms": 0.239,
+            "http_complete_ms": 2222.391,
+            "json_decode_ms": 0.023
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 12.002,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 11.582,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.164,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.095,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2191.24,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.15,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2241.179,
+          "finished_at": 1794538225.9924402
+        }
+      ],
+      "cohort": "interleaved_performance",
+      "comparison_eligible": true,
+      "error": null,
+      "finished_at": 1794538226.0032723,
+      "image_bytes": 517045,
+      "image_sha256": "bf7de374eb1d6f95980429a1c0f4b87279ab4c1db1cd2227f2ec1eb68f329bfc",
+      "mode": "D",
+      "msg_seq": 1,
+      "observations": [
+        {
+          "device": "android",
+          "received": true,
+          "render_ok": true,
+          "clock_synced": false,
+          "duplicates": 0
+        }
+      ],
+      "phase": "performance",
+      "receipt_id_present": true,
+      "sample": "54f6ea4521cc",
+      "started_at": 1794538223.7352839,
+      "status": "acknowledged",
+      "total_ms": 2259.979,
+      "transport": "traced_httpx",
+      "trigger_source": "native_QQ_group_event",
+      "ttl_seconds": 1759,
+      "url_access": null,
+      "round_index": 9
+    },
+    {
+      "active_quota_after": null,
+      "active_quota_before": null,
+      "auth_source": "isolated_bot_existing_config",
+      "calls": [
+        {
+          "api": "post_group_files",
+          "status": "acknowledged",
+          "started_at": 1794538275.945761,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.017,
+            "client_creation_ms": 8.841,
+            "request_build_ms": 0.345,
+            "http_complete_ms": 2499.234,
+            "json_decode_ms": 0.023
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 10.699,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 10.048,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.172,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.097,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2467.128,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.15,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2518.469,
+          "finished_at": 1794538278.4642305
+        }
+      ],
+      "cohort": "interleaved_performance",
+      "comparison_eligible": true,
+      "error": null,
+      "external_verification": "independent_proxy_fetch",
+      "finished_at": 1794538278.4756026,
+      "image_bytes": 517045,
+      "image_sha256": "bf7de374eb1d6f95980429a1c0f4b87279ab4c1db1cd2227f2ec1eb68f329bfc",
+      "jpeg_verified": true,
+      "mode": "B-url",
+      "msg_seq": null,
+      "observations": [
+        {
+          "device": "android",
+          "received": true,
+          "render_ok": true,
+          "clock_synced": false,
+          "duplicates": 0
+        }
+      ],
+      "phase": "performance",
+      "receipt_id_present": true,
+      "sample": "2b95f01de96e",
+      "started_at": 1794538275.8473723,
+      "static_verify_ms": 69.645,
+      "static_write_ms": 9.993,
+      "status": "acknowledged",
+      "total_ms": 2619.91,
+      "transport": "traced_httpx",
+      "trigger_source": "native_QQ_group_event",
+      "ttl_seconds": 86400,
+      "upload_receipt_id_present": true,
+      "url_access": "repeated_url",
+      "round_index": 9
+    },
+    {
+      "active_quota_after": null,
+      "active_quota_before": null,
+      "auth_source": "isolated_bot_existing_config",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794538342.6212513,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.014,
+            "client_creation_ms": 5.285,
+            "request_build_ms": 0.239,
+            "http_complete_ms": 2476.794,
+            "json_decode_ms": 0.024
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 10.813,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 9.926,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.175,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.094,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2448.526,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.152,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2495.271,
+          "finished_at": 1794538345.116523
+        }
+      ],
+      "cohort": "interleaved_performance",
+      "comparison_eligible": true,
+      "error": null,
+      "finished_at": 1794538345.1268206,
+      "image_bytes": 517045,
+      "image_sha256": "bf7de374eb1d6f95980429a1c0f4b87279ab4c1db1cd2227f2ec1eb68f329bfc",
+      "mode": "D",
+      "msg_seq": 1,
+      "observations": [
+        {
+          "device": "android",
+          "received": true,
+          "render_ok": true,
+          "clock_synced": false,
+          "duplicates": 0
+        }
+      ],
+      "phase": "performance",
+      "receipt_id_present": true,
+      "sample": "9beca3f67d62",
+      "started_at": 1794538342.6025853,
+      "status": "acknowledged",
+      "total_ms": 2514.406,
+      "transport": "traced_httpx",
+      "trigger_source": "native_QQ_group_event",
+      "ttl_seconds": 1640,
+      "url_access": null,
+      "round_index": 9
     }
   ],
   "summaries": [
@@ -2823,24 +3450,24 @@
       "connection": "new_connection",
       "url_access": null,
       "first_api_token_changed": false,
-      "attempts": 4,
-      "qq_api_attempted_samples": 4,
-      "api_acknowledged": 4,
+      "attempts": 5,
+      "qq_api_attempted_samples": 5,
+      "api_acknowledged": 5,
       "api_success_rate": 1.0,
-      "client_observed_samples": 4,
-      "client_received_samples": 4,
+      "client_observed_samples": 5,
+      "client_received_samples": 5,
       "client_receive_rate_over_observed_samples": 1.0,
       "operation_total": {
-        "n": 4,
-        "p50_ms": 2829.98,
+        "n": 5,
+        "p50_ms": 2823.177,
         "p95_ms": 3008.341,
         "min_ms": 2741.254,
         "max_ms": 3008.341,
         "p95_descriptive": true
       },
       "api_ack": {
-        "n": 4,
-        "p50_ms": 2791.382,
+        "n": 5,
+        "p50_ms": 2781.029,
         "p95_ms": 2974.24,
         "min_ms": 2709.772,
         "max_ms": 2974.24,
@@ -2884,111 +3511,111 @@
       },
       "api_stage_timings": {
         "post_group_files": {
-          "n": 4,
-          "p50_ms": 790.951,
+          "n": 5,
+          "p50_ms": 817.95,
           "p95_ms": 859.187,
           "min_ms": 697.554,
           "max_ms": 859.187,
           "p95_descriptive": true
         },
         "post_group_files.authorization_ms": {
-          "n": 4,
+          "n": 5,
           "p50_ms": 0.021,
           "p95_ms": 0.022,
-          "min_ms": 0.02,
+          "min_ms": 0.017,
           "max_ms": 0.022,
           "p95_descriptive": true
         },
         "post_group_files.client_creation_ms": {
-          "n": 4,
-          "p50_ms": 5.326,
+          "n": 5,
+          "p50_ms": 5.303,
           "p95_ms": 5.572,
           "min_ms": 5.276,
           "max_ms": 5.572,
           "p95_descriptive": true
         },
         "post_group_files.connection.connect_tcp": {
-          "n": 4,
-          "p50_ms": 11.111,
+          "n": 5,
+          "p50_ms": 11.084,
           "p95_ms": 17.28,
           "min_ms": 10.361,
           "max_ms": 17.28,
           "p95_descriptive": true
         },
         "post_group_files.connection.start_tls": {
-          "n": 4,
-          "p50_ms": 10.223,
+          "n": 5,
+          "p50_ms": 10.055,
           "p95_ms": 10.807,
           "min_ms": 9.68,
           "max_ms": 10.807,
           "p95_descriptive": true
         },
         "post_group_files.http11.receive_response_body": {
-          "n": 4,
-          "p50_ms": 0.199,
+          "n": 5,
+          "p50_ms": 0.225,
           "p95_ms": 0.409,
           "min_ms": 0.151,
           "max_ms": 0.409,
           "p95_descriptive": true
         },
         "post_group_files.http11.receive_response_headers": {
-          "n": 4,
-          "p50_ms": 709.475,
+          "n": 5,
+          "p50_ms": 731.007,
           "p95_ms": 771.529,
           "min_ms": 610.384,
           "max_ms": 771.529,
           "p95_descriptive": true
         },
         "post_group_files.http11.send_request_body": {
-          "n": 4,
-          "p50_ms": 32.889,
+          "n": 5,
+          "p50_ms": 33.021,
           "p95_ms": 36.249,
           "min_ms": 28.428,
           "max_ms": 36.249,
           "p95_descriptive": true
         },
         "post_group_files.http11.send_request_headers": {
-          "n": 4,
-          "p50_ms": 0.191,
+          "n": 5,
+          "p50_ms": 0.177,
           "p95_ms": 0.21,
           "min_ms": 0.168,
           "max_ms": 0.21,
           "p95_descriptive": true
         },
         "post_group_files.http_complete_ms": {
-          "n": 4,
-          "p50_ms": 774.773,
+          "n": 5,
+          "p50_ms": 798.227,
           "p95_ms": 842.728,
           "min_ms": 683.586,
           "max_ms": 842.728,
           "p95_descriptive": true
         },
         "post_group_files.json_decode_ms": {
-          "n": 4,
-          "p50_ms": 0.025,
+          "n": 5,
+          "p50_ms": 0.024,
           "p95_ms": 0.031,
           "min_ms": 0.023,
           "max_ms": 0.031,
           "p95_descriptive": true
         },
         "post_group_files.request_build_ms": {
-          "n": 4,
-          "p50_ms": 5.755,
-          "p95_ms": 5.895,
+          "n": 5,
+          "p50_ms": 5.762,
+          "p95_ms": 5.948,
           "min_ms": 5.728,
-          "max_ms": 5.895,
+          "max_ms": 5.948,
           "p95_descriptive": true
         },
         "post_group_messages": {
-          "n": 4,
-          "p50_ms": 2060.99,
+          "n": 5,
+          "p50_ms": 2057.324,
           "p95_ms": 2155.566,
           "min_ms": 1850.585,
           "max_ms": 2155.566,
           "p95_descriptive": true
         },
         "post_group_messages.authorization_ms": {
-          "n": 4,
+          "n": 5,
           "p50_ms": 0.013,
           "p95_ms": 0.023,
           "min_ms": 0.012,
@@ -2996,71 +3623,71 @@
           "p95_descriptive": true
         },
         "post_group_messages.client_creation_ms": {
-          "n": 4,
-          "p50_ms": 5.357,
+          "n": 5,
+          "p50_ms": 5.179,
           "p95_ms": 7.571,
           "min_ms": 5.143,
           "max_ms": 7.571,
           "p95_descriptive": true
         },
         "post_group_messages.connection.connect_tcp": {
-          "n": 4,
-          "p50_ms": 9.785,
+          "n": 5,
+          "p50_ms": 9.962,
           "p95_ms": 13.525,
           "min_ms": 9.247,
           "max_ms": 13.525,
           "p95_descriptive": true
         },
         "post_group_messages.connection.start_tls": {
-          "n": 4,
-          "p50_ms": 9.175,
+          "n": 5,
+          "p50_ms": 9.001,
           "p95_ms": 12.494,
           "min_ms": 8.488,
           "max_ms": 12.494,
           "p95_descriptive": true
         },
         "post_group_messages.http11.receive_response_body": {
-          "n": 4,
-          "p50_ms": 0.165,
+          "n": 5,
+          "p50_ms": 0.16,
           "p95_ms": 0.473,
-          "min_ms": 0.145,
+          "min_ms": 0.141,
           "max_ms": 0.473,
           "p95_descriptive": true
         },
         "post_group_messages.http11.receive_response_headers": {
-          "n": 4,
-          "p50_ms": 2017.573,
+          "n": 5,
+          "p50_ms": 2016.495,
           "p95_ms": 2107.653,
           "min_ms": 1808.564,
           "max_ms": 2107.653,
           "p95_descriptive": true
         },
         "post_group_messages.http11.send_request_body": {
-          "n": 4,
-          "p50_ms": 0.101,
+          "n": 5,
+          "p50_ms": 0.109,
           "p95_ms": 0.154,
           "min_ms": 0.093,
           "max_ms": 0.154,
           "p95_descriptive": true
         },
         "post_group_messages.http11.send_request_headers": {
-          "n": 4,
-          "p50_ms": 0.168,
+          "n": 5,
+          "p50_ms": 0.164,
           "p95_ms": 0.255,
           "min_ms": 0.161,
           "max_ms": 0.255,
           "p95_descriptive": true
         },
         "post_group_messages.http_complete_ms": {
-          "n": 4,
-          "p50_ms": 2045.629,
+          "n": 5,
+          "p50_ms": 2044.602,
           "p95_ms": 2141.643,
           "min_ms": 1833.812,
           "max_ms": 2141.643,
           "p95_descriptive": true
         },
         "post_group_messages.json_decode_ms": {
-          "n": 4,
+          "n": 5,
           "p50_ms": 0.021,
           "p95_ms": 0.022,
           "min_ms": 0.019,
@@ -3068,8 +3695,8 @@
           "p95_descriptive": true
         },
         "post_group_messages.request_build_ms": {
-          "n": 4,
-          "p50_ms": 0.26,
+          "n": 5,
+          "p50_ms": 0.257,
           "p95_ms": 0.392,
           "min_ms": 0.215,
           "max_ms": 0.392,
@@ -3078,8 +3705,8 @@
       },
       "active_quota_consumed": null,
       "active_potential_sends": 0,
-      "message_send_http_requests": 4,
-      "total_qq_http_requests": 8,
+      "message_send_http_requests": 5,
+      "total_qq_http_requests": 10,
       "errors": 0,
       "unknown": 0,
       "observed_duplicates": 0,
@@ -3674,6 +4301,180 @@
     },
     {
       "mode": "B-data",
+      "phase": "performance",
+      "transport": "traced_httpx",
+      "connection": "new_connection",
+      "url_access": null,
+      "first_api_token_changed": true,
+      "attempts": 1,
+      "qq_api_attempted_samples": 1,
+      "api_acknowledged": 1,
+      "api_success_rate": 1.0,
+      "client_observed_samples": 1,
+      "client_received_samples": 1,
+      "client_receive_rate_over_observed_samples": 1.0,
+      "operation_total": {
+        "n": 1,
+        "p50_ms": 2725.519,
+        "p95_ms": 2725.519,
+        "min_ms": 2725.519,
+        "max_ms": 2725.519,
+        "p95_descriptive": true
+      },
+      "api_ack": {
+        "n": 1,
+        "p50_ms": 2706.72,
+        "p95_ms": 2706.72,
+        "min_ms": 2706.72,
+        "max_ms": 2706.72,
+        "p95_descriptive": true
+      },
+      "client_complete_by_device": {
+        "android": {
+          "n": 0,
+          "p50_ms": null,
+          "p95_ms": null,
+          "min_ms": null,
+          "max_ms": null,
+          "p95_descriptive": true
+        },
+        "windows": {
+          "n": 0,
+          "p50_ms": null,
+          "p95_ms": null,
+          "min_ms": null,
+          "max_ms": null,
+          "p95_descriptive": true
+        }
+      },
+      "client_start_by_device": {
+        "android": {
+          "n": 0,
+          "p50_ms": null,
+          "p95_ms": null,
+          "min_ms": null,
+          "max_ms": null,
+          "p95_descriptive": true
+        },
+        "windows": {
+          "n": 0,
+          "p50_ms": null,
+          "p95_ms": null,
+          "min_ms": null,
+          "max_ms": null,
+          "p95_descriptive": true
+        }
+      },
+      "api_stage_timings": {
+        "post_group_files": {
+          "n": 1,
+          "p50_ms": 2706.72,
+          "p95_ms": 2706.72,
+          "min_ms": 2706.72,
+          "max_ms": 2706.72,
+          "p95_descriptive": true
+        },
+        "post_group_files.authorization_ms": {
+          "n": 1,
+          "p50_ms": 212.932,
+          "p95_ms": 212.932,
+          "min_ms": 212.932,
+          "max_ms": 212.932,
+          "p95_descriptive": true
+        },
+        "post_group_files.client_creation_ms": {
+          "n": 1,
+          "p50_ms": 5.313,
+          "p95_ms": 5.313,
+          "min_ms": 5.313,
+          "max_ms": 5.313,
+          "p95_descriptive": true
+        },
+        "post_group_files.connection.connect_tcp": {
+          "n": 1,
+          "p50_ms": 11.474,
+          "p95_ms": 11.474,
+          "min_ms": 11.474,
+          "max_ms": 11.474,
+          "p95_descriptive": true
+        },
+        "post_group_files.connection.start_tls": {
+          "n": 1,
+          "p50_ms": 10.701,
+          "p95_ms": 10.701,
+          "min_ms": 10.701,
+          "max_ms": 10.701,
+          "p95_descriptive": true
+        },
+        "post_group_files.http11.receive_response_body": {
+          "n": 1,
+          "p50_ms": 0.217,
+          "p95_ms": 0.217,
+          "min_ms": 0.217,
+          "max_ms": 0.217,
+          "p95_descriptive": true
+        },
+        "post_group_files.http11.receive_response_headers": {
+          "n": 1,
+          "p50_ms": 2400.358,
+          "p95_ms": 2400.358,
+          "min_ms": 2400.358,
+          "max_ms": 2400.358,
+          "p95_descriptive": true
+        },
+        "post_group_files.http11.send_request_body": {
+          "n": 1,
+          "p50_ms": 37.367,
+          "p95_ms": 37.367,
+          "min_ms": 37.367,
+          "max_ms": 37.367,
+          "p95_descriptive": true
+        },
+        "post_group_files.http11.send_request_headers": {
+          "n": 1,
+          "p50_ms": 0.206,
+          "p95_ms": 0.206,
+          "min_ms": 0.206,
+          "max_ms": 0.206,
+          "p95_descriptive": true
+        },
+        "post_group_files.http_complete_ms": {
+          "n": 1,
+          "p50_ms": 2473.318,
+          "p95_ms": 2473.318,
+          "min_ms": 2473.318,
+          "max_ms": 2473.318,
+          "p95_descriptive": true
+        },
+        "post_group_files.json_decode_ms": {
+          "n": 1,
+          "p50_ms": 0.025,
+          "p95_ms": 0.025,
+          "min_ms": 0.025,
+          "max_ms": 0.025,
+          "p95_descriptive": true
+        },
+        "post_group_files.request_build_ms": {
+          "n": 1,
+          "p50_ms": 5.776,
+          "p95_ms": 5.776,
+          "min_ms": 5.776,
+          "max_ms": 5.776,
+          "p95_descriptive": true
+        }
+      },
+      "active_quota_consumed": null,
+      "active_potential_sends": 1,
+      "message_send_http_requests": 1,
+      "total_qq_http_requests": 1,
+      "errors": 0,
+      "unknown": 0,
+      "observed_duplicates": 0,
+      "timeout_but_received": 0,
+      "timeouts": 0
+    },
+    {
+      "mode": "B-data",
       "phase": "protocol",
       "transport": "adapter",
       "connection": "unobservable",
@@ -3963,27 +4764,27 @@
       "connection": "new_connection",
       "url_access": "repeated_url",
       "first_api_token_changed": false,
-      "attempts": 2,
-      "qq_api_attempted_samples": 2,
-      "api_acknowledged": 2,
+      "attempts": 3,
+      "qq_api_attempted_samples": 3,
+      "api_acknowledged": 3,
       "api_success_rate": 1.0,
-      "client_observed_samples": 2,
-      "client_received_samples": 2,
+      "client_observed_samples": 3,
+      "client_received_samples": 3,
       "client_receive_rate_over_observed_samples": 1.0,
       "operation_total": {
-        "n": 2,
-        "p50_ms": 2533.976,
-        "p95_ms": 2547.141,
+        "n": 3,
+        "p50_ms": 2547.141,
+        "p95_ms": 2619.91,
         "min_ms": 2520.81,
-        "max_ms": 2547.141,
+        "max_ms": 2619.91,
         "p95_descriptive": true
       },
       "api_ack": {
-        "n": 2,
-        "p50_ms": 2434.761,
-        "p95_ms": 2451.075,
+        "n": 3,
+        "p50_ms": 2451.075,
+        "p95_ms": 2518.469,
         "min_ms": 2418.448,
-        "max_ms": 2451.075,
+        "max_ms": 2518.469,
         "p95_descriptive": true
       },
       "client_complete_by_device": {
@@ -4024,106 +4825,106 @@
       },
       "api_stage_timings": {
         "post_group_files": {
-          "n": 2,
-          "p50_ms": 2434.761,
-          "p95_ms": 2451.075,
+          "n": 3,
+          "p50_ms": 2451.075,
+          "p95_ms": 2518.469,
           "min_ms": 2418.448,
-          "max_ms": 2451.075,
+          "max_ms": 2518.469,
           "p95_descriptive": true
         },
         "post_group_files.authorization_ms": {
-          "n": 2,
-          "p50_ms": 0.021,
+          "n": 3,
+          "p50_ms": 0.018,
           "p95_ms": 0.024,
-          "min_ms": 0.018,
+          "min_ms": 0.017,
           "max_ms": 0.024,
           "p95_descriptive": true
         },
         "post_group_files.client_creation_ms": {
-          "n": 2,
-          "p50_ms": 5.455,
-          "p95_ms": 5.566,
+          "n": 3,
+          "p50_ms": 5.566,
+          "p95_ms": 8.841,
           "min_ms": 5.345,
-          "max_ms": 5.566,
+          "max_ms": 8.841,
           "p95_descriptive": true
         },
         "post_group_files.connection.connect_tcp": {
-          "n": 2,
-          "p50_ms": 11.416,
+          "n": 3,
+          "p50_ms": 10.771,
           "p95_ms": 12.062,
-          "min_ms": 10.771,
+          "min_ms": 10.699,
           "max_ms": 12.062,
           "p95_descriptive": true
         },
         "post_group_files.connection.start_tls": {
-          "n": 2,
-          "p50_ms": 11.304,
+          "n": 3,
+          "p50_ms": 10.185,
           "p95_ms": 12.423,
-          "min_ms": 10.185,
+          "min_ms": 10.048,
           "max_ms": 12.423,
           "p95_descriptive": true
         },
         "post_group_files.http11.receive_response_body": {
-          "n": 2,
-          "p50_ms": 0.21,
+          "n": 3,
+          "p50_ms": 0.172,
           "p95_ms": 0.249,
-          "min_ms": 0.172,
+          "min_ms": 0.15,
           "max_ms": 0.249,
           "p95_descriptive": true
         },
         "post_group_files.http11.receive_response_headers": {
-          "n": 2,
-          "p50_ms": 2385.934,
-          "p95_ms": 2397.392,
+          "n": 3,
+          "p50_ms": 2397.392,
+          "p95_ms": 2467.128,
           "min_ms": 2374.476,
-          "max_ms": 2397.392,
+          "max_ms": 2467.128,
           "p95_descriptive": true
         },
         "post_group_files.http11.send_request_body": {
-          "n": 2,
-          "p50_ms": 0.115,
+          "n": 3,
+          "p50_ms": 0.097,
           "p95_ms": 0.141,
           "min_ms": 0.089,
           "max_ms": 0.141,
           "p95_descriptive": true
         },
         "post_group_files.http11.send_request_headers": {
-          "n": 2,
-          "p50_ms": 0.241,
+          "n": 3,
+          "p50_ms": 0.172,
           "p95_ms": 0.314,
           "min_ms": 0.169,
           "max_ms": 0.314,
           "p95_descriptive": true
         },
         "post_group_files.http_complete_ms": {
-          "n": 2,
-          "p50_ms": 2416.504,
-          "p95_ms": 2430.095,
+          "n": 3,
+          "p50_ms": 2430.095,
+          "p95_ms": 2499.234,
           "min_ms": 2402.913,
-          "max_ms": 2430.095,
+          "max_ms": 2499.234,
           "p95_descriptive": true
         },
         "post_group_files.json_decode_ms": {
-          "n": 2,
-          "p50_ms": 0.024,
+          "n": 3,
+          "p50_ms": 0.023,
           "p95_ms": 0.025,
           "min_ms": 0.022,
           "max_ms": 0.025,
           "p95_descriptive": true
         },
         "post_group_files.request_build_ms": {
-          "n": 2,
-          "p50_ms": 0.231,
-          "p95_ms": 0.249,
+          "n": 3,
+          "p50_ms": 0.249,
+          "p95_ms": 0.345,
           "min_ms": 0.214,
-          "max_ms": 0.249,
+          "max_ms": 0.345,
           "p95_descriptive": true
         }
       },
       "active_quota_consumed": null,
-      "active_potential_sends": 2,
-      "message_send_http_requests": 2,
-      "total_qq_http_requests": 2,
+      "active_potential_sends": 3,
+      "message_send_http_requests": 3,
+      "total_qq_http_requests": 3,
       "errors": 0,
       "unknown": 0,
       "observed_duplicates": 0,
@@ -4485,24 +5286,24 @@
       "connection": "new_connection",
       "url_access": "repeated_url",
       "first_api_token_changed": false,
-      "attempts": 4,
-      "qq_api_attempted_samples": 4,
-      "api_acknowledged": 4,
+      "attempts": 5,
+      "qq_api_attempted_samples": 5,
+      "api_acknowledged": 5,
       "api_success_rate": 1.0,
-      "client_observed_samples": 4,
-      "client_received_samples": 4,
+      "client_observed_samples": 5,
+      "client_received_samples": 5,
       "client_receive_rate_over_observed_samples": 1.0,
       "operation_total": {
-        "n": 4,
-        "p50_ms": 2032.226,
+        "n": 5,
+        "p50_ms": 1993.241,
         "p95_ms": 2430.532,
         "min_ms": 1646.69,
         "max_ms": 2430.532,
         "p95_descriptive": true
       },
       "api_ack": {
-        "n": 4,
-        "p50_ms": 1938.303,
+        "n": 5,
+        "p50_ms": 1899.409,
         "p95_ms": 2338.442,
         "min_ms": 1549.889,
         "max_ms": 2338.442,
@@ -4546,87 +5347,87 @@
       },
       "api_stage_timings": {
         "post_group_messages": {
-          "n": 4,
-          "p50_ms": 1938.303,
+          "n": 5,
+          "p50_ms": 1899.409,
           "p95_ms": 2338.442,
           "min_ms": 1549.889,
           "max_ms": 2338.442,
           "p95_descriptive": true
         },
         "post_group_messages.authorization_ms": {
-          "n": 4,
-          "p50_ms": 0.013,
+          "n": 5,
+          "p50_ms": 0.014,
           "p95_ms": 0.018,
           "min_ms": 0.012,
           "max_ms": 0.018,
           "p95_descriptive": true
         },
         "post_group_messages.client_creation_ms": {
-          "n": 4,
-          "p50_ms": 6.88,
+          "n": 5,
+          "p50_ms": 5.5,
           "p95_ms": 9.293,
-          "min_ms": 5.351,
+          "min_ms": 5.285,
           "max_ms": 9.293,
           "p95_descriptive": true
         },
         "post_group_messages.connection.connect_tcp": {
-          "n": 4,
-          "p50_ms": 12.517,
+          "n": 5,
+          "p50_ms": 12.507,
           "p95_ms": 13.164,
           "min_ms": 10.24,
           "max_ms": 13.164,
           "p95_descriptive": true
         },
         "post_group_messages.connection.start_tls": {
-          "n": 4,
-          "p50_ms": 11.671,
+          "n": 5,
+          "p50_ms": 11.635,
           "p95_ms": 12.697,
           "min_ms": 8.988,
           "max_ms": 12.697,
           "p95_descriptive": true
         },
         "post_group_messages.http11.receive_response_body": {
-          "n": 4,
-          "p50_ms": 0.141,
-          "p95_ms": 0.156,
+          "n": 5,
+          "p50_ms": 0.143,
+          "p95_ms": 0.158,
           "min_ms": 0.139,
-          "max_ms": 0.156,
+          "max_ms": 0.158,
           "p95_descriptive": true
         },
         "post_group_messages.http11.receive_response_headers": {
-          "n": 4,
-          "p50_ms": 1893.597,
+          "n": 5,
+          "p50_ms": 1858.104,
           "p95_ms": 2287.955,
           "min_ms": 1495.817,
           "max_ms": 2287.955,
           "p95_descriptive": true
         },
         "post_group_messages.http11.send_request_body": {
-          "n": 4,
-          "p50_ms": 0.098,
+          "n": 5,
+          "p50_ms": 0.103,
           "p95_ms": 0.149,
           "min_ms": 0.089,
           "max_ms": 0.149,
           "p95_descriptive": true
         },
         "post_group_messages.http11.send_request_headers": {
-          "n": 4,
-          "p50_ms": 0.174,
+          "n": 5,
+          "p50_ms": 0.182,
           "p95_ms": 0.255,
           "min_ms": 0.161,
           "max_ms": 0.255,
           "p95_descriptive": true
         },
         "post_group_messages.http_complete_ms": {
-          "n": 4,
-          "p50_ms": 1923.785,
+          "n": 5,
+          "p50_ms": 1885.136,
           "p95_ms": 2322.826,
           "min_ms": 1531.975,
           "max_ms": 2322.826,
           "p95_descriptive": true
         },
         "post_group_messages.json_decode_ms": {
-          "n": 4,
+          "n": 5,
           "p50_ms": 0.022,
           "p95_ms": 0.022,
           "min_ms": 0.02,
@@ -4634,8 +5435,8 @@
           "p95_descriptive": true
         },
         "post_group_messages.request_build_ms": {
-          "n": 4,
-          "p50_ms": 0.241,
+          "n": 5,
+          "p50_ms": 0.247,
           "p95_ms": 0.342,
           "min_ms": 0.232,
           "max_ms": 0.342,
@@ -4644,8 +5445,8 @@
       },
       "active_quota_consumed": null,
       "active_potential_sends": 0,
-      "message_send_http_requests": 4,
-      "total_qq_http_requests": 4,
+      "message_send_http_requests": 5,
+      "total_qq_http_requests": 5,
       "errors": 0,
       "unknown": 0,
       "observed_duplicates": 0,
@@ -4833,27 +5634,27 @@
       "connection": "new_connection",
       "url_access": null,
       "first_api_token_changed": false,
-      "attempts": 2,
-      "qq_api_attempted_samples": 2,
-      "api_acknowledged": 2,
+      "attempts": 4,
+      "qq_api_attempted_samples": 4,
+      "api_acknowledged": 4,
       "api_success_rate": 1.0,
-      "client_observed_samples": 2,
-      "client_received_samples": 2,
+      "client_observed_samples": 4,
+      "client_received_samples": 4,
       "client_receive_rate_over_observed_samples": 1.0,
       "operation_total": {
-        "n": 2,
-        "p50_ms": 2161.013,
-        "p95_ms": 2162.448,
+        "n": 4,
+        "p50_ms": 2211.213,
+        "p95_ms": 2514.406,
         "min_ms": 2159.578,
-        "max_ms": 2162.448,
+        "max_ms": 2514.406,
         "p95_descriptive": true
       },
       "api_ack": {
-        "n": 2,
-        "p50_ms": 2143.636,
-        "p95_ms": 2145.231,
+        "n": 4,
+        "p50_ms": 2193.205,
+        "p95_ms": 2495.271,
         "min_ms": 2142.04,
-        "max_ms": 2145.231,
+        "max_ms": 2495.271,
         "p95_descriptive": true
       },
       "client_complete_by_device": {
@@ -4894,106 +5695,106 @@
       },
       "api_stage_timings": {
         "post_group_messages": {
-          "n": 2,
-          "p50_ms": 2143.636,
-          "p95_ms": 2145.231,
+          "n": 4,
+          "p50_ms": 2193.205,
+          "p95_ms": 2495.271,
           "min_ms": 2142.04,
-          "max_ms": 2145.231,
+          "max_ms": 2495.271,
           "p95_descriptive": true
         },
         "post_group_messages.authorization_ms": {
-          "n": 2,
+          "n": 4,
           "p50_ms": 0.014,
           "p95_ms": 0.014,
-          "min_ms": 0.014,
+          "min_ms": 0.012,
           "max_ms": 0.014,
           "p95_descriptive": true
         },
         "post_group_messages.client_creation_ms": {
-          "n": 2,
-          "p50_ms": 5.333,
+          "n": 4,
+          "p50_ms": 5.306,
           "p95_ms": 5.351,
-          "min_ms": 5.316,
+          "min_ms": 5.285,
           "max_ms": 5.351,
           "p95_descriptive": true
         },
         "post_group_messages.connection.connect_tcp": {
-          "n": 2,
-          "p50_ms": 12.149,
+          "n": 4,
+          "p50_ms": 11.843,
           "p95_ms": 12.614,
-          "min_ms": 11.683,
+          "min_ms": 10.813,
           "max_ms": 12.614,
           "p95_descriptive": true
         },
         "post_group_messages.connection.start_tls": {
-          "n": 2,
-          "p50_ms": 11.214,
+          "n": 4,
+          "p50_ms": 11.079,
           "p95_ms": 11.852,
-          "min_ms": 10.576,
+          "min_ms": 9.926,
           "max_ms": 11.852,
           "p95_descriptive": true
         },
         "post_group_messages.http11.receive_response_body": {
-          "n": 2,
-          "p50_ms": 0.174,
+          "n": 4,
+          "p50_ms": 0.156,
           "p95_ms": 0.188,
-          "min_ms": 0.16,
+          "min_ms": 0.15,
           "max_ms": 0.188,
           "p95_descriptive": true
         },
         "post_group_messages.http11.receive_response_headers": {
-          "n": 2,
-          "p50_ms": 2098.834,
-          "p95_ms": 2100.546,
+          "n": 4,
+          "p50_ms": 2145.893,
+          "p95_ms": 2448.526,
           "min_ms": 2097.123,
-          "max_ms": 2100.546,
+          "max_ms": 2448.526,
           "p95_descriptive": true
         },
         "post_group_messages.http11.send_request_body": {
-          "n": 2,
-          "p50_ms": 0.098,
+          "n": 4,
+          "p50_ms": 0.095,
           "p95_ms": 0.104,
           "min_ms": 0.092,
           "max_ms": 0.104,
           "p95_descriptive": true
         },
         "post_group_messages.http11.send_request_headers": {
-          "n": 2,
-          "p50_ms": 0.173,
+          "n": 4,
+          "p50_ms": 0.171,
           "p95_ms": 0.179,
-          "min_ms": 0.167,
+          "min_ms": 0.164,
           "max_ms": 0.179,
           "p95_descriptive": true
         },
         "post_group_messages.http_complete_ms": {
-          "n": 2,
-          "p50_ms": 2129.88,
-          "p95_ms": 2132.681,
+          "n": 4,
+          "p50_ms": 2177.536,
+          "p95_ms": 2476.794,
           "min_ms": 2127.078,
-          "max_ms": 2132.681,
+          "max_ms": 2476.794,
           "p95_descriptive": true
         },
         "post_group_messages.json_decode_ms": {
-          "n": 2,
-          "p50_ms": 0.025,
+          "n": 4,
+          "p50_ms": 0.024,
           "p95_ms": 0.029,
           "min_ms": 0.02,
           "max_ms": 0.029,
           "p95_descriptive": true
         },
         "post_group_messages.request_build_ms": {
-          "n": 2,
-          "p50_ms": 0.254,
+          "n": 4,
+          "p50_ms": 0.242,
           "p95_ms": 0.262,
-          "min_ms": 0.246,
+          "min_ms": 0.239,
           "max_ms": 0.262,
           "p95_descriptive": true
         }
       },
       "active_quota_consumed": null,
       "active_potential_sends": 0,
-      "message_send_http_requests": 2,
-      "total_qq_http_requests": 2,
+      "message_send_http_requests": 4,
+      "total_qq_http_requests": 4,
       "errors": 0,
       "unknown": 0,
       "observed_duplicates": 0,
@@ -5112,7 +5913,7 @@
     }
   ],
   "comparison_scope": {
-    "eligible_samples": 23,
+    "eligible_samples": 29,
     "excluded_samples": 4,
     "policy": "Excluded API records remain in samples/errors but never enter comparison summaries."
   },

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recorded_at": "2026-11-13T02:47:17.351294+00:00",
+  "recorded_at": "2026-11-13T02:53:01.391339+00:00",
   "measurement_date": "2026-11-13",
   "timezone": "Asia/Shanghai",
   "status": "resumed_client_preflight_confirmed_interleaved_performance_in_progress",
@@ -20,24 +20,24 @@
     "production_player_images_used": false
   },
   "observations": {
-    "qq_delivery_http_requests_excluding_auth": 33,
-    "proactive_API_requests": 9,
+    "qq_delivery_http_requests_excluding_auth": 40,
+    "proactive_API_requests": 11,
     "proactive_quota_consumed": null,
     "blocked_static_prechecks_before_QQ": 1,
     "platform_error_codes": [],
     "client_full_load_measurements": 0,
     "first_vs_cached_URL_client_comparison": "not_measured",
-    "all_audit_records": 27,
-    "api_acknowledged_operations": 26,
-    "comparison_eligible_records": 23,
+    "all_audit_records": 33,
+    "api_acknowledged_operations": 32,
+    "comparison_eligible_records": 29,
     "comparison_excluded_records": 4,
-    "client_qualitatively_confirmed_records": 23,
+    "client_qualitatively_confirmed_records": 29,
     "performance_samples_by_mode": {
-      "A-data": 5,
-      "B-data": 3,
-      "B-url": 3,
-      "C": 5,
-      "D": 2
+      "A-data": 6,
+      "B-data": 4,
+      "B-url": 4,
+      "C": 6,
+      "D": 4
     }
   },
   "http_findings": {
@@ -70,7 +70,7 @@
     },
     "experiment_finished": false,
     "janitor_timer_active_at_snapshot": true,
-    "public_probe_jpegs_remaining_at_snapshot": 1
+    "public_probe_jpegs_remaining_at_snapshot": 0
   },
   "production_after": {
     "MainPID": "2458833",
