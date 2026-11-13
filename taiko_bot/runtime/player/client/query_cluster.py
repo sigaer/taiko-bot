@@ -674,7 +674,7 @@ async def summary_handle(event: MessageEvent, matcher: Matcher):
             result = render_summary(provider, private)
         except Exception as e:
             await summary.finish('查不到捏，怎么回事呢？', reply_message=True)
-        await summary.finish(MessageSegment.image(result), reply_message=True)
+        await _finish_image_reply(summary, event, result)
     except (entry.TinfoDenied, entry.TinfoUnavailable):
         await entry.helpers._finish_text_reply(matcher, event, "查不到呢，可能不给看哦~")
 

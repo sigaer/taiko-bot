@@ -74,11 +74,16 @@ QQ_BOTS=[{"id":"你的AppID","token":"你的Token","secret":"你的Secret","use_
 
 测试应用可改为 `QQ_IS_SANDBOX=true`。接收事件需在 QQ 开放平台启用相应权限。
 
-若使用 Markdown 图片消息，还需将本机 `storage/output/qq_markdown_cache/` 通过自己的 HTTPS 静态站点公开，并设置对应地址：
+从 0.23.0 起，QQ 官方 Bot 的图片回复默认使用 Markdown HTTPS 图片，包括 `taikobxx`、六维/走势、个人信息、谱面和社区图片。需将本机 `storage/output/qq_markdown_cache/` 通过自己的 HTTPS 静态站点公开，并设置对应地址：
 
 ```env
 QQ_MARKDOWN_IMAGE_BASE_URL=https://你的域名/qqbot-cache/taiko
 ```
+
+图片、说明文字及快捷按钮放在同一条 Markdown 中，不附加引用。OneBot 继续使用原图片发送方式。
+缓存使用随机文件名，默认源文件保留30分钟，每5分钟清理一次；收到 URL 的人可在有效期内访问图片，CDN/客户端缓存可能延长可见时间。
+这也适用于真实玩家图片，请据此设置静态目录和缓存生命周期。可用 `QQ_MARKDOWN_IMAGE_TTL_SECONDS`、`QQ_MARKDOWN_IMAGE_CLEANUP_INTERVAL_SECONDS` 调整。
+仅在本地缓存写入失败时沿用富媒体回退；接口超时或未知结果不会自动重新上传补发。
 
 ## 4. 启动与验证
 

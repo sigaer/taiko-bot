@@ -18,13 +18,18 @@ for name in ('rating_structured_with_ids.json', 'analyze_result_filtered.json'):
 (a.work / 'assets').symlink_to(a.assets, target_is_directory=True)
 os.chdir(a.work)
 os.environ.update(TAIKO_BOT_ROOT=str(a.work), TAIKO_CENTER_ROOT=str(a.work),
-                  TAIKO_RUNTIME_ENV_FILE=str(a.work / 'absent.env'))
+                  TAIKO_RUNTIME_ENV_FILE=str(a.work / 'absent.env'),
+                  QQ_MARKDOWN_IMAGE_CACHE_DIR=str(a.work / 'qq-images'),
+                  QQ_MARKDOWN_IMAGE_BASE_URL='https://fixture.invalid/cache')
 violations = []
 def guard(event, args):
     if event in ('socket.connect', 'socket.getaddrinfo', 'sqlite3.connect'):
         violations.append(event); raise AssertionError(event)
     if event == 'open' and isinstance(args[0], str) and args[0].startswith(('/home/sigaer/', '/opt/', '/etc/taiko')):
-        violations.append('production file'); raise AssertionError('production file')
+        # Candidate package code is needed for installed-wheel validation;
+        # production runtime data and other releases remain forbidden.
+        if not args[0].startswith(str(Path(sys.prefix) / 'lib') + '/'):
+            violations.append('production file'); raise AssertionError('production file')
 sys.addaudithook(guard)
 from PIL import Image
 Image.init()
@@ -33,7 +38,7 @@ nonebot.init(driver='~fastapi+~httpx', log_level='CRITICAL', taiko_song_profile=
              taiko_song_public_root=str(a.work))
 public = nonebot.load_plugin('taiko_bot.runtime.public')
 player = nonebot.load_plugin('taiko_bot.runtime.player.entry')
-assert public and player and len(public.matcher) == 9 and len(player.matcher) == (49 if a.host=="center" else 45)
+assert public and player and len(public.matcher) == 10 and len(player.matcher) == (49 if a.host=="center" else 45)
 from nonebot.adapters.onebot.v11 import Adapter, Bot, Message, GroupMessageEvent
 from nonebot.adapters.qq import Adapter as QQAdapter, Bot as QQBot
 from nonebot.adapters.qq.config import BotInfo
@@ -51,6 +56,8 @@ bot = Bot(nonebot.get_adapter(Adapter), '90000')
 qq = QQBot(nonebot.get_adapter(QQAdapter), '90000', BotInfo(id='90000', token='fixture', secret='fixture'))
 sent, errors, results = [], [], []
 async def send(self, event, message, **kwargs):
+    if self is qq and not isinstance(message,str):
+        assert all(segment.type!='file_image' for segment in message), 'QQ image bypassed Markdown policy'
     sent.append(str(message)); return {'message_id': 1}
 bot.send = types.MethodType(send, bot)
 qq.send = types.MethodType(send, qq)
@@ -62,6 +69,7 @@ cases = {
     'song_where': 'id1367歌在哪', 'song_position_phrase': 'id1367在什么位置',
     'song_pos_by_id': '位置1367', 'diff_by_id': '鬼1367',
     'note_count': '太鼓查物量872', 'const_query': '查定数6.6', 'patterns': '查配置180',
+    'aoharu': '青春达人',
 }
 async def run():
     for platform in ('onebot', 'qq'):

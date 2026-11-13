@@ -11,7 +11,7 @@ from ...player.center.messages import (
     get_identity_key, is_qq_official_event, _load_qq_quick_action_api,
     _build_qq_markdown_image_block, _is_qq_passive_reply_limit_error, _send_qq_proactive,
 )
-from ...player.center.qq_markdown_media import cache_markdown_image_url
+from ...center_markdown_media import cache_markdown_image_url
 
 COMMANDS = frozenset({
     '2025版本总结', '2025年度报告', '2025版本报告', '2025年度总结',

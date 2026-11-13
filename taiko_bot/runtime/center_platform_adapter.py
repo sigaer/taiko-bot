@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from taiko_bot.runtime.qq_images import build_qq_image_reply, authorize_image_publication
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Iterable, Literal, Optional, Sequence, Tuple
@@ -285,6 +286,8 @@ def _build_qq_reply_message(
     text: str = "",
     image_bytes: bytes | BytesIO | Path | None = None,
 ):
+    if image_bytes is not None:
+        return build_qq_image_reply(event, image_bytes, text=text, cache_image=cache_markdown_image_url)
     QQMessage, QQMessageSegment = _load_qq_message_api()
     message = QQMessage()
     reference_id = str(getattr(event, "id", "") or "").strip()
@@ -292,8 +295,6 @@ def _build_qq_reply_message(
         message += QQMessageSegment.reference(reference_id, ignore_error=True)
     if text:
         message += QQMessageSegment.text(str(text))
-    if image_bytes is not None:
-        message += QQMessageSegment.file_image(_normalize_image_payload(image_bytes))
     return message
 
 
@@ -518,35 +519,22 @@ async def _send_reply(
 ) -> Any:
     is_matcher_like = hasattr(matcher_or_bot, "finish")
     if is_qq_official_event(event):
-        markdown_image_url = ""
-        should_use_markdown_reply = quick_actions and image_bytes is None
-        if image_bytes is not None and prefer_markdown_image:
-            try:
-                markdown_image_url = cache_markdown_image_url(
-                    _normalize_image_payload(image_bytes),
-                    prefix=markdown_image_name,
-                )
-            except Exception:
-                logger.exception("failed to cache QQ markdown image")
-            else:
-                should_use_markdown_reply = True
-        elif quick_actions and image_bytes is None:
-            should_use_markdown_reply = True
-
-        if should_use_markdown_reply:
+        should_use_markdown_reply = bool(quick_actions and image_bytes is None)
+        if image_bytes is not None:
+            authorize_image_publication(matcher_or_bot)
+            message = build_qq_image_reply(
+                event, image_bytes, text=markdown_text if markdown_text is not None else text,
+                cache_image=cache_markdown_image_url, prefix=markdown_image_name,
+                keyboard=_build_qq_quick_action_keyboard() if quick_actions else None,
+            )
+            should_use_markdown_reply = bool(message["markdown"])
+        elif should_use_markdown_reply:
             message = _build_qq_markdown_reply_message(
-                event,
-                markdown_text=_build_qq_markdown_content(
-                    text=markdown_text if markdown_text is not None else text,
-                    image_url=markdown_image_url,
-                    image_bytes=image_bytes,
-                ),
+                event, markdown_text=_build_qq_markdown_content(text=markdown_text if markdown_text is not None else text),
                 include_quick_actions=quick_actions,
             )
         else:
-            message = _build_qq_reply_message(
-                event, text=text, image_bytes=image_bytes
-            )
+            message = _build_qq_reply_message(event, text=text)
         if is_matcher_like:
             try:
                 await matcher_or_bot.send(message)

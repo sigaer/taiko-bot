@@ -1,4 +1,5 @@
 from io import BytesIO
+from taiko_bot.runtime.qq_images import authorize_image_publication
 from nonebot.exception import MatcherException
 from . import provider
 from .config import profile, root
@@ -13,6 +14,8 @@ async def reply(matcher, event, text, image=None):
     t = transport()
     if not t.is_qq_official_event(event):
         await matcher.finish(t._build_onebot_reply_message(text=text, image_bytes=image), reply_message=True)
+    if image is not None:
+        authorize_image_publication(matcher)
     # Retain each host's existing quick-action keyboard for song error text.
     quick = image is None and bool(getattr(event, 'group_openid', None)) and any(k in text for k in t.QQ_OFFICIAL_QUICK_ACTION_FAILURE_KEYWORDS)
     if quick:

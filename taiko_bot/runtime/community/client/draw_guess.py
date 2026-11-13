@@ -1,7 +1,8 @@
 from __future__ import annotations
 from ..concurrency import serialized
 from ..reporting import submit_report
-from ...player.client.messages import get_identity_key
+from ...player.client.messages import get_identity_key, is_qq_official_event
+from ...player.client.helpers import _finish_image_reply as _finish_platform_image_reply
 
 from ...public.provider import query_with_mode as _query_music_with_mode
 
@@ -88,6 +89,16 @@ ASSETS_DIR = ROOT_DIR / "assets"
 SONGS_DIR = ROOT_DIR / "songs"
 
 MessageEvent = Event
+
+
+async def _finish_image_reply(matcher, event, image, prefix_text=""):
+    if is_qq_official_event(event):
+        return await _finish_platform_image_reply(matcher, event, image, prefix_text=prefix_text)
+    # Preserve this feature's existing OneBot image-before-caption ordering.
+    message = MessageSegment.image(image)
+    if prefix_text:
+        message = message + Message("\n" + prefix_text)
+    return await matcher.finish(message, reply_message=True)
 
 taiko_rule = feature_on("taiko")  # 复用这个 Rule
 
@@ -1016,11 +1027,7 @@ async def _(matcher: Matcher, bot: Bot, event: MessageEvent):
             session["stage"] = "await_image"
             _touch_session(session)
             if DRAW_GUESS_TEMPLATE_PATH.exists():
-                await matcher.finish(
-                    MessageSegment.image(file_to_bytesio(DRAW_GUESS_TEMPLATE_PATH))
-                    + Message("\n请上传图片"),
-                    reply_message=True,
-                )
+                await _finish_image_reply(matcher, event, file_to_bytesio(DRAW_GUESS_TEMPLATE_PATH), prefix_text="请上传图片")
             logger.warning("draw_guess_template_missing path=%s", DRAW_GUESS_TEMPLATE_PATH)
             await matcher.finish("请上传图片", reply_message=True)
 
@@ -1118,13 +1125,8 @@ async def _(matcher: Matcher, event: MessageEvent):
             "wrong_attempts": 0,
             "updated_at": _now_ts(),
         }
-        await matcher.finish(
-            MessageSegment.image(file_to_bytesio(image_path))
-            + Message(
-                f"\n已发送图片，请输入“猜+歌名”，例如猜测图片中歌曲为百花缭乱，则输入“猜百花缭乱”，目前有{DRAW_GUESS_MAX_TRIES}次机会"
-            ),
-            reply_message=True,
-        )
+        await _finish_image_reply(matcher, event, file_to_bytesio(image_path),
+            prefix_text=f"已发送图片，请输入“猜+歌名”，例如猜测图片中歌曲为百花缭乱，则输入“猜百花缭乱”，目前有{DRAW_GUESS_MAX_TRIES}次机会")
 
 @draw_guess_answer.handle()
 async def _(matcher: Matcher, bot: Bot, event: MessageEvent, groups=RegexGroup()):
@@ -1302,7 +1304,7 @@ async def _(matcher: Matcher, event: MessageEvent, groups=RegexGroup()):
     await matcher.finish(result.message(record_id), reply_message=True)
 
 @draw_guess_view.handle()
-async def _(matcher: Matcher, groups=RegexGroup()):
+async def _(matcher: Matcher, event: MessageEvent, groups=RegexGroup()):
     record_id = _as_int(groups[0] if groups else 0, 0)
     record = await _get_draw_guess_record(record_id)
     if record is None:
@@ -1326,10 +1328,7 @@ async def _(matcher: Matcher, groups=RegexGroup()):
         f"已被猜错{_as_int(record.get('guess_wrong_count'), 0)}次，"
         f"已被点赞{_as_int(record.get('like_count'), 0)}次"
     )
-    await matcher.finish(
-        MessageSegment.image(file_to_bytesio(image_path)) + Message(f"\n{detail}"),
-        reply_message=True,
-    )
+    await _finish_image_reply(matcher, event, file_to_bytesio(image_path), prefix_text=detail)
 
 @draw_guess_mine.handle()
 async def _(matcher: Matcher, event: MessageEvent):
@@ -1357,7 +1356,7 @@ async def _(matcher: Matcher, event: MessageEvent):
     nickname = _extract_uploader_nickname(event)
     header = f"用户 {nickname}的你画我猜如下："
     img_buf = render_draw_guess_list_image(header, lines)
-    await matcher.finish(MessageSegment.image(img_buf), reply_message=True)
+    await _finish_image_reply(matcher, event, img_buf)
 
 @draw_guess_rank.handle()
 async def _(matcher: Matcher, event: MessageEvent):

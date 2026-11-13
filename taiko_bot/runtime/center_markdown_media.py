@@ -11,6 +11,7 @@ from urllib.parse import quote
 from uuid import uuid4
 
 from PIL import Image
+from taiko_bot.runtime.qq_images import write_public_image
 
 _logger = logging.getLogger(__name__)
 
@@ -85,8 +86,7 @@ def cache_markdown_image_url(
     suffix = _infer_suffix(raw_bytes, fallback_suffix)
     cache_dir = _ensure_cache_dir()
     filename = f"{prefix}-{int(time.time())}-{uuid4().hex}{suffix}"
-    target = cache_dir / filename
-    target.write_bytes(raw_bytes)
+    write_public_image(cache_dir, filename, raw_bytes)
     return f"{QQ_MARKDOWN_IMAGE_BASE_URL}/{quote(filename)}"
 
 

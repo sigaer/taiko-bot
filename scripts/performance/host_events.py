@@ -13,6 +13,7 @@ import threading
 import types
 import time
 import resource
+import re
 
 p=argparse.ArgumentParser()
 p.add_argument('--fixture',type=Path,required=True);p.add_argument('--work',type=Path,required=True)
@@ -25,6 +26,8 @@ os.environ.update(TAIKO_RUNTIME_ROOT=str(a.work),TAIKO_BOT_ROOT=str(a.work),TAIK
  TAIKO_OFFLINE_ROOT=str(a.work),TAIKO_USERDATA_DIR=str(a.work/'userdata'),TAIKO_RUNTIME_ENV_FILE=str(a.work/'absent.env'),
  FEATURE_SWITCH_DATA_DIR=str(a.work/'feature'),BOT_GROUP_WHITELIST_PATH=str(a.work/'whitelist.json'),
  TAIKO_VIEWER_BASE_URL='https://fixture.invalid',TAIKO_VIEWER_DEVELOPER_TOKEN='fixture')
+os.environ.update(QQ_MARKDOWN_IMAGE_CACHE_DIR=str(a.work/'qq-images'),
+                  QQ_MARKDOWN_IMAGE_BASE_URL='https://fixture.invalid/cache')
 os.environ.update(MPLBACKEND='Agg',MPLCONFIGDIR=str(a.fixture/'mplconfig'))
 os.environ['TAIKO_SONG_PROFILE']=a.profile
 for name in ('songs','assets'):(a.work/name).symlink_to(a.fixture/name,target_is_directory=True)
@@ -66,9 +69,23 @@ def normalized(value):
  if isinstance(value,str) and value.startswith('base64://'):return normalized(base64.b64decode(value[9:]))
  if isinstance(value,dict):return {k:normalized(v) for k,v in value.items()}
  if isinstance(value,(tuple,list)):return [normalized(v) for v in value]
- if hasattr(value,'type') and hasattr(value,'data'):return {'type':value.type,'data':normalized(value.data)}
+ if hasattr(value,'type') and hasattr(value,'data'):
+  if value.type=='markdown':
+   content=value.data['markdown'].content or ''
+   matches=re.findall(r'!\[img[^\]]*\]\((https://fixture\.invalid/cache/[^)]+)\)',content)
+   if matches:
+    images=[]
+    for url in matches:
+     path=a.work/'qq-images'/url.rsplit('/',1)[1]
+     assert path.parent==a.work/'qq-images' and path.is_file()
+     images.append(normalized(path.read_bytes()))
+     content=content.replace(url,'synthetic-cache-image')
+    return {'type':'markdown','content':content,'images':images}
+  return {'type':value.type,'data':normalized(value.data)}
  return str(value)
 async def send(self,event,message,**kwargs):
+ if self is qq and not isinstance(message,str):
+  assert all(segment.type!='file_image' for segment in message),'QQ image bypassed Markdown policy'
  sent.append(normalized(message if isinstance(message,str) or hasattr(message,'type') else list(message)))
  return {'message_id':1}
 bot.send=types.MethodType(send,bot);qq.send=types.MethodType(send,qq)

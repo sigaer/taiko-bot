@@ -1,5 +1,7 @@
 from __future__ import annotations
 import logging
+from taiko_bot.runtime.qq_images import build_qq_image_reply, authorize_image_publication
+from taiko_runtime.qq_markdown_media import cache_markdown_image_url
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Iterable, Optional
@@ -63,6 +65,8 @@ def _build_qq_reply_message(
     text: str = "",
     image_bytes: bytes | BytesIO | Path | None = None,
 ):
+    if image_bytes is not None:
+        return build_qq_image_reply(event, image_bytes, text=text, cache_image=cache_markdown_image_url)
     QQMessage, QQMessageSegment = _load_qq_message_api()
     message = QQMessage()
     reference_id = str(getattr(event, "id", "") or "").strip()
@@ -70,8 +74,6 @@ def _build_qq_reply_message(
         message += QQMessageSegment.reference(reference_id, ignore_error=True)
     if text:
         message += QQMessageSegment.text(str(text))
-    if image_bytes is not None:
-        message += QQMessageSegment.file_image(_normalize_image_payload(image_bytes))
     return message
 
 def _build_qq_quick_action_keyboard():
