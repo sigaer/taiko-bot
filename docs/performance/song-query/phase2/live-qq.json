@@ -1,0 +1,241 @@
+{
+  "schema": 1,
+  "qa_run_id": "qa-e517fbb66cd2",
+  "target": "same private target as previous QQ image test",
+  "service_changed": false,
+  "passive_only": true,
+  "samples": [
+    {
+      "sample": "8c9d5da7d710",
+      "variant": "before",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794550293.0513828,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 220.069,
+            "client_creation_ms": 5.295,
+            "request_build_ms": 0.303,
+            "http_complete_ms": 2059.112,
+            "json_decode_ms": 0.02
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 11.615,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 10.924,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.192,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.116,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2028.566,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.174,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": true,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2289.349,
+          "finished_at": 1794550295.3407338
+        }
+      ],
+      "error": null,
+      "pipeline_ms": 27.84230187535286,
+      "search_command_ms": 19.663944840431213,
+      "brief_ms": 0.0467151403427124,
+      "markdown_ms": 0.0267811119556427,
+      "png_reads": 1,
+      "temporary_writes": 1,
+      "observations": [],
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748",
+      "finished_at": 1794550295.3465934
+    },
+    {
+      "sample": "7115d2300cf0",
+      "variant": "static-first",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794550323.9222481,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.382,
+            "request_build_ms": 0.268,
+            "http_complete_ms": 1795.954,
+            "json_decode_ms": 0.02
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 8.903,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 7.778,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.178,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.161,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 1771.113,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.168,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 1808.277,
+          "finished_at": 1794550325.7305257
+        }
+      ],
+      "error": null,
+      "pipeline_ms": 20.249277353286743,
+      "search_command_ms": 19.306283444166183,
+      "brief_ms": 0.049326568841934204,
+      "markdown_ms": 0.02565234899520874,
+      "png_reads": 0,
+      "temporary_writes": 0,
+      "observations": [],
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748",
+      "finished_at": 1794550325.736672
+    },
+    {
+      "sample": "7b9e16b87b81",
+      "variant": "static-repeat",
+      "status": "acknowledged",
+      "calls": [
+        {
+          "api": "post_group_messages",
+          "status": "acknowledged",
+          "started_at": 1794550365.4875958,
+          "http_requests": 1,
+          "timings": {
+            "authorization_ms": 0.013,
+            "client_creation_ms": 5.224,
+            "request_build_ms": 0.247,
+            "http_complete_ms": 2353.838,
+            "json_decode_ms": 0.02
+          },
+          "http_trace": [
+            {
+              "phase": "connection.connect_tcp",
+              "duration_ms": 8.469,
+              "outcome": "complete"
+            },
+            {
+              "phase": "connection.start_tls",
+              "duration_ms": 8.061,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_headers",
+              "duration_ms": 0.187,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.send_request_body",
+              "duration_ms": 0.101,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_headers",
+              "duration_ms": 2329.466,
+              "outcome": "complete"
+            },
+            {
+              "phase": "http11.receive_response_body",
+              "duration_ms": 0.158,
+              "outcome": "complete"
+            }
+          ],
+          "auth_source": "isolated_bot_existing_config",
+          "unmeasurable": [
+            "pool_wait",
+            "dns_separate_from_tcp",
+            "exact_first_response_byte"
+          ],
+          "access_token_changed": false,
+          "connection_sample": "new_connection",
+          "http_status": 200,
+          "total_ms": 2361.59,
+          "finished_at": 1794550367.8491867
+        }
+      ],
+      "error": null,
+      "pipeline_ms": 19.604727625846863,
+      "search_command_ms": 18.89311522245407,
+      "brief_ms": 0.04725158214569092,
+      "markdown_ms": 0.02442672848701477,
+      "png_reads": 0,
+      "temporary_writes": 0,
+      "observations": [],
+      "image_sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748",
+      "finished_at": 1794550367.8546238
+    }
+  ],
+  "native_client_first_ms": null,
+  "native_client_repeat_ms": null,
+  "note": "Acknowledged API calls do not prove client delivery/rendering. No automatic retry.",
+  "client_observation": {
+    "source": "user response in this conversation 2026-11-13",
+    "received_each_once": true,
+    "render_ok_all_three": true,
+    "duplicates": 0,
+    "device": "not provided",
+    "display_timing_ms": null
+  },
+  "onebot_terminal": "NOT_AVAILABLE: user confirmed no test terminal",
+  "acceptance": "QQ API and user-observed display PASS; timing/OneBot terminal PENDING"
+}

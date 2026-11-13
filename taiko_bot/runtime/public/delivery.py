@@ -4,6 +4,7 @@ from nonebot.exception import MatcherException
 from . import provider
 from .config import profile, root
 from . import center_messages, client_messages
+from . import static_fumens
 
 
 def transport():
@@ -22,6 +23,11 @@ async def reply(matcher, event, text, image=None):
         message = t._build_qq_markdown_reply_message(event, markdown_text=text.strip() or '快捷操作', include_quick_actions=True)
     else:
         message = t._build_qq_reply_message(event, text=text, image_bytes=image)
+    await _send_qq_message(matcher, event, message)
+
+
+async def _send_qq_message(matcher, event, message):
+    t = transport()
     try:
         await matcher.send(message)
     except Exception as exc:
@@ -48,6 +54,20 @@ async def deliver(matcher, event, result):
         extra = provider.brief(song_id)
         if extra:
             hint += '\n' + extra
+    if transport().is_qq_official_event(event):
+        # Lookup/construction may fall back BEFORE any send. Once send is
+        # attempted, timeout/unknown results must escape without a second reply.
+        entry = static_fumens.lookup(difficulty, song_id)
+        if entry is not None:
+            authorize_image_publication(matcher)
+            try:
+                from nonebot.adapters.qq import Message, MessageSegment
+                content = hint + f'\n\n![img#{entry.width}px #{entry.height}px]({entry.url})'
+                prepared = Message(MessageSegment.markdown(content))
+            except Exception:
+                prepared = None
+            if prepared is not None:
+                return await _send_qq_message(matcher, event, prepared)
     ok, message = provider.asset_ready()
     if not ok:
         await reply(matcher, event, message)
@@ -60,6 +80,8 @@ async def deliver(matcher, event, result):
         except MatcherException:
             raise
         except Exception:
+            if transport().is_qq_official_event(event):
+                raise
             await reply(matcher, event, hint+'\n（谱面图片发送失败，请稍后重试）')
         finally:
             image.close()

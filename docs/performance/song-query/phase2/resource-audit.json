@@ -1,0 +1,131 @@
+{
+  "authorization": "User confirmed all chart images may be public in this conversation (2026-11-13).",
+  "folders": {
+    "Kantan": {
+      "files": 3115,
+      "bytes": 217652152
+    },
+    "Futsuu": {
+      "files": 3135,
+      "bytes": 234683513
+    },
+    "Muzukashii": {
+      "files": 3152,
+      "bytes": 260031993
+    },
+    "Oni": {
+      "files": 3083,
+      "bytes": 273420543
+    },
+    "InnerOni": {
+      "files": 655,
+      "bytes": 59760442
+    }
+  },
+  "selected": [
+    {
+      "difficulty": "Kantan",
+      "song_id": 649,
+      "sha256": "b944bed260bfbefd3acaff9412e1f088e778afd32fb92746ff9f1e61bd223315",
+      "width": 816,
+      "height": 1648,
+      "bytes": 58280
+    },
+    {
+      "difficulty": "Kantan",
+      "song_id": 354,
+      "sha256": "604c49b01e45037d508242dd396067436aca14c788851b7c7639336709b50dd1",
+      "width": 816,
+      "height": 1648,
+      "bytes": 49864
+    },
+    {
+      "difficulty": "Futsuu",
+      "song_id": 649,
+      "sha256": "31f0ca9d627e84c87a6e37799ecd4b9e3b47f081058c45263b3b8ffad1df5d8a",
+      "width": 816,
+      "height": 1648,
+      "bytes": 64724
+    },
+    {
+      "difficulty": "Futsuu",
+      "song_id": 354,
+      "sha256": "4dc0dcb8da5c4900fe94e923b7b6b0f2a31c96f7b7764e6181a0608b27387728",
+      "width": 816,
+      "height": 1648,
+      "bytes": 50863
+    },
+    {
+      "difficulty": "Muzukashii",
+      "song_id": 649,
+      "sha256": "6efae91870a8e80a23c5fd6c6a8b41c6b128ff1f9491879d9b10d634ef7b048d",
+      "width": 816,
+      "height": 1648,
+      "bytes": 74209
+    },
+    {
+      "difficulty": "Muzukashii",
+      "song_id": 354,
+      "sha256": "3f6bdafa3ccdfd3289315fbee0cf09f68065194ff84dcde08efd93924d399fa6",
+      "width": 816,
+      "height": 1648,
+      "bytes": 52207
+    },
+    {
+      "difficulty": "Oni",
+      "song_id": 649,
+      "sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748",
+      "width": 816,
+      "height": 1648,
+      "bytes": 85957
+    },
+    {
+      "difficulty": "Oni",
+      "song_id": 354,
+      "sha256": "e945fe2a9fbfeec76ff2c267b709c09033511486cb2181ef9db0f2e252c1803a",
+      "width": 816,
+      "height": 1864,
+      "bytes": 91005
+    }
+  ],
+  "https": [
+    {
+      "endpoint": "https://viewer.sakura-bot.cn/api/taiko/manifest",
+      "method": "GET",
+      "status": 200,
+      "content_type": "application/json",
+      "cache_control": null,
+      "etag": null,
+      "bytes": 5766,
+      "sha256": "7793343e492e67ad928054124b04f9255292a4501055e7cf902c8269e2f8334e",
+      "elapsed_ms": 157.0816971361637
+    },
+    {
+      "endpoint": "https://viewer.sakura-bot.cn/api/content/songs/649/chart-image?difficulty=4",
+      "method": "GET",
+      "status": 200,
+      "content_type": "image/png",
+      "cache_control": "public, max-age=300",
+      "etag": "\"649-4-single-1766932622800-85957\"",
+      "bytes": 85957,
+      "sha256": "238e29e26d75455743679bd8f85b705669ac60398678e033bcfd01b4898f9748",
+      "elapsed_ms": 10.38210466504097
+    }
+  ],
+  "qa_run_id": "qa-299c770d8c4a",
+  "previous_test": {
+    "config_found": true,
+    "bot_configured": true,
+    "group_configured": true,
+    "administrators": 1,
+    "active_permission": null,
+    "group_active_allowed": null,
+    "active_test_authorized": true,
+    "markdown_authorized": true,
+    "domain_whitelisted": true,
+    "static_root": "/home/sigaer/taiko/output/qq_markdown_cache/qq-delivery-probe",
+    "static_base_url": "https://viewer.sakura-bot.cn/qqbot-cache/taiko/qq-delivery-probe",
+    "cleanup_timer": "taiko-qq-delivery-probe-cleanup.timer",
+    "timeout_seconds": 30
+  }
+}
