@@ -1,5 +1,13 @@
 # B30 0.21.2 evidence
 
+Production timing archives also cover 0.21.3, 0.22.1 and 0.23.0. For the
+Markdown production rerun, see `docs/performance/b30/0.23.0/latency-report.md`.
+`collect_latency.py` reads only the structured numeric journal records;
+`compare_latency.py` preserves the exact five-request 0.22.1 baseline, separates
+initialization and the new round, and merges preparation intervals before
+computing statistics. It never sends messages. Run both under the memory
+wrapper; keep raw journal/event/API logs out of the archive.
+
 All workloads use `/home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh`.
 `run_cohorts.py` is a lightweight supervisor that invokes this wrapper itself;
 do not nest it inside the wrapper (the shared QA lock is intentionally serial).

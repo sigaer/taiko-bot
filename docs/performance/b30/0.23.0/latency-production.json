@@ -1,0 +1,2797 @@
+{
+  "schema": 1,
+  "collected_at": "2026-11-13T03:38:26.505007+00:00",
+  "since": "2026-11-13 11:24:19 +08:00",
+  "boundary": "Adapter dispatch to send API acknowledgement; excludes client and pre-dispatch network latency",
+  "warning": "Spans are inclusive and may be nested; do not sum their durations. Small sample percentiles are descriptive only.",
+  "records": [
+    {
+      "schema": 1,
+      "request_id": "afe25cfa0aea464c",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 20.985,
+      "handler_total_ms": 5560.313,
+      "dispatch_to_finish_ms": 5581.298,
+      "dispatch_to_send_ack_ms": 5581.194,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 21.022,
+          "duration_ms": 1062.655,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 21.072,
+          "duration_ms": 1062.564,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 1083.871,
+          "duration_ms": 505.937,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 1083.878,
+          "duration_ms": 10.928,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 1084.057,
+          "duration_ms": 8.457,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 1092.544,
+          "duration_ms": 1.232,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 1094.834,
+          "duration_ms": 10.059,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 1095.122,
+          "duration_ms": 7.863,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 1103.007,
+          "duration_ms": 1.053,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 1129.989,
+          "duration_ms": 306.093,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 1437.586,
+          "duration_ms": 128.665,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 1441.278,
+          "duration_ms": 114.212,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 1577.356,
+          "duration_ms": 11.643,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 1577.372,
+          "duration_ms": 11.61,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 1577.406,
+          "duration_ms": 9.067,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 1586.502,
+          "duration_ms": 1.387,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 1589.832,
+          "duration_ms": 12.2,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 1589.837,
+          "duration_ms": 12.17,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 1589.966,
+          "duration_ms": 8.653,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 1598.654,
+          "duration_ms": 1.503,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 1602.071,
+          "duration_ms": 24.561,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 1626.67,
+          "duration_ms": 1616.521,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 1626.682,
+          "duration_ms": 0.223,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 1627.312,
+          "duration_ms": 1615.664,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 1627.323,
+          "duration_ms": 1576.665,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 3204.024,
+          "duration_ms": 38.912,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 3243.218,
+          "duration_ms": 10.736,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 3243.226,
+          "duration_ms": 10.709,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 3243.25,
+          "duration_ms": 8.509,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 3251.791,
+          "duration_ms": 1.073,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 3253.966,
+          "duration_ms": 2327.307,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 3254.016,
+          "duration_ms": 10.091,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 3254.021,
+          "duration_ms": 10.068,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 3254.392,
+          "duration_ms": 7.759,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 3262.173,
+          "duration_ms": 0.957,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 3265.444,
+          "duration_ms": 9.575,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 3265.448,
+          "duration_ms": 9.552,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 3265.464,
+          "duration_ms": 7.768,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 3273.255,
+          "duration_ms": 0.963,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 3275.36,
+          "duration_ms": 2305.834,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540595426988
+    },
+    {
+      "schema": 1,
+      "request_id": "8caf5304f9544cfc",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 20.654,
+      "handler_total_ms": 6845.292,
+      "dispatch_to_finish_ms": 6865.946,
+      "dispatch_to_send_ack_ms": 6865.706,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 20.692,
+          "duration_ms": 0.253,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 20.745,
+          "duration_ms": 0.168,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 21.046,
+          "duration_ms": 99.34,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 21.052,
+          "duration_ms": 11.115,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 21.067,
+          "duration_ms": 8.681,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 29.774,
+          "duration_ms": 1.296,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 32.193,
+          "duration_ms": 9.658,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 32.496,
+          "duration_ms": 7.679,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 40.195,
+          "duration_ms": 0.961,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 65.447,
+          "duration_ms": 16.497,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 82.011,
+          "duration_ms": 15.712,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 86.066,
+          "duration_ms": 3.189,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 108.722,
+          "duration_ms": 10.728,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 108.728,
+          "duration_ms": 10.706,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 108.749,
+          "duration_ms": 8.606,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 117.378,
+          "duration_ms": 1.137,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 120.41,
+          "duration_ms": 9.52,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 120.416,
+          "duration_ms": 9.501,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 120.536,
+          "duration_ms": 7.795,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 128.35,
+          "duration_ms": 0.911,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 129.992,
+          "duration_ms": 13.296,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 143.306,
+          "duration_ms": 550.376,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 143.314,
+          "duration_ms": 0.124,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 143.595,
+          "duration_ms": 549.836,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 143.608,
+          "duration_ms": 509.309,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 652.953,
+          "duration_ms": 40.441,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 693.708,
+          "duration_ms": 12.799,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 693.717,
+          "duration_ms": 12.771,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 693.738,
+          "duration_ms": 10.088,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 703.859,
+          "duration_ms": 1.316,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 706.519,
+          "duration_ms": 6159.403,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 706.575,
+          "duration_ms": 10.119,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 706.579,
+          "duration_ms": 10.099,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 706.91,
+          "duration_ms": 8.051,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 714.982,
+          "duration_ms": 0.805,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 718.025,
+          "duration_ms": 9.625,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 718.028,
+          "duration_ms": 9.606,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 718.042,
+          "duration_ms": 7.904,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 725.992,
+          "duration_ms": 0.798,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 727.976,
+          "duration_ms": 6137.73,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540617986936
+    },
+    {
+      "schema": 1,
+      "request_id": "f8111b9c8eb84468",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 20.414,
+      "handler_total_ms": 2637.704,
+      "dispatch_to_finish_ms": 2658.118,
+      "dispatch_to_send_ack_ms": 2658.02,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 20.458,
+          "duration_ms": 0.306,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 20.536,
+          "duration_ms": 0.195,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 20.863,
+          "duration_ms": 103.557,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 20.87,
+          "duration_ms": 11.908,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 20.882,
+          "duration_ms": 9.654,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 30.562,
+          "duration_ms": 1.15,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 32.803,
+          "duration_ms": 10.328,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 33.119,
+          "duration_ms": 8.114,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 41.254,
+          "duration_ms": 1.053,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 70.553,
+          "duration_ms": 16.271,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 86.868,
+          "duration_ms": 15.081,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 90.253,
+          "duration_ms": 3.153,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 113.275,
+          "duration_ms": 10.481,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 113.279,
+          "duration_ms": 10.46,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 113.297,
+          "duration_ms": 8.487,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 121.807,
+          "duration_ms": 0.875,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 124.44,
+          "duration_ms": 9.87,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 124.444,
+          "duration_ms": 9.849,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 124.885,
+          "duration_ms": 7.668,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 132.573,
+          "duration_ms": 0.963,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 134.333,
+          "duration_ms": 13.738,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 148.092,
+          "duration_ms": 471.932,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 148.1,
+          "duration_ms": 0.129,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 148.377,
+          "duration_ms": 471.407,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 148.389,
+          "duration_ms": 432.629,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 581.052,
+          "duration_ms": 38.694,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 620.051,
+          "duration_ms": 10.707,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 620.057,
+          "duration_ms": 10.685,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 620.078,
+          "duration_ms": 8.544,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 628.646,
+          "duration_ms": 1.118,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 630.77,
+          "duration_ms": 2027.326,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 630.819,
+          "duration_ms": 9.493,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 630.822,
+          "duration_ms": 9.475,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 631.152,
+          "duration_ms": 7.546,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 638.717,
+          "duration_ms": 0.882,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 641.844,
+          "duration_ms": 9.313,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 641.848,
+          "duration_ms": 9.291,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 641.865,
+          "duration_ms": 7.719,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 649.604,
+          "duration_ms": 0.808,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 651.51,
+          "duration_ms": 2006.511,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540729539512
+    },
+    {
+      "schema": 1,
+      "request_id": "f5f925284ed445fc",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 26.1,
+      "handler_total_ms": 2839.822,
+      "dispatch_to_finish_ms": 2865.922,
+      "dispatch_to_send_ack_ms": 2865.785,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 26.137,
+          "duration_ms": 0.284,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 26.198,
+          "duration_ms": 0.188,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 26.514,
+          "duration_ms": 106.886,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 26.521,
+          "duration_ms": 10.719,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 26.533,
+          "duration_ms": 8.537,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 35.098,
+          "duration_ms": 0.888,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 37.266,
+          "duration_ms": 9.48,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 37.383,
+          "duration_ms": 7.737,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 45.142,
+          "duration_ms": 0.787,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 69.72,
+          "duration_ms": 23.614,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 93.392,
+          "duration_ms": 15.957,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 97.076,
+          "duration_ms": 3.16,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 121.406,
+          "duration_ms": 11.121,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 121.413,
+          "duration_ms": 11.099,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 121.439,
+          "duration_ms": 9.027,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 130.494,
+          "duration_ms": 0.906,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 133.42,
+          "duration_ms": 10.181,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 133.425,
+          "duration_ms": 10.161,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 133.886,
+          "duration_ms": 7.939,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 141.846,
+          "duration_ms": 0.934,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 143.626,
+          "duration_ms": 18.908,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 162.567,
+          "duration_ms": 552.621,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 162.577,
+          "duration_ms": 1.978,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 165.159,
+          "duration_ms": 549.778,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 165.173,
+          "duration_ms": 510.897,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 676.106,
+          "duration_ms": 38.788,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 715.215,
+          "duration_ms": 12.419,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 715.22,
+          "duration_ms": 12.396,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 715.24,
+          "duration_ms": 9.881,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 725.149,
+          "duration_ms": 1.264,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 727.645,
+          "duration_ms": 2138.245,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 727.7,
+          "duration_ms": 10.241,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 727.705,
+          "duration_ms": 10.221,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 728.106,
+          "duration_ms": 8.011,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 736.142,
+          "duration_ms": 0.854,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 739.498,
+          "duration_ms": 9.294,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 739.503,
+          "duration_ms": 9.274,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 739.518,
+          "duration_ms": 7.669,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 747.208,
+          "duration_ms": 0.83,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 749.122,
+          "duration_ms": 2116.663,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540758913820
+    },
+    {
+      "schema": 1,
+      "request_id": "d203f33d674a4da8",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 24.54,
+      "handler_total_ms": 2575.456,
+      "dispatch_to_finish_ms": 2599.996,
+      "dispatch_to_send_ack_ms": 2599.856,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 24.577,
+          "duration_ms": 0.265,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 24.634,
+          "duration_ms": 0.162,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 24.932,
+          "duration_ms": 96.536,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 24.937,
+          "duration_ms": 10.9,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 24.949,
+          "duration_ms": 8.642,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 33.617,
+          "duration_ms": 1.103,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 35.863,
+          "duration_ms": 9.47,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 36.179,
+          "duration_ms": 7.661,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 43.859,
+          "duration_ms": 0.78,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 68.632,
+          "duration_ms": 15.993,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 84.666,
+          "duration_ms": 15.054,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 88.025,
+          "duration_ms": 3.148,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 110.056,
+          "duration_ms": 10.599,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 110.063,
+          "duration_ms": 10.578,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 110.084,
+          "duration_ms": 8.516,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 118.624,
+          "duration_ms": 0.951,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 121.503,
+          "duration_ms": 9.793,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 121.508,
+          "duration_ms": 9.774,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 122.008,
+          "duration_ms": 7.748,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 129.776,
+          "duration_ms": 0.735,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 131.317,
+          "duration_ms": 13.873,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 145.206,
+          "duration_ms": 460.101,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 145.213,
+          "duration_ms": 0.12,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 145.468,
+          "duration_ms": 459.629,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 145.489,
+          "duration_ms": 420.521,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 566.043,
+          "duration_ms": 39.016,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 605.332,
+          "duration_ms": 11.089,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 605.337,
+          "duration_ms": 11.068,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 605.356,
+          "duration_ms": 8.838,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 614.218,
+          "duration_ms": 1.197,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 616.432,
+          "duration_ms": 1983.533,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 616.475,
+          "duration_ms": 9.395,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 616.478,
+          "duration_ms": 9.376,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 616.815,
+          "duration_ms": 7.524,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 624.358,
+          "duration_ms": 0.781,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 627.275,
+          "duration_ms": 8.892,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 627.279,
+          "duration_ms": 8.874,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 627.29,
+          "duration_ms": 7.445,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 634.753,
+          "duration_ms": 0.745,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 636.481,
+          "duration_ms": 1963.375,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540769609650
+    },
+    {
+      "schema": 1,
+      "request_id": "a605e4dc9ecb4a89",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 20.7,
+      "handler_total_ms": 2786.381,
+      "dispatch_to_finish_ms": 2807.081,
+      "dispatch_to_send_ack_ms": 2806.979,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 20.74,
+          "duration_ms": 0.304,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 20.81,
+          "duration_ms": 0.199,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 21.153,
+          "duration_ms": 102.497,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 21.161,
+          "duration_ms": 10.67,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 21.177,
+          "duration_ms": 8.494,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 29.727,
+          "duration_ms": 0.945,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 31.859,
+          "duration_ms": 10.667,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 32.163,
+          "duration_ms": 7.913,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 40.098,
+          "duration_ms": 1.11,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 70.221,
+          "duration_ms": 16.586,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 86.853,
+          "duration_ms": 15.055,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 90.34,
+          "duration_ms": 3.145,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 112.06,
+          "duration_ms": 10.745,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 112.065,
+          "duration_ms": 10.723,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 112.086,
+          "duration_ms": 8.595,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 120.708,
+          "duration_ms": 0.883,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 123.668,
+          "duration_ms": 10.313,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 123.673,
+          "duration_ms": 10.29,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 124.165,
+          "duration_ms": 7.952,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 132.141,
+          "duration_ms": 0.838,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 134.006,
+          "duration_ms": 13.748,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 147.776,
+          "duration_ms": 580.27,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 147.783,
+          "duration_ms": 0.429,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 148.589,
+          "duration_ms": 579.23,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 148.601,
+          "duration_ms": 532.714,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 681.358,
+          "duration_ms": 46.422,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 728.072,
+          "duration_ms": 10.194,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 728.078,
+          "duration_ms": 10.171,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 728.097,
+          "duration_ms": 8.293,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 736.414,
+          "duration_ms": 0.787,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 738.277,
+          "duration_ms": 2068.781,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 738.322,
+          "duration_ms": 10.67,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 738.325,
+          "duration_ms": 10.652,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 738.637,
+          "duration_ms": 8.682,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 747.337,
+          "duration_ms": 0.951,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 750.405,
+          "duration_ms": 9.018,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 750.409,
+          "duration_ms": 9.0,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 750.422,
+          "duration_ms": 7.572,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 758.013,
+          "duration_ms": 0.73,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 759.739,
+          "duration_ms": 2047.24,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540780228296
+    },
+    {
+      "schema": 1,
+      "request_id": "da3bc861afe34032",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 17.339,
+      "handler_total_ms": 2592.361,
+      "dispatch_to_finish_ms": 2609.7,
+      "dispatch_to_send_ack_ms": 2609.601,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 17.375,
+          "duration_ms": 0.237,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 17.425,
+          "duration_ms": 0.155,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 17.701,
+          "duration_ms": 99.36,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 17.715,
+          "duration_ms": 11.322,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 17.726,
+          "duration_ms": 8.972,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 26.725,
+          "duration_ms": 1.134,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 29.067,
+          "duration_ms": 10.486,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 29.439,
+          "duration_ms": 8.231,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 37.694,
+          "duration_ms": 0.932,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 62.531,
+          "duration_ms": 16.298,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 78.876,
+          "duration_ms": 15.79,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 82.488,
+          "duration_ms": 3.294,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 105.054,
+          "duration_ms": 11.169,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 105.06,
+          "duration_ms": 11.146,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 105.08,
+          "duration_ms": 8.901,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 114.007,
+          "duration_ms": 1.092,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 117.081,
+          "duration_ms": 9.645,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 117.085,
+          "duration_ms": 9.626,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 117.511,
+          "duration_ms": 7.635,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 125.181,
+          "duration_ms": 0.81,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 126.75,
+          "duration_ms": 13.771,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 140.543,
+          "duration_ms": 464.64,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 140.55,
+          "duration_ms": 0.15,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 140.845,
+          "duration_ms": 464.079,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 140.858,
+          "duration_ms": 425.233,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 566.125,
+          "duration_ms": 38.759,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 605.208,
+          "duration_ms": 11.087,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 605.214,
+          "duration_ms": 11.063,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 605.233,
+          "duration_ms": 8.796,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 614.057,
+          "duration_ms": 1.081,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 616.307,
+          "duration_ms": 1993.371,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 616.359,
+          "duration_ms": 9.785,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 616.363,
+          "duration_ms": 9.764,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 616.704,
+          "duration_ms": 7.811,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 624.536,
+          "duration_ms": 0.826,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 627.601,
+          "duration_ms": 9.077,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 627.606,
+          "duration_ms": 9.058,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 627.618,
+          "duration_ms": 7.519,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 635.158,
+          "duration_ms": 0.802,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 637.027,
+          "duration_ms": 1972.574,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540797551555
+    },
+    {
+      "schema": 1,
+      "request_id": "69ba8dc945454783",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 28.317,
+      "handler_total_ms": 3470.812,
+      "dispatch_to_finish_ms": 3499.129,
+      "dispatch_to_send_ack_ms": 3498.981,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 28.357,
+          "duration_ms": 0.262,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 28.415,
+          "duration_ms": 0.166,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 28.716,
+          "duration_ms": 314.638,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 28.722,
+          "duration_ms": 10.416,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 28.735,
+          "duration_ms": 8.484,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 37.244,
+          "duration_ms": 0.874,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 39.161,
+          "duration_ms": 9.582,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 39.438,
+          "duration_ms": 7.606,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 47.063,
+          "duration_ms": 0.925,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 71.615,
+          "duration_ms": 16.055,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 87.712,
+          "duration_ms": 15.196,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 91.142,
+          "duration_ms": 3.2,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 332.207,
+          "duration_ms": 10.404,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 332.215,
+          "duration_ms": 10.381,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 332.243,
+          "duration_ms": 8.308,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 340.575,
+          "duration_ms": 1.011,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 343.371,
+          "duration_ms": 9.599,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 343.375,
+          "duration_ms": 9.581,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 343.714,
+          "duration_ms": 7.541,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 351.275,
+          "duration_ms": 0.929,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 352.99,
+          "duration_ms": 13.436,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 366.445,
+          "duration_ms": 526.339,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 366.453,
+          "duration_ms": 1.232,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 368.14,
+          "duration_ms": 524.423,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 368.154,
+          "duration_ms": 484.869,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 853.063,
+          "duration_ms": 39.461,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 892.812,
+          "duration_ms": 10.578,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 892.818,
+          "duration_ms": 10.556,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 892.837,
+          "duration_ms": 8.607,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 901.47,
+          "duration_ms": 0.905,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 903.401,
+          "duration_ms": 2595.692,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 903.448,
+          "duration_ms": 9.499,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 903.451,
+          "duration_ms": 9.48,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 903.803,
+          "duration_ms": 7.611,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 911.433,
+          "duration_ms": 0.765,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 914.465,
+          "duration_ms": 9.733,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 914.471,
+          "duration_ms": 9.712,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 914.487,
+          "duration_ms": 8.055,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 922.561,
+          "duration_ms": 0.939,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 924.513,
+          "duration_ms": 2574.467,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794540994696010
+    },
+    {
+      "schema": 1,
+      "request_id": "fc3a0083d0714eb8",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 24.176,
+      "handler_total_ms": 2739.124,
+      "dispatch_to_finish_ms": 2763.3,
+      "dispatch_to_send_ack_ms": 2763.201,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 24.21,
+          "duration_ms": 0.266,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 24.264,
+          "duration_ms": 0.183,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 24.556,
+          "duration_ms": 101.396,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 24.562,
+          "duration_ms": 12.2,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 24.574,
+          "duration_ms": 9.223,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 33.833,
+          "duration_ms": 1.31,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 36.79,
+          "duration_ms": 11.905,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 37.217,
+          "duration_ms": 9.018,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 46.261,
+          "duration_ms": 1.346,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 71.915,
+          "duration_ms": 15.999,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 87.959,
+          "duration_ms": 16.195,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 91.336,
+          "duration_ms": 3.209,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 114.188,
+          "duration_ms": 11.133,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 114.193,
+          "duration_ms": 11.112,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 114.213,
+          "duration_ms": 8.868,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 123.105,
+          "duration_ms": 1.136,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 125.969,
+          "duration_ms": 10.029,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 125.973,
+          "duration_ms": 10.01,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 126.468,
+          "duration_ms": 7.865,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 134.354,
+          "duration_ms": 0.847,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 136.019,
+          "duration_ms": 13.363,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 149.403,
+          "duration_ms": 510.754,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 149.409,
+          "duration_ms": 0.117,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 149.665,
+          "duration_ms": 510.156,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 149.677,
+          "duration_ms": 451.52,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 601.242,
+          "duration_ms": 58.53,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 660.183,
+          "duration_ms": 11.935,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 660.188,
+          "duration_ms": 11.913,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 660.209,
+          "duration_ms": 9.594,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 669.831,
+          "duration_ms": 1.118,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 672.129,
+          "duration_ms": 2091.149,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 672.181,
+          "duration_ms": 10.514,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 672.185,
+          "duration_ms": 10.49,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 672.588,
+          "duration_ms": 8.113,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 680.722,
+          "duration_ms": 1.055,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 684.236,
+          "duration_ms": 9.882,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 684.24,
+          "duration_ms": 9.833,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 684.254,
+          "duration_ms": 7.974,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 692.249,
+          "duration_ms": 1.056,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 694.451,
+          "duration_ms": 2068.75,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794541035540009
+    },
+    {
+      "schema": 1,
+      "request_id": "8afbce0cf9354bb3",
+      "release": "0.23.0",
+      "platform": "qq_official",
+      "profile": "center",
+      "boundary": "qq_adapter_dispatch",
+      "command": {
+        "top_n": 20,
+        "rating": "v2",
+        "dynamic": false,
+        "dimension": null
+      },
+      "status": "completed",
+      "dispatch_to_handler_ms": 21.947,
+      "handler_total_ms": 2963.323,
+      "dispatch_to_finish_ms": 2985.27,
+      "dispatch_to_send_ack_ms": 2985.169,
+      "spans": [
+        {
+          "name": "command.parse",
+          "start_ms": 21.997,
+          "duration_ms": 0.378,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 22.089,
+          "duration_ms": 0.244,
+          "status": "completed"
+        },
+        {
+          "name": "provider.prepare",
+          "start_ms": 22.507,
+          "duration_ms": 138.167,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 22.516,
+          "duration_ms": 17.473,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 22.535,
+          "duration_ms": 14.331,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 36.898,
+          "duration_ms": 1.379,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 40.018,
+          "duration_ms": 15.919,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 40.514,
+          "duration_ms": 12.764,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 53.307,
+          "duration_ms": 1.236,
+          "status": "completed"
+        },
+        {
+          "name": "data.current",
+          "start_ms": 96.356,
+          "duration_ms": 26.902,
+          "status": "completed"
+        },
+        {
+          "name": "history.capture",
+          "start_ms": 123.307,
+          "duration_ms": 15.609,
+          "status": "completed"
+        },
+        {
+          "name": "catalog.v2_snapshot",
+          "start_ms": 126.866,
+          "duration_ms": 3.159,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 149.32,
+          "duration_ms": 10.559,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 149.325,
+          "duration_ms": 10.536,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 149.345,
+          "duration_ms": 8.458,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 157.829,
+          "duration_ms": 0.915,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 160.693,
+          "duration_ms": 10.736,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 160.697,
+          "duration_ms": 10.714,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 161.133,
+          "duration_ms": 8.192,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 169.367,
+          "duration_ms": 1.123,
+          "status": "completed"
+        },
+        {
+          "name": "inputs.build_ports",
+          "start_ms": 171.452,
+          "duration_ms": 231.978,
+          "status": "completed"
+        },
+        {
+          "name": "render.await",
+          "start_ms": 403.458,
+          "duration_ms": 480.475,
+          "status": "completed"
+        },
+        {
+          "name": "render.queue",
+          "start_ms": 403.465,
+          "duration_ms": 0.133,
+          "status": "completed"
+        },
+        {
+          "name": "render.compute",
+          "start_ms": 403.735,
+          "duration_ms": 479.997,
+          "status": "completed"
+        },
+        {
+          "name": "render.v2",
+          "start_ms": 403.743,
+          "duration_ms": 437.575,
+          "status": "completed"
+        },
+        {
+          "name": "render.jpeg",
+          "start_ms": 841.353,
+          "duration_ms": 42.339,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 883.953,
+          "duration_ms": 10.994,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 883.958,
+          "duration_ms": 10.97,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 883.977,
+          "duration_ms": 8.643,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 892.649,
+          "duration_ms": 1.102,
+          "status": "completed"
+        },
+        {
+          "name": "delivery",
+          "start_ms": 894.958,
+          "duration_ms": 2090.29,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 895.005,
+          "duration_ms": 12.383,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 895.008,
+          "duration_ms": 12.362,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 895.518,
+          "duration_ms": 9.71,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 905.256,
+          "duration_ms": 1.009,
+          "status": "completed"
+        },
+        {
+          "name": "authority.verify",
+          "start_ms": 909.019,
+          "duration_ms": 12.968,
+          "status": "completed"
+        },
+        {
+          "name": "authority.snapshot",
+          "start_ms": 909.025,
+          "duration_ms": 12.945,
+          "status": "completed"
+        },
+        {
+          "name": "db.connect",
+          "start_ms": 909.042,
+          "duration_ms": 10.903,
+          "status": "completed"
+        },
+        {
+          "name": "db.read",
+          "start_ms": 919.972,
+          "duration_ms": 1.172,
+          "status": "completed"
+        },
+        {
+          "name": "api.post_group_messages",
+          "start_ms": 922.351,
+          "duration_ms": 2062.819,
+          "status": "completed"
+        }
+      ],
+      "dropped_spans": 0,
+      "unfinished_api_calls": 0,
+      "journal_timestamp_us": 1794541093394747
+    }
+  ],
+  "summary": [
+    {
+      "group": {
+        "release": "0.23.0",
+        "platform": "qq_official",
+        "top_n": 20,
+        "rating": "v2",
+        "dimension": null,
+        "dynamic": false
+      },
+      "requests": 10,
+      "dispatch_to_finish": {
+        "n": 10,
+        "p50_ms": 2836.502,
+        "p95_ms": 6865.946,
+        "min_ms": 2599.996,
+        "max_ms": 6865.946
+      },
+      "dispatch_to_send_ack": {
+        "n": 10,
+        "p50_ms": 2836.382,
+        "p95_ms": 6865.706,
+        "min_ms": 2599.856,
+        "max_ms": 6865.706
+      },
+      "spans_inclusive": {
+        "api.post_group_messages": {
+          "n": 10,
+          "p50_ms": 2065.784,
+          "p95_ms": 6137.73,
+          "min_ms": 1963.375,
+          "max_ms": 6137.73
+        },
+        "authority.snapshot": {
+          "n": 10,
+          "p50_ms": 72.907,
+          "p95_ms": 90.919,
+          "min_ms": 69.708,
+          "max_ms": 90.91899999999998
+        },
+        "authority.verify": {
+          "n": 10,
+          "p50_ms": 51.865,
+          "p95_ms": 57.64,
+          "min_ms": 49.768,
+          "max_ms": 57.64
+        },
+        "catalog.v2_snapshot": {
+          "n": 10,
+          "p50_ms": 3.175,
+          "p95_ms": 114.212,
+          "min_ms": 3.145,
+          "max_ms": 114.212
+        },
+        "command.parse": {
+          "n": 10,
+          "p50_ms": 0.275,
+          "p95_ms": 1062.655,
+          "min_ms": 0.237,
+          "max_ms": 1062.655
+        },
+        "data.current": {
+          "n": 10,
+          "p50_ms": 16.398,
+          "p95_ms": 306.093,
+          "min_ms": 15.993,
+          "max_ms": 306.093
+        },
+        "db.connect": {
+          "n": 10,
+          "p50_ms": 57.971,
+          "p95_ms": 73.001,
+          "min_ms": 56.211999999999996,
+          "max_ms": 73.001
+        },
+        "db.read": {
+          "n": 10,
+          "p50_ms": 6.763,
+          "p95_ms": 8.168,
+          "min_ms": 6.244,
+          "max_ms": 8.168
+        },
+        "delivery": {
+          "n": 10,
+          "p50_ms": 2090.72,
+          "p95_ms": 6159.403,
+          "min_ms": 1983.533,
+          "max_ms": 6159.403
+        },
+        "history.capture": {
+          "n": 10,
+          "p50_ms": 15.66,
+          "p95_ms": 128.665,
+          "min_ms": 15.054,
+          "max_ms": 128.665
+        },
+        "inputs.build_ports": {
+          "n": 10,
+          "p50_ms": 13.94,
+          "p95_ms": 1087.125,
+          "min_ms": 13.463999999999999,
+          "max_ms": 1087.125
+        },
+        "provider.prepare": {
+          "n": 10,
+          "p50_ms": 103.027,
+          "p95_ms": 505.937,
+          "min_ms": 96.536,
+          "max_ms": 505.937
+        },
+        "render.await": {
+          "n": 10,
+          "p50_ms": 518.547,
+          "p95_ms": 1616.521,
+          "min_ms": 460.101,
+          "max_ms": 1616.521
+        },
+        "render.compute": {
+          "n": 10,
+          "p50_ms": 517.289,
+          "p95_ms": 1615.664,
+          "min_ms": 459.629,
+          "max_ms": 1615.664
+        },
+        "render.jpeg": {
+          "n": 10,
+          "p50_ms": 39.239,
+          "p95_ms": 58.53,
+          "min_ms": 38.694,
+          "max_ms": 58.53
+        },
+        "render.queue": {
+          "n": 10,
+          "p50_ms": 0.142,
+          "p95_ms": 1.978,
+          "min_ms": 0.117,
+          "max_ms": 1.978
+        },
+        "render.v2": {
+          "n": 10,
+          "p50_ms": 468.195,
+          "p95_ms": 1576.665,
+          "min_ms": 420.521,
+          "max_ms": 1576.665
+        }
+      }
+    }
+  ]
+}

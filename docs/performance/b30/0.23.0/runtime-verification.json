@@ -1,0 +1,74 @@
+{
+  "verified_at": "2026-11-13T03:38:02.961332+00:00",
+  "release": "/opt/taiko-bot/releases/0.23.0",
+  "versions": {
+    "taiko-bot": "0.23.0",
+    "taiko-application": "0.9.1",
+    "nonebot2": "2.5.0",
+    "nonebot-adapter-qq": "1.7.3",
+    "httpx": "0.28.1",
+    "httpcore": "1.0.9",
+    "Pillow": "11.3.0"
+  },
+  "service": {
+    "MainPID": "2886113",
+    "NRestarts": "0",
+    "ExecMainStartTimestamp": "Fri 2026-11-13 11:24:19 CST",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "installed_module_sha256": {
+    "taiko_bot/runtime/center_markdown_media.py": "2350cdd5e99a9ee473826498bbfeb00340838b5df61d084be800147aff9c061a",
+    "taiko_bot/runtime/center_platform_adapter.py": "c4eaeccb0627d3cc5005c5649cbffffe27daa69f6051d0cab3adf1ae36a96b19",
+    "taiko_bot/runtime/community/center/annual_report_command.py": "72e25e5aebec45a16d5b45b14423a8cd642c2c7b419f41c884a4d2c1bc57c861",
+    "taiko_bot/runtime/community/client/draw_guess.py": "ea3d226fab003d2e9cba766b5539525f3e228926cfb80a177f6148a165601b5c",
+    "taiko_bot/runtime/player/center/messages.py": "c4eaeccb0627d3cc5005c5649cbffffe27daa69f6051d0cab3adf1ae36a96b19",
+    "taiko_bot/runtime/player/center/query_cluster.py": "965f7183680a8a1d55576dc3271109d24d6d4887eb8f29a3745777ddec9be46a",
+    "taiko_bot/runtime/player/client/messages.py": "629cd2d5ddd9dbd0f20cd8098c9079af9bdfeec432f61a05e22dbc17ae9e5caf",
+    "taiko_bot/runtime/player/client/query_cluster.py": "ab62812628b82cdb8e018a4e6c10f5da0de9e67b56a548cb7568e789eacba94b",
+    "taiko_bot/runtime/public/center_messages.py": "8da8cac854f507be48eba701d483017d555d7039e6ca326ed205716c34b628df",
+    "taiko_bot/runtime/public/client_messages.py": "b1008b25385ee019b0e9425eb69b7308ea2000eaa866d573966e8a16113dcd1c",
+    "taiko_bot/runtime/public/delivery.py": "aee091d2e3fab6584a681079ecac084fcdb18f79a219543d48d2158d472fc513",
+    "taiko_bot/runtime/qq_images.py": "4d7a5f9fe9250664cef8f1c395197caa41da0ef8d84727da0e816fa9216cff21",
+    "taiko_runtime/platform_adapter.py": "9d8d116d0f67bf5f7f571c80fb67571c36fe6204fc2445227564389ba9c5cc79",
+    "taiko_runtime/qq_markdown_media.py": "05205663308c82f811dd49662f7d7a86fc4379aa399249fead2c6838e6abe53c"
+  },
+  "source_commit": "24aa3f462f814ae48594264546199ffa0467417c",
+  "deployed_code_commit": "930b44b",
+  "module_hashes_match_rollout": true,
+  "tests": {
+    "status": "PASS",
+    "passed": 7,
+    "qa_run": "qa-b79307cdb6bc",
+    "scope": "new interval/cohort tests and existing journal collection test"
+  },
+  "production_changes": false,
+  "service_restarted": false,
+  "agent_sent_QQ_messages": 0,
+  "client_complete_image_ms": null,
+  "client_display_observation": {
+    "file": "client-observations.json",
+    "complete_images": 3,
+    "approximate_phone_seconds": [
+      4.0,
+      2.7,
+      3.5
+    ],
+    "duplicate_messages": null,
+    "precision_timing_available": false
+  },
+  "collection_qa": "qa-582eda56a2af",
+  "verification_qa": "qa-997a65a37116",
+  "archive_qa": "qa-5b7626443c8d",
+  "interval_detail_qa": "qa-bb97064b66df",
+  "archive_verification": {
+    "qa_run": "qa-b79307cdb6bc",
+    "exact_recomputation": true,
+    "numeric_log_allowlist": true,
+    "api_shape_verified_requests": 10,
+    "baseline_medians_match_previous_archive": true,
+    "client_observations_matched_by_order": 3,
+    "group_and_account_identity_recorded": false,
+    "service_unchanged": true
+  }
+}

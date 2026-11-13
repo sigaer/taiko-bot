@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "release": "0.23.0",
+  "cohort": "round_window_steady",
+  "association": "Three consecutive requested B20 v2 commands in the administrator test group; matched to the three subsequent telemetry records by order and time, without retaining group or player identity.",
+  "method": "Operator's approximate phone observation, no synchronized video or defined timing origin; not precision complete-image timing.",
+  "raw_operator_report": "完整，手机端大约为4秒、2.7秒、3.5秒",
+  "complete_images": 3,
+  "duplicate_messages": null,
+  "clock_synchronized": null,
+  "timing_error_ms": null,
+  "windows_cross_check": false,
+  "observations": [
+    {"order": 1, "request_id": "69ba8dc945454783", "approximate_phone_seconds": 4.0, "image_complete": true},
+    {"order": 2, "request_id": "fc3a0083d0714eb8", "approximate_phone_seconds": 2.7, "image_complete": true},
+    {"order": 3, "request_id": "8afbce0cf9354bb3", "approximate_phone_seconds": 3.5, "image_complete": true}
+  ],
+  "limitations": [
+    "Do not subtract API timings from phone estimates: timing origins and clocks are not aligned.",
+    "Approximate phone values are separate from precise server telemetry, not inputs to server P50/P95.",
+    "The operator confirmed complete images but did not explicitly report duplicate counts in this round."
+  ]
+}
