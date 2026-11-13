@@ -4,10 +4,10 @@ import json
 from typing import Any, List, Optional, Tuple
 
 from fuzzywuzzy import fuzz
-from sakura_taiko_core.chart.visibility import is_song_publicly_visible, normalize_song_id
-from taiko_application.query import SongQueryContext, query_music
+from sakura_taiko_core.chart.visibility import is_song_publicly_visible
 
 from .config import root
+from .catalog import get_snapshot
 
 SONG_DATA_PATH = root() / "songs/song_data.json"
 
@@ -23,22 +23,9 @@ def load_song_data(*, include_hidden: bool = False):
 def _query_music_with_mode(
     name: str, *, allow_partial: bool = True, allow_fuzzy: bool = True
 ) -> Tuple[List[List[Any]], Optional[str]]:
-    song_data = load_song_data()
-    visible_ids = {normalize_song_id(song.get("id")) for song in song_data}
-    visible_ids.discard(None)
-    alias_data = json.loads((root() / "songs/song_alias.json").read_text(encoding="utf-8"))
-    aliases = [entry for entry in alias_data if normalize_song_id(entry.get("id")) in visible_ids]
     # Clients retain separate version IDs and only expose their visible catalog.
-    return query_music(SongQueryContext(
-        songs=song_data,
-        aliases=aliases,
-        groups_by_id={},
-        groups_by_title={},
-        similarity=fuzz.ratio,
-        query=name,
-        allow_partial=allow_partial,
-        allow_fuzzy=allow_fuzzy,
-    ))
+    return get_snapshot(profile='client').query(name, fuzz.ratio,
+        allow_partial=allow_partial, allow_fuzzy=allow_fuzzy)
 
 
 def is_song_id_publicly_visible(song_id):

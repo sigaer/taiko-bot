@@ -82,6 +82,8 @@ def _fuzzy_candidates(context, id_to_title) -> Iterator[tuple[Any, str, str]]:
 
 
 def query_music(context: SongQueryContext):
+    if context.index is not None:
+        return context.index.query(context)
     query = (context.query or "").strip()
     if not query:
         return [], None

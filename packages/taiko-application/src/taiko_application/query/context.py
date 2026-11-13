@@ -1,8 +1,11 @@
 """Explicit request data; providers and data acquisition remain caller-owned."""
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Iterable, Mapping, Protocol, Sequence
+from typing import TYPE_CHECKING, Any, Callable, Iterable, Mapping, Protocol, Sequence
 from sakura_taiko_core.chart.progress_catalog import ProgressCatalogInputs
+
+if TYPE_CHECKING:
+    from .song_index import SongIndex
 
 
 class SimilarityProvider(Protocol):
@@ -22,6 +25,7 @@ class SongQueryContext:
     allow_fuzzy: bool = True
     song_id: int | str = 0
     explicit_alias_id: bool = False
+    index: "SongIndex | None" = None
 
 
 @dataclass(frozen=True)

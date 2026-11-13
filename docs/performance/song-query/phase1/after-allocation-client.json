@@ -1,0 +1,15 @@
+{
+  "profile": "client",
+  "retained_python_bytes": 8706835,
+  "peak_python_bytes": 34144569,
+  "before": {
+    "rss_kib": 79056,
+    "pss_kib": 69837
+  },
+  "after": {
+    "rss_kib": 147580,
+    "pss_kib": 138189
+  },
+  "qa_run_id": "qa-c208eb5893f0",
+  "note": "Fresh process; net retained allocations include index and its pinyin preparation. RSS/PSS include tracemalloc bookkeeping; use benchmark for untraced RSS/PSS."
+}

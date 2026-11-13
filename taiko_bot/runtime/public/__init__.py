@@ -45,11 +45,12 @@ async def handle(matcher: Matcher, event: Event):
     if not t.is_qq_official_event(event):
         if any(seg.type == 'at' and seg.data.get('qq') == '3889003795' for seg in event.get_message()):
             return
-    result = commands.execute_song(commands.CommandContext(profile=profile(), text=t.extract_plain_text(event)),
-        commands.SongPorts(_extract_what_song_query=lambda text: extract(text, t.is_qq_official_event(event)),
-            _is_rejected_fuzzy_query_result=provider.rejected_fuzzy,
-            _resolve_what_song_query=provider.resolve))
-    await deliver(matcher, event, result)
+    with provider.catalog_request():
+        result = commands.execute_song(commands.CommandContext(profile=profile(), text=t.extract_plain_text(event)),
+            commands.SongPorts(_extract_what_song_query=lambda text: extract(text, t.is_qq_official_event(event)),
+                _is_rejected_fuzzy_query_result=provider.rejected_fuzzy,
+                _resolve_what_song_query=provider.resolve))
+        await deliver(matcher, event, result)
 
 
 # Registration remains in a dedicated module as this plugin grows.

@@ -9,6 +9,7 @@ from .context import (
     SimilarityProvider,
 )
 from .song import query_music
+from .song_index import SongIndex, build_song_index
 from .alias import query_aliases
 from .constant import ConstChartRow, query_charts_by_const, paginate_rows
 from .progress import summarize_progress

@@ -1,0 +1,564 @@
+{
+  "cold": {
+    "phases": {
+      "file_stat": {
+        "calls": 4,
+        "inclusive_ns": 69103,
+        "exclusive_ns": 69103
+      },
+      "file_open": {
+        "calls": 2,
+        "inclusive_ns": 74846,
+        "exclusive_ns": 74846
+      },
+      "read_bytes": {
+        "calls": 2,
+        "inclusive_ns": 5106764,
+        "exclusive_ns": 5031918
+      },
+      "catalog_read_hash": {
+        "calls": 2,
+        "inclusive_ns": 26036782,
+        "exclusive_ns": 20930018
+      },
+      "json_loads": {
+        "calls": 2,
+        "inclusive_ns": 121050694,
+        "exclusive_ns": 121050694
+      },
+      "center_groups": {
+        "calls": 1,
+        "inclusive_ns": 55393578,
+        "exclusive_ns": 55393578
+      },
+      "index_prepare": {
+        "calls": 1,
+        "inclusive_ns": 252005063,
+        "exclusive_ns": 196611485
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 22063,
+        "exclusive_ns": 22063
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 411188560,
+        "exclusive_ns": 12004855
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 65872,
+        "exclusive_ns": 65872
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 443080663,
+        "exclusive_ns": 31826231
+      }
+    },
+    "queries": [
+      {
+        "query": "id649",
+        "options": {},
+        "mode": "exact_id",
+        "rows": 1
+      }
+    ]
+  },
+  "source_files": {
+    "/var/tmp/taiko-bot-song-query/taiko_bot/runtime/public/__init__.py": "c30639766b2ca168867e10beb17cd9db3ffb2b2b91dbd173a09c1f8d4ea6315f",
+    "/var/tmp/taiko-bot-song-query/taiko_bot/runtime/public/provider.py": "89d41e8c5002759cb259cc0cb8664db5f79ec005f75637da4ed64de26f207f66",
+    "/var/tmp/taiko-bot-song-query/taiko_bot/runtime/public/client_provider.py": "8d8d3684b64e91dcfc7314874731dbb7a6d37eee345420dc3a84544cfa947eae",
+    "/var/tmp/taiko-bot-song-query/taiko_bot/runtime/public/resolve.py": "25cfd3a1f2d3c2340f7189f25e5882a2ad3080f405caf1d9cbd3e7fc921a59e5",
+    "/var/tmp/taiko-bot-song-query/taiko_bot/runtime/public/delivery.py": "aee091d2e3fab6584a681079ecac084fcdb18f79a219543d48d2158d472fc513",
+    "/var/tmp/taiko-bot-song-query/taiko_bot/runtime/public/catalog.py": "10e1ea618d774ac7fd10a3b0792d71a2f947baeec6e5c3583afb9a1bcbbcf429",
+    "/var/tmp/taiko-bot-song-query/packages/taiko-application/src/taiko_application/query/song.py": "e90db5bd85dca9964648e569129f033010f9cbd02d5cb038554da2edee54ede8",
+    "/var/tmp/taiko-bot-song-query/packages/taiko-application/src/taiko_application/query/context.py": "472a22d3744ed84e32bb5779958efd267d0245a1f112e85eff7c09893cb0b64c",
+    "/var/tmp/taiko-bot-song-query/packages/taiko-application/src/taiko_application/query/song_index.py": "8ec16e39e195d1545bfb91e410af72039a4e2df566092f4b29681d4db69ed2aa",
+    "/var/tmp/taiko-bot-song-query/packages/taiko-application/src/taiko_application/query/song_matching.py": "812f78a236e9a60521008e68b8df286e528a5ae9d79604768e4f93a2f57eb04a",
+    "/var/tmp/taiko-bot-song-query/packages/taiko-application/src/taiko_application/query/song_phonetics.py": "d4dca3251e17b27cea5ef666612303206d3c42005cd9f24cb37f059ade470736"
+  },
+  "core_version": "0.1.1",
+  "qa_run_id": "qa-4e4f158a5fd7",
+  "id": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 32358,
+        "exclusive_ns": 32358
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 5840,
+        "exclusive_ns": 5840
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 114492,
+        "exclusive_ns": 76294
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 24521,
+        "exclusive_ns": 24521
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 179429,
+        "exclusive_ns": 40416
+      }
+    },
+    "queries": [
+      {
+        "query": "id649",
+        "options": {},
+        "mode": "exact_id",
+        "rows": 1
+      }
+    ]
+  },
+  "exact": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 13266,
+        "exclusive_ns": 13266
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 14948,
+        "exclusive_ns": 14948
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 84170,
+        "exclusive_ns": 55956
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 23173,
+        "exclusive_ns": 23173
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 133575,
+        "exclusive_ns": 26232
+      }
+    },
+    "queries": [
+      {
+        "query": "千本桜",
+        "options": {},
+        "mode": "exact_name",
+        "rows": 1
+      }
+    ]
+  },
+  "alias": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 12531,
+        "exclusive_ns": 12531
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 10650,
+        "exclusive_ns": 10650
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 75236,
+        "exclusive_ns": 52055
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 24266,
+        "exclusive_ns": 24266
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 124692,
+        "exclusive_ns": 25190
+      }
+    },
+    "queries": [
+      {
+        "query": "毒糖",
+        "options": {},
+        "mode": "exact_alias",
+        "rows": 1
+      }
+    ]
+  },
+  "normalized": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 12166,
+        "exclusive_ns": 12166
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 11245,
+        "exclusive_ns": 11245
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 75604,
+        "exclusive_ns": 52193
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 21623,
+        "exclusive_ns": 21623
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 121330,
+        "exclusive_ns": 24103
+      }
+    },
+    "queries": [
+      {
+        "query": "毒locandy♡",
+        "options": {},
+        "mode": "exact_name",
+        "rows": 1
+      }
+    ]
+  },
+  "partial": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 12477,
+        "exclusive_ns": 12477
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 11387,
+        "exclusive_ns": 11387
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 73608,
+        "exclusive_ns": 49744
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 21815,
+        "exclusive_ns": 21815
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 118879,
+        "exclusive_ns": 23456
+      }
+    },
+    "queries": [
+      {
+        "query": "waruloo",
+        "options": {},
+        "mode": "exact_alias",
+        "rows": 1
+      }
+    ]
+  },
+  "homophone": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 12174,
+        "exclusive_ns": 12174
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 1358779,
+        "exclusive_ns": 1358779
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 1424704,
+        "exclusive_ns": 53751
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 41217,
+        "exclusive_ns": 41217
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 1506533,
+        "exclusive_ns": 40612
+      }
+    },
+    "queries": [
+      {
+        "query": "幽宣",
+        "options": {},
+        "mode": "fuzzy",
+        "rows": 1
+      }
+    ]
+  },
+  "fuzzy": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 23492,
+        "exclusive_ns": 23492
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 245488586,
+        "exclusive_ns": 245488586
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 245593172,
+        "exclusive_ns": 81094
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 67318,
+        "exclusive_ns": 67318
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 245733760,
+        "exclusive_ns": 73270
+      }
+    },
+    "queries": [
+      {
+        "query": "warulooo",
+        "options": {},
+        "mode": "fuzzy",
+        "rows": 1
+      }
+    ]
+  },
+  "fuzzy_long": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 33914,
+        "exclusive_ns": 33914
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 270085348,
+        "exclusive_ns": 270085348
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 270202945,
+        "exclusive_ns": 83683
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 65246,
+        "exclusive_ns": 65246
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 270336025,
+        "exclusive_ns": 67834
+      }
+    },
+    "queries": [
+      {
+        "query": "night of knigts",
+        "options": {},
+        "mode": "fuzzy",
+        "rows": 1
+      }
+    ]
+  },
+  "low_score": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 43610,
+        "exclusive_ns": 43610
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 162108152,
+        "exclusive_ns": 162108152
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 162245154,
+        "exclusive_ns": 93392
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 61162,
+        "exclusive_ns": 61162
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 162368912,
+        "exclusive_ns": 62596
+      }
+    },
+    "queries": [
+      {
+        "query": "zxqvjkzz",
+        "options": {},
+        "mode": "fuzzy",
+        "rows": 1
+      }
+    ]
+  },
+  "prefix_exact": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 30777,
+        "exclusive_ns": 30777
+      },
+      "matching": {
+        "calls": 2,
+        "inclusive_ns": 25495,
+        "exclusive_ns": 25495
+      },
+      "query_with_mode": {
+        "calls": 2,
+        "inclusive_ns": 163566,
+        "exclusive_ns": 107294
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 21226,
+        "exclusive_ns": 21226
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 226067,
+        "exclusive_ns": 41275
+      }
+    },
+    "queries": [
+      {
+        "query": "里千本桜",
+        "options": {
+          "allow_partial": false,
+          "allow_fuzzy": false
+        },
+        "mode": null,
+        "rows": 0
+      },
+      {
+        "query": "千本桜",
+        "options": {
+          "allow_fuzzy": false
+        },
+        "mode": "exact_name",
+        "rows": 1
+      }
+    ]
+  },
+  "prefix_fuzzy": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 13995,
+        "exclusive_ns": 13995
+      },
+      "matching": {
+        "calls": 4,
+        "inclusive_ns": 254362425,
+        "exclusive_ns": 254362425
+      },
+      "query_with_mode": {
+        "calls": 4,
+        "inclusive_ns": 254584408,
+        "exclusive_ns": 207988
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 62812,
+        "exclusive_ns": 62812
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 254721107,
+        "exclusive_ns": 73887
+      }
+    },
+    "queries": [
+      {
+        "query": "里warulooo",
+        "options": {
+          "allow_partial": false,
+          "allow_fuzzy": false
+        },
+        "mode": null,
+        "rows": 0
+      },
+      {
+        "query": "warulooo",
+        "options": {
+          "allow_fuzzy": false
+        },
+        "mode": null,
+        "rows": 0
+      },
+      {
+        "query": "里warulooo",
+        "options": {
+          "allow_fuzzy": false
+        },
+        "mode": null,
+        "rows": 0
+      },
+      {
+        "query": "warulooo",
+        "options": {},
+        "mode": "fuzzy",
+        "rows": 1
+      }
+    ]
+  },
+  "partial_name": {
+    "phases": {
+      "file_stat": {
+        "calls": 2,
+        "inclusive_ns": 35948,
+        "exclusive_ns": 35948
+      },
+      "matching": {
+        "calls": 1,
+        "inclusive_ns": 2616642,
+        "exclusive_ns": 2616642
+      },
+      "query_with_mode": {
+        "calls": 1,
+        "inclusive_ns": 2731013,
+        "exclusive_ns": 78423
+      },
+      "brief": {
+        "calls": 1,
+        "inclusive_ns": 60029,
+        "exclusive_ns": 60029
+      },
+      "command": {
+        "calls": 1,
+        "inclusive_ns": 2844442,
+        "exclusive_ns": 53400
+      }
+    },
+    "queries": [
+      {
+        "query": "ワルルーさまの歌を",
+        "options": {},
+        "mode": "partial_name",
+        "rows": 1
+      }
+    ]
+  }
+}

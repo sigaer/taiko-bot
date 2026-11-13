@@ -1,0 +1,558 @@
+{
+  "status": "PASS",
+  "base_commit": "58174b5100a4f33800976b879abfab5ed1b77b9f",
+  "literal_queries_per_profile": 16111,
+  "literal_comparisons_total": 32222,
+  "additional_stage_matrix_comparisons": 120,
+  "timing_samples": 1920,
+  "tests": [
+    {
+      "qa_run_id": "qa-89f53209193a",
+      "summary": "85 passed, 1 warning in 190.37s (0:03:10)"
+    },
+    {
+      "qa_run_id": "qa-98d2afc2dfca",
+      "summary": "89 passed, 2 deselected, 1 warning in 0.57s"
+    },
+    {
+      "qa_run_id": "qa-b82aef84d478",
+      "summary": "1 passed, 29 deselected, 1 warning in 86.61s (0:01:26)"
+    },
+    {
+      "qa_run_id": "qa-c7d223158b87",
+      "summary": "68 passed, 22 deselected, 1 warning in 0.63s"
+    }
+  ],
+  "protected_paths_unchanged": [
+    "taiko_bot/runtime/qq_images.py",
+    "taiko_bot/runtime/center_markdown_media.py",
+    "taiko_runtime/qq_markdown_media.py",
+    "taiko_runtime/platform_adapter.py",
+    "taiko_bot/runtime/public/delivery.py",
+    "taiko_bot/runtime/public/center_messages.py",
+    "scripts/deploy_taiko.sh",
+    "packages/taiko-application/src/taiko_application/commands/song.py"
+  ],
+  "qa_evidence": [
+    {
+      "qa_run_id": "qa-3bf33f6c68f1",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "e9793d84c1288cea39f6bd40aaea09a61302af271c377b19d0fd4c82392aa32b",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-3bf33f6c68f1.service",
+          "memory.current": "7651328",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-3bf33f6c68f1.service",
+          "memory.current": "151146496",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 157240,
+        "cpu_seconds": 2.94865
+      }
+    },
+    {
+      "qa_run_id": "qa-4e4f158a5fd7",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "45be77482549d2192d4255bfc1d5904fa97548e87f800dfc2d93607aa595c80d",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-4e4f158a5fd7.service",
+          "memory.current": "7680000",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-4e4f158a5fd7.service",
+          "memory.current": "102993920",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 111000,
+        "cpu_seconds": 1.721779
+      }
+    },
+    {
+      "qa_run_id": "qa-6dc90c2406ed",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "5ed7669161f0486295d7e42a2033da74783f29f82d88f30f0643a45dddf0d3b5",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-6dc90c2406ed.service",
+          "memory.current": "7663616",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-6dc90c2406ed.service",
+          "memory.current": "109940736",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 129156,
+        "cpu_seconds": 0.952819
+      }
+    },
+    {
+      "qa_run_id": "qa-81033cc6edb1",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "4fd5f45fb27fb2de84cce69c02d9e26b917cb76cf48bb91e9e73202cbe6bd7bf",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-81033cc6edb1.service",
+          "memory.current": "7659520",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-81033cc6edb1.service",
+          "memory.current": "119431168",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 138972,
+        "cpu_seconds": 1.347292
+      }
+    },
+    {
+      "qa_run_id": "qa-8223a5c484d9",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "b68af39b6eabbacdd735deaa3c5f0029baf7fc109ed6fb21f48a4d45099719a2",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-8223a5c484d9.service",
+          "memory.current": "7692288",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-8223a5c484d9.service",
+          "memory.current": "98566144",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 111056,
+        "cpu_seconds": 1.424435
+      }
+    },
+    {
+      "qa_run_id": "qa-862d5c71c162",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "211233ef9cea281ea0089e1db057fe82631aa14e20a595dcbb09de0fae21e060",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-862d5c71c162.service",
+          "memory.current": "7671808",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-862d5c71c162.service",
+          "memory.current": "99074048",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 131164,
+        "cpu_seconds": 4.155686
+      }
+    },
+    {
+      "qa_run_id": "qa-89f53209193a",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "fc1880d254aadb8cf32b8e5b934c2b95e91ecf5230da100beec46e208237c47c",
+      "resources": null
+    },
+    {
+      "qa_run_id": "qa-8ef1e3699ff9",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "d7bb7b0240423ab9cff59c7970e10928f983d426eea47385d9a7bc5defdb4d5b",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-8ef1e3699ff9.service",
+          "memory.current": "8015872",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-8ef1e3699ff9.service",
+          "memory.current": "98963456",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 130872,
+        "cpu_seconds": 8.820938
+      }
+    },
+    {
+      "qa_run_id": "qa-98d2afc2dfca",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "2d123b989dfa78397219e2da5a9847415ac4706905cb2e8933e51d4730184295",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-98d2afc2dfca.service",
+          "memory.current": "7688192",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-98d2afc2dfca.service",
+          "memory.current": "85639168",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 94344,
+        "cpu_seconds": 0.907596
+      }
+    },
+    {
+      "qa_run_id": "qa-a8b2d2a26b65",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "0f430cc28902191c941b2d9947c199fac064dc5264ae6e8f5ba4becc69e402ad",
+      "resources": null
+    },
+    {
+      "qa_run_id": "qa-b7a909985624",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "96f9b7122f40534d06e2f18c66346f0185dee5dcb58e43de2f8c619be61c12a9",
+      "resources": null
+    },
+    {
+      "qa_run_id": "qa-b82aef84d478",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "83126a8ef3965adc0400f0e981a78e2a2e0fce8597f8272aeeda9fc6aaf2a12c",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-b82aef84d478.service",
+          "memory.current": "7655424",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-b82aef84d478.service",
+          "memory.current": "120422400",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 145392,
+        "cpu_seconds": 86.96565799999999
+      }
+    },
+    {
+      "qa_run_id": "qa-b979b352ec99",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "121007833ceebbe508ea8e7a3dd875c8d8fc4b6a32351163869f82db398d5da7",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-b979b352ec99.service",
+          "memory.current": "7655424",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-b979b352ec99.service",
+          "memory.current": "104771584",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 111920,
+        "cpu_seconds": 32.424198
+      }
+    },
+    {
+      "qa_run_id": "qa-c208eb5893f0",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "dd9822216109e98c3e7757bcc518ab10571d3680b8033bb840a72c94b63e1398",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-c208eb5893f0.service",
+          "memory.current": "7651328",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-c208eb5893f0.service",
+          "memory.current": "141078528",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 147324,
+        "cpu_seconds": 2.438605
+      }
+    },
+    {
+      "qa_run_id": "qa-c7d223158b87",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "2ed935cfb85431990ac37eb5bd2279cd4169252e4386940faf65ad6df00d5404",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-c7d223158b87.service",
+          "memory.current": "7655424",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-c7d223158b87.service",
+          "memory.current": "85913600",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 93260,
+        "cpu_seconds": 0.9844179999999999
+      }
+    },
+    {
+      "qa_run_id": "qa-d131405b3234",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "df4eab1fbafe7c2851724dba024a6c96fd393408a0c930fcbe159a8f2bd298eb",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-d131405b3234.service",
+          "memory.current": "7663616",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-d131405b3234.service",
+          "memory.current": "110424064",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 116444,
+        "cpu_seconds": 37.886065
+      }
+    },
+    {
+      "qa_run_id": "qa-dc6a9fc85234",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "99f637a30c03a64216270cf224a2b08356cb08fc5b2efabb14518bd2ee051656",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-dc6a9fc85234.service",
+          "memory.current": "7659520",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-dc6a9fc85234.service",
+          "memory.current": "103186432",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 111200,
+        "cpu_seconds": 0.858996
+      }
+    },
+    {
+      "qa_run_id": "qa-dd8986fc3e2d",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "ded98daa5802ad8b0c2c87c7dfc0e639ea06f5ae70ac6a804808aae3062db07b",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-dd8986fc3e2d.service",
+          "memory.current": "7905280",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-dd8986fc3e2d.service",
+          "memory.current": "90128384",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 139204,
+        "cpu_seconds": 16.77479
+      }
+    },
+    {
+      "qa_run_id": "qa-f06eeb70502f",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "8352a77f8d8a7aaffbc6761d2c934be7eaba516b4120f6c40b4f8fa60e0c4318",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-f06eeb70502f.service",
+          "memory.current": "7684096",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-f06eeb70502f.service",
+          "memory.current": "98656256",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 111152,
+        "cpu_seconds": 0.7597139999999999
+      }
+    },
+    {
+      "qa_run_id": "qa-fc07d9b17b85",
+      "exit_code": 0,
+      "children_stopped": true,
+      "manifest_sha256": "8c0877664452173302e1dc8ed47c4a094652ba5f309f505a6912d9f27518eb0a",
+      "resources": {
+        "before": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-fc07d9b17b85.service",
+          "memory.current": "7667712",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "after": {
+          "cgroup": "/development.slice/development-qa.slice/taiko-qa-fc07d9b17b85.service",
+          "memory.current": "101187584",
+          "memory.peak": null,
+          "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0",
+          "memory.max": "3221225472",
+          "memory.high": "2147483648",
+          "cpu.max": "200000 100000"
+        },
+        "max_rss_kib": 135172,
+        "cpu_seconds": 6.514114999999999
+      }
+    }
+  ],
+  "artifacts": {
+    "after-allocation-center.json": "bbea0cfcca70aeafc74bb9b9a0dc7efe5bdc2d8903b5a95315ffd310139c2c0f",
+    "after-allocation-client.json": "86702c35a3a1ff62c7ce742c96590fde8fc818dd866b18a3746f705b8ddf4022",
+    "after-center.json": "c339f3141c0a2d6a05ce9c8ba7670335a8dfc22895132ec88d773ce05625fea9",
+    "after-client.json": "dc206dd67cc8a4d87c253d3ad6e7b09700a6d5d19b22716828d8343d99f6996e",
+    "after-partial-center.json": "9a18206dfd9ce8033ac4ea2244af6b2646e449ad25cf5bd4da0516c183d1d831",
+    "after-partial-client.json": "de7fe5c338886535f094046d26dfeeb0aa29465d9fcd21983ad219e2a2eea2ce",
+    "after-trace-center.json": "fcb531c934147c54fafc9124b69cb8b4a030b5b3e6c6ee4b2ae6092b2f04356c",
+    "after-trace-client.json": "3bc27c44d8815f21fbdb241b11a7cc3df565d4bf6fc0338e72a6629d4460c31a",
+    "before-allocation-center.json": "c3c7889539c8cbea8cdc0405d89b918fa4df60e26a4011125ef6fd7eaede0414",
+    "before-allocation-client.json": "37881d33f2ffa1804e3650988e4445ccecf4e74c8ba46c5004c8e9bc67baf98b",
+    "before-center.json": "f07877ce5e14de4e9729cbf0bdea1e84b0e4aff025e9ca86ddf800179bc1bcca",
+    "before-client.json": "e2cee6e4ff4bbd59e15feb97a1272cace5cc39b6fa8583ff52627402e56f0f11",
+    "before-partial-center.json": "c369df3dce55039fddd6f1a090456a5ebd0eadbe8a6214708ebe7892b21f01fa",
+    "before-partial-client.json": "9bb936e2d0eb3c64c01c0215b1968222a84a18ca9b930614f82006f5fd950da7",
+    "before-trace-center.json": "2d0f45018c844ce03239c638c0629034b14e6aa0d8fa32db008d9b5f413bb8d4",
+    "before-trace-client.json": "82c84f0f99af2ab1786a5dd558058cee9360684bc6c3711f8529d16e935529a4"
+  },
+  "limitations": [
+    "offline query and brief only; no QQ end-to-end claim",
+    "memory.peak unavailable on this kernel; use process max RSS",
+    "early baseline runs have no cgroup OOM/event samples"
+  ]
+}

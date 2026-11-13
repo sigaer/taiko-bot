@@ -1,0 +1,205 @@
+{
+  "profile": "client",
+  "source": "/var/tmp/taiko-bot-song-query",
+  "python": "3.11.4 (main, Oct 14 2023, 15:38:44) [GCC 10.2.1 20210110]",
+  "platform": "Linux-5.10.0-16-amd64-x86_64-with-glibc2.41",
+  "cpu_count": 8,
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "repetitions": 40,
+  "cases": [
+    [
+      "partial_name",
+      "ワルルーさまの歌を"
+    ]
+  ],
+  "fixture": {
+    "song_data.json": {
+      "sha256": "647f45530fb0862e7993e193b8da507932aa0b2c0b50ff4d253d00a41ff8ead6",
+      "bytes": 6195475,
+      "rows": 2989
+    },
+    "song_alias.json": {
+      "sha256": "1619632c9c51c0b931fedc01d37c4f1a666dc4f66c13258c7dc0076cac9ca3e6",
+      "bytes": 335662,
+      "rows": 2071
+    }
+  },
+  "cold_first_command_ns": 318234874,
+  "memory_before": {
+    "rss_kib": 75980,
+    "pss_kib": 67593
+  },
+  "memory_after_first": {
+    "rss_kib": 106048,
+    "pss_kib": 96840
+  },
+  "memory_after_replay": {
+    "rss_kib": 106156,
+    "pss_kib": 96878
+  },
+  "max_rss_kib": 111152,
+  "qa_run_id": "qa-f06eeb70502f",
+  "raw": {
+    "partial_name": {
+      "wall_ns": [
+        2191973,
+        1762791,
+        1607514,
+        1586010,
+        1608110,
+        1611976,
+        1627694,
+        1566669,
+        1555437,
+        1592114,
+        1547937,
+        1565026,
+        1564651,
+        1588773,
+        1605059,
+        1562553,
+        1580822,
+        1556733,
+        1616876,
+        1611106,
+        1561359,
+        1570907,
+        1554222,
+        1548272,
+        1572595,
+        1580899,
+        1593446,
+        1562198,
+        1556527,
+        1583088,
+        1560826,
+        1566347,
+        1652883,
+        1584910,
+        1581165,
+        1549782,
+        1546943,
+        1572858,
+        1575365,
+        1612429
+      ],
+      "cpu_ns": [
+        2197185,
+        1765982,
+        1610950,
+        1589429,
+        1611355,
+        1614856,
+        1630244,
+        1569762,
+        1558540,
+        1595542,
+        1551027,
+        1567369,
+        1567496,
+        1592137,
+        1607964,
+        1565543,
+        1583177,
+        1559585,
+        1620306,
+        1614259,
+        1564241,
+        1573003,
+        1556967,
+        1550828,
+        1575500,
+        1583485,
+        1595888,
+        1564949,
+        1559254,
+        1585809,
+        1563983,
+        1569462,
+        1656104,
+        1587811,
+        1583822,
+        1552518,
+        1549556,
+        1575609,
+        1577813,
+        1605038
+      ]
+    }
+  },
+  "summary": {
+    "partial_name": {
+      "wall_ns": {
+        "p50": 1575365,
+        "p95": 1652883
+      },
+      "cpu_ns": {
+        "p50": 1577813,
+        "p95": 1656104
+      }
+    }
+  },
+  "details": {
+    "partial_name": {
+      "phases": {
+        "file_stat": {
+          "calls": 2,
+          "inclusive_ns": 20670,
+          "exclusive_ns": 20670
+        },
+        "matching": {
+          "calls": 1,
+          "inclusive_ns": 1489753,
+          "exclusive_ns": 1489753
+        },
+        "query_with_mode": {
+          "calls": 1,
+          "inclusive_ns": 1596544,
+          "exclusive_ns": 86121
+        },
+        "command": {
+          "calls": 1,
+          "inclusive_ns": 1629555,
+          "exclusive_ns": 33011
+        }
+      },
+      "queries": [
+        {
+          "query": "ワルルーさまの歌を",
+          "options": {},
+          "mode": "partial_name",
+          "rows": 1
+        }
+      ]
+    }
+  },
+  "results": {
+    "partial_name": {
+      "kind": "fumen",
+      "payload": [
+        "Oni",
+        "1459"
+      ],
+      "difficulty": "Oni",
+      "brief": ""
+    }
+  },
+  "first_result": {
+    "kind": "fumen",
+    "payload": [
+      "Oni",
+      "649"
+    ],
+    "difficulty": "Oni",
+    "brief": ""
+  }
+}
