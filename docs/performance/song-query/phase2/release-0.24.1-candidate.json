@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "qa_run_id": "qa-38d017fc8a6d",
+  "source_commit": "4f755cfd2ac820196d837d5a815705a1d6a042bb",
+  "changed_distributions": {
+    "taiko-application": {
+      "before": "0.9.1",
+      "after": "0.9.2"
+    },
+    "taiko-bot": {
+      "before": "0.23.0",
+      "after": "0.24.1"
+    }
+  },
+  "installed_source_sha256": {
+    "packages/taiko-application/src/taiko_application/__init__.py": "b27e9d5516e8a2d6df6f85066ec89408247632713d2f12e0657fff8834d0b6fb",
+    "packages/taiko-application/src/taiko_application/query/__init__.py": "1ca7d94a6cd67b27cd14af6effdb5829819e7b64f63ef1f0d80b2589f22114b5",
+    "packages/taiko-application/src/taiko_application/query/context.py": "472a22d3744ed84e32bb5779958efd267d0245a1f112e85eff7c09893cb0b64c",
+    "packages/taiko-application/src/taiko_application/query/song.py": "e90db5bd85dca9964648e569129f033010f9cbd02d5cb038554da2edee54ede8",
+    "packages/taiko-application/src/taiko_application/query/song_index.py": "8ec16e39e195d1545bfb91e410af72039a4e2df566092f4b29681d4db69ed2aa",
+    "taiko_bot/runtime/public/__init__.py": "c30639766b2ca168867e10beb17cd9db3ffb2b2b91dbd173a09c1f8d4ea6315f",
+    "taiko_bot/runtime/public/catalog.py": "10e1ea618d774ac7fd10a3b0792d71a2f947baeec6e5c3583afb9a1bcbbcf429",
+    "taiko_bot/runtime/public/client_provider.py": "8d8d3684b64e91dcfc7314874731dbb7a6d37eee345420dc3a84544cfa947eae",
+    "taiko_bot/runtime/public/delivery.py": "56c4486b79b8af222eefe6d975ca46d1fe3b49ff40e8507bf810accd5b17b48e",
+    "taiko_bot/runtime/public/fumen_url.py": "c6e38c5ca3240179e338a40fb2b8de4b9e9b3f7b640deebc96f8532a9f490e0b",
+    "taiko_bot/runtime/public/provider.py": "89d41e8c5002759cb259cc0cb8664db5f79ec005f75637da4ed64de26f207f66"
+  },
+  "fixed_url_enabled": false,
+  "wheels": {
+    "taiko_bot-0.24.1-py3-none-any.whl": "922f75aeb89076698522ef30b1ebc837b0949288b62b656bbeb7008aff992f96",
+    "taiko_application-0.9.2-py3-none-any.whl": "00e6c042ea39445a40dbeea1089f4c9426af451cd72f1538428a0cc745b75e1a"
+  }
+}

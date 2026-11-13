@@ -1,0 +1,104 @@
+{
+  "status": "PASS",
+  "status_scope": "Production health and installed artifact verification; deployment scope deviation recorded below",
+  "qa": {
+    "build": "qa-467b9988c110",
+    "installed_package_regression": "qa-38d017fc8a6d",
+    "deployment": "qa-273ee77922de",
+    "production_verification": "qa-1033b54ffbe0"
+  },
+  "installed_package_tests": {"passed": 98, "deselected": 21, "seconds": 90.81},
+  "verified_at": "2026-11-13T15:41:26.410400+08:00",
+  "source_commit": "4f755cfd2ac820196d837d5a815705a1d6a042bb",
+  "release": "0.24.1",
+  "application": "0.9.2",
+  "service": {
+    "MainPID": "3045312",
+    "NRestarts": "0",
+    "ExecMainStartTimestamp": "Fri 2026-11-13 15:40:41 CST",
+    "MemoryCurrent": "175079424",
+    "ActiveState": "active"
+  },
+  "health_HTTP_status": 200,
+  "actual_process_inventory": {
+    "python": "3.11.4",
+    "executable": "/opt/taiko-bot/current/bin/python",
+    "packages": {
+      "taiko-bot": {
+        "version": "0.24.1",
+        "module": "/opt/taiko-bot/releases/0.24.1/lib/python3.11/site-packages/taiko_bot/__init__.py"
+      },
+      "taiko-application": {
+        "version": "0.9.2",
+        "module": "/opt/taiko-bot/releases/0.24.1/lib/python3.11/site-packages/taiko_application/__init__.py"
+      },
+      "sakura-taiko-core": {
+        "version": "0.1.1",
+        "module": "/opt/taiko-bot/releases/0.24.1/lib/python3.11/site-packages/sakura_taiko_core/__init__.py"
+      },
+      "sakura-taiko-contract": {
+        "version": "0.1.0",
+        "module": "/opt/taiko-bot/releases/0.24.1/lib/python3.11/site-packages/sakura_taiko_contract/__init__.py"
+      },
+      "Pillow": {
+        "version": "11.3.0",
+        "module": "/opt/taiko-bot/releases/0.24.1/lib/python3.11/site-packages/PIL/__init__.py"
+      }
+    },
+    "numpy": "2.4.6",
+    "pandas": "3.0.6"
+  },
+  "selected_official_QQ_connected": true,
+  "required_plugins_loaded": true,
+  "fixed_url_enabled": false,
+  "selected_image_path": "existing random URL Markdown",
+  "startup_error_lines": 0,
+  "markdown_cache_errors": 0,
+  "public_catalog_read_only_smoke": {
+    "status": "PASS",
+    "query": "id649",
+    "mode": "exact_id",
+    "revision": "691785c081687352add6c07c31e028eba1e549b1496b9c5874c05476dec680d9"
+  },
+  "other_services_not_restarted": [
+    "taiko-viewer",
+    "taiko-memory-monitor"
+  ],
+  "additional_services_restarted": {
+    "taiko-public-api": {
+      "MainPID": "3045202",
+      "NRestarts": "0",
+      "ExecMainStartTimestamp": "Fri 2026-11-13 15:40:40 CST",
+      "MemoryCurrent": "36192256",
+      "ActiveState": "active"
+    },
+    "taiko-sync-receiver": {
+      "MainPID": "3045206",
+      "NRestarts": "0",
+      "ExecMainStartTimestamp": "Fri 2026-11-13 15:40:40 CST",
+      "MemoryCurrent": "18718720",
+      "ActiveState": "active"
+    },
+    "taiko-song-update": {
+      "MainPID": "3045210",
+      "NRestarts": "0",
+      "ExecMainStartTimestamp": "Fri 2026-11-13 15:40:40 CST",
+      "MemoryCurrent": "34357248",
+      "ActiveState": "active"
+    }
+  },
+  "wheels": {
+    "taiko_bot-0.24.1-py3-none-any.whl": "922f75aeb89076698522ef30b1ebc837b0949288b62b656bbeb7008aff992f96",
+    "taiko_application-0.9.2-py3-none-any.whl": "00e6c042ea39445a40dbeea1089f4c9426af451cd72f1538428a0cc745b75e1a"
+  },
+  "bot_only_deployment": false,
+  "planned_bot_only": true,
+  "deployment_scope_deviation": "Outer TAIKO_DEPLOY_BOT_ONLY=1 was stripped by the QA environment wrapper; the standard script restarted public API, sync receiver and song updater. All three verified active; Viewer was not restarted.",
+  "rollback_version": "0.23.0",
+  "new_QQ_test_messages_sent": 0,
+  "out_of_scope": [
+    "client profile",
+    "OneBot",
+    "QQ client display timing"
+  ]
+}
