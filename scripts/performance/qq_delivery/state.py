@@ -103,6 +103,8 @@ class State:
         self.data["used_events"].append(event_hash)
         row = dict(sample=secrets.token_hex(6), mode=mode, phase=self.config.phase,
                    round_id=self.config.round_id, status="pending", started_at=now,
+                   comparison_eligible=True,
+                   cohort="interleaved_performance" if self.config.phase == "performance" else "protocol_preflight",
                    image_sha256=image_sha256, image_bytes=0, calls=[], observations=[],
                    transport=self.config.transport, ttl_seconds=None, receipt_id_present=False,
                    active_quota_before=None, active_quota_after=None, error=None)
@@ -113,9 +115,28 @@ class State:
 
     def passed(self, mode):
         rows = [r for r in self.data["rows"] if r["mode"] == mode and r["phase"] == "protocol"
+                and r.get("comparison_eligible", True)
                 and any(c.get("http_requests",0) for c in r["calls"])]
         return bool(rows) and mode not in self.data["blocked_modes"] and rows[-1]["status"] == "acknowledged" and any(
             o.get("device") == "android" and o.get("received") is True
             and o.get("duplicates") == 0 and o.get("render_ok") is True
             for o in rows[-1]["observations"]
         )
+
+    def remaining_active_budget(self, now=None):
+        """A conservative allowance, never a measured platform quota delta."""
+        now = time.time() if now is None else now
+        rows = [r for r in self.data["rows"] if r["mode"].startswith("B")]
+        snapshots = [(r.get("finished_at", r["started_at"]), r["active_quota_after"], i + 1)
+                     for i, r in enumerate(rows) if type(r.get("active_quota_after")) is int]
+        attestation = self.data.get("active_quota_attestation", {})
+        lower = attestation.get("remaining_lower_bound")
+        count = attestation.get("b_rows_count")
+        stamp = attestation.get("reported_at")
+        if (type(lower) is int and lower >= 0 and type(count) is int and 0 <= count <= len(rows)
+                and type(stamp) in (int, float) and 0 <= now - stamp <= 3600):
+            snapshots.append((stamp, lower, count))
+        if not snapshots:
+            return 0
+        _, lower, count = max(snapshots, key=lambda item: item[0])
+        return max(0, lower - (len(rows) - count))

@@ -41,9 +41,7 @@ class Experiment:
                 if any(m.startswith("B") for m in state.data["blocked_modes"]):
                     raise Blocked("active_mode_stopped_requires_manual_review")
                 if c.phase == "performance":
-                    snapshots=[i for i,r in enumerate(b_rows) if r["active_quota_after"] is not None]
-                    remaining=(b_rows[snapshots[-1]]["active_quota_after"]-len(b_rows[snapshots[-1]+1:])) if snapshots else 0
-                    if not c.active_performance_authorized or remaining<=0:
+                    if not c.active_performance_authorized or state.remaining_active_budget() <= 0:
                         raise Blocked("active_performance_permission_and_quota_required")
             elif not b_rows and c.active_permission is not False and c.group_active_allowed is not False:
                 raise Blocked("single_active_protocol_preflight_required_first")
@@ -62,6 +60,7 @@ class Experiment:
             # This private reservation key is never sent as msg_id/event_id.
             reservation = "active-protocol-trial:"+mode if active_trial else event.message_id
             row = state.reserve(mode, reservation, digest)
+            row["trigger_source"] = "operator_active_trial_without_user_message" if active_trial else "native_QQ_group_event"
             row["image_bytes"] = len(data)
             row["auth_source"] = "connected_bot" if self.connected else "isolated_bot_existing_config"
             row["msg_seq"] = None if mode.startswith("B") else 1

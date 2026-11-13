@@ -38,7 +38,52 @@
     "scripts/performance/qq_delivery/state.py": "787ae3884ebda87cd400d6eca1928184b96d809989eba2662ff106fedefc3861",
     "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
     "scripts/performance/qq_delivery_probe.py": "25738e0bc15483e700b202285ef15574903c169792be35414a5a802e03dac693"
-  }
+  },
+  "resumed_source_snapshots": {
+    "protocol": {
+      "commit": "883f911",
+      "sha256": {
+        "scripts/performance/qq_delivery/__init__.py": "37bc1ea6469ae380f89eec151b93d9e72c9a33260f2114ac085b012f2e0329a1",
+        "scripts/performance/qq_delivery/config.py": "a59bb16d0ee609c8b3ba8b3541ba00eaa06e0636e070734fab9763aa2dbbfdf8",
+        "scripts/performance/qq_delivery/events.py": "2a328d169fcadc70d1cb58bbbc18ee3d22215834383ea17a3e5bd4ca0e501180",
+        "scripts/performance/qq_delivery/experiment.py": "3a4a3546566093284bba7194895c2e64bb2049698b462ebf18ce1549c43ad068",
+        "scripts/performance/qq_delivery/images.py": "da2ede2c36a4fad9bf7fad6aad87e46959a147e9f5e9bf012ba763b460962dcb",
+        "scripts/performance/qq_delivery/report.py": "a95c4eda64a3930b96d95c2c0ebd3acc14ee8ec4f2dd918ee6842929712a489a",
+        "scripts/performance/qq_delivery/state.py": "787ae3884ebda87cd400d6eca1928184b96d809989eba2662ff106fedefc3861",
+        "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
+        "scripts/performance/qq_delivery_probe.py": "25738e0bc15483e700b202285ef15574903c169792be35414a5a802e03dac693"
+      }
+    },
+    "performance": {
+      "sha256": {
+        "scripts/performance/qq_delivery/__init__.py": "37bc1ea6469ae380f89eec151b93d9e72c9a33260f2114ac085b012f2e0329a1",
+        "scripts/performance/qq_delivery/config.py": "a59bb16d0ee609c8b3ba8b3541ba00eaa06e0636e070734fab9763aa2dbbfdf8",
+        "scripts/performance/qq_delivery/events.py": "2a328d169fcadc70d1cb58bbbc18ee3d22215834383ea17a3e5bd4ca0e501180",
+        "scripts/performance/qq_delivery/experiment.py": "14e88f32b9c980666de04a93688a7691288cd69ea2b25dbcf895dbcc7e55216c",
+        "scripts/performance/qq_delivery/images.py": "da2ede2c36a4fad9bf7fad6aad87e46959a147e9f5e9bf012ba763b460962dcb",
+        "scripts/performance/qq_delivery/report.py": "e0339fb444d6ff141a344acc2078e3ac1f1ac85f78d0e40ae3486efc0b647dda",
+        "scripts/performance/qq_delivery/state.py": "e651f83ffc96b01ea76262b5de83febdb6f9cd697f151364ef46588fa4020025",
+        "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
+        "scripts/performance/qq_delivery_probe.py": "25738e0bc15483e700b202285ef15574903c169792be35414a5a802e03dac693"
+      },
+      "round_id": "performance-1"
+    },
+    "performance-2": {
+      "round_id": "performance-2",
+      "sha256": {
+        "scripts/performance/qq_delivery/__init__.py": "37bc1ea6469ae380f89eec151b93d9e72c9a33260f2114ac085b012f2e0329a1",
+        "scripts/performance/qq_delivery/config.py": "a59bb16d0ee609c8b3ba8b3541ba00eaa06e0636e070734fab9763aa2dbbfdf8",
+        "scripts/performance/qq_delivery/events.py": "2a328d169fcadc70d1cb58bbbc18ee3d22215834383ea17a3e5bd4ca0e501180",
+        "scripts/performance/qq_delivery/experiment.py": "14e88f32b9c980666de04a93688a7691288cd69ea2b25dbcf895dbcc7e55216c",
+        "scripts/performance/qq_delivery/images.py": "da2ede2c36a4fad9bf7fad6aad87e46959a147e9f5e9bf012ba763b460962dcb",
+        "scripts/performance/qq_delivery/report.py": "24428ee38ba2832eb3ad3c96dc20d87b49bf1ce0b9ac1eee042611480d498b53",
+        "scripts/performance/qq_delivery/state.py": "e651f83ffc96b01ea76262b5de83febdb6f9cd697f151364ef46588fa4020025",
+        "scripts/performance/qq_delivery/transport.py": "c46dec9c1b04ca5bd7d0fccc5a0fa313abc9d4977ede43fded4d3b691bff1824",
+        "scripts/performance/qq_delivery_probe.py": "57524e55ad8ca5831f90605280861d283f6e1fd9cff397a411b2c4ea32138b60"
+      }
+    }
+  },
+  "source_snapshot_scope": "original archive hashes retained; resumed protocol and performance snapshots separately recorded"
 }
 ```
 
@@ -48,24 +93,31 @@
 
 |模式|阶段/传输/连接/URL|尝试|API成功率|API调用合计 P50 ms|API调用合计 P95 ms|Android完整收图 P50 ms|
 |---|---|---:|---:|---:|---:|---:|
+|A-data|performance/traced_httpx/new_connection/None|2|100.0%|2864.559|2974.24|None|
+|A-data|performance/traced_httpx/new_connection/None|1|100.0%|3169.547|3169.547|None|
 |A-data|protocol/adapter/unobservable/None|1|100.0%|2851.45|2851.45|None|
-|A-data|protocol/traced_httpx/new_connection/None|1|100.0%|3227.457|3227.457|None|
+|B-data|performance/traced_httpx/new_connection/None|2|100.0%|2500.552|2540.688|None|
 |B-data|protocol/adapter/unobservable/None|1|100.0%|3216.981|3216.981|None|
-|B-url|protocol/traced_httpx/new_connection/first_url|1|100.0%|2847.591|2847.591|None|
-|C|protocol/traced_httpx/new_connection/repeated_url|1|100.0%|3582.4|3582.4|None|
-|C|protocol/traced_httpx/unobservable/first_url|1|未调用|None|None|None|
+|B-url|performance/traced_httpx/new_connection/first_url|1|100.0%|2781.284|2781.284|None|
+|B-url|performance/traced_httpx/new_connection/repeated_url|1|100.0%|2451.075|2451.075|None|
+|B-url|protocol/traced_httpx/new_connection/repeated_url|1|100.0%|2584.589|2584.589|None|
+|C|performance/traced_httpx/new_connection/repeated_url|4|100.0%|1938.303|2338.442|None|
+|C|protocol/traced_httpx/new_connection/first_url|1|100.0%|3679.759|3679.759|None|
+|D|performance/traced_httpx/new_connection/None|1|100.0%|2145.231|2145.231|None|
 |D|protocol/adapter/unobservable/None|1|100.0%|2339.197|2339.197|None|
 
+对照统计纳入 17 条记录；另有 4 条保留为审计证据，不纳入对照统计。
+samples 保留全部 API 事实；comparison_eligible、cohort 和 trigger_source 标明统计范围与操作来源。管理员报告的额度下限单独保存，不当作实际扣减量。
 API调用合计为每条样本内QQ API调用完整耗时之和，排除静态URL验证和调用间隙；包含准备与持久化的整步耗时另见 operation_total。
 每模式成功率、最小/最大值、完整 API 子阶段、Windows 观察、重复发送、未知结果及主动额度见同目录 JSON。
 未观察客户端或控制台额度的字段为 null，不以0代替。少于20个样本的 P95 只作描述。
 
 ## 阻塞条件
 
-- protocol_only_not_10_to_20_sample_benchmark
 - client_full_load_timing_unmeasured
 - active_quota_balance_change_unmeasured
 - same_URL_first_and_cached_client_comparison_unmeasured
+- small_unmatched_protocol_samples_are_not_performance_evidence
 
 ## 生产决策
 
@@ -74,32 +126,36 @@ API调用合计为每条样本内QQ API调用完整耗时之和，排除静态UR
 B 仅发送图片；C 测试资源为短时公开合成图片，这不构成发布私人 BXX 的许可。D 仅复用本 Bot、本测试群、同一合成图的有效媒体凭据。
 工具不会自动推荐发布或切换策略；正式试点需达到至少约20%的可重复 P50 优势，P95不恶化并完成全部兼容性验收。
 
-## 本次真实预检（2026-11-13）
+## 恢复实验与审计范围
 
-主分支起点 `2efeff1`；生产 Bot 0.22.1 / Application 0.9.1。SDK 为 QQ Adapter 1.7.3、NoneBot 2.5.0、HTTPX 0.28.1 / HTTPcore 1.0.9。
-测试图1080×2436 JPEG，517045字节（约505 KiB），同一合成图复用。下表为单条观测，单位秒；不同传输路径分别保留。
+按管理员纠正，仅保留第一轮 A、D，并从 C 重新开始；早先 B-data 的独立客户端确认另保留为能力预检。后续旧调用保留 API 事实，但不纳入对照统计。
 
-|模式 / 传输|真实发图步骤|上传API|消息API|QQ API调用合计|含校验/记账整步|
-|---|---:|---:|---:|---:|---:|
-|B-data / adapter|1|3.217|0.000|3.217|3.232|
-|A-data / adapter|1|0.939|1.913|2.851|2.869|
-|D / adapter|1|0.000|2.339|2.339|2.349|
-|A-data / traced_httpx|1|1.037|2.191|3.227|3.249|
-|C / traced_httpx|1|0.000|3.582|3.582|4.229|
-|B-url / traced_httpx|1|2.848|0.000|2.848|2.988|
+旧 B-url 是测试工具实际执行的主动接口调用，并非模拟，也没有用户触发消息；没有传入伪造的被动 msg_id。其记录已明确排除。操作来源见 audit-provenance.json。
 
-所有6条发图步骤均有HTTP成功及消息ID存在性回执；共8次发图业务API调用，不含Token获取。A有两条不同传输路径，不能合并当成同条件中位数。
-B-data和B-url都实际接受了主动上传；平台返回TTL为86400秒。D复用了成功A的凭据，发送前实验租期剩余1744秒，没有重复上传。
-主动API共2次，控制台实际额度变化未知。已明确观察B-data在Android完整收到且无重复；其余客户端结果仍待录入，所有客户端完整收图时间均未测。
+恢复后的 C 已确认图片、正文完整且无重复；B-url 和第一轮 A、D 也均确认完整且无重复。所有确认均未计时。
 
-消息发送样本 `925bc641890a` 的HTTP完整调用2182.421毫秒，其中等待并读取响应头2154.738毫秒（约98.7%）；TCP（含DNS）9.398毫秒、TLS8.841毫秒。
-这支持主要等待发生在响应头返回前，不能进一步证明是腾讯审核、限流或某个服务端步骤，也不是精确首字节测量。
+|样本|模式|轮次|纳入统计|API回执|客户端确认|
+|---|---|---|---|---|---|
+|825e621f81d2|B-data|initial_preflight|True|acknowledged|完整、无重复|
+|336c737bfd06|A-data|initial_preflight|True|acknowledged|完整、无重复|
+|edd2ecb1e48f|D|initial_preflight|True|acknowledged|完整、无重复|
+|925bc641890a|A-data|excluded_after_initial_round|False|acknowledged|待观察|
+|5b2f465a8dba|C|excluded_after_initial_round|False|blocked_before_send|待观察|
+|2331c7738917|C|excluded_after_initial_round|False|acknowledged|待观察|
+|050f7ae2e022|B-url|excluded_after_initial_round|False|acknowledged|待观察|
+|ef89ae7fedaa|C|resumed_preflight|True|acknowledged|完整、无重复|
+|50326757fbde|B-url|resumed_preflight|True|acknowledged|完整、无重复|
+|e2d187ee1520|A-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|9ddf57a7c737|B-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|ecb70b97e182|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|e654254fa681|B-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|af29317a977c|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|91038a058bc8|A-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|b4ce981282e6|B-url|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|e6153c569b90|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|9450ac7b1fe5|A-data|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|bff7d618f110|D|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|e0bcfbb9a2ee|B-url|interleaved_performance|True|acknowledged|完整；重复数未确认|
+|ddbf3e6b3481|C|interleaved_performance|True|acknowledged|完整；重复数未确认|
 
-C额外有一次静态校验失败，尚未调用QQ；诊断发现QA umask077产生目录0700/JPEG0600，HTTPS返回404。修复仅作用于隔离合成图目录，之后外网验证成功。该失败保留在qq-delivery-errors.json，不计为一次QQ发送失败。
-成功C的本地缓存准备8.705毫秒、外网完整校验623.276毫秒、Markdown API3582.400毫秒。客户端实际完整加载尚未计时，不能据API回执比较手机收图。
-
-本次没有完成10～20次交错性能测试、同一URL首次/客户端缓存对照、同步录屏和Windows交叉验证。P95均为小样本描述；首次鉴权、正常鉴权缓存和每请求新HTTP连接分别记录。
-公网合成JPEG已由独立清理任务删除，收尾检查剩余0个；最后测试URL在清理后HTTP状态为404。清理timer已停止并禁用，实验状态已暂停。既有CDN/客户端缓存可能保留约30分钟，不声称已做全网缓存清除。
-生产Bot仍为同一PID2458833、active、自动重启0；没有发布Bot或切换发送策略。运行环境和收尾证据见audit-context.json。
-
-明确结论：B主动接口当前可用，但样本量、客户端时间和额度证据不足，且不能携带原有正文/引用/按钮，暂不替代A；B-url与Markdown的实际收图快慢未定；当前不能选出完整收图最优方案。D仅对同一图片命中有效凭据有意义。暂不单独发布发送策略新版本。
+管理员报告剩余额度 900+，仅作为保守下限；实际主动额度扣减仍未知。生产 Bot 与发送策略未改变。

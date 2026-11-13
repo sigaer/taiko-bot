@@ -81,7 +81,7 @@ def observe(state, sample, data):
     has_times=any(data.get(k) is not None for k in ("image_start_ms","message_ms","complete_ms"))
     if has_times and data["clock_synced"] is not True:
         raise Blocked("client_clock_synchronization_required")
-    if type(data.get("duplicates")) is not int or not 0 <= data["duplicates"] <= 10:
+    if data.get("duplicates") is not None and (type(data["duplicates"]) is not int or not 0 <= data["duplicates"] <= 10):
         raise Blocked("observation_duplicate_count")
     for key in ("image_start_ms", "message_ms", "complete_ms", "clock_uncertainty_ms"):
         value = data.get(key)
@@ -117,7 +117,7 @@ def observe(state, sample, data):
     row["observations"].append(data)
     if row["status"] in ("pending","unknown"):
         row["resolved"]=True  # Does not convert missing API ack into a success.
-    if data["duplicates"] or not data["received"] or not data["render_ok"]:
+    if data.get("duplicates") or not data["received"] or not data["render_ok"]:
         state.data["blocked_modes"].append(row["mode"])
         if row["mode"].startswith("B"):
             state.data["blocked_modes"].extend(["B-data","B-url"])

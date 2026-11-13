@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "recorded_at": "2026-11-13T01:30:50.967695+00:00",
+  "recorded_at": "2026-11-13T02:41:59.514453+00:00",
   "measurement_date": "2026-11-13",
   "timezone": "Asia/Shanghai",
-  "status": "protocol_API_preflight_complete_client_and_performance_validation_pending",
+  "status": "resumed_client_preflight_confirmed_interleaved_performance_in_progress",
   "baseline": {
     "main_at_start": "2efeff1",
     "bot": "0.22.1",
@@ -11,8 +11,8 @@
     "production_pid_at_start": 2458833
   },
   "validation": {
-    "unit_checks": 35,
-    "unit_qa": "qa-4c87df360238",
+    "unit_checks": 40,
+    "unit_qa": "qa-cfaffd381c87",
     "archive_statistics_and_privacy_qa": "qa-c9e200a54174",
     "SDK_and_API_builders": "installed_0.22.1_environment",
     "private_config_permissions": "0600",
@@ -20,14 +20,25 @@
     "production_player_images_used": false
   },
   "observations": {
-    "successful_delivery_steps": 6,
-    "qq_delivery_http_requests_excluding_auth": 8,
-    "proactive_API_requests": 2,
+    "qq_delivery_http_requests_excluding_auth": 25,
+    "proactive_API_requests": 7,
     "proactive_quota_consumed": null,
     "blocked_static_prechecks_before_QQ": 1,
     "platform_error_codes": [],
     "client_full_load_measurements": 0,
-    "first_vs_cached_URL_client_comparison": "not_measured"
+    "first_vs_cached_URL_client_comparison": "not_measured",
+    "all_audit_records": 21,
+    "api_acknowledged_operations": 20,
+    "comparison_eligible_records": 17,
+    "comparison_excluded_records": 4,
+    "client_qualitatively_confirmed_records": 17,
+    "performance_samples_by_mode": {
+      "A-data": 3,
+      "B-data": 2,
+      "B-url": 2,
+      "C": 4,
+      "D": 1
+    }
   },
   "http_findings": {
     "sample": "925bc641890a",
@@ -38,35 +49,68 @@
     "tcp_including_dns_ms": 9.398,
     "tls_ms": 8.841,
     "exact_TTFB": "unmeasurable",
-    "cause_inside_platform": "undetermined"
+    "cause_inside_platform": "undetermined",
+    "comparison_eligible": false,
+    "scope": "excluded API audit only; not a controlled performance sample"
   },
   "environment_caveats": {
     "authentication": "CLI uses isolated worker existing Bot config; not the production process auth object",
     "caller_and_production_proxy_environment_equal": true,
     "HTTP_connections": "per_request_client_not_a_reused_pool",
-    "sample_sizes": "1 per mode/transport except A has separate adapter and traced samples; no pooled A estimate"
+    "sample_sizes": "protocol and performance, transport, token warmth and URL reuse are grouped separately; see current summaries"
   },
   "cleanup": {
-    "public_probe_jpegs_remaining": 0,
-    "last_test_URL_http_status_after_cleanup": 404,
-    "origin_assets_removed": true,
-    "janitor_timer_enabled_during_publication": true,
-    "janitor_timer_active_after_experiment": false,
-    "CDN_client_cache_caveat": "existing public cache headers may retain synthetic images up to about 30 minutes; no cache purge attempted"
+    "previous_session_cleanup": {
+      "public_probe_jpegs_remaining": 0,
+      "last_test_URL_http_status_after_cleanup": 404,
+      "origin_assets_removed": true,
+      "janitor_timer_enabled_during_publication": true,
+      "janitor_timer_active_after_experiment": false,
+      "CDN_client_cache_caveat": "existing public cache headers may retain synthetic images up to about 30 minutes; no cache purge attempted"
+    },
+    "experiment_finished": false,
+    "janitor_timer_active_at_snapshot": true,
+    "public_probe_jpegs_remaining_at_snapshot": 0
   },
   "production_after": {
     "MainPID": "2458833",
     "NRestarts": "0",
-    "ActiveState": "active",
-    "ExecMainStartTimestamp": "Thu 2026-11-12 21:09:17 CST"
+    "ExecMainStartTimestamp": "Thu 2026-11-12 21:09:17 CST",
+    "ActiveState": "active"
   },
   "runtime_strategy_changed": false,
   "bot_deployed": false,
   "limitations": [
-    "Only B-data Android delivery had been confirmed when this snapshot was written; other client observations remain pending.",
-    "No synchronized client video timings, no measured complete-image latency and no Windows cross-check.",
-    "Quota change is unknown; proactive request count is not a measured quota delta.",
-    "Static precheck failed under QA umask 077 (directory0700/JPEG0600); diagnostic HTTP404; fixed only synthetic directory0755/JPEG0644.",
-    "Protocol order was B-data,A-data,D,A-data,C-precheck,C,B-url, not the stage-two alternating performance schedule."
+    "All confirmed deliveries are qualitative; no synchronized client video timing or Windows cross-check.",
+    "Administrator reports 900+ remaining; this is a conservative lower bound, not an exact count or a measured decrement.",
+    "Earlier uncontrolled real API calls remain archived but are excluded from comparison summaries.",
+    "Static verification itself can warm CDN cache; URL reuse does not prove client cache state.",
+    "Performance data collected so far do not establish repeatable 20% improvement or the fastest actual client delivery."
+  ],
+  "user_scope_correction": {
+    "instruction": "Only initial A/D were completed with the administrator; restart at C.",
+    "excluded_samples": [
+      "925bc641890a",
+      "5b2f465a8dba",
+      "2331c7738917",
+      "050f7ae2e022"
+    ],
+    "evidence_policy": "Retain real API acknowledgements and errors; exclude these operations from comparison statistics; do not infer administrator participation from native event logs.",
+    "active_operator_sample": "050f7ae2e022",
+    "active_operator_trial_was_real": true,
+    "active_operator_trial_used_passive_msg_id": false
+  },
+  "active_quota_attestation": {
+    "remaining_lower_bound": 900,
+    "b_rows_count": 3,
+    "reported_at": 1794536829.7062469,
+    "source": "administrator_report_900_plus"
+  },
+  "domain_access_confirmation": "same Bot/domain accepted the resumed Markdown API; administrator confirmed complete image and text; no control-panel whitelist listing claimed",
+  "resumed_qa_runs": [
+    "qa-f96e42c37152",
+    "qa-6f76a60a71d1",
+    "qa-9469bf61cac1",
+    "qa-e78fe283db6d"
   ]
 }

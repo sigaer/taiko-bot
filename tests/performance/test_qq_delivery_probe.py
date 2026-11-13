@@ -313,6 +313,77 @@ class ProbeTests(unittest.TestCase):
         self.assertEqual(result["summaries"][0]["client_received_samples"],1)
         self.assertIsNone(result["summaries"][0]["client_complete_by_device"]["android"]["p50_ms"])
 
+    def test_excluded_calls_remain_auditable_without_changing_comparison_or_preflight(self):
+        self.run_mode()
+        with State(self.c).locked() as s:
+            observe(s,s.data['rows'][0]['sample'],dict(device='android',received=True,render_ok=True,
+                clock_synced=False,duplicates=0))
+        self.reset_interval()
+        self.run_mode(n=1)
+        with State(self.c).locked() as s:
+            s.data['rows'][-1]['comparison_eligible']=False
+            s.save()
+            self.assertTrue(s.passed('B-data'))
+            result=export(self.root/'report',s)
+        self.assertEqual(len(result['samples']),2)
+        self.assertEqual(result['summaries'][0]['attempts'],1)
+        self.assertEqual(result['comparison_scope']['excluded_samples'],1)
+
+    def test_unconfirmed_duplicate_count_remains_unknown_and_does_not_pass_preflight(self):
+        self.run_mode()
+        with State(self.c).locked() as s:
+            observe(s,s.data['rows'][0]['sample'],dict(device='android',received=True,render_ok=True,
+                clock_synced=False,duplicates=None))
+            self.assertFalse(s.passed('B-data'))
+            result=export(self.root/'report',s)
+        self.assertEqual(result['summaries'][0]['client_received_samples'],1)
+        self.assertIsNone(result['summaries'][0]['observed_duplicates'])
+        self.assertEqual(result['summaries'][0]['client_complete_by_device']['android']['n'],0)
+
+    def test_quota_lower_bound_is_consumed_conservatively_without_fabricated_delta(self):
+        self.run_mode()
+        with State(self.c).locked() as s:
+            observe(s,s.data['rows'][0]['sample'],dict(device='android',received=True,render_ok=True,
+                clock_synced=False,duplicates=0))
+            s.data['active_quota_attestation']=dict(remaining_lower_bound=2,b_rows_count=1,
+                reported_at=time.time(),source='administrator_report')
+            s.save()
+        c=replace(self.c,phase='performance',active_performance_authorized=True)
+        for n in (1,2):
+            self.reset_interval()
+            self.assertEqual(self.run_mode(n=n,config=c)['status'],'acknowledged')
+        self.reset_interval()
+        with self.assertRaisesRegex(Blocked,'active_performance_permission_and_quota_required'):
+            self.run_mode(n=3,config=c)
+        with State(self.c).locked() as s:
+            self.assertEqual(s.remaining_active_budget(),0)
+            result=export(self.root/'report',s)
+        self.assertTrue(all(g['active_quota_consumed'] is None for g in result['summaries']))
+        self.assertEqual(result['active_quota_attestation']['remaining_lower_bound'],2)
+        self.assertEqual(len(self.adapter.requests),3)
+
+    def test_stale_or_invalid_quota_attestations_do_not_enable_sends(self):
+        self.run_mode()
+        with State(self.c).locked() as s:
+            for values in [dict(remaining_lower_bound=900,b_rows_count=1,reported_at=time.time()-3601),
+                           dict(remaining_lower_bound=900,b_rows_count=2,reported_at=time.time()),
+                           dict(remaining_lower_bound=True,b_rows_count=1,reported_at=time.time())]:
+                s.data['active_quota_attestation']=values
+                self.assertEqual(s.remaining_active_budget(),0)
+
+    def test_excluded_errors_are_preserved_without_claiming_no_API_was_called(self):
+        self.adapter.responses=[(403,dict(code=112233,message='SECRET'))]
+        self.run_mode()
+        with State(self.c).locked() as s:
+            s.data['rows'][0]['comparison_eligible']=False
+            result=export(self.root/'report',s)
+            self.assertFalse(s.passed('B-data'))
+        self.assertEqual(result['status'],'partial_observation')
+        self.assertEqual(result['summaries'],[])
+        errors=json.loads((self.root/'report/qq-delivery-errors.json').read_text())
+        self.assertEqual(len(errors['errors']),1)
+        self.assertEqual(errors['errors'][0]['error']['code'],112233)
+
     def test_instrumented_installed_httpx_session_preserves_builders_without_network(self):
         import httpx
         from nonebot.drivers.httpx import Session

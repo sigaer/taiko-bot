@@ -1,0 +1,214 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "sample": "825e621f81d2",
+      "mode": "B-data",
+      "source": "native_QQ_group_event",
+      "command": "开始测试",
+      "event_time": "2026-11-13T08:59:14.651790+08:00",
+      "age_at_operation_seconds": 456.559,
+      "comparison_eligible": true,
+      "cohort": "initial_preflight"
+    },
+    {
+      "sample": "336c737bfd06",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T09:07:46.229144+08:00",
+      "age_at_operation_seconds": 25.488,
+      "comparison_eligible": true,
+      "cohort": "initial_preflight"
+    },
+    {
+      "sample": "edd2ecb1e48f",
+      "mode": "D",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe D",
+      "event_time": "2026-11-13T09:09:05.851824+08:00",
+      "age_at_operation_seconds": 1.261,
+      "comparison_eligible": true,
+      "cohort": "initial_preflight"
+    },
+    {
+      "sample": "925bc641890a",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T09:14:11.836918+08:00",
+      "age_at_operation_seconds": 0.61,
+      "comparison_eligible": false,
+      "cohort": "excluded_after_initial_round"
+    },
+    {
+      "sample": "5b2f465a8dba",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T09:14:38.571420+08:00",
+      "age_at_operation_seconds": 2.646,
+      "comparison_eligible": false,
+      "cohort": "excluded_after_initial_round"
+    },
+    {
+      "sample": "2331c7738917",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T09:15:58.835012+08:00",
+      "age_at_operation_seconds": 101.325,
+      "comparison_eligible": false,
+      "cohort": "excluded_after_initial_round"
+    },
+    {
+      "sample": "050f7ae2e022",
+      "mode": "B-url",
+      "source": "operator_active_trial_without_user_message",
+      "passive_msg_id_sent": false,
+      "comparison_eligible": false,
+      "cohort": "excluded_after_initial_round"
+    },
+    {
+      "sample": "ef89ae7fedaa",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T02:22:10.431970+00:00",
+      "age_at_operation_seconds": 96.973,
+      "comparison_eligible": true,
+      "cohort": "resumed_preflight"
+    },
+    {
+      "sample": "50326757fbde",
+      "mode": "B-url",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-url",
+      "event_time": "2026-11-13T02:24:53.907777+00:00",
+      "age_at_operation_seconds": 0.974,
+      "comparison_eligible": true,
+      "cohort": "resumed_preflight"
+    },
+    {
+      "sample": "e2d187ee1520",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T02:28:34.164258+00:00",
+      "age_at_operation_seconds": 0.981,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "9ddf57a7c737",
+      "mode": "B-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-data",
+      "event_time": "2026-11-13T02:29:27.990239+00:00",
+      "age_at_operation_seconds": 0.812,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "ecb70b97e182",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T02:30:25.517296+00:00",
+      "age_at_operation_seconds": 0.376,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "e654254fa681",
+      "mode": "B-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-data",
+      "event_time": "2026-11-13T02:31:34.549839+00:00",
+      "age_at_operation_seconds": 0.519,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "af29317a977c",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T02:32:31.724003+00:00",
+      "age_at_operation_seconds": 0.656,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "91038a058bc8",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T02:33:21.922929+00:00",
+      "age_at_operation_seconds": 0.658,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "b4ce981282e6",
+      "mode": "B-url",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-url",
+      "event_time": "2026-11-13T02:35:43.567002+00:00",
+      "age_at_operation_seconds": 0.884,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "e6153c569b90",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T02:36:45.126309+00:00",
+      "age_at_operation_seconds": 0.57,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "9450ac7b1fe5",
+      "mode": "A-data",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe A-data",
+      "event_time": "2026-11-13T02:37:47.446104+00:00",
+      "age_at_operation_seconds": 1.058,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "bff7d618f110",
+      "mode": "D",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe D",
+      "event_time": "2026-11-13T02:38:53.497247+00:00",
+      "age_at_operation_seconds": 0.404,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "e0bcfbb9a2ee",
+      "mode": "B-url",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe B-url",
+      "event_time": "2026-11-13T02:39:57.175607+00:00",
+      "age_at_operation_seconds": 1.098,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    },
+    {
+      "sample": "ddbf3e6b3481",
+      "mode": "C",
+      "source": "native_QQ_group_event",
+      "command": "/qqprobe C",
+      "event_time": "2026-11-13T02:40:50.806367+00:00",
+      "age_at_operation_seconds": 0.36,
+      "comparison_eligible": true,
+      "cohort": "interleaved_performance"
+    }
+  ],
+  "scope": "Native event evidence and operator actions are not proof of client delivery or administrator participation."
+}
