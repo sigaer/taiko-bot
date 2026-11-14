@@ -1,4 +1,5 @@
 from __future__ import annotations
+import asyncio
 from typing import Any, Dict, List, Optional, Tuple
 import re
 from nonebot.adapters import Event
@@ -15,7 +16,7 @@ _resolve_what_song_query = resolve
 queryMusic = lambda query: query_with_mode(query)[0]
 _finish_text_reply = entry.helpers._finish_text_reply
 from .score_data import DIFFICULTY_LEVEL_LABELS
-from .score_rating_target import get_song_rating_info, compute_song_rating_target, format_song_rating_target_message
+from .score_rating_target import build_song_rating_target_message
 from sakura_taiko_core.score.scoreline import _DIFF_PREFIXES
 from ..scoreline_query import resolve_scoreline_query, song_choice_message
 
@@ -167,18 +168,11 @@ async def handle_line(matcher: Matcher, event: Event):
     song_id = int(results[0][0])
     song_title = str(results[0][1] or "")
     if request.mode == "rating":
-        song_info = get_song_rating_info(
-            song_id, request.level, fallback_title=song_title
+        body = await asyncio.to_thread(
+            build_song_rating_target_message, song_id, request.level,
+            song_title, request.level_label, float(request.target_rating),
         )
-        if song_info is None:
-            await matcher.finish("该歌曲暂无该难度的 Rating 数据。")
-        try:
-            result = compute_song_rating_target(song_info, float(request.target_rating))
-        except (KeyError, TypeError, ValueError) as e:
-            await matcher.finish(f"Rating 计算失败：{e}")
-        await matcher.finish(
-            format_song_rating_target_message(song_title, request.level_label, result)
-        )
+        await matcher.finish(f"{fuzzy_hint}\n{body}" if fuzzy_hint else body)
 
     entry = get_scoreline_entry(song_id, request.level, fallback_title=song_title)
     if entry is None:

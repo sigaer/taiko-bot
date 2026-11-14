@@ -1,25 +1,25 @@
 from __future__ import annotations
 
-from sakura_taiko_core.rating import target as domain_target
-
-
-from sakura_taiko_core.rating.target import SongRatingTargetResult
-
-
+import json
+import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from .duplicate_versions import default_song_id_for_query, group_ids_for_query
+from sakura_taiko_core.rating import target as domain_target
+from sakura_taiko_core.rating.target import SongRatingTargetResult
 from sakura_taiko_core.rating.v1 import build_const_table
+from taiko_bot.rating_targets import compute_v2_rating_target, format_rating_targets
+from ...paths import root
+from .duplicate_versions import default_song_id_for_query, group_ids_for_query
+from .taikob_v2_data import load_v2_snapshot, V2DataSourceError
 
-def load_rating_config(path):
-    from .recommendation_support.score_calculator import load_rating_config as load
-    return load(path)
-
-
-from ...public.config import root
+logger = logging.getLogger(__name__)
 
 RATING_PATH = root() / "songs/rating_structured_with_ids.json"
+
+
+def load_rating_config(path):
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
 def get_song_rating_info(
@@ -28,8 +28,9 @@ def get_song_rating_info(
     *,
     fallback_title: str = "",
     rating_path: str | Path = RATING_PATH,
+    config: Optional[Dict[str, Any]] = None,
 ) -> Optional[Dict[str, Any]]:
-    cfg = load_rating_config(rating_path)
+    cfg = load_rating_config(rating_path) if config is None else config
     candidates: Dict[int, Dict[str, Any]] = {}
     for info in cfg.get("songs", {}).values():
         try:
@@ -46,27 +47,38 @@ def get_song_rating_info(
     return candidates.get(song_id)
 
 
-def compute_song_rating_target(song_info, target_rating, *, rating_path=RATING_PATH):
-    cfg = load_rating_config(rating_path)
+def compute_song_rating_target(song_info, target_rating, *, rating_path=RATING_PATH, config=None):
+    cfg = load_rating_config(rating_path) if config is None else config
     table = build_const_table(cfg["const_table"]["const_to_score"])
     return domain_target.compute_song_rating_target(song_info, target_rating, const_table=table)
 
 
-def format_song_rating_target_message(
-    title: str,
-    level_label: str,
-    result: SongRatingTargetResult,
+def build_song_rating_target_message(
+    song_id: int, level: int, title: str, level_label: str, target_rating: float,
 ) -> str:
-    header = (
-        f"歌曲：{title}（{level_label}）\n"
-        f"目标单曲 Rating：{result.target_rating:g}"
-    )
-    if not result.reachable:
-        return f"{header}\n即使全良也无法达到，最高约为 {result.max_rating:.2f}。"
-    return (
-        f"{header}\n"
-        f"最低良数：{result.good_count}\n"
-        f"最多可数：{result.ok_count}\n"
-        f"良率：{result.accuracy * 100:.2f}%\n"
-        f"预计单曲 Rating：{result.achieved_rating:.2f}"
-    )
+    results: Dict[str, SongRatingTargetResult | str] = {}
+    try:
+        config = load_rating_config(RATING_PATH)
+        song_info = get_song_rating_info(song_id, level, fallback_title=title, config=config)
+        results["v1"] = (
+            compute_song_rating_target(song_info, target_rating, config=config) if song_info is not None
+            else "该歌曲暂无该难度的 Rating 数据。"
+        )
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        logger.warning("Rating v1 target unavailable: %s", type(exc).__name__)
+        results["v1"] = "Rating 数据暂时不可用，请稍后再试。"
+    try:
+        song_map = load_v2_snapshot().song_map
+        group_ids = set(group_ids_for_query(song_id=song_id, title=title)) | {song_id}
+        default_id = default_song_id_for_query(song_id, title=title)
+        chart = next((song_map[(candidate_id, level)]
+            for candidate_id in sorted(group_ids, key=lambda value: (value != default_id, value))
+            if (candidate_id, level) in song_map), None)
+        results["v2"] = (
+            compute_v2_rating_target(chart, target_rating) if chart is not None
+            else "该歌曲暂无该难度的 Rating 数据。"
+        )
+    except (V2DataSourceError, OSError, KeyError, TypeError, ValueError) as exc:
+        logger.warning("Rating v2 target unavailable: %s", type(exc).__name__)
+        results["v2"] = "Rating 数据暂时不可用，请稍后再试。"
+    return format_rating_targets(title, level_label, target_rating, results)
