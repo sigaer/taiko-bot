@@ -36,6 +36,23 @@ python tests/scoring/events.py --host center --baseline /isolated/baseline-cente
 
 原始参数对照、数据集写入、授权、加载和代表性回归日志保留在 evidence/。
 
+## 0.25.2 查分修复
+
+中心查分现在复用分数线的同曲版本解析和修订缓存，不再保留独立的进程生命周期分值缓存。
+例如别名“合成器”解析到 ID 191，而分值在同曲 ID 1266 时，仍可读取相应难度的分值。
+数据集或来源更新会在下一次查询生效；来源缺失时与分数线一致报错。
+上文冻结验收记录描述迁移时行为，数据集对照脚本已显式记录这一预期差异。
+
+`test_score_points.py` 覆盖同曲 ID、难度隔离、默认版本优先级、缺失记录、分值更新及来源重建。
+通过 `scripts/performance/command_checks.py --load-player` 运行时还验证已注册查分正则和处理器的结果；
+所有执行继续使用既有 `memory/run_qa.sh`。
+
+2026-11-16：安装版 0.25.2 的上述回归与 `tests/test_rating_targets.py` 共 39 项通过，
+`pip check` 通过；公开曲库副本回放 `查分 合成器 377 221 117` 得到 805220。
+旧版复现日志为 QA `qa-e86c0bcb7937`，安装版验证为 `qa-4e61ee4d3cb7`。
+构建首次因 runtime-lock 仍指定 0.25.1 而未安装，更新锁文件后在候选环境完成安装；
+随后通过 `TAIKO_DEPLOY_BOT_ONLY=1 scripts/deploy_taiko.sh 0.25.2 0` 发布 Bot。
+
 ## 本次结果
 
 - 中心 300、客户端 260 条冻结事件对照；成功别名、可达/不可达 Rating、分值与估分数值通过。

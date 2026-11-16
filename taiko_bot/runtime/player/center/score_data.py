@@ -1,7 +1,6 @@
 from __future__ import annotations
-from functools import lru_cache
 from typing import Any, Dict, List, Optional
-from .recommendation_support.score_line import (UNIFIED_PATH, load_scoreline_data, _build_chart_index, _ensure_scoreline_dataset_current)
+from .recommendation_support.score_line import (UNIFIED_PATH, _build_chart_index, _ensure_scoreline_dataset_current)
 from .duplicate_versions import default_song_id_for_query, group_ids_for_query
 from sakura_taiko_core.chart import scoreline_dataset as domain_scoreline_dataset
 from sakura_taiko_core.score.scoreline import DIFFICULTY_LEVEL_LABELS, ScoreLineRequest, parse_scoreline_request, compute_scoreline_result
@@ -70,39 +69,14 @@ def format_scoreline_message(
         f"最多可数：{int(result['max_ok'])}"
     )
 
-@lru_cache(maxsize=1)
-def _load_score_json() -> List[Dict[str, Any]]:
-    """
-    读取并缓存统一后的极分数据列表。
-    每项至少包含 id / level / initial_points。
-    """
-
-    return load_scoreline_data(JSON_PATH)
-
 def _get_initial_points(song_id: int, level: int) -> int:
-    """
-    在列表型 JSON 中，遍历查找 id==song_id 且 level==level 的项，返回 initial_points（良的基础分值）。
-    若存在多条匹配，取第一条；若不存在匹配则报错。
-    """
-    data_list = _load_score_json()
-
-    for item in data_list:
-        # 允许 id 为字符串/数字，做一次安全解析
-        try:
-            item_id = int(item.get("id"))
-        except Exception:
-            continue
-        item_level = item.get("level")
-
-        if item_id == song_id and item_level == level:
-            if "initial_points" not in item:
-                raise KeyError(
-                    f"id={song_id}, level={level} 的记录缺少 'initial_points'"
-                )
-            ip = item["initial_points"]
-            return ip
-
-    raise KeyError(f"未在 {JSON_PATH} 中找到 id={song_id}, level={level} 的分值记录。")
+    """与分数线共用同曲版本解析和按数据修订更新的分值索引。"""
+    item = get_scoreline_entry(song_id, level)
+    if item is None:
+        raise KeyError(f"未在 {JSON_PATH} 中找到 id={song_id}, level={level} 的分值记录。")
+    if "initial_points" not in item:
+        raise KeyError(f"id={song_id}, level={level} 的记录缺少 'initial_points'")
+    return item["initial_points"]
 
 def compute_score(song_id: int, good: int, ok: int, drumroll: int=0, level: int=4) -> int:
     return compute_score_from_points(_get_initial_points(song_id, level=level), good, ok, drumroll)

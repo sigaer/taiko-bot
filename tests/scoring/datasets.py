@@ -49,8 +49,10 @@ def exercise(label,owner,data,points):
  # A fresh process may enter through 查分 before any index lookup.
  shutil.copyfile(a.work/'songs/song_score.json',owner.SCORE_PATH)
  owner.UNIFIED_PATH.unlink(missing_ok=True)
- loader=ns['_load_score_json'] if label=='old' else data._load_score_json
- loader.cache_clear();owner._load_scoreline_data.cache_clear();owner._build_chart_index.cache_clear()
+ if label=='old' or a.host=='client':
+  loader=ns['_load_score_json'] if label=='old' else data._load_score_json
+  loader.cache_clear()
+ owner._load_scoreline_data.cache_clear();owner._build_chart_index.cache_clear()
  step('points-cold',lambda:points(10000,500,100,20,level=4))
  step('points-hot',lambda:points(10000,500,100,20,level=4))
  owner.SCORE_PATH.unlink()
@@ -58,7 +60,16 @@ def exercise(label,owner,data,points):
  return steps,hashlib.sha256(first).hexdigest()
 old=exercise('old',old_data,old_data,ns['compute_score'])
 new_result=exercise('new',new_owner,new_data,new_data.compute_score)
-assert old==new_result,(old,new_result)
+if a.host=='center':
+ # Since 0.25.2, points use the same revisioned lookup as score lines.
+ # A missing source is now reported instead of serving the process-lifetime points cache.
+ expected=copy.deepcopy(old)
+ for step in expected[0]:
+  if step['step'] in ('missing-source-points','points-hot-missing-source'):
+   step['value']={'error':'FileNotFoundError'}
+ assert expected==new_result,(expected,new_result)
+else:
+ assert old==new_result,(old,new_result)
 assert old[0][0]['writes']==1 and old[0][1]['writes']==0,old
 assert old[0][2]['writes']==(1 if a.host=='center' else 0),old
 assert old[0][3]['writes']==(0 if a.host=='center' else 1),old
