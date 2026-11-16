@@ -1,0 +1,199 @@
+{
+  "release": "0.25.1",
+  "baseline": "0.25.0",
+  "synthetic": true,
+  "RGB_parity_cases": 16,
+  "installed_source_hashes": {
+    "taiko_bot/runtime/player/center/draw_dress.py": "0d5ceee4948b350cc4dec96eef40c06059847f199b31ac891a0c04368b0bfaa9",
+    "taiko_bot/runtime/player/center/hiroba/native_binding.py": "ee4e55d7bc8d2ac05951ef9ecbb87987823bb9cdf6868d55bbe3ffcfc97cd263",
+    "taiko_bot/runtime/player/center/native_wahlap_update.py": "4f01734939480dea00d1c279430b47cff99dc3e9a317ae3f2dbad58e41600c6e",
+    "taiko_bot/runtime/player/center/progress_support/render.py": "73d711995d8bbf317c7eb7c2fe7c693392260a375a0e8a89a0fe67a607781b9c",
+    "taiko_bot/runtime/player/center/source_mutation.py": "0a2315a0f57023be82666a32fbed034227fd9fba481c0277f04f2a7caee7e8ef",
+    "taiko_bot/runtime/player/center/update_comparison.py": "48e99c6d9911df2c887f0d20bd64caaa8e9251959bdd4cccf30128c4a94d9e72",
+    "taiko_bot/runtime/player/client/progress_support/dani_progress.py": "51c16b72642fd6b70347b62b207db0469d927e3223b37eb9b0a43109f295b5de",
+    "taiko_bot/runtime/player/client/progress_support/render.py": "5db1ed4cd18dd6d62040b611d7894ec9427248c16b3055e09ca5cb8bc139ec48",
+    "taiko_bot/runtime/player/progress.py": "12a91ede2a7095fd4f3f30c7b328ff4b255820060351ec0cf3d6acf28e3b662b",
+    "taiko_bot/runtime/player/render_executor.py": "aea2d6d8b83710f422c904c28a0c007c7c0f80442a29a6be102bafd28a9428e7"
+  },
+  "comparisons": [
+    {
+      "profile": "center",
+      "command": "10星进度",
+      "before_ms": 3100.5615,
+      "after_ms": 1766.019,
+      "improvement_percent": 43.04,
+      "png_growth_percent": 1.82
+    },
+    {
+      "profile": "center",
+      "command": "10星进度 2",
+      "before_ms": 3016.2295000000004,
+      "after_ms": 1730.0285,
+      "improvement_percent": 42.64,
+      "png_growth_percent": 2.14
+    },
+    {
+      "profile": "center",
+      "command": "10.0过关进度",
+      "before_ms": 668.221,
+      "after_ms": 299.951,
+      "improvement_percent": 55.11,
+      "png_growth_percent": 2.16
+    },
+    {
+      "profile": "center",
+      "command": "9.0综合进度",
+      "before_ms": 1319.25,
+      "after_ms": 570.8225,
+      "improvement_percent": 56.73,
+      "png_growth_percent": 2.13
+    },
+    {
+      "profile": "center",
+      "command": "SS进度",
+      "before_ms": 830.7225,
+      "after_ms": 351.1245,
+      "improvement_percent": 57.73,
+      "png_growth_percent": 2.03
+    },
+    {
+      "profile": "center",
+      "command": "虹2025六段进度",
+      "before_ms": 1363.283,
+      "after_ms": 1333.1685,
+      "improvement_percent": 2.21,
+      "png_growth_percent": 0.0
+    },
+    {
+      "profile": "center",
+      "command": "更新广场 / 2 history",
+      "before_ms": 406.211,
+      "after_ms": 450.59000000000003,
+      "improvement_percent": -10.93,
+      "png_growth_percent": 0.0
+    },
+    {
+      "profile": "center",
+      "command": "更新广场 全部 / 2 history",
+      "before_ms": 413.556,
+      "after_ms": 388.851,
+      "improvement_percent": 5.97,
+      "png_growth_percent": 0.0
+    },
+    {
+      "profile": "center",
+      "command": "更新广场 / 100 history",
+      "before_ms": 947.8275000000001,
+      "after_ms": 383.6835,
+      "improvement_percent": 59.52,
+      "png_growth_percent": 0.0
+    },
+    {
+      "profile": "center",
+      "command": "更新广场 全部 / 100 history",
+      "before_ms": 883.1145,
+      "after_ms": 388.95550000000003,
+      "improvement_percent": 55.96,
+      "png_growth_percent": 0.0
+    },
+    {
+      "profile": "client",
+      "command": "10星进度",
+      "before_ms": 2367.8864999999996,
+      "after_ms": 1063.201,
+      "improvement_percent": 55.1,
+      "png_growth_percent": 1.82
+    },
+    {
+      "profile": "client",
+      "command": "10星进度 2",
+      "before_ms": 2450.566,
+      "after_ms": 1087.7060000000001,
+      "improvement_percent": 55.61,
+      "png_growth_percent": 2.14
+    },
+    {
+      "profile": "client",
+      "command": "10.0过关进度",
+      "before_ms": 668.7355,
+      "after_ms": 345.0085,
+      "improvement_percent": 48.41,
+      "png_growth_percent": 2.16
+    },
+    {
+      "profile": "client",
+      "command": "9.0综合进度",
+      "before_ms": 1356.212,
+      "after_ms": 580.492,
+      "improvement_percent": 57.2,
+      "png_growth_percent": 2.13
+    },
+    {
+      "profile": "client",
+      "command": "SS进度",
+      "before_ms": 839.383,
+      "after_ms": 364.9,
+      "improvement_percent": 56.53,
+      "png_growth_percent": 2.03
+    },
+    {
+      "profile": "client",
+      "command": "虹2025六段进度",
+      "before_ms": 1184.3564999999999,
+      "after_ms": 579.7874999999999,
+      "improvement_percent": 51.05,
+      "png_growth_percent": 2.54
+    }
+  ],
+  "checks": {
+    "installed_center": {
+      "passed": 82,
+      "qa": "qa-14e47aad3a2d"
+    },
+    "installed_client": {
+      "passed": 40,
+      "qa": "qa-2cbfdb35a98d"
+    },
+    "installed_proxy": {
+      "passed": 11,
+      "qa": "qa-f5ba558f4569"
+    }
+  },
+  "benchmark_qa": {
+    "before_center": "qa-84fe05a80192",
+    "after_center": "qa-4a13403514c7",
+    "before_client": "qa-56b31fa04712",
+    "after_client": "qa-d63bb4b6a3e6"
+  },
+  "fixture_hashes": {
+    "current.json": "66d9567e874ce38a939bb419690c8f2d371393c3e256e207ff3102c39d6a3d5f",
+    "songs/constants_id_v2.csv": "c0a36fdf405de2bb37e09a3cca8ea881326da56c696793093f1f08e2ececb131",
+    "songs/grade_dojo_nijiiro_2025_simple.json": "efc6adf60ee6c4894cecda123ff9a490360d549abaef074a3125072cd24fc413",
+    "songs/grade_dojo_nijiiro_2026_simple.json": "4dedd2f7fbb511e255005f505b983c143c232f3e43ec564b31c24e3190ab66af",
+    "songs/grade_dojo_nijiiro_history_simple.json": "0a78bc44ae0e3479fc2ed84a5a6acfecef6aa6d0398dc85d45e15725b4b6e493",
+    "songs/music_donda_list.json": "b45c489da2a794d23cbdb610e7c5c3ed59b0220132c7dbcb96ccd32677b5985b",
+    "songs/rating_structured_with_ids.json": "7e650a1c1c55824a5e05c99d146da4fbce711864138770da6323a6c91d916443",
+    "songs/song_alias.json": "e2b87e162d2f72bb1a67de38a171b52bd65d538c96148463943e0e8b87901a3b",
+    "songs/song_data.json": "0016b98626d4153cf0aefb13ceb5a1cf5fe814fa9e44248f12024b61c35e26b6",
+    "songs/song_data_raw.json": "4c60757ef1fcf22ef11f262c495660d13802f0694a19fb054d9c0bc44ec281fa",
+    "songs/song_difficulty.json": "90a10febb422ccba475cfde21c9c2a8394ea1013940725342144804480ecbf2f"
+  },
+  "update_check": {
+    "repetitions": 7,
+    "RGB_parity_cases": 4,
+    "before_qa": "qa-1f4cdd7efa05",
+    "after_qa": "qa-2532e1a2cf76",
+    "before_warm_median_ms": [
+      405.94899999999996,
+      435.95799999999997,
+      896.089,
+      897.8205
+    ],
+    "after_warm_median_ms": [
+      391.4325,
+      405.1195,
+      399.429,
+      433.916
+    ]
+  }
+}

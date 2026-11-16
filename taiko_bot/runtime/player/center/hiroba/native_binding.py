@@ -12,6 +12,7 @@ from ..bot_binding_authority import normalize_bot_principal
 from ..bot_binding_mutation import _read, _apply, principal_lock_name
 
 from ..source_mutation import AuthorizedPublicationStore
+from ..update_comparison import capture_previous_userdata
 
 from .private_credentials import run_private_credentials
 
@@ -140,6 +141,7 @@ def sync_native_hiroba(principal, identity, *, connection_factory, userdata_root
                         or _credentials(cursor, identity, locked=True) != credentials):
                     raise NativeHirobaDenied()
             store.authorize = prove; prove()
+            previous = capture_previous_userdata(store) if include_image else None
             # A public/profile binding is not authority to borrow another
             # principal's global login. Preserve public synchronization there.
             email, password = None, None
@@ -160,7 +162,8 @@ def sync_native_hiroba(principal, identity, *, connection_factory, userdata_root
                     if render is None:
                         from ..draw_dress import render_update_changes_image
                         render = render_update_changes_image
-                    image = render(int(identity), show_all=show_all, score_view=store.reader())
+                    image = render(int(identity), show_all=show_all, score_view=store.reader(),
+                        previous_userdata=previous)
                     if not isinstance(image, bytes) or not 0 < len(image) <= 16*1024**2:
                         image = None
                 except Exception:

@@ -1,7 +1,9 @@
 """Two render workers, no submitted backlog, cooperative timeout/cancellation.
 
-Only captured calculation/rendering closures belong here. Providers, leases,
-SQL sessions and transport operations stay on their owning event loop.
+The shared render executor accepts captured calculation/rendering closures only.
+An independent input executor may own an entire synchronous preparation call:
+SQL sessions and leases must be opened and closed in that same worker call.
+Transport and delivery authorization remain on the event loop.
 """
 import asyncio
 from concurrent.futures import ThreadPoolExecutor

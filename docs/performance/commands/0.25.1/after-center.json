@@ -1,0 +1,232 @@
+{
+  "profile": "center",
+  "synthetic": true,
+  "repetitions": 3,
+  "cases": [
+    {
+      "command": "10星进度",
+      "milliseconds": [
+        1898.577,
+        1850.071,
+        1681.967
+      ],
+      "warm_median_ms": 1766.019,
+      "pixels": [
+        [
+          1628,
+          4022
+        ],
+        "e33e49ead2297001557e22b6c93a7e57b2123b42bb89e0ce97cbfac20f7af5f2"
+      ],
+      "png_bytes": 1472600,
+      "encode_ms": [
+        412.471,
+        481.734,
+        433.45
+      ]
+    },
+    {
+      "command": "10星进度 2",
+      "milliseconds": [
+        1804.46,
+        1797.805,
+        1662.252
+      ],
+      "warm_median_ms": 1730.0285,
+      "pixels": [
+        [
+          1628,
+          4022
+        ],
+        "cb2ad688f7f8865e0e74dcb270669b8af8237d8bf66d70cd2b7adc2bbe28d657"
+      ],
+      "png_bytes": 1437755,
+      "encode_ms": [
+        382.035,
+        385.727,
+        406.913
+      ]
+    },
+    {
+      "command": "10.0过关进度",
+      "milliseconds": [
+        300.283,
+        297.413,
+        302.489
+      ],
+      "warm_median_ms": 299.951,
+      "pixels": [
+        [
+          1628,
+          998
+        ],
+        "22942371e5a06347580f6946e53019ce3bebad24072288e28b827c400b1537bd"
+      ],
+      "png_bytes": 400836,
+      "encode_ms": [
+        104.166,
+        103.064,
+        106.342
+      ]
+    },
+    {
+      "command": "9.0综合进度",
+      "milliseconds": [
+        609.77,
+        587.839,
+        553.806
+      ],
+      "warm_median_ms": 570.8225,
+      "pixels": [
+        [
+          1628,
+          2230
+        ],
+        "1d5af4055f838b54a42277ee22df727cc1eb101d8159692c375f78a3ed14a79e"
+      ],
+      "png_bytes": 792494,
+      "encode_ms": [
+        218.492,
+        210.511,
+        210.543
+      ]
+    },
+    {
+      "command": "SS进度",
+      "milliseconds": [
+        351.224,
+        350.446,
+        351.803
+      ],
+      "warm_median_ms": 351.1245,
+      "pixels": [
+        [
+          1628,
+          1278
+        ],
+        "fd6a5a153ed0fdf25e55d60232aafca38af95ee7672e199ad537df7041acb296"
+      ],
+      "png_bytes": 492048,
+      "encode_ms": [
+        125.313,
+        125.306,
+        125.266
+      ]
+    },
+    {
+      "command": "虹2025六段进度",
+      "milliseconds": [
+        1490.356,
+        1240.632,
+        1425.705
+      ],
+      "warm_median_ms": 1333.1685,
+      "pixels": [
+        [
+          1280,
+          1836
+        ],
+        "fe7d4b4696dcf3a279fbbd3f0386666352c5537acf6c161072bd5d89443ada47"
+      ],
+      "png_bytes": 580119,
+      "encode_ms": [
+        633.757,
+        633.743,
+        634.009
+      ]
+    },
+    {
+      "command": "更新广场 / 2 history",
+      "milliseconds": [
+        799.316,
+        516.738,
+        384.442
+      ],
+      "warm_median_ms": 450.59000000000003,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "18e3c29ab365bb02e6d81a5f0e114c3a751d29fc1d4f05b41c2eace298a77734"
+      ],
+      "png_bytes": 380486,
+      "encode_ms": [
+        140.611,
+        140.714,
+        140.762
+      ],
+      "history_decode_calls": 0
+    },
+    {
+      "command": "更新广场 全部 / 2 history",
+      "milliseconds": [
+        390.754,
+        388.774,
+        388.928
+      ],
+      "warm_median_ms": 388.851,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "b26d71b7c95311c9dc3e64a088f7cec9c9f2cd5ca54d353c4214739bdad2ed47"
+      ],
+      "png_bytes": 383472,
+      "encode_ms": [
+        142.567,
+        141.167,
+        141.183
+      ],
+      "history_decode_calls": 0
+    },
+    {
+      "command": "更新广场 / 100 history",
+      "milliseconds": [
+        382.72,
+        383.21,
+        384.157
+      ],
+      "warm_median_ms": 383.6835,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "18e3c29ab365bb02e6d81a5f0e114c3a751d29fc1d4f05b41c2eace298a77734"
+      ],
+      "png_bytes": 380486,
+      "encode_ms": [
+        140.621,
+        140.775,
+        140.495
+      ],
+      "history_decode_calls": 0
+    },
+    {
+      "command": "更新广场 全部 / 100 history",
+      "milliseconds": [
+        388.332,
+        387.622,
+        390.289
+      ],
+      "warm_median_ms": 388.95550000000003,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "b26d71b7c95311c9dc3e64a088f7cec9c9f2cd5ca54d353c4214739bdad2ed47"
+      ],
+      "png_bytes": 383472,
+      "encode_ms": [
+        140.945,
+        141.225,
+        141.068
+      ],
+      "history_decode_calls": 0
+    }
+  ],
+  "peak_rss_kib": 321436
+}

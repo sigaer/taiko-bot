@@ -38,7 +38,7 @@ async def update_main():
   legacy_update=frozen(update_user,'update_user.py');legacy_update['save_userdata']=legacy_storage['save_userdata']
   # A real image renderer is checked separately; deterministic bytes here isolate writer behavior.
   render_calls=[]
-  def render(user_id,*,show_all,score_view):
+  def render(user_id,*,show_all,score_view,previous_userdata=None):
    captured=json.loads(score_view.current_raw());assert captured['profile']['userid']=='11111'
    render_calls.append((user_id,show_all));return png
   original_render=draw_dress.render_update_changes_image;draw_dress.render_update_changes_image=render

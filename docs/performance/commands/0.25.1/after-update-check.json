@@ -1,0 +1,132 @@
+{
+  "profile": "center",
+  "synthetic": true,
+  "repetitions": 7,
+  "cases": [
+    {
+      "command": "更新广场 / 2 history",
+      "milliseconds": [
+        937.369,
+        399.77,
+        391.227,
+        391.352,
+        393.019,
+        391.513,
+        389.297
+      ],
+      "warm_median_ms": 391.4325,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "18e3c29ab365bb02e6d81a5f0e114c3a751d29fc1d4f05b41c2eace298a77734"
+      ],
+      "png_bytes": 380486,
+      "encode_ms": [
+        148.503,
+        147.979,
+        142.038,
+        143.083,
+        145.774,
+        142.503,
+        142.045
+      ],
+      "history_decode_calls": 0
+    },
+    {
+      "command": "更新广场 全部 / 2 history",
+      "milliseconds": [
+        397.095,
+        395.606,
+        398.656,
+        399.943,
+        504.327,
+        420.741,
+        410.296
+      ],
+      "warm_median_ms": 405.1195,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "b26d71b7c95311c9dc3e64a088f7cec9c9f2cd5ca54d353c4214739bdad2ed47"
+      ],
+      "png_bytes": 383472,
+      "encode_ms": [
+        142.589,
+        142.424,
+        143.503,
+        142.624,
+        141.959,
+        167.065,
+        145.553
+      ],
+      "history_decode_calls": 0
+    },
+    {
+      "command": "更新广场 / 100 history",
+      "milliseconds": [
+        419.085,
+        439.157,
+        428.2,
+        393.361,
+        396.056,
+        392.365,
+        402.802
+      ],
+      "warm_median_ms": 399.429,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "18e3c29ab365bb02e6d81a5f0e114c3a751d29fc1d4f05b41c2eace298a77734"
+      ],
+      "png_bytes": 380486,
+      "encode_ms": [
+        149.134,
+        160.274,
+        141.955,
+        141.921,
+        141.86,
+        141.963,
+        151.138
+      ],
+      "history_decode_calls": 0
+    },
+    {
+      "command": "更新广场 全部 / 100 history",
+      "milliseconds": [
+        394.861,
+        400.435,
+        500.368,
+        403.453,
+        408.066,
+        496.657,
+        459.766
+      ],
+      "warm_median_ms": 433.916,
+      "pixels": [
+        [
+          1628,
+          1185
+        ],
+        "b26d71b7c95311c9dc3e64a088f7cec9c9f2cd5ca54d353c4214739bdad2ed47"
+      ],
+      "png_bytes": 383472,
+      "encode_ms": [
+        142.378,
+        142.563,
+        142.26,
+        147.359,
+        144.72,
+        208.501,
+        150.944
+      ],
+      "history_decode_calls": 0
+    }
+  ],
+  "peak_rss_kib": 234200
+}

@@ -323,7 +323,7 @@ def _render_notice(text: str) -> bytes:
     )
     base.alpha_composite(overlay)
     buf = io.BytesIO()
-    base.convert("RGB").save(buf, format="PNG", optimize=True)
+    base.convert("RGB").save(buf, format="PNG", compress_level=6)
     return buf.getvalue()
 
 @lru_cache(maxsize=1)
@@ -2067,5 +2067,5 @@ def render_dani_progress_image_bytes(
         )
 
     buf = io.BytesIO()
-    canvas.convert("RGB").save(buf, format="PNG", optimize=True)
+    canvas.convert("RGB").save(buf, format="PNG", compress_level=6)
     return buf.getvalue()

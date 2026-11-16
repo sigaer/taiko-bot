@@ -1,0 +1,140 @@
+{
+  "profile": "client",
+  "synthetic": true,
+  "repetitions": 3,
+  "cases": [
+    {
+      "command": "10星进度",
+      "milliseconds": [
+        2773.354,
+        2339.091,
+        2396.682
+      ],
+      "warm_median_ms": 2367.8864999999996,
+      "pixels": [
+        [
+          1628,
+          4022
+        ],
+        "e33e49ead2297001557e22b6c93a7e57b2123b42bb89e0ce97cbfac20f7af5f2"
+      ],
+      "png_bytes": 1446336,
+      "encode_ms": [
+        1700.929,
+        1681.971,
+        1686.014
+      ]
+    },
+    {
+      "command": "10星进度 2",
+      "milliseconds": [
+        2436.157,
+        2442.826,
+        2458.306
+      ],
+      "warm_median_ms": 2450.566,
+      "pixels": [
+        [
+          1628,
+          4022
+        ],
+        "cb2ad688f7f8865e0e74dcb270669b8af8237d8bf66d70cd2b7adc2bbe28d657"
+      ],
+      "png_bytes": 1407628,
+      "encode_ms": [
+        1765.29,
+        1758.068,
+        1780.788
+      ]
+    },
+    {
+      "command": "10.0过关进度",
+      "milliseconds": [
+        668.848,
+        671.335,
+        666.136
+      ],
+      "warm_median_ms": 668.7355,
+      "pixels": [
+        [
+          1628,
+          998
+        ],
+        "22942371e5a06347580f6946e53019ce3bebad24072288e28b827c400b1537bd"
+      ],
+      "png_bytes": 392376,
+      "encode_ms": [
+        473.551,
+        473.337,
+        472.995
+      ]
+    },
+    {
+      "command": "9.0综合进度",
+      "milliseconds": [
+        1342.049,
+        1323.552,
+        1388.872
+      ],
+      "warm_median_ms": 1356.212,
+      "pixels": [
+        [
+          1628,
+          2230
+        ],
+        "1d5af4055f838b54a42277ee22df727cc1eb101d8159692c375f78a3ed14a79e"
+      ],
+      "png_bytes": 775962,
+      "encode_ms": [
+        936.73,
+        952.087,
+        1001.318
+      ]
+    },
+    {
+      "command": "SS进度",
+      "milliseconds": [
+        920.714,
+        861.218,
+        817.548
+      ],
+      "warm_median_ms": 839.383,
+      "pixels": [
+        [
+          1628,
+          1278
+        ],
+        "fd6a5a153ed0fdf25e55d60232aafca38af95ee7672e199ad537df7041acb296"
+      ],
+      "png_bytes": 482257,
+      "encode_ms": [
+        615.627,
+        566.867,
+        570.832
+      ]
+    },
+    {
+      "command": "虹2025六段进度",
+      "milliseconds": [
+        1201.755,
+        1178.857,
+        1189.856
+      ],
+      "warm_median_ms": 1184.3564999999999,
+      "pixels": [
+        [
+          1280,
+          1836
+        ],
+        "5ead97ba52de2cce52e49caf40c00bea3b106c82f32c3c8de3d05efe66ac67e5"
+      ],
+      "png_bytes": 598136,
+      "encode_ms": [
+        789.143,
+        785.413,
+        809.763
+      ]
+    }
+  ],
+  "peak_rss_kib": 235780
+}

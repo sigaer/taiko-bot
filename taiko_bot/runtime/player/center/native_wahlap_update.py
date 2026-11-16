@@ -10,6 +10,7 @@ from .bot_binding_authority import normalize_bot_principal
 from .bot_binding_mutation import _read, principal_lock_name
 
 from .source_mutation import AuthorizedPublicationStore
+from .update_comparison import capture_previous_userdata
 
 _admission=threading.BoundedSemaphore(2)
 
@@ -44,6 +45,7 @@ def update_native_wahlap(principal,identity,*,connection_factory,userdata_root,i
                 current=next((row for row in actual if row.current),actual[0] if actual else None)
                 if active_virtual or current!=expected:raise NativeWahlapDenied()
             store.authorize=prove;prove()
+            previous = capture_previous_userdata(store) if include_image else None
             if sync is None:
                 from .update_user import getUserData
                 sync=getUserData
@@ -56,7 +58,8 @@ def update_native_wahlap(principal,identity,*,connection_factory,userdata_root,i
                     if render is None:
                         from .draw_dress import render_update_changes_image
                         render=render_update_changes_image
-                    image=render(int(identity),show_all=show_all,score_view=store.reader())
+                    image=render(int(identity),show_all=show_all,score_view=store.reader(),
+                        previous_userdata=previous)
                     if not isinstance(image,bytes) or not 0<len(image)<=16*1024**2:image=None
                 except Exception:image=None  # Preserve existing text-only success.
             prove();connection.commit();store._require_lock(write=True)

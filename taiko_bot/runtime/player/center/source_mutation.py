@@ -40,6 +40,8 @@ def run_source_mutation(request, *, connection_factory, userdata_root, cache_roo
                 proof = lambda: require_source_authority(cursor, actor, grant, identity, scope, lock=True)
                 store.authorize = proof
                 proof()
+                from .update_comparison import capture_previous_userdata
+                previous = capture_previous_userdata(store) if request["includeImage"] else None
                 if scope == "wahlap_update":
                     from taiko_bot.services.sync_dispatch_server import refresh_userdata_from_wahlap, read_local_userdata, write_local_snapshot
                     refresh_userdata_from_wahlap(identity, publication_store=store)
@@ -65,7 +67,8 @@ def run_source_mutation(request, *, connection_factory, userdata_root, cache_roo
                 image_bytes, image_hash = 0, None
                 if request["includeImage"]:
                     from .draw_dress import render_update_changes_image
-                    image = render_update_changes_image(int(identity), show_all=request["showAll"], score_view=view)
+                    image = render_update_changes_image(int(identity), show_all=request["showAll"],
+                        score_view=view, previous_userdata=previous)
                     if not isinstance(image, bytes) or not 0 < len(image) <= 16*1024**2:
                         raise PublicationError("Source image limit")
                     image_bytes, image_hash = len(image), hashlib.sha256(image).hexdigest()

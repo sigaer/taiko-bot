@@ -2081,21 +2081,33 @@ def _render_my_don_rank_summary_panel(
 
     return panel
 
+_PREVIOUS_FROM_HISTORY = object()
+
+
 def render_update_changes_image(
     user_id: int,
     save_path: Optional[Path | str] = None,
     show_all: bool = False,
-    *, score_view=None,
+    *, score_view=None, previous_userdata=_PREVIOUS_FROM_HISTORY,
 ) -> bytes:
     if score_view is None:
         with score_read_view(os.getenv("TAIKO_USERDATA_DIR") or USERDATA_DIR, str(user_id)) as view:
-            return render_update_changes_image(user_id, save_path=save_path, show_all=show_all, score_view=view)
+            return render_update_changes_image(user_id, save_path=save_path, show_all=show_all,
+                score_view=view, previous_userdata=previous_userdata)
     userdata = score_view.decoded()
 
     left_sections: List[Dict[str, Any]] = []
     right_sections: List[Dict[str, Any]] = []
-    previous_map = _load_previous_song_map(user_id, score_view=score_view)
-    previous_dojo = _load_previous_dojo_state(user_id, score_view=score_view)
+    if previous_userdata is _PREVIOUS_FROM_HISTORY:
+        # Standalone callers displaying a saved update retain their history API.
+        # Live updates always pass the captured pre-write current, including None.
+        previous_map = _load_previous_song_map(user_id, score_view=score_view)
+        previous_dojo = _load_previous_dojo_state(user_id, score_view=score_view)
+    else:
+        previous_map = (_build_song_map(previous_userdata.get("songs") or [])
+            if previous_userdata is not None else None)
+        previous_dojo = (normalize_versioned_dojo_scores(previous_userdata.get("dojo") or {})
+            if previous_userdata is not None else None)
     songs = userdata.get("songs") or []
     if previous_map is not None and isinstance(songs, list):
         current_map = _build_song_map(

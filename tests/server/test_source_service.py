@@ -129,6 +129,23 @@ def test_image_sha_exclusive_nonce_and_capacity(acquisition, monkeypatch):
     monkeypatch.setattr(draw_dress, "render_update_changes_image", lambda *a, **kw: b"")
     with pytest.raises(PublicationError): run(request(includeImage=True), SQL(), acquisition)
 
+
+def test_proxy_image_compares_current_before_acquisition_not_dispatch_history(acquisition, monkeypatch):
+    from taiko_bot.runtime.player.center import draw_dress
+    captured = []
+    def render(identity, *, score_view, previous_userdata, **kwargs):
+        current = score_view.decoded()
+        captured.append((previous_userdata, current))
+        return b"synthetic-image"
+    monkeypatch.setattr(draw_dress, "render_update_changes_image", render)
+    run(request(includeImage=True), SQL(), acquisition)
+    assert captured[0][0] is None
+    old = captured[0][1]
+    acquisition[2]["songs"].append({"song_no": 1, "level": 4, "high_score": 800000})
+    run(request(includeImage=True, operationId="b"*32), SQL(), acquisition)
+    assert captured[1][0] == old
+    assert captured[1][1]["songs"] and not captured[1][0]["songs"]
+
 def test_concurrent_source_calls_preserve_all_observations(acquisition):
     with ThreadPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(lambda _: run(request(), SQL(), acquisition), range(2)))

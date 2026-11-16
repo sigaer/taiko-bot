@@ -1,17 +1,13 @@
 """Actual command adapters, input rejection and frozen successful copy/profile."""
 import ast
 import asyncio
-import importlib
 from pathlib import Path
-import sys
 import types
 
 import pytest
 
 SOURCE=Path(__file__).resolve().parents[2]/'taiko_bot/runtime/player/center'
-for name,path in [('native_hiroba_fixture',SOURCE),('native_hiroba_fixture.hiroba',SOURCE/'hiroba')]:
-    module=types.ModuleType(name);module.__path__=[str(path)];sys.modules[name]=module
-native=importlib.import_module('native_hiroba_fixture.hiroba.native_binding')
+from taiko_bot.runtime.player.center.hiroba import native_binding as native
 
 
 @pytest.mark.parametrize('principal',[None,'12345','onebot_v11:1 ','qq_official:','onebot_v11:../private'])

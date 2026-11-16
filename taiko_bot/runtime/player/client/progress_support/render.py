@@ -12,6 +12,8 @@ from typing import Dict, Any, Tuple, List, Optional
 from functools import lru_cache
 
 from PIL import Image, ImageDraw, ImageFont
+from taiko_application.score.cancellation import check_cancelled
+from ...render_resources import resources
 
 import io
 
@@ -86,6 +88,9 @@ def _load_font(
 ) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     if font_path and os.path.exists(font_path):
         try:
+            scope = resources()
+            if scope is not None:
+                return scope.font(font_path, size)
             return ImageFont.truetype(font_path, size)
         except Exception:
             pass
@@ -462,6 +467,7 @@ def _build_progress_rows(
     active_song_ids = load_active_song_ids()
     rows: List[Dict[str, Any]] = []
     for song_id, level, title in items:
+        check_cancelled()
         if song_id not in active_song_ids:
             continue
         entry = best_map.get((song_id, level))
@@ -853,6 +859,7 @@ def _render_progress_table_image(
         )
 
     for idx, row in enumerate(rows):
+        check_cancelled()
         row_top = panel_y + title_row_h + header_h + 8 + idx * row_h
         row_bot = row_top + row_h - 4
         fill = (244, 239, 231, 150) if idx % 2 == 0 else (246, 248, 244, 126)
@@ -981,7 +988,8 @@ def _render_progress_table_image(
         )
 
     buf = io.BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
+    check_cancelled()
+    img.convert("RGB").save(buf, format="PNG", compress_level=6)
     return buf.getvalue()
 
 def render_pass_progress_image_bytes(
@@ -1327,5 +1335,5 @@ def _render_simple_notice(
         fill=fg_color,
     )
     buf = io.BytesIO()
-    img.convert("RGB").save(buf, format="PNG", optimize=True)
+    img.convert("RGB").save(buf, format="PNG", compress_level=6)
     return buf.getvalue()

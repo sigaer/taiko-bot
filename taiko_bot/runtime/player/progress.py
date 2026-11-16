@@ -2,7 +2,7 @@
 import re
 from functools import partial
 from importlib import import_module
-from nonebot import on_message, on_regex
+from nonebot import get_driver, on_message, on_regex
 from nonebot.adapters import Event
 from nonebot.matcher import Matcher
 from nonebot.rule import Rule
@@ -10,6 +10,13 @@ from taiko_application.commands import CommandContext, CommandResult
 from taiko_application.commands.progress import ProgressPorts, prepare_progress, execute_progress
 from taiko_application.private_input import thaw
 from . import entry
+from .render_executor import RenderExecutor, executor, RenderBusy
+from .render_resources import request_resources
+
+# Private inputs are request-owned; no connection or lease escapes prepare().
+# Keep blocking input acquisition separate from the shared two-worker renderer.
+input_executor = RenderExecutor(workers=2)
+get_driver().on_shutdown(input_executor.shutdown)
 
 PROFILE = entry.profile()
 PROGRESS_WITH_PAGE_REGEX = re.compile(r'^(?P<body>.+进度)(?:\s+(?P<page>\d+))?$')
@@ -86,7 +93,12 @@ async def progress_handle(matcher: Matcher, event: Event):
     principal, _ = entry.helpers._resolve_requested_identity_key(event)
     provider = entry.create_provider()
     try:
-        private = provider.prepare(actor,principal,**history_options)
+        private = await input_executor.run(
+            lambda: provider.prepare(actor,principal,**history_options),
+            timeout=120 if PROFILE == 'center' else 180)
+    except (RenderBusy, TimeoutError):
+        await entry.helpers._finish_text_reply(matcher,event,'查询请求较多或已超时，请稍后再试。')
+        return
     except entry.TinfoDenied as error:
         if error.status == 404:
             await entry.helpers._finish_text_reply(matcher,event,entry.helpers._taiko_bind_usage_message(event))
@@ -109,10 +121,17 @@ async def progress_handle(matcher: Matcher, event: Event):
             ok,message = ensure_asset_resource_available(('core-assets',),get_settings())
             if not ok:
                 await entry.helpers._finish_text_reply(delivery,event,message)
-        current,history = thaw(private.current),thaw(private.history) or ()
-        ports = build_ports(current,history,render,dani,catalog,private.current_failure)
-        result = execute_progress(CommandContext(user_id=private.authorized_target.user_id,
-            assets_base=str(render.BASE/'assets'),profile=PROFILE),ports,prepared_command)
+        @request_resources
+        def calculate():
+            current,history = thaw(private.current),thaw(private.history) or ()
+            ports = build_ports(current,history,render,dani,catalog,private.current_failure)
+            return execute_progress(CommandContext(user_id=private.authorized_target.user_id,
+                assets_base=str(render.BASE/'assets'),profile=PROFILE),ports,prepared_command)
+        try:
+            result = await executor.run(calculate)
+        except (RenderBusy, TimeoutError):
+            await entry.helpers._finish_text_reply(delivery,event,'绘图请求较多或已超时，请稍后再试。')
+            return
         provider.verify(private)
         if result is not None:
             await entry.deliver(delivery,event,result)

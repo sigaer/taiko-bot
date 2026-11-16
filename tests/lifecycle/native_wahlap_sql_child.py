@@ -103,7 +103,7 @@ def save(*args,**kwargs):
     if fault=='after-publish-owner':change_owner()
     return result
 update_user.save_userdata=save
-def render(identity,*,show_all,score_view):
+def render(identity,*,show_all,score_view,previous_userdata):
     assert str(identity)==request['identity'] and json.loads(score_view.current_raw())['profile']['userid']==request['identity']
     if fault=='render-owner':change_owner()
     if fault=='render-error':raise RuntimeError('Private renderer failure')
