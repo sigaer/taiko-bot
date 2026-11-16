@@ -70,12 +70,26 @@ def test_chart_difficulty_and_unrelated_song(catalog, song_id, level, expected):
     assert score_data.compute_score(song_id, 377, 221, 117, level=level) == expected
 
 
-def test_canonical_row_has_same_precedence_as_scoreline(catalog):
+def test_existing_exact_id_points_take_precedence(catalog):
     rows = json.loads(score_line.UNIFIED_PATH.read_text())
     rows.append(dict(id=191, level=4, initial_points=1650))
     publish(score_line.UNIFIED_PATH, rows)
     assert score_data.get_scoreline_entry(1266, 4)['id'] == 191
-    assert score_data.compute_score(1266, 1, 1, 1) == 2570
+    assert score_data.compute_score(1266, 1, 1, 1) == 2540
+    assert score_data.compute_score(191, 1, 1, 1) == 2570
+
+
+def test_distinct_songs_sharing_translation_keep_their_points(catalog):
+    publish(score_line.SONG_DATA_PATH, [
+        dict(id=523, song_name='Synchronicity', song_name_jp='Synchronicity'),
+        dict(id=766, song_name='Synchronicity', song_name_jp='シンクロニシティ'),
+    ])
+    publish(score_line.UNIFIED_PATH, [
+        dict(id=523, level=4, initial_points=2240),
+        dict(id=766, level=4, initial_points=2420),
+    ])
+    assert score_data.compute_score(523, 1, 0) == 2240
+    assert score_data.compute_score(766, 1, 0) == 2420
 
 
 def test_updates_refresh_warm_score_lookup(catalog):

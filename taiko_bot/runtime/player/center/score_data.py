@@ -71,7 +71,11 @@ def format_scoreline_message(
 
 def _get_initial_points(song_id: int, level: int) -> int:
     """与分数线共用同曲版本解析和按数据修订更新的分值索引。"""
-    item = get_scoreline_entry(song_id, level)
+    by_id, _ = _build_chart_index(_ensure_scoreline_dataset_current())
+    # 同名分组可能包含译名相同的不同歌曲，已有的精确 ID 分值优先。
+    item = by_id.get((song_id, level))
+    if item is None:
+        item = get_scoreline_entry(song_id, level)
     if item is None:
         raise KeyError(f"未在 {JSON_PATH} 中找到 id={song_id}, level={level} 的分值记录。")
     if "initial_points" not in item:
