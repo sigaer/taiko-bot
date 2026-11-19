@@ -340,6 +340,7 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
         return
 
     try:
+        await _send_text_reply_without_finish(bind_hiroba, event, "开始绑定 Hiroba 账号")
         result, synced_count = await asyncio.to_thread(
             _execute_hiroba_bind, identity_key, email, password, target_taiko_no,
         )
@@ -409,6 +410,9 @@ async def hiroba_update_handle(event: MessageEvent):
         await _finish_text_reply(hiroba_update, event, cooldown_msg)
         return
 
+    await _send_text_reply_without_finish(
+        hiroba_update, event, f"开始更新 Hiroba 账号 {taiko_id}",
+    )
     update_result = await asyncio.to_thread(
         _execute_hiroba_update,
         taiko_id,

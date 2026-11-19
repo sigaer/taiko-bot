@@ -36,7 +36,7 @@ class _DummyBindMatch:
         return self._taiko_no
 
 
-def test_bind_hiroba_handle_sends_only_final_result(monkeypatch):
+def test_bind_hiroba_handle_sends_start_and_final_result(monkeypatch):
     taiko = _load_taiko_module()
     sent_messages: list[str] = []
     finished_messages: list[str] = []
@@ -75,7 +75,7 @@ def test_bind_hiroba_handle_sends_only_final_result(monkeypatch):
         )
     )
 
-    assert sent_messages == []
+    assert sent_messages == ["开始绑定 Hiroba 账号"]
     assert finished_messages == [
         "已自动同步并绑定该 Bandai Namco ID 下的 2 个 Hiroba 账号。\n已切换到 u1：12345678\n当前绑定：绑定摘要\n已完成 Hiroba 同步（默认仅鬼/里）。"
     ]

@@ -1,26 +1,29 @@
-"""Hiroba commands reserve passive replies for the final result on both hosts."""
+"""Hiroba emits start, success and image replies without intermediate progress."""
 import ast
 import asyncio
 import importlib
+import logging
 from pathlib import Path
 import re
+import time
 from types import SimpleNamespace
 
-from nonebot.exception import FinishedException
+from nonebot.exception import FinishedException, MatcherException
 import pytest
 
 
 SOURCE = Path(importlib.import_module("taiko_bot").__file__).parent / "runtime/player"
 
 
-def handler(profile, name, values):
-    tree = ast.parse((SOURCE / profile / "identity_cluster.py").read_text())
+def handler(profile, name, values, filename="identity_cluster.py"):
+    tree = ast.parse((SOURCE / profile / filename).read_text())
     node = next(node for node in tree.body if getattr(node, "name", None) == name)
     node.decorator_list = []
     module = ast.Module(body=[ast.ImportFrom(
         module="__future__", names=[ast.alias(name="annotations")], level=0
     ), node], type_ignores=[])
-    values.update(asyncio=asyncio, re=re, RegexMatched=lambda: None)
+    values.update(asyncio=asyncio, re=re, RegexMatched=lambda: None,
+                  __package__=f"taiko_bot.runtime.player.{profile}")
     exec(compile(ast.fix_missing_locations(module), "<actual-hiroba-command>", "exec"), values)
     return values[name]
 
@@ -55,7 +58,7 @@ class PassiveMatcher:
 @pytest.mark.parametrize("event_type", [PrivateEvent, GroupEvent])
 @pytest.mark.parametrize("result", ["image", "text", "failure"])
 @pytest.mark.parametrize("show_all", [False, True])
-def test_update_only_sends_final_reply(profile, event_type, result, show_all, monkeypatch):
+def test_update_sends_start_success_and_image_without_progress(profile, event_type, result, show_all, monkeypatch):
     messages = importlib.import_module(f"taiko_bot.runtime.player.{profile}.messages")
     monkeypatch.setattr(messages, "cache_markdown_image_url", lambda *a, **k: "https://fixture.invalid/update.png")
     matcher = PassiveMatcher()
@@ -69,14 +72,17 @@ def test_update_only_sends_final_reply(profile, event_type, result, show_all, mo
     async def finish_text(matcher, event, text, **kwargs):
         await messages.send_text_reply(matcher, event, text, **kwargs)
 
-    async def finish_success(matcher, event, *, success_message, img_buf, **kwargs):
-        if img_buf is not None:
-            await messages.send_image_reply(matcher, event, img_buf, prefix_text=success_message, quick_actions=True)
-        else:
-            await messages.send_text_reply(matcher, event, success_message, quick_actions=True)
+    async def finish_image(matcher, event, img_buf, **kwargs):
+        await messages.send_image_reply(matcher, event, img_buf, **kwargs)
+
+    finish_success = handler(profile, "_finish_hiroba_update_success_reply", dict(
+        _send_text_reply_without_finish=send, _finish_text_reply=finish_text,
+        _finish_image_reply=finish_image, time=time, MatcherException=MatcherException,
+        FinishedException=FinishedException, logger=logging.getLogger(__name__),
+    ), filename="lifecycle_host.py")
 
     def update(identity, **kwargs):
-        assert matcher.sent == [], "Progress consumed the final reply budget"
+        assert len(matcher.sent) == 1 and str(matcher.sent[0]).startswith("开始")
         assert kwargs.get("progress") is None
         assert kwargs["include_changes_image"] is True
         assert kwargs["show_all_changes"] is show_all
@@ -95,32 +101,35 @@ def test_update_only_sends_final_reply(profile, event_type, result, show_all, mo
         peek_hiroba_sync_cooldown=lambda _: None,
         _send_text_reply_without_finish=send, _finish_text_reply=finish_text,
         _finish_hiroba_update_success_reply=finish_success, _execute_hiroba_update=update,
-        _create_hiroba_progress_reporter=lambda *a: lambda *a, **k: None,
     )
     with pytest.raises(FinishedException):
         asyncio.run(handler(profile, "hiroba_update_handle", values)(event))
     assert calls == ["123456789012"]
-    assert len(matcher.sent) == 1
-    content = str(matcher.sent[0])
-    assert ("update.png" in content) is (result == "image")
+    assert len(matcher.sent) == (3 if result == "image" else 2)
+    content = str(matcher.sent[1])
     assert ("Hiroba 更新成功！" in content) is (result != "failure")
     assert ("同步失败" in content) is (result == "failure")
+    assert content.count("已展示全部变更。") == int(show_all and result != "failure")
+    content = str(matcher.sent[-1])
+    assert ("update.png" in content) is (result == "image")
+    if result == "image":
+        assert "Hiroba 更新结果" in content
 
 
 @pytest.mark.parametrize("profile", ["center", "client"])
 @pytest.mark.parametrize("failed", [False, True])
-def test_bind_only_sends_final_reply(profile, failed):
+def test_bind_only_sends_start_and_final_reply(profile, failed):
     replies = []
     calls = []
 
-    async def send(*args, **kwargs):
-        pytest.fail("Hiroba binding sent a progress message")
+    async def send(matcher, event, text):
+        replies.append(text)
 
     async def finish(matcher, event, text, **kwargs):
         replies.append(text)
 
     def bind(*args, **kwargs):
-        assert replies == []
+        assert replies == ["开始绑定 Hiroba 账号"]
         assert kwargs.get("progress") is None and len(args) <= 4
         calls.append(True)
         if failed:
@@ -138,10 +147,9 @@ def test_bind_only_sends_final_reply(profile, failed):
         _get_current_bind_entry=lambda _: {},
         _center_bind_info_to_entry=lambda _: {"current_index": 0},
         _format_multi_bind_summary=lambda _: "u1",
-        _create_hiroba_progress_reporter=lambda *a: None,
     )
     match = SimpleNamespace(group=lambda i: {1: "synthetic@example.test", 2: "synthetic", 3: ""}[i])
     asyncio.run(handler(profile, "bind_hiroba_handle", values)(PrivateEvent(), match=match))
     assert calls == [True]
-    assert len(replies) == 1
-    assert ("失败" in replies[0] or "暂无法确认" in replies[0]) is failed
+    assert len(replies) == 2
+    assert ("失败" in replies[1] or "暂无法确认" in replies[1]) is failed

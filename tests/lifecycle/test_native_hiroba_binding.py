@@ -35,7 +35,7 @@ def namespace(names,extras,ns=None):
 
 
 @pytest.mark.parametrize('synced',[0,1,2])
-def test_actual_bind_command_only_reports_committed_partial_sync(synced):
+def test_actual_bind_command_reports_start_and_committed_partial_sync(synced):
     sent=[];replies=[];calls=[]
     result=types.SimpleNamespace(taiko_ids=('222','111'),entry={'current_index':0})
     def bind(*args):calls.append(args);return result,synced
@@ -46,7 +46,7 @@ def test_actual_bind_command_only_reports_committed_partial_sync(synced):
         '_execute_hiroba_bind':bind,'_send_text_reply_without_finish':send,'_finish_text_reply':finish,
         '_format_bind_entry_summary_safe':lambda entry:'u1:222(JP)* / u2:111(JP)', 'bind_hiroba':object()})
     asyncio.run(ns['bind_hiroba_handle'](object(),match=types.SimpleNamespace(group=lambda i:{1:'synthetic@example.test',2:'synthetic',3:''}[i])))
-    assert sent==[] and len(replies)==1
+    assert sent==['开始绑定 Hiroba 账号'] and len(replies)==1
     assert calls[0][:4]==('qq_official:Abc_','synthetic@example.test','synthetic','')
     assert '已切换到 u1：222' in replies[0]
     assert ('已完成 Hiroba 同步' in replies[0])==(synced==2)
@@ -72,7 +72,7 @@ def test_ownerless_update_adapter_does_not_probe_cooldown_or_database():
     assert ns['_execute_hiroba_update']('12345')['ok'] is False
 
 
-def test_final_only_bind_regression_runs_actual_handler_ast(monkeypatch):
+def test_start_and_final_bind_regression_runs_actual_handler_ast(monkeypatch):
     values={'asyncio':asyncio,'_normalize_identity_key':lambda x:x,'get_identity_key':lambda **k:'onebot_v11:12345',
         '_execute_hiroba_bind':lambda *a:None,
         '_send_text_reply_without_finish':lambda *a:None,'_finish_text_reply':lambda *a:None,
@@ -80,10 +80,10 @@ def test_final_only_bind_regression_runs_actual_handler_ast(monkeypatch):
     module=types.ModuleType('actual_native_hiroba_command')
     namespace({'bind_hiroba_handle'},values,module.__dict__)
     tree=ast.parse((Path(__file__).parent/'test_hiroba_bind_flow.py').read_text())
-    nodes=[n for n in tree.body if getattr(n,'name','') in {'_DummyMatch','test_bind_hiroba_handle_sends_only_final_result'}]
+    nodes=[n for n in tree.body if getattr(n,'name','') in {'_DummyMatch','test_bind_hiroba_handle_sends_start_and_final_result'}]
     ns={'asyncio':asyncio,'SimpleNamespace':types.SimpleNamespace,'FinishedException':RuntimeError,'_load_taiko_module':lambda:module}
     exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'<retained-hiroba-bind-flow>','exec'),ns)
-    ns['test_bind_hiroba_handle_sends_only_final_result'](monkeypatch)
+    ns['test_bind_hiroba_handle_sends_start_and_final_result'](monkeypatch)
 
 
 def test_retained_unreadable_credential_regression_runs_actual_update_adapter(monkeypatch):

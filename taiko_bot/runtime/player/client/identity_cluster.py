@@ -288,6 +288,7 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
         return
 
     try:
+        await _send_text_reply_without_finish(bind_hiroba, event, "开始绑定 Hiroba 账号")
         bind_result = await asyncio.to_thread(
             bind_hiroba_credentials,
             email=email,
@@ -355,6 +356,9 @@ async def hiroba_update_handle(event: MessageEvent):
         )
         return
 
+    await _send_text_reply_without_finish(
+        hiroba_update, event, "开始通过 Hiroba 更新当前绑定账号成绩",
+    )
     update_result = await asyncio.to_thread(
         _execute_hiroba_update,
         taiko_id,
@@ -371,8 +375,6 @@ async def hiroba_update_handle(event: MessageEvent):
 
     img_buf = update_result.get("image")
     success_message = str(update_result.get("message") or "Hiroba 更新成功！")
-    if show_all_changes:
-        success_message += "\n已展示全部变更。"
     await _finish_hiroba_update_success_reply(
         hiroba_update,
         event,

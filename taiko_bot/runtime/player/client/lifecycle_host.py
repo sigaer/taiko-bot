@@ -675,11 +675,18 @@ async def _finish_hiroba_update_success_reply(
 
     if img_buf is not None:
         try:
+            await _send_text_reply_without_finish(matcher, event, final_message)
+        except FinishedException:
+            raise
+        except Exception:
+            logger.exception("hiroba success notice failed; continuing with image reply")
+
+        try:
             await _finish_image_reply(
                 matcher,
                 event,
                 img_buf,
-                prefix_text=final_message,
+                prefix_text="Hiroba 更新结果",
                 quick_actions=True,
                 prefer_markdown_image=True,
                 markdown_image_name="hirobaupdate",

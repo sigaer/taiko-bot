@@ -20,6 +20,9 @@ def test_hiroba_success_reply_falls_back_to_text_when_image_reply_fails(monkeypa
     taiko = _load_taiko_module()
     calls: list[tuple[str, str]] = []
 
+    async def fake_success_notice(_matcher, _event, text):
+        calls.append(("notice", text))
+
     async def fake_finish_image_reply(*_args, **_kwargs):
         raise TimeoutError("image send timeout")
 
@@ -29,6 +32,7 @@ def test_hiroba_success_reply_falls_back_to_text_when_image_reply_fails(monkeypa
 
     monkeypatch.setattr(taiko, "_finish_image_reply", fake_finish_image_reply)
     monkeypatch.setattr(taiko, "_finish_text_reply", fake_finish_text_reply)
+    monkeypatch.setattr(taiko, "_send_text_reply_without_finish", fake_success_notice)
 
     try:
         asyncio.run(
@@ -44,12 +48,15 @@ def test_hiroba_success_reply_falls_back_to_text_when_image_reply_fails(monkeypa
     else:
         raise AssertionError("expected FinishedException")
 
-    assert calls == [("text", "Hiroba 更新成功！")]
+    assert calls == [("notice", "Hiroba 更新成功！"), ("text", "Hiroba 更新成功！")]
 
 
 def test_hiroba_success_reply_keeps_image_path_when_image_reply_finishes(monkeypatch):
     taiko = _load_taiko_module()
     calls: list[str] = []
+
+    async def fake_success_notice(*_args, **_kwargs):
+        calls.append("notice")
 
     async def fake_finish_image_reply(*_args, **_kwargs):
         calls.append("image")
@@ -61,6 +68,7 @@ def test_hiroba_success_reply_keeps_image_path_when_image_reply_finishes(monkeyp
 
     monkeypatch.setattr(taiko, "_finish_image_reply", fake_finish_image_reply)
     monkeypatch.setattr(taiko, "_finish_text_reply", fake_finish_text_reply)
+    monkeypatch.setattr(taiko, "_send_text_reply_without_finish", fake_success_notice)
 
     try:
         asyncio.run(
@@ -76,6 +84,30 @@ def test_hiroba_success_reply_keeps_image_path_when_image_reply_finishes(monkeyp
     else:
         raise AssertionError("expected FinishedException")
 
+    assert calls == ["notice", "image"]
+
+
+def test_hiroba_success_notice_failure_does_not_prevent_image_reply(monkeypatch):
+    taiko = _load_taiko_module()
+    calls = []
+
+    async def failed_notice(*_args, **_kwargs):
+        raise TimeoutError("notice send timeout")
+
+    async def finish_image(*_args, **_kwargs):
+        calls.append("image")
+        raise FinishedException()
+
+    monkeypatch.setattr(taiko, "_send_text_reply_without_finish", failed_notice)
+    monkeypatch.setattr(taiko, "_finish_image_reply", finish_image)
+    try:
+        asyncio.run(taiko._finish_hiroba_update_success_reply(
+            object(), object(), success_message="Hiroba 更新成功！", img_buf=b"synthetic-image",
+        ))
+    except FinishedException:
+        pass
+    else:
+        raise AssertionError("expected FinishedException")
     assert calls == ["image"]
 
 
