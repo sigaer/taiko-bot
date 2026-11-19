@@ -58,4 +58,14 @@ bash /home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh \
 
 The importer stages both ordinary and dan variants using equipped background IDs, including plates that share one remote image. Rows with an explicit `rarity` use that background ID, rather than the title's `id`: for example, 悪魔の妹 has title ID 947 but equipped background ID 14. Rows without `rarity` keep using `id`. It parses data without executing JavaScript, downloads at most four images concurrently, verifies bounded PNGs, and refuses to overwrite staged files. Review the staged images and report, then copy only verified missing files to `assets/name_plate`. Keep private assets and import reports outside Git.
 
-Rebuild the nameplate archive and total bundle with `scripts/build_open_resource_archives.sh nameplate` under the bounded build wrapper, then verify the Viewer manifest and bundle endpoints. This scope preserves the other individual resource archives. All supported plate IDs should render in both ordinary and dan layouts; use synthetic profiles for rendering checks.
+For an existing local collection, reconcile the complete catalog before packaging:
+
+```sh
+bash /home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh \
+  /opt/taiko-bot/current/bin/python -I scripts/readiness/reconcile-nameplates.py \
+  INPUT.zip /home/sigaer/taiko/assets/name_plate /var/tmp/taiko-nameplate-reconcile-preview
+```
+
+This stages every canonical ordinary/dan image using existing validated PNGs, writes a URL/hash/dimension inventory, and reports obsolete title-ID filenames. It makes no network requests. A missing canonical image can be recovered from its matching old alias. Conflicting content, invalid images or symlinks stop the operation. After reviewing the report, repeat with a fresh staging directory and `--apply` to publish missing canonical files and remove only confirmed obsolete aliases whose contents match the canonical image. Correct current IDs, derived backgrounds and unrelated resources are preserved. Do not blindly rename IDs or redownload the whole collection.
+
+Rebuild the nameplate archive and total bundle with `scripts/build_open_resource_archives.sh nameplate` under the bounded build wrapper, then verify the Viewer manifest and bundle endpoints. This scope preserves the other individual resource archives. Confirm every canonical file and hash in both archives and that obsolete names are absent. All supported plate IDs should render in both ordinary and dan layouts; use synthetic profiles for rendering checks.
