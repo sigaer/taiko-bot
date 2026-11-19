@@ -36,8 +36,10 @@ def capture_current_measurement(store):
     must not turn an already committed source mutation into a failed retry.
     """
     try:
-        from taiko_bot.runtime.player.center.daily_ability import capture_snapshot
+        # Cold imports can initialize plugin loggers. Keep those diagnostics
+        # on stderr too; stdout is the bridge's strict JSON response channel.
         with redirect_stdout(sys.stderr):
+            from taiko_bot.runtime.player.center.daily_ability import capture_snapshot
             current = store.reader().decoded()
             capture_snapshot(store.identity, current.get('songs', []), datetime.now(),
                              userdata_dir=store.root, publication_store=store)
