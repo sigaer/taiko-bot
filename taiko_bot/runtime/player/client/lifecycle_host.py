@@ -120,9 +120,6 @@ from .messages import send_text_reply
 
 import shlex
 
-import threading
-
-import time
 
 from taiko_bot.userdata_provider import update_userdata_cache_from_payload
 
@@ -661,35 +658,6 @@ def _execute_hiroba_update(
         "message": str(payload.get("message") or "Hiroba 更新成功！"),
         "image": img_buf,
     }
-
-def _create_hiroba_progress_reporter(
-    matcher: Matcher,
-    event: MessageEvent,
-    *,
-    min_interval: float = 8.0,
-):
-    loop = asyncio.get_running_loop()
-    lock = threading.Lock()
-    state = {"last_ts": 0.0, "last_msg": ""}
-
-    def report(message: str, *, force: bool = False) -> None:
-        text = str(message or "").strip()
-        if not text:
-            return
-        now = time.monotonic()
-        with lock:
-            if not force and text == state["last_msg"]:
-                return
-            if not force and now - state["last_ts"] < min_interval:
-                return
-            state["last_ts"] = now
-            state["last_msg"] = text
-        asyncio.run_coroutine_threadsafe(
-            _send_text_reply_without_finish(matcher, event, text),
-            loop,
-        )
-
-    return report
 
 async def _finish_hiroba_update_success_reply(
     matcher: Matcher,

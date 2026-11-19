@@ -115,8 +115,6 @@ from .messages import send_text_reply
 
 import shlex
 
-import threading
-
 import time
 
 from .taiko_update_cooldown import try_acquire_taiko_update_slot
@@ -754,114 +752,6 @@ def _execute_hiroba_bind(identity_key: str, email: str, password: str, target: s
         except Exception:
             break
     return result, synced
-
-def _create_hiroba_progress_reporter(
-    matcher: Matcher,
-    event: MessageEvent,
-    *,
-    min_interval: float = 8.0,
-    send_timeout: float = 15.0,
-):
-    loop = asyncio.get_running_loop()
-    lock = threading.Lock()
-    state = {
-        "last_ts": 0.0,
-        "last_msg": "",
-        "pending_future": None,
-        "midpoint_sent": False,
-    }
-    is_qq_group = is_qq_official_group_event(event)
-
-    def _reply_debug_context() -> Dict[str, Any]:
-        event_id = str(
-            getattr(event, "id", None) or getattr(event, "event_id", None) or ""
-        ).strip()
-        return {
-            "event_type": event.__class__.__name__,
-            "event_id": event_id,
-            "group_openid": str(getattr(event, "group_openid", "") or "").strip(),
-            "user_id": (
-                str(event.get_user_id() or "").strip()
-                if hasattr(event, "get_user_id")
-                else ""
-            ),
-            "reply_seq": getattr(event, "_reply_seq", None),
-        }
-
-    async def _send_progress_text(text: str) -> None:
-        debug_ctx = _reply_debug_context()
-        logger.info("hiroba progress reply start: text=%s context=%s", text, debug_ctx)
-        started = time.monotonic()
-        await asyncio.wait_for(
-            _send_text_reply_without_finish(matcher, event, text),
-            timeout=send_timeout,
-        )
-        logger.info(
-            "hiroba progress reply sent: text=%s elapsed_ms=%s context=%s",
-            text,
-            int((time.monotonic() - started) * 1000),
-            _reply_debug_context(),
-        )
-
-    def _handle_progress_future_done(future, text: str) -> None:
-        try:
-            future.result()
-        except Exception as exc:
-            logger.warning(
-                "hiroba progress reply failed: text=%s context=%s error=%s",
-                text,
-                _reply_debug_context(),
-                exc,
-            )
-
-    def _should_forward_progress_text(text: str) -> bool:
-        if not is_qq_group:
-            return True
-        if text.startswith("已识别 "):
-            return True
-        if text == "同步完成":
-            return False
-        if text.startswith("正在拉取谱面详情 "):
-            match = re.search(r"(\d+)\s*/\s*(\d+)", text)
-            if not match:
-                return False
-            completed = int(match.group(1))
-            total = max(1, int(match.group(2)))
-            if state["midpoint_sent"]:
-                return False
-            if completed < max(1, total // 2):
-                return False
-            state["midpoint_sent"] = True
-            return True
-        return True
-
-    def report(message: str, *, force: bool = False) -> None:
-        text = str(message or "").strip()
-        if not text:
-            return
-        now = time.monotonic()
-        with lock:
-            if not _should_forward_progress_text(text):
-                return
-            if not force and text == state["last_msg"]:
-                return
-            if not force and now - state["last_ts"] < min_interval:
-                return
-            pending_future = state.get("pending_future")
-            if pending_future is not None and not pending_future.done():
-                return
-            state["last_ts"] = now
-            state["last_msg"] = text
-            future = asyncio.run_coroutine_threadsafe(
-                _send_progress_text(text),
-                loop,
-            )
-            state["pending_future"] = future
-        future.add_done_callback(
-            lambda done, _text=text: _handle_progress_future_done(done, _text)
-        )
-
-    return report
 
 async def _finish_hiroba_update_success_reply(
     matcher: Matcher,

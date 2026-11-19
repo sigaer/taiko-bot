@@ -55,7 +55,6 @@ def test_hiroba_update_private_keeps_changes_image(monkeypatch):
     monkeypatch.setattr(taiko, "_get_current_bind_taiko_id", lambda _entry: "644046058331")
     monkeypatch.setattr(taiko, "_infer_bind_source", lambda *_args, **_kwargs: "hiroba")
     monkeypatch.setattr(taiko, "peek_hiroba_sync_cooldown", lambda _taiko: None)
-    monkeypatch.setattr(taiko, "_create_hiroba_progress_reporter", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(
         taiko,
         "_send_text_reply_without_finish",
@@ -92,7 +91,6 @@ def test_hiroba_update_group_keeps_changes_image(monkeypatch):
     monkeypatch.setattr(taiko, "_get_current_bind_taiko_id", lambda _entry: "644046058331")
     monkeypatch.setattr(taiko, "_infer_bind_source", lambda *_args, **_kwargs: "hiroba")
     monkeypatch.setattr(taiko, "peek_hiroba_sync_cooldown", lambda _taiko: None)
-    monkeypatch.setattr(taiko, "_create_hiroba_progress_reporter", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(
         taiko,
         "_send_text_reply_without_finish",

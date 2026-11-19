@@ -2,7 +2,7 @@ from __future__ import annotations
 from . import lifecycle_host as host
 from ..lifecycle_authority import lifecycle_boundary, delivery_for
 
-from .lifecycle_host import (BIND_VERIFY_SESSIONS, BIND_VERIFY_TIMEOUT_SECONDS, HirobaError, HirobaProfilePrivateError, ManualAccountApiError, MessageEvent, RegexMatched, ViewerClientError, _SETTINGS, _bind_title_changed, _build_bind_profile_from_hiroba_public_profile, _build_bind_title_unchanged_message, _build_bind_verify_prompt, _build_update_command_hint, _can_direct_bind_hiroba_id, _center_bind_info_to_entry, _create_hiroba_progress_reporter, _execute_hiroba_update, _extract_bind_title_info, _fetch_bind_player_profile, _fetch_hiroba_public_profile_via_service_account, _finalize_bind_verification, _finalize_bind_without_verification, _finalize_hiroba_direct_bind, _finish_hiroba_update_success_reply, _finish_text_reply, _format_multi_bind_summary, _get_bind_delete_confirm_session, _get_bind_verify_session, _get_current_bind_entry, _get_current_bind_taiko_id, _get_taiko_bind_info_from_center, _infer_bind_source, _is_hiroba_taiko_no, _is_private_message_event, _is_wahlap_taiko_id, _migrate_bind_from_legacy_qq, _normalize_bind_input, _normalize_identity_key, _now_ts, _remove_bind_record, _resolve_bound_taiko_id, _resolve_requested_identity_key, _send_text_reply_without_finish, _set_taiko_bind_visibility, _should_skip_bind_verification, _switch_bind_record, _taiko_bind_usage_message, asyncio, bind_hiroba_credentials, call_manual_account_api, extract_plain_text, get_identity_key, on_fullmatch, on_regex, re, taiko_rule)
+from .lifecycle_host import (BIND_VERIFY_SESSIONS, BIND_VERIFY_TIMEOUT_SECONDS, HirobaError, HirobaProfilePrivateError, ManualAccountApiError, MessageEvent, RegexMatched, ViewerClientError, _SETTINGS, _bind_title_changed, _build_bind_profile_from_hiroba_public_profile, _build_bind_title_unchanged_message, _build_bind_verify_prompt, _build_update_command_hint, _can_direct_bind_hiroba_id, _center_bind_info_to_entry, _execute_hiroba_update, _extract_bind_title_info, _fetch_bind_player_profile, _fetch_hiroba_public_profile_via_service_account, _finalize_bind_verification, _finalize_bind_without_verification, _finalize_hiroba_direct_bind, _finish_hiroba_update_success_reply, _finish_text_reply, _format_multi_bind_summary, _get_bind_delete_confirm_session, _get_bind_verify_session, _get_current_bind_entry, _get_current_bind_taiko_id, _get_taiko_bind_info_from_center, _infer_bind_source, _is_hiroba_taiko_no, _is_private_message_event, _is_wahlap_taiko_id, _migrate_bind_from_legacy_qq, _normalize_bind_input, _normalize_identity_key, _now_ts, _remove_bind_record, _resolve_bound_taiko_id, _resolve_requested_identity_key, _send_text_reply_without_finish, _set_taiko_bind_visibility, _should_skip_bind_verification, _switch_bind_record, _taiko_bind_usage_message, asyncio, bind_hiroba_credentials, call_manual_account_api, extract_plain_text, get_identity_key, on_fullmatch, on_regex, re, taiko_rule)
 
 qq_migration_code = on_fullmatch("迁移验证码", rule=taiko_rule)
 
@@ -288,11 +288,6 @@ async def bind_hiroba_handle(event: MessageEvent, match=RegexMatched()):
         return
 
     try:
-        await _send_text_reply_without_finish(
-            bind_hiroba,
-            event,
-            "开始绑定 Hiroba 账号",
-        )
         bind_result = await asyncio.to_thread(
             bind_hiroba_credentials,
             email=email,
@@ -360,18 +355,11 @@ async def hiroba_update_handle(event: MessageEvent):
         )
         return
 
-    progress = _create_hiroba_progress_reporter(hiroba_update, event)
-    await _send_text_reply_without_finish(
-        hiroba_update,
-        event,
-        "开始通过 Hiroba 更新当前绑定账号成绩",
-    )
     update_result = await asyncio.to_thread(
         _execute_hiroba_update,
         taiko_id,
         show_all_changes=show_all_changes,
         include_changes_image=True,
-        progress=progress,
     )
     if not update_result.get("ok"):
         await _finish_text_reply(
