@@ -68,6 +68,7 @@ fi
 for _ in $(seq 1 45); do
   if curl -fsS --max-time 2 http://127.0.0.1:37564/internal/bot-pool >/dev/null; then
     echo "Taiko $version active from $release"
+    /usr/bin/python3 "$root/scripts/prune_releases.py" "$version" --apply
     exit 0
   fi
   sleep 1

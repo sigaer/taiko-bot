@@ -10,17 +10,40 @@ from taiko_bot.offline.nameplate_import import MODULE_MARKER, parse_nameplate_as
 
 
 def service(rows):
-    return MODULE_MARKER + " var o=" + json.dumps(rows) + ';},"./next"'
+    encoded = json.dumps(rows).replace(': true', ': !0').replace(': false', ': !1')
+    return MODULE_MARKER + " var o=" + encoded + ';},"./next"'
 
 
 def test_shared_official_images_keep_game_ids_and_dan_variants():
     base = "https://taiko-file.gzheyoukeji.com/tk/dev/material/title/"
-    rows = [{"id": plate_id, "icon": base + "shared.png", "dan_icon": base + "shared_dan.png"}
+    rows = [{"id": plate_id, "special": True, "icon": base + "shared.png", "dan_icon": base + "shared_dan.png"}
             for plate_id in (100, 101, 102)]
     assets = parse_nameplate_assets(service(rows))
     assert set(assets) == {f"{prefix}{plate_id}.png" for plate_id in (100, 101, 102)
                            for prefix in ("name_plate_", "name_plate_dani_")}
     assert assets["name_plate_101.png"] == assets["name_plate_100.png"]
+
+
+def test_collaboration_plate_uses_equipped_background_id():
+    base = "https://taiko-file.gzheyoukeji.com/title/"
+    assets = parse_nameplate_assets(service([
+        {"id": 947, "rarity": 14, "special": True,
+         "icon": base + "sister.png", "dan_icon": base + "sister_dan.png"},
+        {"id": 1418, "rarity": 69, "special": True,
+         "icon": base + "2025.png", "dan_icon": base + "2025_dan.png"},
+    ]))
+    assert set(assets) == {"name_plate_14.png", "name_plate_dani_14.png",
+                           "name_plate_69.png", "name_plate_dani_69.png"}
+    assert assets["name_plate_14.png"].endswith("/sister.png")
+
+
+@pytest.mark.parametrize("rarity", ["14", -1, 10001, True])
+def test_special_plate_rejects_invalid_background_id(rarity):
+    with pytest.raises(ValueError, match="Invalid nameplate ID"):
+        row = {"id": 947, "special": True}
+        if rarity is not None:
+            row["rarity"] = rarity
+        parse_nameplate_assets(service([row]))
 
 
 @pytest.mark.parametrize("rows", [
@@ -68,3 +91,29 @@ def test_nameplate_scope_updates_plate_and_total_archives_only(tmp_path):
     with zipfile.ZipFile(output / "taiko-bot-assets.zip") as archive:
         assert "name_plate/fixture.txt" in archive.namelist()
         assert "dress/fixture.txt" in archive.namelist()
+
+
+@pytest.mark.parametrize('dan', [False, True])
+def test_equipped_sister_plate_reaches_actual_personal_renderer(tmp_path, monkeypatch, dan):
+    import importlib
+    from PIL import ImageDraw, ImageFont
+    module = importlib.import_module('taiko_bot.runtime.player.center.display_support.draw_dress')
+    monkeypatch.setattr(module, 'NAME_PLATE_DIR', tmp_path)
+    plain = tmp_path / 'name_plate_14.png'
+    ranked = tmp_path / 'name_plate_dani_14.png'
+    with Image.new('RGBA', (556, 90), (20, 220, 80, 255)) as image:
+        image.save(plain)
+    with Image.new('RGBA', (556, 90), (60, 80, 230, 255)) as image:
+        image.save(ranked)
+    badge = tmp_path / 'badge.png'
+    with Image.new('RGBA', (20, 20), (240, 120, 0, 255)) as image:
+        image.save(badge)
+    monkeypatch.setattr(module, '_pick_dan_badge', lambda value: badge)
+    costume = {'titleplate_id': 14, 'title': 'Sister', 'mydon_name': 'Synthetic',
+               'is_disp_dan_on': dan, 'dan_name': {'grade': 1, 'level': 1}}
+    assert module._pick_name_plate(costume, use_dan_plate=dan) == (ranked if dan else plain)
+    with Image.new('RGBA', (499, 1100)) as image:
+        module.draw_player_info(image, ImageDraw.Draw(image), {'profile': {'gameCostume': costume}},
+                                1., 1., ImageFont.load_default(), 1, (255,255,255), (0,0,0))
+        # Background pixels away from text establish that the plate was pasted.
+        assert image.getpixel((80, 950)) == ((60,80,230,255) if dan else (20,220,80,255))

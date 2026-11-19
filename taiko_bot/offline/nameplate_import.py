@@ -30,8 +30,12 @@ def parse_nameplate_assets(service: str) -> dict[str, str]:
         raise ValueError("Invalid title mapping size")
     assets: dict[str, str] = {}
     for row in rows:
-        plate_id = row.get("id")
-        if type(plate_id) is not int or not 0 <= plate_id <= 10000:
+        title_id = row.get("id")
+        # Special rows identify a title by id; the equipped titleplate_id
+        # contains rarity, which identifies its background instead.
+        plate_id = row.get("rarity", title_id)
+        if (type(title_id) is not int or not 0 <= title_id <= 10000
+                or type(plate_id) is not int or not 0 <= plate_id <= 10000):
             raise ValueError("Invalid nameplate ID")
         for field, prefix in (("icon", "name_plate_"), ("dan_icon", "name_plate_dani_")):
             url = str(row.get(field) or "")

@@ -56,6 +56,6 @@ bash /home/sigaer/taiko/taiko-forum/scripts/memory/run_qa.sh \
   --missing-from /home/sigaer/taiko/assets/name_plate --download
 ```
 
-The importer stages both ordinary and dan variants using game IDs, including plates that share one remote image. It parses data without executing JavaScript, downloads at most four images concurrently, verifies bounded PNGs, and refuses to overwrite staged files. Review the staged images and report, then copy only verified missing files to `assets/name_plate`. Keep private assets and import reports outside Git.
+The importer stages both ordinary and dan variants using equipped background IDs, including plates that share one remote image. Rows with an explicit `rarity` use that background ID, rather than the title's `id`: for example, 悪魔の妹 has title ID 947 but equipped background ID 14. Rows without `rarity` keep using `id`. It parses data without executing JavaScript, downloads at most four images concurrently, verifies bounded PNGs, and refuses to overwrite staged files. Review the staged images and report, then copy only verified missing files to `assets/name_plate`. Keep private assets and import reports outside Git.
 
 Rebuild the nameplate archive and total bundle with `scripts/build_open_resource_archives.sh nameplate` under the bounded build wrapper, then verify the Viewer manifest and bundle endpoints. This scope preserves the other individual resource archives. All supported plate IDs should render in both ordinary and dan layouts; use synthetic profiles for rendering checks.
