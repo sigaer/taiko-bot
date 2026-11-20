@@ -172,7 +172,12 @@ def test_update_task_network_oss_write_order(old,tmp_path,monkeypatch,failure):
         monkeypatch.setattr(module,'sync_rating_structured_with_song_data',lambda rows:trace.append(('rating',)))
         monkeypatch.setattr(module,'sync_song_score_with_wiki',lambda rows:trace.append(('score',)))
         monkeypatch.setattr(module,'rebuild_scoreline_dataset',lambda path:(trace.append(('scoreline',)) or (1,1)))
-        monkeypatch.setattr(module,'refresh_title_catalog_cache',lambda:[{'subtitle':'synthetic'}])
+        if hasattr(module, 'refresh_title_relations'):
+            # The ID/API publication boundary has its own synthetic HTTP tests;
+            # keep this historical ordering comparison about the song pipeline.
+            monkeypatch.setattr(module, 'refresh_title_relations', lambda: trace.append(('command', 'python', 'title-relations')))
+        else:
+            monkeypatch.setattr(module,'refresh_title_catalog_cache',lambda:[{'subtitle':'synthetic'}])
         monkeypatch.setattr(module,'clear_song_title_showcase_caches',lambda:trace.append(('clear',)))
         if failure is None:
             module.update_taiko_music(interactive=False)

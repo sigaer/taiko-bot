@@ -71,10 +71,7 @@ except Exception:
         load_song_tja_mapping,
         refresh_song_tja_mapping,
     )
-try:
-    from taiko_bot.runtime.player.center.title_catalog import refresh_title_catalog_cache
-except Exception:
-    from title_catalog import refresh_title_catalog_cache
+from taiko_bot.offline.title_update import refresh_title_relations
 try:
     from taiko_bot.runtime.player.center.song_title_showcase import clear_song_title_showcase_caches
 except Exception:
@@ -104,16 +101,6 @@ OSS_PURE_AUDIO_PREFIX = "oss://sigaer/pure"
 AUDIO_MISSING_REPORT_PATH = Path(str(_runtime_root() / 'logs/audio_missing_report.json'))
 SCORE_PATH = Path(str(_runtime_root() / 'songs/song_score.json'))
 SCORELINE_DATA_PATH = Path(str(_runtime_root() / 'songs/taiko_goku_onis.json'))
-TITLE_CATALOG_CACHE_PATH = Path(str(_runtime_root() / 'data/title_catalog_cache.json'))
-TITLE_RELATIONS_INPUT_PATH = Path(
-    str(_runtime_root() / 'taiko-forum/taiko_viewer/assets/data/title_wikitable.json')
-)
-TITLE_RELATIONS_OUTPUT_PATH = Path(
-    str(_runtime_root() / 'taiko-forum/taiko_viewer/assets/data/title_song_relations.json')
-)
-TITLE_RELATIONS_SCRIPT_PATH = Path(
-    str(_runtime_root() / 'taiko-forum/taiko_viewer/scripts/extract_title_song_relations.py')
-)
 
 SHELF_STATUS_UP = 0
 SHELF_STATUS_DOWN = 1
@@ -2560,35 +2547,7 @@ def update_taiko_music(interactive=True):
             logger.info("谱面图片资源包已更新")
     except Exception:
         logger.exception("谱面资源包更新失败，保留重试标记继续更新")
-    title_items = refresh_title_catalog_cache()
-    if not title_items:
-        raise ValueError("称号目录缓存刷新失败：all/title 未返回有效数据")
-    visible_conditions = sum(
-        1
-        for item in title_items
-        if isinstance(item, dict) and str(item.get("subtitle") or "").strip() not in {"", "???", "？？？"}
-    )
-    logger.info(
-        "称号目录缓存刷新完成: total=%d visible=%d cache=%s",
-        len(title_items),
-        visible_conditions,
-        ROOT_DIR / "data" / "title_catalog_cache.json",
-    )
-    subprocess.run(
-        [
-            sys.executable,
-            str(TITLE_RELATIONS_SCRIPT_PATH),
-            "--input",
-            str(TITLE_RELATIONS_INPUT_PATH),
-            "--output",
-            str(TITLE_RELATIONS_OUTPUT_PATH),
-            "--title-catalog",
-            str(TITLE_CATALOG_CACHE_PATH),
-        ],
-        check=True,
-        cwd=str(TITLE_RELATIONS_SCRIPT_PATH.parent.parent),
-    )
-    logger.info("称号关系文件重建完成: %s", TITLE_RELATIONS_OUTPUT_PATH)
+    refresh_title_relations()
     clear_song_title_showcase_caches()
     logger.info("称号展示缓存已清理")
 
