@@ -9,6 +9,7 @@ import httpx
 
 API_URL = "https://fanmade.ourtaiko.org/api/v1/charts"
 SITE_URL = "https://fanmade.ourtaiko.org"
+PAGE_SIZE = 12
 COMMAND_PATTERN = r"^/?(?:(?:taiko|太鼓)\s+)?查自制(?P<args>.*)$"
 COMMAND = re.compile(COMMAND_PATTERN, re.I | re.S)
 USAGE = "用法：查自制 关键词\n翻页：查自制 关键词 第2页"
@@ -44,7 +45,9 @@ async def search(keyword: str, page: int = 1) -> dict:
         # The overall deadline also bounds slow streams and connection setup.
         async with asyncio.timeout(12):
             async with httpx.AsyncClient(timeout=8) as client:
-                async with client.stream("GET", API_URL, params={"q": keyword, "page": page}) as response:
+                async with client.stream("GET", API_URL, params={
+                    "q": keyword, "page": page, "pageSize": PAGE_SIZE,
+                }) as response:
                     response.raise_for_status()
                     body = bytearray()
                     async for chunk in response.aiter_bytes():
@@ -63,7 +66,7 @@ def validate_result(payload: object, page: int) -> None:
         raise ValueError("invalid fanmade result")
     if any(type(payload.get(key)) is not int for key in ("total", "page", "pageSize")):
         raise ValueError("invalid fanmade pagination")
-    if payload["total"] < 0 or payload["page"] != page or not 1 <= payload["pageSize"] <= 20:
+    if payload["total"] < 0 or payload["page"] != page or not 1 <= payload["pageSize"] <= PAGE_SIZE:
         raise ValueError("invalid fanmade pagination")
     items = payload.get("items")
     if not isinstance(items, list) or len(items) > payload["pageSize"]:

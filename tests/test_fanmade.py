@@ -45,7 +45,7 @@ def mock_http(monkeypatch, handler):
 def test_api_encoding_and_pagination(monkeypatch):
     def handler(request):
         assert str(request.url).startswith(fanmade.API_URL + "?")
-        assert dict(request.url.params) == {"q": "神 & ?#1", "page": "2"}
+        assert dict(request.url.params) == {"q": "神 & ?#1", "page": "2", "pageSize": "12"}
         return httpx.Response(200, json=result(page=2))
     mock_http(monkeypatch, handler)
     data = asyncio.run(fanmade.search("神 & ?#1", 2))
@@ -54,6 +54,22 @@ def test_api_encoding_and_pagination(monkeypatch):
     assert "测试谱师" in text and "魔王★10" in text and "里谱双打P1★9" in text
     assert fanmade.SITE_URL + "/charts/" + "a" * 32 in text
     assert "下一页" not in text
+
+
+def test_api_default_page_size_does_not_break_search(monkeypatch):
+    def handler(request):
+        # OurTaiko defaults to 24; the bot must request a smaller reply page.
+        size = int(request.url.params.get("pageSize", "24"))
+        payload = result(total=25)
+        payload.update(pageSize=size, items=payload["items"] * size)
+        return httpx.Response(200, json=payload)
+    mock_http(monkeypatch, handler)
+    payload = asyncio.run(fanmade.search("神威"))
+    assert len(payload["items"]) == 12
+    text = fanmade.format_result("神威", payload)
+    assert "第 1/3 页" in text
+    assert "下一页：查自制 神威 第2页" in text
+    assert len(text) < 3500
 
 
 @pytest.mark.parametrize("mode", ["503", "timeout", "json", "schema", "oversize", "difficulty"])

@@ -34,7 +34,9 @@ async def fanmade_handle(matcher: Matcher, event: Event):
     try:
         result = await fanmade.search(keyword, page)
         text = fanmade.format_result(keyword, result)
-    except fanmade.FanmadeUnavailable:
-        logger.warning("OurTaiko fanmade search unavailable")
+    except fanmade.FanmadeUnavailable as exc:
+        cause = exc.__cause__
+        logger.warning("OurTaiko fanmade search unavailable: {}: {}",
+                       type(cause).__name__, str(cause)[:200])
         text = "自制谱搜索服务暂时不可用，请稍后再试。"
     await reply(matcher, event, text)
