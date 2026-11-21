@@ -120,3 +120,13 @@ To reproduce frozen comparisons, prepare an external directory with
 `TAIKO_FROZEN_BASELINE_ROOT` inside the bounded QA command and run `pytest tests/offline`.
 Install the wheel into a separate center/client environment for package delivery checks.
 Do not run these tests against an existing runtime working directory.
+
+## ESE host prerequisites
+
+The managed ESE checkout requires Git LFS as well as Git. Its OGG entries are
+LFS pointers in Git; the audio must be materialized before conversion or
+serving a TJA/audio archive. Install a supported Git LFS client and initialize
+its Git filters for the updater's OS user (or the managed checkout). Keep
+transfers bounded; the production mirror uses two concurrent transfers.
+The updater's PATH must include that client and the pinned Viewer Node 24
+runtime. Missing media is not fixed by allowing unrelated-history merges.
