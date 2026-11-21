@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import pytest
+import requests
 
 from taiko_bot.offline import song_tja_mapping
 
@@ -70,3 +71,42 @@ def test_refresh_does_not_replace_cache_with_truncated_mapping(
         )
 
     assert json.loads(cache.read_text(encoding="utf-8")) == {"1": "old.tja"}
+
+
+def test_mapping_timeout_uses_configured_mihomo_before_publishing(tmp_path, monkeypatch):
+    monkeypatch.setenv("MIHOMO_PROXY", "http://127.0.0.1:33233")
+    calls = []
+
+    class Response:
+        def raise_for_status(self): pass
+        def json(self): return {"7": "new.tja"}
+
+    def get(url, **kwargs):
+        calls.append(kwargs)
+        if len(calls) == 1:
+            raise requests.ReadTimeout("interrupted response")
+        return Response()
+
+    monkeypatch.setattr(song_tja_mapping.requests, "get", get)
+    cache = tmp_path / "mapping.json"
+    assert song_tja_mapping.refresh_song_tja_mapping(path=cache, minimum_entries=1) == {7: "new.tja"}
+    assert calls[0]["proxies"]["https"] == ""
+    assert calls[1]["proxies"]["https"] == "http://127.0.0.1:33233"
+    assert calls[0]["timeout"] == (5, 15)
+
+
+def test_both_routes_failing_preserves_last_good_mapping(tmp_path, monkeypatch):
+    monkeypatch.setenv("MIHOMO_PROXY", "http://127.0.0.1:33233")
+    cache = tmp_path / "mapping.json"
+    cache.write_text('{"1":"old.tja"}')
+    calls = []
+
+    def get(*args, **kwargs):
+        calls.append(kwargs)
+        raise requests.ConnectTimeout("unavailable")
+
+    monkeypatch.setattr(song_tja_mapping.requests, "get", get)
+    with pytest.raises(requests.ConnectTimeout):
+        song_tja_mapping.refresh_song_tja_mapping(path=cache, minimum_entries=1)
+    assert len(calls) == 2
+    assert json.loads(cache.read_text()) == {"1": "old.tja"}

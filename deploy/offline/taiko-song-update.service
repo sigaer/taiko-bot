@@ -7,6 +7,8 @@ After=network-online.target
 Type=simple
 WorkingDirectory=/home/sigaer/taiko
 Environment=PYTHONUNBUFFERED=1
+Environment=MIHOMO_PROXY=http://127.0.0.1:33233
+Environment=PATH=/opt/taiko-viewer-runtime/node-v24.22.1-linux-x64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ExecStart=/opt/taiko-bot/current/bin/python -I -m taiko_bot.offline.song_update_task
 Restart=always
 RestartSec=10

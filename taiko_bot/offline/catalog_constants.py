@@ -42,6 +42,8 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
     payload = json.loads(output.read_text()) if output.exists() else {"constants": {}, "provenance": {}, "attempts": {}}
     constants, provenance = payload["constants"], payload["provenance"]
     attempts = payload.setdefault("attempts", {})
+    retry_ids = {str(issue["id"]) for issue in payload.get("issues", [])
+                 if issue.get("reason") not in ("missing_or_mismatched_single_course", "note_count_mismatch")}
     existing_rows = list(csv.DictReader(csv_path.open(encoding="utf-8-sig", newline=""))) if csv_path.exists() else []
     existing = {(int(r["id"]), r["difficulty"]) for r in existing_rows}
     calibration = hashlib.sha256((calculator.parent / "Constants/cached_computing_parameters.json").read_bytes()).hexdigest()
@@ -51,6 +53,9 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
     node = shutil.which("node")
     if not node:
         raise RuntimeError("Node is required for the pinned TJA analyzer")
+    local_candidates = local_indexes = None
+    mapping_path = output.parent / "song_id2tjapath.json"
+    mapping = json.loads(mapping_path.read_text()) if mapping_path.is_file() else {}
     for song in catalog:
         if any(str(song.get(field, "")).startswith("【双打】") for field in ("song_name", "song_name_jp")):
             continue
@@ -59,11 +64,30 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
         from .catalog_downloads import catalog_resource_root
         source_root = catalog_resource_root(song, tja_root, runtime_root=output.parent.parent)
         path = safe_resource(source_root, song.get("tja_path"))
+        if wanted and path is None and song.get("resource_source") != "ourtaiko":
+            path = safe_resource(tja_root, mapping.get(sid))
+            if path is None:
+                from . import merge_index
+                if local_candidates is None:
+                    local_candidates = []
+                    for candidate_path in merge_index.find_tja_files(str(tja_root)):
+                        try:
+                            local_candidates.append(merge_index.build_candidate_summary(candidate_path, tja_root))
+                        except Exception:
+                            continue
+                    local_indexes = merge_index.build_candidate_indexes(local_candidates)
+                candidate, decision = merge_index.select_candidate(song, local_candidates, *local_indexes, tja_root)
+                if candidate is not None:
+                    exact, normalized, base = merge_index.build_song_keys(song)
+                    if (decision.get("reason") == "manual_override" or exact & candidate.exact_aliases
+                            or normalized & candidate.normalized_aliases or base & candidate.base_normalized_titles):
+                        path = Path(candidate.path)
         if not wanted or path is None:
             continue
+        relative_path = path.relative_to(source_root.resolve()).as_posix()
         data = path.read_bytes()
         signature = hashlib.sha256(data + calibration.encode() + json.dumps({d: [song.get(f"level_{i}"), (song.get("max_combo") or [None]*5)[i-1]] for d,i in wanted.items()}, sort_keys=True).encode()).hexdigest()
-        if attempts.get(sid) == signature:
+        if attempts.get(sid) == signature and sid not in retry_ids:
             continue
         if limit and processed >= limit:
             break
@@ -74,7 +98,8 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
             levels = single_levels(read_tja_text(str(path)))
             result = module.calculate(data, node)
             charts = result.get("charts", [])
-            source = provenance.setdefault(sid, {"tjaPath": song["tja_path"], "tjaSha256": hashlib.sha256(data).hexdigest(), "charts": {}})
+            source = provenance.setdefault(sid, {"tjaPath": relative_path, "tjaSha256": hashlib.sha256(data).hexdigest(), "charts": {}})
+            accepted = False
             for difficulty, index in wanted.items():
                 candidates = [c for c in charts if c.get("course") in (difficulty, difficulty + "_single") and c.get("branch") in ("master", "unbranched") and "constants" in c]
                 candidates.sort(key=lambda c: c["branch"] != "master")
@@ -94,12 +119,17 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
                 existing_rows.append({"id": sid, "title": song.get("song_name_jp") or song["song_name"], "difficulty": difficulty, **values})
                 existing.add((int(sid), difficulty))
                 generated += 1
+                accepted = True
+            if accepted:
+                song["tja_path"] = relative_path
             # Only fill empty note counts. Existing catalog values stay intact.
             fill_missing_note_counts(song, charts, levels)
             attempts[sid] = signature
         except Exception as exc:
             issues.append({"id": int(sid), "reason": str(exc)[:120] or type(exc).__name__})
-            attempts[sid] = signature
+            # A timeout or unavailable runtime is retryable on the next daily
+            # run; only completed chart-identity checks may suppress a retry.
+            attempts.pop(sid, None)
         if processed % 25 == 0:
             print(f"Calculated {processed} songs, added {generated} charts", flush=True)
     issues = [issue for issue in payload.get("issues", []) if issue["id"] not in processed_ids] + issues

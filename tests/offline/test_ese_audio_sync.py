@@ -1,10 +1,52 @@
 from __future__ import annotations
 
 import subprocess
+import pytest
 from pathlib import Path
 
 from taiko_bot.offline import branch_audio_manifest
 from taiko_bot.offline import ese_audio_sync
+
+
+def test_failed_fetch_never_resets_managed_mirror(tmp_path, monkeypatch):
+    monkeypatch.delenv("MIHOMO_PROXY", raising=False)
+    commands = []
+    def fail(cmd, *args, **kwargs):
+        commands.append(cmd)
+        raise RuntimeError("network request failed")
+    monkeypatch.setattr(ese_audio_sync, "_run_repo_git", fail)
+    with pytest.raises(RuntimeError, match="network request failed"):
+        ese_audio_sync._update_managed_snapshot(tmp_path)
+    assert len(commands) == 1 and commands[0][1] == "fetch"
+
+
+def test_git_fetch_retries_through_mihomo_without_proxy_in_command(tmp_path, monkeypatch):
+    proxy = "http://127.0.0.1:33233"
+    monkeypatch.setenv("MIHOMO_PROXY", proxy)
+    calls = []
+    def run(cmd, *args, **kwargs):
+        calls.append((cmd, kwargs))
+        if len(calls) == 1:
+            raise RuntimeError("network request failed")
+        return subprocess.CompletedProcess(cmd, 0, stdout="abc\n", stderr="")
+    monkeypatch.setattr(ese_audio_sync, "_run_repo_git", run)
+    assert ese_audio_sync._update_managed_snapshot(tmp_path) is None
+    assert calls[1][1]["env"]["https_proxy"] == proxy
+    assert all(proxy not in " ".join(cmd) for cmd, _ in calls)
+
+
+def test_history_recovery_refuses_worktree_changes(tmp_path, monkeypatch):
+    commands = []
+    def run(cmd, *args, **kwargs):
+        commands.append(cmd)
+        if cmd[1] == "merge":
+            raise RuntimeError("fatal: refusing to merge unrelated histories")
+        return subprocess.CompletedProcess(cmd, 0, stdout="abc\n", stderr="")
+    monkeypatch.setattr(ese_audio_sync, "_run_repo_git", run)
+    monkeypatch.setattr(ese_audio_sync, "_inspect_git_repo", lambda p: {"status": " M chart.tja"})
+    with pytest.raises(RuntimeError, match="preserving the worktree"):
+        ese_audio_sync._update_managed_snapshot(tmp_path)
+    assert all(cmd[1] not in ("reset", "update-ref") for cmd in commands)
 
 
 def test_run_repo_git_recovers_from_stale_index_lock(tmp_path: Path, monkeypatch):

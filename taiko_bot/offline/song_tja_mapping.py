@@ -9,6 +9,7 @@ from sakura_taiko_core.parser.tja_mapping import (
 
 
 import json
+import logging
 import os
 import tempfile
 from pathlib import Path, PurePosixPath
@@ -25,6 +26,26 @@ DEFAULT_MAPPING_URL = (
 )
 DEFAULT_MAPPING_PATH = ROOT_DIR / "songs/song_id2tjapath.json"
 MIN_EXPECTED_MAPPING_COUNT = 1000
+logger = logging.getLogger(__name__)
+
+
+def _download_mapping(url: str, timeout: float):
+    proxy = os.environ.get("MIHOMO_PROXY") or os.environ.get("HTTPS_PROXY") or os.environ.get("HTTP_PROXY")
+    direct = {"http": "", "https": "", "all": ""}
+    routes = [("direct", direct), ("mihomo", {"http": proxy, "https": proxy})] if proxy else [("direct", direct), ("direct-retry", direct)]
+    request_timeout = (min(5.0, timeout), min(15.0, timeout))
+    for index, (name, proxies) in enumerate(routes):
+        try:
+            response = requests.get(url, timeout=request_timeout, proxies=proxies)
+            response.raise_for_status()
+            return response.json()
+        except requests.RequestException as exc:
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            if status is not None and status < 500 and status not in (408, 429):
+                raise
+            if index == len(routes) - 1:
+                raise
+            logger.warning("TJA mapping %s request failed (%s); trying %s", name, type(exc).__name__, routes[index + 1][0])
 
 
 def load_song_tja_mapping(path: Path = DEFAULT_MAPPING_PATH) -> Dict[int, str]:
@@ -57,9 +78,7 @@ def refresh_song_tja_mapping(
     timeout: float = 30.0,
     minimum_entries: int = MIN_EXPECTED_MAPPING_COUNT,
 ) -> Dict[int, str]:
-    response = requests.get(url, timeout=timeout)
-    response.raise_for_status()
-    mapping = normalize_song_tja_mapping(response.json())
+    mapping = normalize_song_tja_mapping(_download_mapping(url, timeout))
     if len(mapping) < minimum_entries:
         raise ValueError(
             f"remote song_id2tjapath has only {len(mapping)} entries; "

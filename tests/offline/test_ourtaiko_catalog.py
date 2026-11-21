@@ -125,3 +125,37 @@ def test_constants_only_append_missing_rows_and_validate_chart_identity(tmp_path
     assert songs[1]["max_combo"][3] == 100 and songs[2]["max_combo"][3] == 101
     payload = json.loads((tmp_path / "supplement.json").read_text())
     assert payload["issues"][0]["reason"] == "note_count_mismatch"
+
+
+def test_constants_discovers_new_ese_chart_only_after_title_level_and_notes_match(tmp_path):
+    import json
+    from taiko_bot.offline.catalog_constants import FIELDS, fill_constants
+    model = tmp_path / "Constants"
+    model.mkdir()
+    (model / "cached_computing_parameters.json").write_text("{}")
+    values = {key: 6.0 for key in FIELDS[4:]}
+    calculator = tmp_path / "calculate.py"
+    calculator.write_text("def calculate(data, node):\n    return " + repr({"charts": [{"course": "oni", "branch": "unbranched", "totalNotes": 100, "constants": values}]}))
+    (tmp_path / "new.tja").write_text("TITLE:New Song\nBPM:120\nCOURSE:Oni\nLEVEL:8\n#START\n" + "1"*100 + ",\n#END\n")
+    songs = [{"id":sid,"song_name":name,"level_4":level,"max_combo":["-"]*3+[notes,"-"]}
+             for sid,name,level,notes in [(1,"New Song",8,100),(2,"New Song extended",8,100),(3,"New Song",9,100),(4,"New Song",8,101)]]
+    result = fill_constants(songs, output=tmp_path / "supplement.json", csv_path=tmp_path / "constants.csv", calculator=calculator, tja_root=tmp_path)
+    assert result["addedCharts"] == 1
+    assert songs[0]["tja_path"] == "new.tja"
+    assert all("tja_path" not in song for song in songs[1:])
+    assert set(json.loads((tmp_path / "supplement.json").read_text())["constants"]) == {"1"}
+
+
+def test_constants_runtime_failure_is_retried_without_changing_chart(tmp_path):
+    from taiko_bot.offline.catalog_constants import FIELDS, fill_constants
+    (tmp_path / "Constants").mkdir()
+    (tmp_path / "Constants/cached_computing_parameters.json").write_text("{}")
+    (tmp_path / "chart.tja").write_text("COURSE:Oni\nLEVEL:8\n#START\n1111,\n#END\n")
+    calculator = tmp_path / "calculate.py"
+    calculator.write_text("def calculate(data, node):\n    raise RuntimeError('runtime unavailable')")
+    songs = [{"id":1,"song_name":"Test","level_4":8,"tja_path":"chart.tja","max_combo":["-"]*3+[100,"-"]}]
+    args = dict(output=tmp_path / "supplement.json", csv_path=tmp_path / "constants.csv", calculator=calculator, tja_root=tmp_path)
+    assert fill_constants(songs, **args)["addedCharts"] == 0
+    values = {key:6.0 for key in FIELDS[4:]}
+    calculator.write_text("def calculate(data, node):\n    return " + repr({"charts":[{"course":"oni","branch":"unbranched","totalNotes":100,"constants":values}]}))
+    assert fill_constants(songs, **args)["addedCharts"] == 1

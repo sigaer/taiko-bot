@@ -133,7 +133,7 @@ def _normalize_subprocess_output(value):
     return str(value)
 
 
-def _run(cmd, cwd=None, check=True, timeout=COMMAND_TIMEOUT_SECONDS):
+def _run(cmd, cwd=None, check=True, timeout=COMMAND_TIMEOUT_SECONDS, env=None):
     cmd_text = " ".join(str(part) for part in cmd)
     try:
         result = subprocess.run(
@@ -143,6 +143,7 @@ def _run(cmd, cwd=None, check=True, timeout=COMMAND_TIMEOUT_SECONDS):
             capture_output=True,
             text=True,
             timeout=timeout,
+            env=env,
         )
     except subprocess.TimeoutExpired as exc:
         stdout = _normalize_subprocess_output(exc.stdout).strip()
@@ -324,11 +325,14 @@ def _should_retry_git_with_lock_cleanup(exc: Exception, repo_path: Path):
     )
 
 
-def _run_repo_git(cmd, repo_path: Path, check=True, timeout=COMMAND_TIMEOUT_SECONDS):
+def _run_repo_git(cmd, repo_path: Path, check=True, timeout=COMMAND_TIMEOUT_SECONDS, env=None):
     last_exc = None
     for attempt in range(GIT_LOCK_RETRY_LIMIT + 1):
         try:
-            return _run(cmd, cwd=repo_path, check=check, timeout=timeout)
+            kwargs = {"cwd": repo_path, "check": check, "timeout": timeout}
+            if env is not None:
+                kwargs["env"] = env
+            return _run(cmd, **kwargs)
         except RuntimeError as exc:
             last_exc = exc
             if attempt >= GIT_LOCK_RETRY_LIMIT:
@@ -453,6 +457,39 @@ def _clone_ese_repo(repo_path: Path):
     }
 
 
+def _update_managed_snapshot(repo_path: Path):
+    # A shallow, generated mirror follows upstream snapshots. It must not merge
+    # unrelated histories or discard a local version without a recovery ref.
+    fetch = ["git", "fetch", "--filter=blob:none", "origin", ESE_BRANCH]
+    try:
+        _run_repo_git(fetch, repo_path, timeout=120)
+    except RuntimeError:
+        proxy = os.environ.get("MIHOMO_PROXY")
+        if not proxy:
+            raise
+        # Keep proxy credentials out of command text and failure logs.
+        proxy_env = dict(os.environ, http_proxy=proxy, https_proxy=proxy, HTTP_PROXY=proxy, HTTPS_PROXY=proxy)
+        _run_repo_git(fetch, repo_path, timeout=120, env=proxy_env)
+    target = _run_repo_git(["git", "rev-parse", "FETCH_HEAD^{commit}"], repo_path).stdout.strip()
+    try:
+        _run_repo_git(["git", "merge", "--ff-only", target], repo_path)
+        return None
+    except RuntimeError as exc:
+        if not any(message in str(exc).lower() for message in (
+            "unrelated histories", "not possible to fast-forward", "cannot fast-forward", "divergent branches",
+        )):
+            raise
+    state = _inspect_git_repo(repo_path)
+    if state["status"]:
+        raise RuntimeError("ESE mirror changed during fetch; preserving the worktree")
+    old = _run_repo_git(["git", "rev-parse", "HEAD"], repo_path).stdout.strip()
+    backup_ref = "refs/taiko-ese-backups/" + datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    _run_repo_git(["git", "update-ref", backup_ref, old], repo_path)
+    # --keep refuses to overwrite files edited after the clean-worktree check.
+    _run_repo_git(["git", "reset", "--keep", target], repo_path)
+    return {"previous_revision": old, "backup_ref": backup_ref}
+
+
 def _ensure_ese_repo():
     repo_notes = []
     backup_path = None
@@ -494,7 +531,9 @@ def _ensure_ese_repo():
     sparse_updated = _ensure_sparse_checkout(ESE_SYNC_REPO_PATH)
     if sparse_updated:
         repo_notes.append("已刷新 ESE 自动镜像 sparse-checkout 目录配置")
-    _run_repo_git(["git", "pull", "--ff-only", "origin", ESE_BRANCH], ESE_SYNC_REPO_PATH)
+    recovered = _update_managed_snapshot(ESE_SYNC_REPO_PATH)
+    if recovered:
+        repo_notes.append(f"镜像历史无法快进，已跟随官方快照；旧版本保存在 {recovered['backup_ref']}")
     if _ensure_sparse_checkout(ESE_SYNC_REPO_PATH):
         repo_notes.append("拉取后已重新应用 ESE 自动镜像 sparse-checkout 目录配置")
 
@@ -507,6 +546,8 @@ def _ensure_ese_repo():
         "categories": list(ESE_CATEGORY_DIRS),
         "managed_mirror": True,
     }
+    if recovered:
+        repo_info["history_recovery"] = recovered
     if backup_path is not None:
         repo_info["backup_repo_path"] = str(backup_path)
     if repo_notes:
