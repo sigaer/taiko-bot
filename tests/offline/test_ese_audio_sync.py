@@ -8,6 +8,72 @@ from taiko_bot.offline import branch_audio_manifest
 from taiko_bot.offline import ese_audio_sync
 
 
+def test_new_additions_precede_historical_audio_backfill():
+    historical = {"song": {"id": 1, "open_day": "07/12/2002"}}
+    new = {"song": {"id": 1545, "open_day": "11/19/2026"}}
+    international = {"song": {"id": 1542, "open_day": "11/21/2026"}}
+    unknown = {"song": {"id": 100001, "open_day": "-"}}
+    assert sorted([historical, unknown, new, international], key=ese_audio_sync._sync_priority) == [international, new, historical, unknown]
+
+
+def test_missing_declared_wave_never_uses_another_songs_audio(tmp_path):
+    unrelated = tmp_path / "Chaos Time.ogg"
+    unrelated.write_bytes(b"synthetic audio")
+    assert ese_audio_sync._find_music_path(tmp_path, "Bubbly.ogg") is None
+    assert ese_audio_sync._find_music_path(tmp_path, unrelated.name) == unrelated
+
+
+def test_undeclared_wave_requires_one_unambiguous_audio_file(tmp_path):
+    audio = tmp_path / "Bubbly.ogg"
+    audio.write_bytes(b"synthetic audio")
+    assert ese_audio_sync._find_music_path(tmp_path, None) == audio
+    (tmp_path / "Chaos Time.ogg").write_bytes(b"another synthetic audio")
+    assert ese_audio_sync._find_music_path(tmp_path, None) is None
+
+
+def test_full_repair_replaces_existing_audio():
+    mapping = {"1387_ONI.mp3": "Bubbly.tja_ONI.mp3"}
+    existing = {"1387_ONI.mp3"}
+    assert ese_audio_sync._required_uploads(mapping, 1387, "full", existing, existing, {"1387.mp3"}) == (
+        existing, existing, {"1387.mp3"},
+    )
+    assert ese_audio_sync._required_uploads(mapping, 1387, "incremental", existing, existing, {"1387.mp3"}) == (
+        set(), set(), set(),
+    )
+    assert ese_audio_sync._required_uploads(mapping, 1387, "incremental", set(), existing, set()) == (
+        existing, set(), {"1387.mp3"},
+    )
+
+
+def test_catalog_audio_includes_international_new_song_when_other_enabled():
+    songs = [{"id": 1, "shelf_status": 0}, {"id": 1542, "shelf_status": 1}, {"id": 100001, "shelf_status": 2}]
+    assert list(ese_audio_sync._iter_on_shelf_songs(songs)) == songs[:1]
+    assert list(ese_audio_sync._iter_on_shelf_songs(songs, include_other=True)) == songs
+
+
+def test_metadata_substring_cannot_publish_another_songs_audio(tmp_path, monkeypatch):
+    path = tmp_path / "Do-Dai.tja"
+    path.write_text("TITLE:Do-Dai\nBPM:120\nCOURSE:Oni\nLEVEL:9\n#START\n1111,\n#END\n")
+    matcher = ese_audio_sync._build_metadata_matcher(tmp_path, [ese_audio_sync._build_tja_record(path)])
+    monkeypatch.setattr(ese_audio_sync, "select_metadata_candidate", lambda *args: (matcher["candidates"][0], {"score": 400, "reason": "scored"}))
+    song = {"id": 1545, "song_name": "Kimi wa doko?", "song_name_jp": "君はドコ？", "level_4": 9, "shelf_status": 0}
+    matched, skipped = ese_audio_sync._match_songs_with_metadata([song], tmp_path, matcher)
+    assert matched == {}
+    assert len(skipped) == 1
+    assert skipped[0]["reason"] == "unverified_title"
+
+
+def test_audio_upload_overwrites_instead_of_skipping_by_mtime(tmp_path, monkeypatch):
+    calls = []
+    def run(cmd, **kwargs):
+        calls.append(cmd)
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+    monkeypatch.setattr(ese_audio_sync, "_run", run)
+    uploaded, failed = ese_audio_sync._upload_outputs("oss://synthetic/mix", {"1387_ONI.mp3": tmp_path / "audio.mp3"}, False)
+    assert len(uploaded) == 1 and failed == []
+    assert calls[0][:3] == ["ossutil", "cp", "-f"]
+
+
 def test_failed_fetch_never_resets_managed_mirror(tmp_path, monkeypatch):
     monkeypatch.delenv("MIHOMO_PROXY", raising=False)
     commands = []

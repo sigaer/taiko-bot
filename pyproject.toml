@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taiko-bot"
-version = "0.26.1"
+version = "0.26.2"
 description = "Open-source Taiko no Tatsujin NoneBot service"
 readme = "README.md"
 requires-python = ">=3.11, <4.0"
@@ -27,9 +27,11 @@ dependencies = [
     "numpy>=1.26.0",
     "pandas>=2.2.0",
     "Pillow>=10.4.0",
+    "pydub==0.25.1",
     "python-dotenv>=1.0.0",
     "redis>=5.0.0",
     "requests>=2.32.0",
+    "tqdm==4.67.1",
     "ujson>=5.10.0",
     "uvicorn>=0.30.0",
     "websockets>=12.0",

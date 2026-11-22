@@ -130,3 +130,12 @@ its Git filters for the updater's OS user (or the managed checkout). Keep
 transfers bounded; the production mirror uses two concurrent transfers.
 The updater's PATH must include that client and the pinned Viewer Node 24
 runtime. Missing media is not fixed by allowing unrelated-history merges.
+
+Audio conversion uses the installed release's Python, with `pydub` and
+`tqdm` pinned in the runtime lock alongside NumPy. A successful pure-music
+transcode does not prove the mixed/drum converter works: verify all three
+outputs from the installed environment. Incremental mode fills missing
+objects; full mode must regenerate and overwrite existing objects when
+repairing an incorrect legacy preview. Catalog status 1 includes songs not
+yet released in mainland China and is included when expanded-catalog audio
+synchronization is requested.

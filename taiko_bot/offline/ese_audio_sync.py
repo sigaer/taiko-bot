@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 import argparse
+import sys
 from difflib import SequenceMatcher
 import os
 import re
@@ -24,6 +25,7 @@ try:
     from taiko_bot.offline.merge_index import (
         build_candidate_indexes,
         build_candidate_summary,
+        build_song_keys,
         select_candidate as select_metadata_candidate,
     )
 except Exception:
@@ -35,6 +37,7 @@ except Exception:
     from merge_index import (
         build_candidate_indexes,
         build_candidate_summary,
+        build_song_keys,
         select_candidate as select_metadata_candidate,
     )
 
@@ -730,11 +733,13 @@ def _find_music_path(tja_dir: Path, wave_field: str | None):
         candidate = (tja_dir / wave_field).resolve()
         if candidate.is_file():
             return candidate
+        # A declared source is authoritative. Picking another file here can
+        # publish an unrelated song under this catalog ID.
+        return None
+    matches = set()
     for pattern in ("*.ogg", "*.OGG", "*.mp3", "*.MP3", "*.wav", "*.WAV", "*.flac", "*.m4a"):
-        matches = sorted(tja_dir.glob(pattern))
-        if matches:
-            return matches[0].resolve()
-    return None
+        matches.update(path.resolve() for path in tja_dir.glob(pattern) if path.is_file())
+    return next(iter(matches)) if len(matches) == 1 else None
 
 
 def _symlink_or_copy(src: Path, dst: Path):
@@ -834,7 +839,9 @@ def _iter_on_shelf_songs(song_data, include_other=False):
         status = song.get("shelf_status")
         if status in (0, "未下架"):
             yield song
-        elif include_other and status == 2:
+        # Status 1 also includes international songs not yet in the mainland
+        # catalog. Their detail pages and downloadable packs still need audio.
+        elif include_other and status in (1, 2):
             yield song
 
 
@@ -1119,6 +1126,19 @@ def _match_songs_with_metadata(
             )
             continue
 
+        exact, normalized, base = build_song_keys(song)
+        if decision.get("reason") != "manual_override" and not (
+            exact & summary.exact_aliases
+            or normalized & summary.normalized_aliases
+            or base & summary.base_normalized_titles
+        ):
+            skipped_unmatched.append({
+                "song_id": song_id,
+                "reason": "unverified_title",
+                "tja_path": summary.path,
+            })
+            continue
+
         tja_record = matcher["record_by_path"].get(
             str(Path(summary.path).resolve())
         )
@@ -1298,7 +1318,7 @@ def _iter_tja_files(repo_path: Path):
 def _run_tja2audio(input_dir: Path, output_dir: Path, mix_music: bool):
     output_dir.mkdir(parents=True, exist_ok=True)
     cmd = [
-        "python3",
+        sys.executable,
         str(TJA2AUDIO_MAIN),
         "-i",
         str(input_dir),
@@ -1350,7 +1370,7 @@ def _upload_outputs(side_prefix, local_files, dry_run):
             uploaded.append({"target": target_name, "oss_target": oss_target, "dry_run": True})
             continue
         result = _run(
-            ["ossutil", "cp", "-u", str(local_path), oss_target],
+            ["ossutil", "cp", "-f", str(local_path), oss_target],
             check=False,
         )
         if result.returncode == 0:
@@ -1518,6 +1538,27 @@ def _process_candidate(candidate, dry_run=False):
     return item
 
 
+def _required_uploads(output_mapping, song_id, mode, mix_existing, drum_existing, pure_existing):
+    """Full repair replaces existing objects; incremental only fills gaps."""
+    pure_name = f"{song_id}.mp3"
+    if mode == "full":
+        return set(output_mapping), set(output_mapping), {pure_name}
+    return (
+        set(output_mapping) - mix_existing,
+        set(output_mapping) - drum_existing,
+        {pure_name} - pure_existing,
+    )
+
+
+def _sync_priority(candidate):
+    song = candidate["song"]
+    try:
+        release_day = datetime.strptime(str(song.get("open_day") or ""), "%m/%d/%Y").toordinal()
+    except ValueError:
+        release_day = 0
+    return -release_day, int(song["id"])
+
+
 def sync_audio_from_ese(song_data, mode="incremental", workers=2, dry_run=False, include_other=False):
     report = {
         "generated_at": _now_text(),
@@ -1608,10 +1649,10 @@ def sync_audio_from_ese(song_data, mode="incremental", workers=2, dry_run=False,
                 )
                 continue
 
-            missing_mix = {name for name in output_mapping if name not in mix_existing}
-            missing_drum = {name for name in output_mapping if name not in drum_existing}
-            pure_name = f"{candidate['song']['id']}.mp3"
-            missing_pure = {pure_name} if pure_name not in pure_existing else set()
+            missing_mix, missing_drum, missing_pure = _required_uploads(
+                output_mapping, candidate["song"]["id"], mode,
+                mix_existing, drum_existing, pure_existing,
+            )
             if mode == "incremental" and not missing_mix and not missing_drum and not missing_pure:
                 continue
 
@@ -1621,6 +1662,8 @@ def sync_audio_from_ese(song_data, mode="incremental", workers=2, dry_run=False,
             candidate["missing_pure"] = missing_pure
             final_candidates.append(candidate)
 
+        # Fresh additions must not wait behind the expanded historical catalog.
+        final_candidates.sort(key=_sync_priority)
         workers = int(workers or 1)
         if workers <= 0:
             workers = os.cpu_count() or 1
