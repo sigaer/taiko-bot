@@ -107,18 +107,19 @@ class AcquisitionPublicationTests(unittest.TestCase):
 
     def test_repeated_clock_value_keeps_both_real_acquisition_observations(self):
         self.configure(self.actual, self.root)
-        nonces = iter(["f" * 32, "a" * 32])
-        nonce_source = types.SimpleNamespace(uuid4=lambda: types.SimpleNamespace(hex=next(nonces)))
-        with patch.dict(sys.modules, self.actual_modules), patch.object(self.actual, "uuid", nonce_source):
-            FrozenClock.instant = datetime(2026, 10, 11, 9, 0, 0)
-            for stage in (1, 2):
+        with patch.dict(sys.modules, self.actual_modules):
+            FrozenClock.instant = datetime(2026, 10, 11, 9, 0, 0, 999999)
+            for stage in (1, 2, 3):
                 self.actual.save_userdata("synthetic", payload([song(2, stage, 600_000)]), source="wahlap")
         with PublicationStore(self.root, "synthetic").shared() as store:
             reader = store.reader()
-            self.assertEqual(len(reader.history_names()), 2)
-            records = [json.loads(reader.history_raw(name)) for name in sorted(reader.history_names())]
-            self.assertEqual(records[0]["songs"][0]["stage_cnt"], 1)
-            self.assertEqual(records[1]["songs"][0]["stage_cnt"], 2)
+            names = sorted(reader.history_names())
+            self.assertEqual(names, ["data_20261011_090000_999999.json",
+                                     "data_20261011_090001_000000.json",
+                                     "data_20261011_090001_000001.json"])
+            records = [json.loads(reader.history_raw(name)) for name in names]
+            self.assertEqual([record["songs"][0]["stage_cnt"] for record in records], [1, 2, 3])
+            self.assertEqual({record["_meta"]["ts"] for record in records}, {"20261011_090000_999999"})
 
     def test_daily_capture_receives_the_actual_publication_root(self):
         self.configure(self.actual, self.root)

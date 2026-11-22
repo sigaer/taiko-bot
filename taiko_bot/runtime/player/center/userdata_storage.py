@@ -8,9 +8,7 @@ import os
 
 import hashlib
 
-import uuid
-
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from typing import Any, Dict, Optional, Set, Tuple
 
@@ -127,6 +125,17 @@ def save_userdata(
         store.collect()
         _save_userdata_locked(store, user_id, userdata, source=source)
 
+def _history_filename(observed_at, existing_names):
+    existing_names = set(existing_names)
+    candidate = observed_at
+    while True:
+        name = f"data_{candidate:%Y%m%d_%H%M%S_%f}.json"
+        if name not in existing_names:
+            return name
+        # Resolve an actual collision locally without changing observation time.
+        candidate += timedelta(microseconds=1)
+
+
 def _save_userdata_locked(store, user_id, userdata, *, source=None):
     reader = store.reader()
 
@@ -153,9 +162,7 @@ def _save_userdata_locked(store, user_id, userdata, *, source=None):
         merge_topology = []
 
     ts = now.strftime("%Y%m%d_%H%M%S_%f")
-    # Keep the existing event/observation timestamp, add a storage identity only.
-    sequence = 1 if reader.manifest is None else reader.manifest["sequence"] + 1
-    history_name = f"data_{ts}_{sequence:020d}_{uuid.uuid4().hex}.json"
+    history_name = _history_filename(now, reader.history_names())
 
     prev_data = None
     try:
