@@ -13,6 +13,7 @@ import time
 from urllib.parse import quote, urljoin
 
 from taiko_bot.offline.paths import root
+from taiko_bot.offline.catalog_chart_policy import is_double_song
 from taiko_bot.offline.song_positions import refresh_positions_safely
 ROOT_DIR = root()
 
@@ -53,10 +54,6 @@ try:
     from taiko_bot.offline.chart_roll_metadata import apply_chart_roll_metadata_overrides
 except Exception:
     from chart_roll_metadata import apply_chart_roll_metadata_overrides
-try:
-    from taiko_bot.offline.tja_roll_sync import audit_song_data, write_audit_report
-except Exception:
-    from tja_roll_sync import audit_song_data, write_audit_report
 try:
     from taiko_bot.offline.song_tja_mapping import (
         DEFAULT_MAPPING_PATH as SONG_TJA_MAPPING_PATH,
@@ -210,18 +207,6 @@ def _apply_levels_and_max_combo(song_record, levels, max_combo):
     return song_record
 
 
-def _normalize_level_availability(value):
-    if value is None:
-        return "-"
-    if isinstance(value, str):
-        text = value.strip()
-        return text if text else "-"
-    try:
-        return int(value)
-    except Exception:
-        return "-"
-
-
 def _normalize_confirmed_rating_levels(levels):
     confirmed = set()
     if not levels:
@@ -234,23 +219,6 @@ def _normalize_confirmed_rating_levels(levels):
         if parsed_level in RATING_REFRESH_LEVELS:
             confirmed.add(parsed_level)
     return confirmed
-
-
-def _restrict_levels_by_raw_snapshot(song_record, raw_song, preserve_levels=None):
-    if not isinstance(song_record, dict) or not isinstance(raw_song, dict):
-        return song_record
-    preserved = _normalize_confirmed_rating_levels(preserve_levels)
-    max_combo = song_record.get("max_combo")
-    max_combo_list = list(max_combo) if isinstance(max_combo, list) else None
-    for idx in range(1, 6):
-        raw_level = _normalize_level_availability(raw_song.get(f"level_{idx}"))
-        if raw_level == "-" and idx not in preserved:
-            song_record[f"level_{idx}"] = "-"
-            if max_combo_list is not None and len(max_combo_list) >= idx:
-                max_combo_list[idx - 1] = "-"
-    if max_combo_list is not None:
-        song_record["max_combo"] = max_combo_list
-    return song_record
 
 
 def _build_bpm_text(db_song):
@@ -2134,6 +2102,12 @@ def sync_song_score_with_wiki(song_data):
 
 
 def sync_song_data_with_taiko_database():
+    # Refresh before matching: a newly added course must be usable in this run.
+    from .ese_audio_sync import _ensure_ese_repo
+    try:
+        _ensure_ese_repo()
+    except Exception:
+        logger.exception("ESE 更新失败，使用现有资源并报告未解决谱面")
     database_data = _load_optional_wiki_database()
 
     filtered_database = []
@@ -2185,7 +2159,6 @@ def sync_song_data_with_taiko_database():
         if status == SHELF_STATUS_DOWN or status == "已下架":
             previous_down_shelf_ids.add(song.get("id"))
     raw_shelf_status_by_id = {}
-    raw_song_by_id = {}
     raw_snapshot_loaded = False
     if SONG_DATA_RAW_PATH.exists():
         try:
@@ -2195,23 +2168,19 @@ def sync_song_data_with_taiko_database():
                 for song in raw_data
                 if isinstance(song, dict) and isinstance(song.get("id"), int)
             }
-            raw_song_by_id = {
-                song.get("id"): song
-                for song in raw_data
-                if isinstance(song, dict) and isinstance(song.get("id"), int)
-            }
             raw_snapshot_loaded = True
         except Exception:
             raw_shelf_status_by_id = {}
-            raw_song_by_id = {}
             raw_snapshot_loaded = False
-    score_confirmed_levels_by_id = _load_score_confirmed_rating_levels()
     merged = []
 
     for song in old_main_songs:
         if not isinstance(song, dict):
             continue
         song_id = song.get("id")
+        if is_double_song(song):
+            merged.append(dict(song))
+            continue
         db_song = db_by_id.get(song_id)
         if not db_song:
             updated_song = dict(song)
@@ -2245,11 +2214,6 @@ def sync_song_data_with_taiko_database():
         updated_song["version"] = version
         updated_song["artists"] = artists
         _apply_levels_and_max_combo(updated_song, levels, max_combo)
-        _restrict_levels_by_raw_snapshot(
-            updated_song,
-            raw_song_by_id.get(song_id),
-            preserve_levels=score_confirmed_levels_by_id.get(song_id),
-        )
         bpm_text = _build_bpm_text(db_song)
         if bpm_text != "-":
             updated_song["bpm"] = bpm_text
@@ -2272,11 +2236,6 @@ def sync_song_data_with_taiko_database():
         if song_id in old_by_id:
             continue
         appended_song = _build_down_shelf_song(db_song)
-        _restrict_levels_by_raw_snapshot(
-            appended_song,
-            raw_song_by_id.get(song_id),
-            preserve_levels=score_confirmed_levels_by_id.get(song_id),
-        )
         if song_id in raw_shelf_status_by_id:
             appended_song["shelf_status"] = (
                 SHELF_STATUS_DOWN
@@ -2303,7 +2262,7 @@ def sync_song_data_with_taiko_database():
             other_db_by_songno.get(str(song_no)) if song_no is not None else None
         )
         updated_song = dict(song)
-        if db_song is not None:
+        if db_song is not None and not is_double_song(song):
             try:
                 sid = int(song.get("id"))
             except Exception:
@@ -2355,7 +2314,6 @@ def sync_song_data_with_taiko_database():
             song.update(previous)
     try:
         song_tja_mapping = refresh_song_tja_mapping()
-        mapping_source = SONG_TJA_MAPPING_URL
         logger.info(
             "歌曲 TJA 映射刷新完成: count=%d cache=%s",
             len(song_tja_mapping),
@@ -2365,7 +2323,6 @@ def sync_song_data_with_taiko_database():
         if not SONG_TJA_MAPPING_PATH.is_file():
             raise RuntimeError("歌曲 TJA 映射刷新失败且无本地缓存") from exc
         song_tja_mapping = load_song_tja_mapping()
-        mapping_source = f"{SONG_TJA_MAPPING_PATH} (cached)"
         logger.warning(
             "歌曲 TJA 映射刷新失败，使用本地缓存: count=%d error=%s",
             len(song_tja_mapping),
@@ -2377,14 +2334,15 @@ def sync_song_data_with_taiko_database():
     active_ids = {int(song["id"]) for song in merged}
     song_tja_mapping = {int(sid): path for sid, path in song_tja_mapping.items() if int(sid) in active_ids}
     from .song_tja_mapping import write_song_tja_mapping
+    from .catalog_chart_sync import reconcile_charts, catalog_changes
+    from .ourtaiko_catalog import atomic_json
+    chart_report = reconcile_charts(merged, database=database_data, root=ROOT_DIR,
+                                    ese_root=ESE_SYNC_REPO_PATH, mapping=song_tja_mapping)
+    chart_report["changed"] = catalog_changes(old_data, merged)
+    atomic_json(ROOT_DIR / "logs/catalog_chart_sync_report.json", chart_report)
+    from .catalog_images import queue_chart_images
+    queue_chart_images(ROOT_DIR, chart_report)
     write_song_tja_mapping(SONG_TJA_MAPPING_PATH, song_tja_mapping)
-    tja_audit = audit_song_data(
-        merged,
-        song_tja_mapping=song_tja_mapping,
-        mapping_source=mapping_source,
-    )
-    write_audit_report(tja_audit)
-    merged = tja_audit["proposedSongData"]
 
     # Canonical per-chart corrections must be the final authority.  Keep this
     # immediately before serialization so later upstream merge changes cannot

@@ -37,10 +37,12 @@ def file_hash(path):
 def download_file(descriptor, destination, *, maximum, session):
     digest, size, url = descriptor["sha256"], descriptor["size"], descriptor["url"]
     parsed = urlsplit(url)
+    prefix = {'distrib.ourtaiko.org': '/database/',
+              'static.sakura-bot.cn': '/ourtaiko/database/'}.get(parsed.netloc)
     if (not re.fullmatch(r"[a-f0-9]{64}", digest) or type(size) is not int or not 0 < size <= maximum
-            or parsed.scheme != "https" or parsed.netloc != "distrib.ourtaiko.org"
+            or parsed.scheme != "https" or prefix is None
             or parsed.username or parsed.password
-            or not re.fullmatch(r"/database/" + digest + r"\.[a-z0-9]+", parsed.path)):
+            or not re.fullmatch(re.escape(prefix or '') + digest + r"\.[a-z0-9]+", parsed.path)):
         raise ValueError("Invalid OurTaiko resource manifest")
     path = Path(destination)
     if path.is_file() and path.stat().st_size == size and file_hash(path) == digest:
@@ -99,7 +101,7 @@ def download_chart_resources(chart, runtime_root):
         if suffix not in (".ogg", ".mp3", ".wav"):
             raise ValueError("Unsupported OurTaiko audio resource")
         audio_path = download_file(audio, directory / wave.group(1), maximum=32 * 1024**2, session=session)
-        return {"resource_source": SOURCE_NAME,
+        return {"resource_source": SOURCE_NAME, "resource_revision": chart.get("updateAt"),
                 "tja_path": tja_path.relative_to(resource_root(runtime_root)).as_posix(),
                 "audio_path": audio_path.relative_to(resource_root(runtime_root)).as_posix(),
                 "tja_sha256": tja["sha256"], "audio_sha256": audio["sha256"]}

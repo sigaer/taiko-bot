@@ -22,7 +22,6 @@ from taiko_bot.offline.song_update_task import (
     _merge_wahlap_song_without_roll_metadata,
     _parse_score_detail_rows_from_html,
     _parse_wiki_score_rows,
-    _restrict_levels_by_raw_snapshot,
     _score_row_needs_detail_refresh,
     _wiki_page_base_path,
 )
@@ -390,50 +389,6 @@ def test_build_rating_entry_uses_song_data_chart_fields() -> None:
     assert entry["bpm"] == "200(100-800)"
     assert entry["roll_time"] == "0.000秒"
     assert entry["balloon_num"] == 1019
-
-
-def test_raw_snapshot_restricts_unavailable_ura_level() -> None:
-    song_record = _apply_levels_and_max_combo(
-        {"id": 1303},
-        [2, 3, 5, 7, 8],
-        [95, 168, 274, 331, 548],
-    )
-    raw_song = {
-        "id": 1303,
-        "level_1": 2,
-        "level_2": 3,
-        "level_3": 5,
-        "level_4": 7,
-        "level_5": "-",
-    }
-
-    _restrict_levels_by_raw_snapshot(song_record, raw_song)
-
-    assert song_record["level_4"] == 7
-    assert song_record["level_5"] == "-"
-    assert song_record["max_combo"][3] == 331
-    assert song_record["max_combo"][4] == "-"
-
-
-def test_raw_snapshot_preserves_score_confirmed_ura_level() -> None:
-    song_record = _apply_levels_and_max_combo(
-        {"id": 1370},
-        [5, 6, 8, 10, 10],
-        [216, 319, 471, 786, 1123],
-    )
-    raw_song = {
-        "id": 1370,
-        "level_1": 5,
-        "level_2": 6,
-        "level_3": 8,
-        "level_4": 10,
-        "level_5": "-",
-    }
-
-    _restrict_levels_by_raw_snapshot(song_record, raw_song, preserve_levels={5})
-
-    assert song_record["level_5"] == 10
-    assert song_record["max_combo"][4] == 1123
 
 
 def test_collect_rating_target_pairs_includes_score_confirmed_ura_level() -> None:

@@ -214,8 +214,9 @@ def merge_catalog(songs, charts, *, mainland_ids=None):
             song["shelf_status"] = 0 if rainbow in mainland_ids else 1
         elif is_new and rainbow is None:
             song["shelf_status"] = 2
-        # A known mainland chart's difficulty availability is owned by Wahlap.
-        if is_new:
+        # Mainland shelf status does not determine global chart availability.
+        from .catalog_chart_policy import is_double_song
+        if not is_double_song(song):
             for index, level in chart_levels(chart).items():
                 if song.get(f"level_{index}") in (None, "", "-", 0):
                     song[f"level_{index}"] = level

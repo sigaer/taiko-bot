@@ -19,6 +19,7 @@ import shutil
 from .catalog_resources import safe_resource, single_levels
 from .ourtaiko_catalog import atomic_json, positive_id
 from .paths import root
+from .catalog_chart_policy import is_double_song, normalize_courses
 
 FIELDS = ("id", "title", "difficulty", "totalNotes", "sub_constant_1", "main_constant", "sub_constant_2", "stamina", "handspeed", "burst", "complex", "rhythm")
 DIFFICULTIES = {"hard": 3, "oni": 4, "edit": 5}
@@ -45,6 +46,19 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
     retry_ids = {str(issue["id"]) for issue in payload.get("issues", [])
                  if issue.get("reason") not in ("missing_or_mismatched_single_course", "note_count_mismatch")}
     existing_rows = list(csv.DictReader(csv_path.open(encoding="utf-8-sig", newline=""))) if csv_path.exists() else []
+    by_id = {int(song['id']): song for song in catalog}
+    retained_rows = []
+    for row in existing_rows:
+        sid, difficulty = int(row['id']), row['difficulty']
+        song, index = by_id.get(sid), DIFFICULTIES.get(difficulty)
+        notes = (song.get('max_combo') or [None]*5)[index-1] if song and index else None
+        if song and not is_double_song(song) and index and type(notes) is int and notes > 0 and float(row['totalNotes']) != notes:
+            constants.get(str(sid), {}).pop(difficulty, None)
+            provenance.get(str(sid), {}).get('charts', {}).pop(difficulty, None)
+            attempts.pop(str(sid), None)
+        else:
+            retained_rows.append(row)
+    existing_rows = retained_rows
     existing = {(int(r["id"]), r["difficulty"]) for r in existing_rows}
     calibration = hashlib.sha256((calculator.parent / "Constants/cached_computing_parameters.json").read_bytes()).hexdigest()
     processed = generated = 0
@@ -57,7 +71,7 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
     mapping_path = output.parent / "song_id2tjapath.json"
     mapping = json.loads(mapping_path.read_text()) if mapping_path.is_file() else {}
     for song in catalog:
-        if any(str(song.get(field, "")).startswith("【双打】") for field in ("song_name", "song_name_jp")):
+        if is_double_song(song):
             continue
         sid = str(song["id"])
         wanted = {d: i for d, i in DIFFICULTIES.items() if positive_id(song.get(f"level_{i}")) and (int(sid), d) not in existing}
@@ -95,8 +109,15 @@ def fill_constants(catalog, *, output, csv_path, calculator, tja_root, limit=0):
         processed_ids.add(int(sid))
         try:
             from .tja_roll_parser import read_tja_text
-            levels = single_levels(read_tja_text(str(path)))
-            result = module.calculate(data, node)
+            text = read_tja_text(str(path))
+            levels = single_levels(text)
+            # Wiki may reassess stars without altering notes; identity is also
+            # checked against the calculator's master-branch note count below.
+            from .catalog_chart_policy import single_profiles
+            for index, chart in single_profiles(text).items():
+                if song.get('tja_path') and (song.get('max_combo') or [None]*5)[index-1] == chart['notes']:
+                    levels[index] = positive_id(song.get(f'level_{index}'))
+            result = module.calculate(normalize_courses(text).encode('utf-8'), node)
             charts = result.get("charts", [])
             source = provenance.setdefault(sid, {"tjaPath": relative_path, "tjaSha256": hashlib.sha256(data).hexdigest(), "charts": {}})
             accepted = False

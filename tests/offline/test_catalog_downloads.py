@@ -41,20 +41,26 @@ def test_remote_manifest_rejects_untrusted_hosts_and_oversized_objects(tmp_path)
     with pytest.raises(ValueError,match='manifest'):download_file(descriptor(b'abc'),tmp_path/'x',maximum=2,session=Session(b'abc'))
 
 
-def test_image_plan_resolves_remote_sources_and_keeps_player_sides_separate(tmp_path):
+def test_image_plan_excludes_double_sides_and_keeps_single(tmp_path):
     ese=tmp_path/'ese';ese.mkdir()
-    source=tmp_path/'assets/catalog_sources/ourtaiko/a/chart.tja';source.parent.mkdir(parents=True);source.write_text('test')
-    song={'id':101619,'resource_source':'ourtaiko','tja_path':'a/chart.tja','song_name':'中文曲名','song_name_jp':'Tomare',
+    source=tmp_path/'assets/catalog_sources/ourtaiko/a/chart.tja'
+    source.parent.mkdir(parents=True);source.write_text('test')
+    song={'id':7,'resource_source':'ourtaiko','tja_path':'a/chart.tja','song_name':'Test','level_4':8,
           'ourtaiko_difficulties':[{'difficulty':4,'side':'p1','level':8},{'difficulty':4,'side':'p2','level':8}]}
     plan=image_plan([song],root=tmp_path,ese_root=ese)
-    assert {r['side'] for r in plan['jobs']}=={'p1','p2'}
-    assert {r['tja'] for r in plan['jobs']}=={str(source)}
-    assert {r['output'].split('/')[-1] for r in plan['jobs']}=={'101619-p1.png','101619-p2.png'}
-    assert {r['title'] for r in plan['jobs']}=={'中文曲名 [P1]','中文曲名 [P2]'}
-    assert not plan['issues']
-    output=tmp_path/'assets/fumens/Oni/101619-p1.png';output.parent.mkdir(parents=True);output.write_bytes(b'original')
-    again=image_plan([song],root=tmp_path,ese_root=ese)
-    assert len(again['jobs'])==1 and again['jobs'][0]['side']=='p2' and output.read_bytes()==b'original'
+    assert len(plan['jobs'])==1 and plan['jobs'][0]['side']=='single'
+    assert plan['jobs'][0]['tja']==str(source)
+    song['song_name']='【双打】 Test'
+    assert not image_plan([song],root=tmp_path,ese_root=ese)['jobs']
+
+
+def test_resource_manifest_accepts_verified_sakura_cdn(tmp_path):
+    data=b'TITLE:Test\n';source=descriptor(data)
+    source['url']=source['url'].replace('distrib.ourtaiko.org/database','static.sakura-bot.cn/ourtaiko/database')
+    assert download_file(source,tmp_path/'chart.tja',maximum=100,session=Session(data)).read_bytes()==data
+    source['url']=source['url'].replace('/ourtaiko/database/', '/other/')
+    with pytest.raises(ValueError,match='manifest'):
+        download_file(source,tmp_path/'other.tja',maximum=100,session=Session(data))
 
 
 def test_single_course_after_double_does_not_inherit_style():

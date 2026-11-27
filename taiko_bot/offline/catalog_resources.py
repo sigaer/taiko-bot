@@ -56,6 +56,8 @@ def enrich_resources(songs, charts, assignments, root, mapping, *, runtime_root=
             from .catalog_downloads import catalog_resource_root, download_chart_resources
             current_root = catalog_resource_root(song, root, runtime_root=runtime_root)
             if song.get("resource_source") == "ourtaiko" and safe_resource(current_root, song.get("tja_path")):
+                if download_missing and chart.get("hasFiles") and song.get("resource_revision") != chart.get("updateAt"):
+                    song.update(download_chart_resources(chart, runtime_root))
                 report["matched"] += 1
                 report["audio"] += bool(safe_resource(current_root, song.get("audio_path")))
                 seen.add(sid)
