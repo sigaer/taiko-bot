@@ -156,3 +156,25 @@ def test_zero_difficulty_is_absent_but_zero_note_chart_is_valid(tmp_path):
     reconcile_charts(data,database=[],root=tmp_path,ese_root=tmp_path,mapping={})
     assert data[0]['level_4']==data[0]['level_5']=='-'
     assert data[0]['level_1']==1 and data[0]['max_combo'][0]==0
+
+
+def test_master_falls_back_only_for_wholly_missing_section():
+    text = '''BPM:120
+COURSE:Hard
+LEVEL:6
+#START
+#BRANCHSTART p,75,90
+#N
+1111,
+1111,
+#M
+12,
+#BRANCHSTART p,75,90
+#N
+1234,
+#END
+'''
+    chart = single_profiles(text)[3]
+    assert chart['notes'] == 6
+    assert chart['branch'] == 'master'
+    assert single_profiles('LEVEL:6\n' + chart['text'].replace('COURSE:hard', 'COURSE:hard\nLEVEL:6'))[3]['notes'] == 6

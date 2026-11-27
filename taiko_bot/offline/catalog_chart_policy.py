@@ -22,6 +22,47 @@ def normalize_courses(text):
     return re.sub(r'(?im)^(\s*COURSE\s*:\s*)([^\r\n/]+)', replace, text)
 
 
+def complete_master_sections(lines):
+    """Match the chart engine's per-section M → E → N fallback.
+
+    Some TJAs end with a shared section encoded as N only. A shorter M
+    section remains shorter; fallback applies only when M is wholly absent.
+    """
+    output, section = [], None
+
+    def flush():
+        if section is None:
+            return
+        branches, active = {}, None
+        for line in section:
+            if line.upper() in ('#N', '#E', '#M'):
+                active = line.upper()[1:]
+                branches.setdefault(active, [])
+            elif active:
+                branches[active].append(line)
+        output.extend(section)
+        if 'M' not in branches:
+            fallback = branches.get('E', branches.get('N'))
+            if fallback is not None:
+                output.extend(['#M', *fallback])
+
+    for line in lines:
+        if line.upper().startswith('#BRANCHSTART'):
+            flush()
+            output.append(line)
+            section = []
+        elif line.upper().startswith('#BRANCHEND'):
+            flush()
+            section = None
+            output.append(line)
+        elif section is not None:
+            section.append(line)
+        else:
+            output.append(line)
+    flush()
+    return output
+
+
 def single_profiles(text):
     """Count judgeable notes on M only; #START P1/P2 never become singles."""
     course, level, style = 4, None, 'single'
@@ -35,6 +76,7 @@ def single_profiles(text):
             lines = []
         elif upper == '#END':
             if active and course and level:
+                lines = complete_master_sections(lines)
                 branched, paths = _expand_branches(lines)
                 notes = sum(sum(c in '1234' for c in row) for row in paths['M']
                             if re.fullmatch(r'[0-9A-Za-z,\s]+', row))
